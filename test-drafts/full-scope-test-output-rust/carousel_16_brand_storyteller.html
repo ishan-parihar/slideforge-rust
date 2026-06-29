@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rust Scope Test: 16</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+  --primary: #008200;
+  --primary-light: #66CE5F;
+  --primary-dark: #005500;
+  --surface-light: #F0F8EE;
+  --surface-dark: #000200;
+  --text-primary: #090C08;
+  --text-secondary: #3E453D;
+  --text-on-dark: #EBF0EA;
+  --text-on-dark-secondary: #C8D0C7;
+  --border-light: #C5CDC4;
+  --border-dark: #253224;
+  --accent: #983CA5;
+  --secondary: #94C38C;
+  --tertiary: #00CDD7;
+  --gradient: linear-gradient(165deg, #000200 0%, #005500 60%, #000200 100%);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 20px #00820040;
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --gradient-hero: linear-gradient(135deg, #000200 0%, #00550030 50%, #000200 100%);
+  --gradient-subtle: linear-gradient(135deg, #F0F8EE 0%, #00820008 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --gradient-mesh: radial-gradient(at 40% 20%, #00820015 0px, transparent 50%), radial-gradient(at 80% 0%, #983CA510 0px, transparent 50%), radial-gradient(at 0% 50%, #66CE5F12 0px, transparent 50%);
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-dark-bg: #000200CC;
+  --glass-dark-blur: 12px;
+  --glass-dark-border: 1px solid #25322440;
+  --glass-frosted-bg: #F0F8EEE6;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-border: 1px solid #C5CDC430;
+  --glass-light-bg: #F0F8EECC;
+  --glass-light-blur: 12px;
+  --glass-light-border: 1px solid #C5CDC440;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --text-micro-size: 10px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-title-size: 20px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-caption-size: 13px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-headline-size: 25px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-display-size: 31px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-xs: 10px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 25px;
+  --text-2xl: 31px;
+  --space-6: 48px;
+  --space-10: 80px;
+  --space-7: 56px;
+  --space-0: 0px;
+  --space-12: 96px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-8: 64px;
+  --space-5: 40px;
+  --space-1: 8px;
+}
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: #f0f0f0;
+            font-family: var(--font-body, system-ui, sans-serif);
+        }
+        .carousel-viewport { width: 420px; height: 525px; overflow: hidden; position: relative; }
+        .carousel-track { display: flex; height: 100%; transition: transform 0.35s ease; will-change: transform; }
+        .slide {
+            min-width: 420px; height: 525px; position: relative;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide-layout {
+            position: relative; z-index: 2; display: flex; flex-direction: column;
+            height: 100%; padding: 80px 48px 80px; width: 100%; justify-content: center;
+        }
+        .grid-2 { display: flex; gap: 24px; width: 100%; }
+        .grid-2 > * { flex: 1; min-width: 0; }
+        .serif { font-family: var(--font-heading, serif); }
+        .sans { font-family: var(--font-body, sans-serif); }
+        .display-text { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+        .heading-text { font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 16px; }
+        .body-text { font-size: 14px; font-weight: 400; line-height: 1.55; }
+        .caption-text { font-size: 11px; font-weight: 500; line-height: 1.4; letter-spacing: 0.02em; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .slide--dark, .slide--gradient, .slide--hero {
+            --text-primary: var(--text-on-dark, #ECEEF5);
+            --text-secondary: var(--text-on-dark-secondary, #B9BDC9);
+            --border-light: var(--border-dark, #2A2D3D);
+            --surface-light: var(--surface-dark, #010105);
+        }
+        .card {
+            padding: 20px; border-radius: var(--radius-lg, 12px);
+            background: var(--surface-light); border: 1px solid var(--border-light);
+        }
+        .glass {
+            background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .slide--light .glass { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); }
+        
+            :root {
+                --font-heading: 'Inter', system-ui, sans-serif;
+                --font-body: 'Inter', system-ui, sans-serif;
+                --radius-lg: 12px;
+                --radius-md: 10px;
+            }
+            .slide--light { --surface-light: #1A1A2E; }
+            .slide--dark, .slide--hero { --surface-dark: #0D0D14; }
+        
+    </style>
+</head>
+<body>
+    <div class="carousel-viewport">
+        <div class="carousel-track">
+            <div class="slide slide--light has-progress">
+                <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00820015 0px, transparent 50%), radial-gradient(at 80% 0%, #983CA510 0px, transparent 50%), radial-gradient(at 0% 50%, #66CE5F12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none; inset: 0"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;"><div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:32px;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EBF0EA; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Performance</h2></div><div><div style="margin-bottom:20px;">
+                <h3 style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#EBF0EA;margin:0 0 6px;">Sub-100ms latency</h3>
+                <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#C8D0C7;margin:0;line-height:1.45;">Global edge servers</p>
+            </div></div></div></div>
+            </div>
+        </div>
+                <div class="overlay__header" style="position: absolute; top: 16px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
+                    <span class="overlay__brand" style="color: var(--text-primary); font-size: 11px; font-weight: 700;">NexusAI</span>
+                    <span class="overlay__topic" style="color: var(--text-secondary); font-size: 9px; font-weight: 500; opacity: 0.8;">Rust Scope Test: 16</span>
+                </div>
+                <div class="progress-bar-container" style="position: absolute; bottom: 12px; left: 40px; right: 40px; display: flex; align-items: center; z-index: 10;">
+                    <div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                <div class="overlay__footer" style="position: absolute; bottom: 24px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; font-size: 9px;">
+                    <span class="overlay__url" style="color: var(--text-secondary); font-weight: 600;">@nexusai</span>
+                    <span class="overlay__hashtags" style="color: var(--primary); font-weight: 600;">#nexusai #brand_storyteller #dark</span>
+                </div>
+            </div><div class="slide slide--light has-progress">
+                <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00820015 0px, transparent 50%), radial-gradient(at 80% 0%, #983CA510 0px, transparent 50%), radial-gradient(at 0% 50%, #66CE5F12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; opacity: 0.04; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:0"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:32px;"><div style="width: 56px; height: 56px; background: #3DA83812; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 0 16px;">🚀</div><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EBF0EA; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em"><span style="color:#3DA838;font-weight:800;margin-right:12px;font-family:Plus Jakarta Sans;">10x</span>Lightning Fast</h2><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C8D0C7; margin: 0; text-align: left">10x faster processing</p></div></div>
+            </div>
+        </div>
+                <div class="overlay__header" style="position: absolute; top: 16px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
+                    <span class="overlay__brand" style="color: var(--text-primary); font-size: 11px; font-weight: 700;">NexusAI</span>
+                    <span class="overlay__topic" style="color: var(--text-secondary); font-size: 9px; font-weight: 500; opacity: 0.8;">Rust Scope Test: 16</span>
+                </div>
+                <div class="progress-bar-container" style="position: absolute; bottom: 12px; left: 40px; right: 40px; display: flex; align-items: center; z-index: 10;">
+                    <div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                <div class="overlay__footer" style="position: absolute; bottom: 24px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; font-size: 9px;">
+                    <span class="overlay__url" style="color: var(--text-secondary); font-weight: 600;">@nexusai</span>
+                    <span class="overlay__hashtags" style="color: var(--primary); font-weight: 600;">#nexusai #brand_storyteller #dark</span>
+                </div>
+            </div><div class="slide slide--dark has-progress">
+                <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size:cover;background-position:center;opacity:0.32;z-index:0;"></div><div style="position:absolute;inset:0;background:rgba(0,0,0,0.30);z-index:1;"></div>
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:32px;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EBF0EA; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Implementation Roadmap</h2><div style="margin-top:16px;"><div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:17px;top:36px;bottom:-16px;width:2px;background:#00820030;"></div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:#00820012;border:2px solid #008200;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#008200;flex-shrink:0;z-index:2;">1</div>
+                        <div>
+                            <h3 style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#EBF0EA;margin:0 0 4px;">Discovery</h3>
+                            <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#C8D0C7;margin:0;line-height:1.4;">Analyze needs</p>
+                        </div>
+                    </div><div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
+                        
+                        <div style="width:36px;height:36px;border-radius:50%;background:#00820012;border:2px solid #008200;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#008200;flex-shrink:0;z-index:2;">2</div>
+                        <div>
+                            <h3 style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#EBF0EA;margin:0 0 4px;">Setup</h3>
+                            <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#C8D0C7;margin:0;line-height:1.4;">Configure platform</p>
+                        </div>
+                    </div></div></div>
+            </div>
+        </div>
+                <div class="overlay__header" style="position: absolute; top: 16px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
+                    <span class="overlay__brand" style="color: var(--text-primary); font-size: 11px; font-weight: 700;">NexusAI</span>
+                    <span class="overlay__topic" style="color: var(--text-secondary); font-size: 9px; font-weight: 500; opacity: 0.8;">Rust Scope Test: 16</span>
+                </div>
+                <div class="progress-bar-container" style="position: absolute; bottom: 12px; left: 40px; right: 40px; display: flex; align-items: center; z-index: 10;">
+                    <div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step " style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                <div class="overlay__footer" style="position: absolute; bottom: 24px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; font-size: 9px;">
+                    <span class="overlay__url" style="color: var(--text-secondary); font-weight: 600;">@nexusai</span>
+                    <span class="overlay__hashtags" style="color: var(--primary); font-weight: 600;">#nexusai #brand_storyteller #dark</span>
+                </div>
+            </div><div class="slide slide--gradient has-progress">
+                <div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="max-width:360px;margin:0 auto;text-align:left;width:100%;"><h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#EBF0EA;margin:0 0 16px;line-height:1.2;">A Guide to Modularity</h2><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#C8D0C7;margin:0 0 12px;line-height:1.6;">Modularity is the art of breaking a system into self-contained modules.</p></div>
+            </div>
+        </div>
+                <div class="overlay__header" style="position: absolute; top: 16px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none;">
+                    <span class="overlay__brand" style="color: var(--text-primary); font-size: 11px; font-weight: 700;">NexusAI</span>
+                    <span class="overlay__topic" style="color: var(--text-secondary); font-size: 9px; font-weight: 500; opacity: 0.8;">Rust Scope Test: 16</span>
+                </div>
+                <div class="progress-bar-container" style="position: absolute; bottom: 12px; left: 40px; right: 40px; display: flex; align-items: center; z-index: 10;">
+                    <div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div><div class="progress-step active" style="flex: 1; height: 3px; background: rgba(128,128,128,0.2); margin: 0 2px; border-radius: 2px;">
+                        <div class="progress-step-fill" style="width: 100%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                <div class="overlay__footer" style="position: absolute; bottom: 24px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; font-size: 9px;">
+                    <span class="overlay__url" style="color: var(--text-secondary); font-weight: 600;">@nexusai</span>
+                    <span class="overlay__hashtags" style="color: var(--primary); font-weight: 600;">#nexusai #brand_storyteller #dark</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

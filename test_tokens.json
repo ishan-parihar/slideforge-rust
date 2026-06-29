@@ -1,0 +1,139 @@
+{
+  "primary": "#4F46E5",
+  "primary_light": "#8E97FF",
+  "primary_dark": "#3100B1",
+  "surface_light": "#F2F4FF",
+  "surface_dark": "#010105",
+  "text_primary": "#0A0B0F",
+  "text_secondary": "#40424B",
+  "text_on_dark": "#ECEEF5",
+  "text_on_dark_secondary": "#CBCDD8",
+  "border_light": "#C4C7D1",
+  "border_dark": "#2A2D3D",
+  "accent": "#8D5E00",
+  "secondary": "#58609F",
+  "tertiary": "#9A3C86",
+  "gradient": "linear-gradient(165deg, #010105 0%, #3100B1 60%, #010105 100%)",
+  "temperature": "cool",
+  "heading_font": "Plus Jakarta Sans",
+  "body_font": "Plus Jakarta Sans",
+  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap",
+  "type_scale": {
+    "title": {
+      "font_size": 20,
+      "line_height": 1.18,
+      "letter_spacing": -0.01,
+      "font_weight": 600
+    },
+    "caption": {
+      "font_size": 13,
+      "line_height": 1.4,
+      "letter_spacing": 0.02,
+      "font_weight": 600
+    },
+    "headline": {
+      "font_size": 25,
+      "line_height": 1.12,
+      "letter_spacing": -0.015,
+      "font_weight": 600
+    },
+    "body": {
+      "font_size": 16,
+      "line_height": 1.55,
+      "letter_spacing": 0.0,
+      "font_weight": 400
+    },
+    "micro": {
+      "font_size": 10,
+      "line_height": 1.35,
+      "letter_spacing": 0.04,
+      "font_weight": 500
+    },
+    "display": {
+      "font_size": 31,
+      "line_height": 1.08,
+      "letter_spacing": -0.02,
+      "font_weight": 600
+    }
+  },
+  "spacing": {
+    "12": 96,
+    "3": 24,
+    "7": 56,
+    "5": 40,
+    "2": 16,
+    "4": 32,
+    "8": 64,
+    "0": 0,
+    "10": 80,
+    "6": 48,
+    "1": 8
+  },
+  "contrast_report": {
+    "border_dark on surface_dark": {
+      "ratio": 1.53,
+      "passes": true
+    },
+    "text_primary on surface_light": {
+      "ratio": 17.95,
+      "passes": true
+    },
+    "text_secondary on surface_light": {
+      "ratio": 9.13,
+      "passes": true
+    },
+    "text_on_dark on surface_dark": {
+      "ratio": 17.97,
+      "passes": true
+    },
+    "border_light on surface_light": {
+      "ratio": 1.54,
+      "passes": true
+    },
+    "text_on_dark_secondary on surface_dark": {
+      "ratio": 13.16,
+      "passes": true
+    }
+  },
+  "shadows": {
+    "inner": "inset 0 2px 4px rgba(0,0,0,0.06)",
+    "sm": "0 1px 2px rgba(0,0,0,0.05)",
+    "xl": "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05)",
+    "glow": "0 0 20px #4F46E540",
+    "md": "0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05)",
+    "lg": "0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05)"
+  },
+  "radii": {
+    "sm": "6px",
+    "lg": "16px",
+    "xl": "24px",
+    "md": "10px",
+    "pill": "9999px"
+  },
+  "gradients": {
+    "subtle": "linear-gradient(135deg, #F2F4FF 0%, #4F46E508 100%)",
+    "mesh": "radial-gradient(at 40% 20%, #4F46E515 0px, transparent 50%), radial-gradient(at 80% 0%, #8D5E0010 0px, transparent 50%), radial-gradient(at 0% 50%, #8E97FF12 0px, transparent 50%)",
+    "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E\")",
+    "hero": "linear-gradient(135deg, #010105 0%, #3100B130 50%, #010105 100%)"
+  },
+  "textures": {
+    "grain": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E\")"
+  },
+  "glass": {
+    "dark": {
+      "bg": "#010105CC",
+      "blur": "12px",
+      "border": "1px solid #2A2D3D40"
+    },
+    "frosted": {
+      "bg": "#F2F4FFE6",
+      "blur": "20px",
+      "border": "1px solid #C4C7D130"
+    },
+    "light": {
+      "bg": "#F2F4FFCC",
+      "blur": "12px",
+      "border": "1px solid #C4C7D140"
+    }
+  }
+}
