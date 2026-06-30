@@ -47,6 +47,24 @@ pub struct ServerState {
     pub validated: bool,
 }
 
+fn platform_context_json(platform: &str, aspect_ratio: &str) -> serde_json::Value {
+    match platforms::resolve_canvas(platform, Some(aspect_ratio)) {
+        Ok(canvas) => serde_json::json!({
+            "platform": canvas.platform,
+            "aspect_ratio": canvas.aspect_ratio,
+            "width": canvas.width,
+            "height": canvas.height,
+            "format": canvas.format,
+            "agent_guidance": "Use qr_destination for off-platform actions because Instagram, Facebook, TikTok, and LinkedIn carousel images do not support clickable slide areas."
+        }),
+        Err(_) => serde_json::json!({
+            "platform": platform,
+            "aspect_ratio": aspect_ratio,
+            "agent_guidance": "Resolve platform context with list_platforms before generating slides."
+        }),
+    }
+}
+
 // ── Request / Response types ──────────────────────────────────────────────────
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -86,6 +104,7 @@ pub struct ConfigureDesignResponse {
     pub aspect_ratio: String,
     pub contrast_report: IndexMap<String, design_system::ContrastReportItem>,
     pub message: String,
+    pub platform_context: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -140,6 +159,7 @@ pub struct RenderCarouselResponse {
     pub html: String,
     pub output_path: Option<String>,
     pub total_slides: usize,
+    pub platform_context: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -405,11 +425,12 @@ impl Server {
             effect_theme,
             topic,
             archetype,
-            platform,
-            aspect_ratio,
+            platform: platform.clone(),
+            aspect_ratio: aspect_ratio.clone(),
             contrast_report: tokens.contrast_report,
             message: "Design system configured. All subsequent calls will use this configuration."
                 .to_string(),
+            platform_context: platform_context_json(&platform, &aspect_ratio),
         }))
     }
 
@@ -651,6 +672,7 @@ impl Server {
             html,
             output_path,
             total_slides: total,
+            platform_context: platform_context_json(&spec.platform, &spec.aspect_ratio),
         }))
     }
 
@@ -777,6 +799,7 @@ impl Server {
                     "format": p.format,
                     "description": p.description,
                     "recommended_for": p.recommended_for,
+                    "platform_context": platform_context_json(&p.name, &p.default_aspect_ratio),
                 })
             })
             .collect();
