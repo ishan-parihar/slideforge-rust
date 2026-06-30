@@ -87,16 +87,16 @@ SLIDE_CONTENT = {
         {"title": "Launch Checklist", "items": [{"label": "Lock the customer promise"}, {"label": "Validate the funnel event map"}, {"label": "Assign owners to each risk"}, {"label": "Schedule the post-launch review"}]},
     ],
     "case_study_result": [
-        {"client": "Northstar Labs", "challenge": "Launch cycles were slow and approval-heavy.", "solution": "A two-track workflow separated creative iteration from compliance review.", "results": [{"title": "42%", "description": "Faster campaign launch"}, {"title": "3.1x", "description": "More creative variants tested"}]},
+        {"client": "Northstar Labs", "challenge": "Launch cycles were slow and approval-heavy.", "solution": "A two-track workflow separated creative iteration from compliance review.", "results": [{"icon": "↗", "title": "42%", "description": "Faster campaign launch"}, {"icon": "✦", "title": "3.1x", "description": "More creative variants tested"}]},
     ],
     "pricing_plan": [
-        {"title": "Choose a Plan", "plans": [{"name": "Starter", "price": "$49", "description": "For focused solo workflows."}, {"name": "Growth", "price": "$149", "description": "For teams scaling repeatable systems."}, {"name": "Scale", "price": "Custom", "description": "For enterprise governance and support."}]},
+        {"title": "Choose a Plan", "plans": [{"icon": "S", "name": "Starter", "price": "$49", "description": "For focused solo workflows."}, {"icon": "G", "name": "Growth", "price": "$149", "description": "For teams scaling repeatable systems."}, {"icon": "∞", "name": "Scale", "price": "Custom", "description": "For enterprise governance and support."}]},
     ],
     "testimonial_avatar": [
         {"quote": "The team finally has one operating view for decisions and follow-through.", "author": "Maya Patel", "role": "COO, Northstar Labs"},
     ],
     "logo_cloud": [
-        {"title": "Trusted by Modern Teams", "logos": ["Nexus", "Aster", "Northstar", "Helio", "Quanta", "SignalWorks"]},
+        {"title": "Trusted by Modern Teams", "logos": [{"icon": "N", "name": "Nexus"}, {"icon": "A", "name": "Aster"}, {"icon": "✦", "name": "Northstar"}, {"icon": "H", "name": "Helio"}, {"icon": "Q", "name": "Quanta"}, {"icon": "S", "name": "SignalWorks"}]},
     ],
     "faq": [
         {"title": "Common Questions", "questions": [{"question": "How fast can we launch?", "answer": "Most teams ship the first workflow in one week."}, {"question": "Can this support approvals?", "answer": "Yes, review steps can be mapped into the same flow."}]},
@@ -291,22 +291,37 @@ def run_test():
     print("Starting full-scope testing of Rust implementation...")
     all_slide_types = list(SLIDE_CONTENT.keys())
     
-    # Generate systematic test configurations to ensure full coverage:
-    # - every slide type individually
-    # - deterministic mixed carousels with no repeated slide type per carousel
-    # - every theme's image treatment across all image slide types
-    # - every explicit image filter override with frame/overlay/position coverage
+    # Generate one carousel per slide type. Each carousel contains exactly one
+    # slide so manual review can focus on the full design surface of that type.
+    # Theme, archetype, platform, image treatment, and background-image settings
+    # are spread across slide types instead of repeating slide combinations.
 
     test_configs = []
     carousel_id = 1
-    
-    # Test each slide type individually with different themes
+
     for i, slide_type in enumerate(all_slide_types):
         theme = THEMES[i % len(THEMES)]
         archetype = ARCHETYPES[i % len(ARCHETYPES)]
         platform = PLATFORMS[i % len(PLATFORMS)]
         color = BRAND_COLORS[i % len(BRAND_COLORS)]
-        
+        overrides = {}
+        if slide_type in IMAGE_VARIANT_OVERRIDES:
+            variants = IMAGE_VARIANT_OVERRIDES[slide_type]
+            overrides.update(variants[i % len(variants)])
+            overrides.update({
+                "image_filter": IMAGE_FILTERS[i % len(IMAGE_FILTERS)],
+                "image_overlay": IMAGE_OVERLAYS[i % len(IMAGE_OVERLAYS)],
+                "image_frame": IMAGE_FRAMES[i % len(IMAGE_FRAMES)],
+                "image_position": IMAGE_POSITIONS[i % len(IMAGE_POSITIONS)],
+            })
+
+        global_params = {}
+        if slide_type not in IMAGE_SLIDE_TYPES and i % 7 == 0:
+            global_params = {
+                "background_image": TEST_IMAGES[i % len(TEST_IMAGES)],
+                "image_opacity": 0.36,
+            }
+
         test_configs.append({
             "id": carousel_id,
             "archetype": archetype,
@@ -315,108 +330,9 @@ def run_test():
             "theme": theme,
             "slide_types": [slide_type],
             "bg_style": BG_STYLES[i % len(BG_STYLES)],
-            "global_params": {},
-            "param_overrides": {},
-            "description": f"Individual test for {slide_type}"
-        })
-        carousel_id += 1
-
-    # Test deterministic mixed groups of 4 slide types (no repeats within carousel).
-    mixed_groups = []
-    for offset in range(0, len(all_slide_types), 4):
-        group = all_slide_types[offset:offset + 4]
-        if len(group) >= 3:
-            mixed_groups.append(group)
-    for offset in range(1, min(9, len(all_slide_types))):
-        rotated = all_slide_types[offset:] + all_slide_types[:offset]
-        mixed_groups.append(rotated[:4])
-
-    for i, combo in enumerate(mixed_groups):
-        theme = THEMES[i % len(THEMES)]
-        archetype = ARCHETYPES[i % len(ARCHETYPES)]
-        platform = PLATFORMS[i % len(PLATFORMS)]
-        color = BRAND_COLORS[i % len(BRAND_COLORS)]
-        
-        test_configs.append({
-            "id": carousel_id,
-            "archetype": archetype,
-            "platform": platform,
-            "color": color,
-            "theme": theme,
-            "slide_types": list(combo),
-            "bg_style": BG_STYLES[i % len(BG_STYLES)],
-            "global_params": {},
-            "param_overrides": {},
-            "description": f"Combination test: {', '.join(combo)}"
-        })
-        carousel_id += 1
-
-    # Test each theme's default image treatment on all image slide types.
-    for i, theme in enumerate(THEMES):
-        param_overrides = {}
-        for j, slide_type in enumerate(IMAGE_SLIDE_TYPES):
-            variants = IMAGE_VARIANT_OVERRIDES.get(slide_type, [{}])
-            param_overrides[slide_type] = variants[(i + j) % len(variants)]
-        test_configs.append({
-            "id": carousel_id,
-            "archetype": ARCHETYPES[i % len(ARCHETYPES)],
-            "platform": PLATFORMS[i % len(PLATFORMS)],
-            "color": BRAND_COLORS[i % len(BRAND_COLORS)],
-            "theme": theme,
-            "slide_types": IMAGE_SLIDE_TYPES,
-            "bg_style": BG_STYLES[i % len(BG_STYLES)],
-            "global_params": {},
-            "param_overrides": param_overrides,
-            "description": f"Theme image-treatment matrix: {theme}"
-        })
-        carousel_id += 1
-
-    # Test background-image injection on non-image slides. These must stay full-bleed
-    # and must never inherit rounded frame treatments from image themes.
-    background_slide_types = ["hero", "feature", "quote", "grid_cards"]
-    for i, theme in enumerate(THEMES):
-        test_configs.append({
-            "id": carousel_id,
-            "archetype": ARCHETYPES[(i + 2) % len(ARCHETYPES)],
-            "platform": PLATFORMS[(i + 1) % len(PLATFORMS)],
-            "color": BRAND_COLORS[(i + 3) % len(BRAND_COLORS)],
-            "theme": theme,
-            "slide_types": background_slide_types,
-            "bg_style": "dark" if theme in {"dark", "vibrant"} else "light",
-            "global_params": {
-                "background_image": TEST_IMAGES[i % len(TEST_IMAGES)],
-                "image_opacity": 0.36,
-            },
-            "param_overrides": {},
-            "description": f"Background image full-bleed matrix: {theme}"
-        })
-        carousel_id += 1
-
-    # Test every explicit image filter override with high-quality frame/overlay ranges.
-    for i, image_filter in enumerate(IMAGE_FILTERS):
-        slide_types = [IMAGE_SLIDE_TYPES[(i + j) % len(IMAGE_SLIDE_TYPES)] for j in range(4)]
-        theme = THEMES[i % len(THEMES)]
-        archetype = ARCHETYPES[i % len(ARCHETYPES)]
-        platform = PLATFORMS[i % len(PLATFORMS)]
-        color = BRAND_COLORS[i % len(BRAND_COLORS)]
-
-        test_configs.append({
-            "id": carousel_id,
-            "archetype": archetype,
-            "platform": platform,
-            "color": color,
-            "theme": theme,
-            "slide_types": slide_types,
-            "bg_style": BG_STYLES[i % len(BG_STYLES)],
-            "global_params": {
-                "image_filter": image_filter,
-                "image_overlay": IMAGE_OVERLAYS[i % len(IMAGE_OVERLAYS)],
-                "image_frame": IMAGE_FRAMES[i % len(IMAGE_FRAMES)],
-                "image_position": IMAGE_POSITIONS[i % len(IMAGE_POSITIONS)],
-                "image_opacity": 0.32,
-            },
-            "param_overrides": {},
-            "description": f"Explicit image filter test: {image_filter}"
+            "global_params": global_params,
+            "param_overrides": {slide_type: overrides},
+            "description": f"Single-slide test for {slide_type}"
         })
         carousel_id += 1
     

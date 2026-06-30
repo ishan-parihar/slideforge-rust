@@ -353,18 +353,18 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007C7E15 0px, transparent 50%), radial-gradient(at 80% 0%, #9A555910 0px, transparent 50%), radial-gradient(at 0% 50%, #67C7C812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; z-index: 1; position: absolute; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0; pointer-events: none"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;gap:20px;width:100%;height:100%;justify-content:center;">
-                    <div style="position:relative;width:100%;height:240px;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Workspace Setup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
+                <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:20px;width:100%;height:100%;align-items:center;">
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h3 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:700;color:#070C0D;margin:0 0 8px;line-height:1.2;">Workspace Setup</h3>
             <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#394545;margin:0;line-height:1.45;">Ergonomic keyboard, mouse, and multi-monitor layout.</p>
         </div>
+                    <div style="position:relative;width:100%;height:100%;border-radius: 14px;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Workspace Setup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: bottom;filter: contrast(0.98) saturate(0.94) brightness(1.04);" />
+                
+            </div>
                 </div>
             </div>
         </div>

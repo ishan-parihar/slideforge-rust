@@ -1198,11 +1198,7 @@ pub fn list_slide(
     let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    let radius_md = tokens
-        .radii
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "10px".to_string());
+    let radius_md = current_component_radius(tokens, "card");
     let shadow_sm = tokens
         .shadows
         .get("sm")
@@ -1416,11 +1412,7 @@ pub fn quote_slide(
 
     let headline_fw = tokens.type_scale.get("headline").unwrap().font_weight;
     let glass_variant = if is_dark { "dark" } else { "light" };
-    let radius_md = tokens
-        .radii
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "10px".to_string());
+    let radius_md = current_component_radius(tokens, "card");
     let g_styles = glass_surface(tokens, glass_variant, &radius_md);
     let shadow_lg = tokens
         .shadows
@@ -3265,11 +3257,7 @@ pub fn metric_card_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
 
-    let r_val = tokens
-        .radii
-        .get("lg")
-        .cloned()
-        .unwrap_or_else(|| "12px".to_string());
+    let r_val = current_component_radius(tokens, "card");
     let s_bg = if is_dark {
         "rgba(255,255,255,0.05)"
     } else {
@@ -4255,6 +4243,54 @@ fn simple_text(v: &Value, keys: &[&str]) -> String {
         .to_string()
 }
 
+fn visual_badge_html(
+    tokens: &DesignTokens,
+    colors: &crate::layouts::SlideColors,
+    item: &Value,
+    fallback: &str,
+    size: i32,
+) -> String {
+    let logo_url = item.get("logo_url").and_then(|v| v.as_str()).unwrap_or("");
+    let image_url = item
+        .get("image_url")
+        .or_else(|| item.get("brand_image"))
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let icon = item.get("icon").and_then(|v| v.as_str()).unwrap_or("");
+    let source = if !logo_url.is_empty() {
+        logo_url
+    } else {
+        image_url
+    };
+    if !source.is_empty() {
+        return format!(
+            r#"<img src="{}" alt="{}" style="width:{}px;height:{}px;border-radius:{};object-fit:cover;display:block;border:1px solid {};">"#,
+            source,
+            escape_html(fallback),
+            size,
+            size,
+            current_component_radius(tokens, "chip"),
+            colors.border
+        );
+    }
+
+    let label = if !icon.is_empty() {
+        icon.to_string()
+    } else {
+        fallback.chars().next().unwrap_or('•').to_string()
+    };
+    format!(
+        r#"<div style="width:{}px;height:{}px;border-radius:{};background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>"#,
+        size,
+        size,
+        current_component_radius(tokens, "chip"),
+        colors.primary,
+        tokens.heading_font,
+        (size as f32 * 0.42) as i32,
+        escape_html(&label)
+    )
+}
+
 fn render_compact_items(
     tokens: &DesignTokens,
     colors: &crate::layouts::SlideColors,
@@ -4275,15 +4311,17 @@ fn render_compact_items(
         .map(|(idx, item)| {
             let title = simple_text(item, title_keys);
             let body = simple_text(item, body_keys);
+            let visual = visual_badge_html(tokens, colors, item, &title, 28);
             format!(
                 r#"<div style="background:{};border:1px solid {};border-radius:{};padding:14px 16px;box-sizing:border-box;">
-                    <div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:6px;text-transform:uppercase;">{:02}</div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">{}<div style="font-family:{};font-size:11px;font-weight:800;color:{};text-transform:uppercase;">{:02}</div></div>
                     <div style="font-family:{};font-size:15px;font-weight:800;color:{};line-height:1.2;margin-bottom:5px;">{}</div>
                     <div style="font-family:{};font-size:12px;color:{};line-height:1.35;">{}</div>
                 </div>"#,
                 card_bg,
                 colors.border,
                 radius,
+                visual,
                 tokens.body_font,
                 colors.primary,
                 idx + 1,
@@ -4525,15 +4563,17 @@ pub fn pricing_plan_slide(
             let name = simple_text(plan, &["name", "title"]);
             let price = simple_text(plan, &["price", "value"]);
             let desc = simple_text(plan, &["description", "caption"]);
+            let visual = visual_badge_html(tokens, &colors, plan, &name, 34);
             format!(
                 r#"<div style="flex:1;background:{};border:1px solid {};border-radius:{};padding:18px;box-sizing:border-box;">
-                    <div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">{}<div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div></div>
                     <div style="font-family:{};font-size:30px;font-weight:900;color:{};margin:12px 0 8px;">{}</div>
                     <p style="font-family:{};font-size:12px;color:{};line-height:1.35;margin:0;">{}</p>
                 </div>"#,
                 card_bg,
                 colors.border,
                 radius,
+                visual,
                 tokens.heading_font,
                 colors.text_primary,
                 escape_html(&name),
@@ -4632,13 +4672,20 @@ pub fn logo_cloud_slide(
                 .as_str()
                 .map(|s| s.to_string())
                 .unwrap_or_else(|| simple_text(logo, &["name", "label"]));
+            let visual = if logo.is_object() {
+                visual_badge_html(tokens, &colors, logo, &label, 30)
+            } else {
+                let shim = json!({"icon": label.chars().next().unwrap_or('•').to_string()});
+                visual_badge_html(tokens, &colors, &shim, &label, 30)
+            };
             format!(
-                r#"<div style="height:54px;border-radius:{};border:1px solid {};background:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:13px;font-weight:800;color:{};">{}</div>"#,
+                r#"<div style="height:58px;border-radius:{};border:1px solid {};background:{};display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:{};font-size:13px;font-weight:800;color:{};box-sizing:border-box;">{}{}</div>"#,
                 radius,
                 colors.border,
                 card_bg,
                 tokens.body_font,
                 colors.text_secondary,
+                visual,
                 escape_html(&label)
             )
         })
@@ -6436,26 +6483,26 @@ pub fn image_collage_slide(
             ],
             _ => vec![
                 CollageSlot {
-                    x: 8,
-                    y: 18,
-                    w: 182,
-                    h: collage_height_px - 48,
+                    x: 4,
+                    y: 16,
+                    w: 154,
+                    h: collage_height_px - 42,
                     rot: -3,
                     z: 2,
                 },
                 CollageSlot {
-                    x: 204,
+                    x: 172,
                     y: 8,
-                    w: 104,
-                    h: 112,
+                    w: 140,
+                    h: 122,
                     rot: 3,
                     z: 3,
                 },
                 CollageSlot {
-                    x: 198,
-                    y: 144,
-                    w: 110,
-                    h: 108,
+                    x: 164,
+                    y: 148,
+                    w: 148,
+                    h: collage_height_px - 166,
                     rot: -2,
                     z: 4,
                 },
