@@ -4942,7 +4942,7 @@ pub fn qr_destination_slide(
     image_opacity: f32,
     theme: &str,
     _archetype: &str,
-    _padding: &str,
+    padding: &str,
     brand_name: &str,
     brand_logo: &str,
     qr_alt_text: &str,
@@ -4954,7 +4954,7 @@ pub fn qr_destination_slide(
     let radius = current_component_radius(tokens, "card");
     let qr_size = if matches!(effective_variant, "minimal" | "without-heading") { "208px" } else { "188px" };
 
-    // Brand header inside QR card (above QR image) if present and not empty
+    // Brand header outside QR card (above QR image) if present and not empty
     let brand_html = if !brand_logo.is_empty() || !brand_name.is_empty() {
         let logo_img = if !brand_logo.is_empty() {
             format!(
@@ -4967,15 +4967,16 @@ pub fn qr_destination_slide(
         };
         let name_text = if !brand_name.is_empty() {
             format!(
-                r#"<span style="font-family:{};font-size:12px;font-weight:700;color:#0B0A0F;letter-spacing:-0.01em;white-space:nowrap;">{}</span>"#,
+                r#"<span style="font-family:{};font-size:12px;font-weight:700;color:{};letter-spacing:-0.01em;white-space:nowrap;">{}</span>"#,
                 tokens.body_font,
+                colors.text_secondary,
                 escape_html(brand_name)
             )
         } else {
             String::new()
         };
         format!(
-            r#"<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;max-width:{};justify-content:center;overflow:hidden;">
+            r#"<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;max-width:{};justify-content:center;overflow:hidden;">
                 {}
                 {}
             </div>"#,
@@ -4996,9 +4997,6 @@ pub fn qr_destination_slide(
     };
 
     let mut qr_elements = Vec::new();
-    if !brand_html.is_empty() {
-        qr_elements.push(brand_html);
-    }
     qr_elements.push(format!(
         r#"<img src="{}" alt="{}" style="width:{};height:{};display:block;" />"#,
         qr_src,
@@ -5036,8 +5034,8 @@ pub fn qr_destination_slide(
         String::new()
     };
 
-    let layout_padding = if !_padding.is_empty() {
-        _padding
+    let layout_padding = if !padding.is_empty() {
+        padding
     } else if effective_variant == "minimal" || effective_variant == "with-cta" {
         "80px 64px 80px"
     } else {
@@ -5046,7 +5044,8 @@ pub fn qr_destination_slide(
 
     let html = if effective_variant == "minimal" || effective_variant == "with-cta" {
         let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {}</div>"#,
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#,
+            brand_html,
             qr_html,
             cta_html
         );
@@ -5105,7 +5104,9 @@ pub fn qr_destination_slide(
             r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
                 {}
                 {}
+                {}
             </div>"#,
+            brand_html,
             qr_html,
             cta_html
         );
