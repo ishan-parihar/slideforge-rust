@@ -42,6 +42,7 @@ pub struct ServerState {
     pub show_progress: bool,
     pub archetype: String,
     pub platform: String,
+    pub aspect_ratio: String,
     pub bg_style: String,
     pub validated: bool,
 }
@@ -66,6 +67,7 @@ pub struct ConfigureDesignRequest {
     pub show_progress: Option<bool>,
     pub archetype: Option<String>,
     pub platform: Option<String>,
+    pub aspect_ratio: Option<String>,
     pub bg_style: Option<String>,
 }
 
@@ -81,6 +83,7 @@ pub struct ConfigureDesignResponse {
     pub topic: String,
     pub archetype: String,
     pub platform: String,
+    pub aspect_ratio: String,
     pub contrast_report: IndexMap<String, design_system::ContrastReportItem>,
     pub message: String,
 }
@@ -124,6 +127,7 @@ pub struct RenderCarouselRequest {
     pub url: Option<String>,
     pub hashtags: Option<Vec<String>>,
     pub show_progress: Option<bool>,
+    pub aspect_ratio: Option<String>,
 }
 #[derive(Serialize, Deserialize, JsonSchema)]
 pub struct SkillGuideResponse {
@@ -143,6 +147,7 @@ pub struct ExportCarouselSlidesRequest {
     pub output_dir: String,
     pub total_slides: usize,
     pub preset: Option<String>,
+    pub aspect_ratio: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -374,10 +379,11 @@ impl Server {
         state.hashtags = req.hashtags.clone().unwrap_or_default();
         state.show_progress = req.show_progress.unwrap_or(true);
         state.archetype = req.archetype.clone().unwrap_or_default();
-        state.platform = req
-            .platform
-            .clone()
-            .unwrap_or_else(|| "instagram_portrait".to_string());
+        let platform = req.platform.clone().unwrap_or_else(|| "instagram_portrait".to_string());
+        let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+        state.platform = canvas.platform.clone();
+        state.aspect_ratio = canvas.aspect_ratio.clone();
         state.bg_style = req.bg_style.clone().unwrap_or_else(|| "light".to_string());
         state.validated = true;
 
@@ -386,6 +392,7 @@ impl Server {
         let topic = state.topic.clone();
         let archetype = state.archetype.clone();
         let platform = state.platform.clone();
+        let aspect_ratio = state.aspect_ratio.clone();
 
         Ok(Json(ConfigureDesignResponse {
             status: "configured".to_string(),
@@ -398,6 +405,7 @@ impl Server {
             topic,
             archetype,
             platform,
+            aspect_ratio,
             contrast_report: tokens.contrast_report,
             message: "Design system configured. All subsequent calls will use this configuration."
                 .to_string(),
@@ -742,6 +750,8 @@ impl Server {
                     "width": p.width,
                     "height": p.height,
                     "aspect_ratio": p.aspect_ratio,
+                    "default_aspect_ratio": p.default_aspect_ratio,
+                    "allowed_aspect_ratios": p.allowed_aspect_ratios,
                     "format": p.format,
                     "description": p.description,
                     "recommended_for": p.recommended_for,

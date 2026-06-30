@@ -136,8 +136,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Available export platforms ({}):", all.len());
             for p in &all {
                 println!(
-                    "  {:<25} {}×{} ({})",
-                    p.name, p.width, p.height, p.aspect_ratio
+                    "  {:<25} {}×{} (aspect ratio: {}, default aspect ratio: {}, allowed ratios: {})",
+                    p.name, p.width, p.height, p.aspect_ratio, p.default_aspect_ratio, p.allowed_aspect_ratios.join(", ")
                 );
             }
         }
