@@ -23,6 +23,14 @@ pub struct PlatformCanvas {
     pub format: String,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct AspectRatioSpec {
+    pub ratio: String,
+    pub width: u32,
+    pub height: u32,
+    pub format: String,
+}
+
 fn build_platforms() -> Vec<PlatformSpec> {
     vec![
         PlatformSpec {
@@ -204,14 +212,44 @@ pub fn all_platforms() -> Vec<PlatformSpec> {
     build_platforms()
 }
 
-pub fn aspect_ratio_dimensions(ratio: &str) -> Option<(u32, u32, String)> {
+pub fn aspect_ratio_dimensions(ratio: &str) -> Option<AspectRatioSpec> {
     match ratio {
-        "4:5" => Some((1080, 1350, "portrait".to_string())),
-        "9:16" => Some((1080, 1920, "portrait".to_string())),
-        "3:4" => Some((1080, 1440, "portrait".to_string())),
-        "1:1" => Some((1080, 1080, "square".to_string())),
-        "16:9" => Some((1920, 1080, "landscape".to_string())),
-        "4:3" => Some((1024, 768, "landscape".to_string())),
+        "4:5" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1080,
+            height: 1350,
+            format: "portrait".to_string(),
+        }),
+        "9:16" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1080,
+            height: 1920,
+            format: "portrait".to_string(),
+        }),
+        "3:4" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1080,
+            height: 1440,
+            format: "portrait".to_string(),
+        }),
+        "1:1" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1080,
+            height: 1080,
+            format: "square".to_string(),
+        }),
+        "16:9" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1920,
+            height: 1080,
+            format: "landscape".to_string(),
+        }),
+        "4:3" => Some(AspectRatioSpec {
+            ratio: ratio.to_string(),
+            width: 1024,
+            height: 768,
+            format: "landscape".to_string(),
+        }),
         _ => None,
     }
 }
@@ -231,7 +269,8 @@ pub fn resolve_canvas(platform: &str, aspect_ratio: Option<&str>) -> Result<Plat
     }
 
     let (width, height, format) = aspect_ratio_dimensions(ratio)
-        .unwrap_or((spec.width, spec.height, spec.format.clone()));
+        .map(|spec| (spec.width, spec.height, spec.format))
+        .unwrap_or_else(|| (spec.width, spec.height, spec.format.clone()));
 
     Ok(PlatformCanvas {
         platform: spec.name,
