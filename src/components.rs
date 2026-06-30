@@ -29,6 +29,10 @@ use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use serde_json::{Value, json};
 
+use qrcode::QrCode;
+use qrcode::render::svg;
+
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageTreatment {
     pub image_filter: String,
@@ -278,6 +282,22 @@ pub fn resolve_archetype_preset(
     }
     let arch = crate::archetypes::get_archetype(archetype)?;
     Some(crate::archetypes::get_slide_preset(&arch, slide_type))
+}
+
+fn render_qr_svg_data_uri(destination_url: &str) -> Result<String, String> {
+    let code = QrCode::new(destination_url.as_bytes())
+        .map_err(|e| format!("Failed to generate QR code: {e}"))?;
+    let svg = code.render::<svg::Color>()
+        .min_dimensions(256, 256)
+        .dark_color(svg::Color("#0B0A0F"))
+        .light_color(svg::Color("#FFFFFF"))
+        .build();
+    let encoded = svg
+        .replace('#', "%23")
+        .replace('<', "%3C")
+        .replace('>', "%3E")
+        .replace('"', "'");
+    Ok(format!("data:image/svg+xml;utf8,{encoded}"))
 }
 
 pub fn render_themed_image(
@@ -4908,6 +4928,145 @@ pub fn before_after_story_slide(
     json!({"html": html, "background": bg_style, "variant": "before_after_story", "theme": theme})
 }
 
+pub fn qr_destination_slide(
+    tokens: &DesignTokens,
+    destination_url: &str,
+    heading: &str,
+    caption: &str,
+    cta_text: &str,
+    short_url: &str,
+    incentive_text: &str,
+    variant: &str,
+    bg_style: &str,
+    background_image: &str,
+    image_opacity: f32,
+    theme: &str,
+    _archetype: &str,
+    _padding: &str,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let effective_variant = if variant.is_empty() { "full-conversion" } else { variant };
+    let qr_src = render_qr_svg_data_uri(destination_url).unwrap_or_default();
+    let radius = current_component_radius(tokens, "card");
+    let qr_size = if matches!(effective_variant, "minimal" | "without-heading") { "208px" } else { "188px" };
+
+    let qr_html = format!(
+        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:16px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 14px 34px rgba(0,0,0,0.14);">
+            <img src="{}" alt="{}" style="width:{};height:{};display:block;" />
+            {}
+        </div>"#,
+        radius,
+        qr_src,
+        escape_html(if cta_text.is_empty() { "Scan QR code" } else { cta_text }),
+        qr_size,
+        qr_size,
+        if !short_url.is_empty() {
+            format!(r#"<div style="font-family:{};font-size:11px;font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#, tokens.body_font, qr_size, escape_html(short_url))
+        } else {
+            String::new()
+        }
+    );
+
+    let cta_html = if !cta_text.is_empty() {
+        format!(
+            r#"<div style="margin-top:16px;background:{};color:{};font-family:{};font-size:14px;font-weight:800;padding:8px 16px;border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;">{}</div>"#,
+            colors.primary,
+            colors.button_text,
+            tokens.heading_font,
+            current_component_radius(tokens, "chip"),
+            escape_html(cta_text)
+        )
+    } else {
+        String::new()
+    };
+
+    let html = if effective_variant == "minimal" || effective_variant == "without-heading" {
+        let content = if effective_variant == "minimal" {
+            format!(r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {}</div>"#, qr_html, cta_html)
+        } else {
+            let cap_html = if !caption.is_empty() {
+                format!(r#"<div style="font-family:{};font-size:15px;line-height:1.5;color:{};text-align:center;max-width:400px;margin-bottom:20px;">{}</div>"#, tokens.body_font, colors.text_secondary, escape_html(caption))
+            } else {
+                String::new()
+            };
+            format!(r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#, cap_html, qr_html, cta_html)
+        };
+        slide_base(&content, tokens, bg_style, false, "80px 64px 80px", "center")
+    } else {
+        let mut left_elements = Vec::new();
+
+        if !heading.is_empty() {
+            let h_html = format!(
+                r#"<h2 style="font-family:{};font-size:32px;font-weight:900;color:{};margin:0;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
+                tokens.heading_font,
+                colors.text_primary,
+                escape_html(heading)
+            );
+            left_elements.push(h_html);
+        }
+
+        if !caption.is_empty() {
+            let c_html = format!(
+                r#"<p style="font-family:{};font-size:15px;line-height:1.55;color:{};margin:0;">{}</p>"#,
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(caption)
+            );
+            left_elements.push(c_html);
+        }
+
+        if !incentive_text.is_empty() {
+            let badge_radius = current_component_radius(tokens, "chip");
+            let inc_html = format!(
+                r#"<div style="display:inline-flex;align-items:center;gap:8px;background:{};border:1px solid {};border-radius:{};padding:8px 12px;font-family:{};font-size:13px;font-weight:700;color:{};align-self:flex-start;">
+                    <span style="color:{};">🎁</span>
+                    <span>{}</span>
+                </div>"#,
+                if colors.is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.03)" },
+                colors.border,
+                badge_radius,
+                tokens.body_font,
+                colors.text_primary,
+                colors.primary,
+                escape_html(incentive_text)
+            );
+            left_elements.push(inc_html);
+        }
+
+        let left_col = format!(
+            r#"<div style="display:flex;flex-direction:column;justify-content:center;gap:20px;height:100%;">{}</div>"#,
+            left_elements.join("\n")
+        );
+
+        let right_col = format!(
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+                {}
+                {}
+            </div>"#,
+            qr_html,
+            cta_html
+        );
+
+        split_layout(&left_col, &right_col, tokens, bg_style, "40px", "1.2fr 1fr", false)
+    };
+
+    let bg_img_to_inject = if effective_variant == "image-bg" {
+        background_image
+    } else {
+        ""
+    };
+    let html = inject_background_image(html, bg_img_to_inject, image_opacity, is_dark);
+
+    json!({
+        "html": html,
+        "background": bg_style,
+        "variant": effective_variant,
+        "theme": theme
+    })
+}
+
+
 /// Route a slide type name + JSON params to the appropriate slide generator.
 ///
 /// This is the single entry-point used by `mcp_server::generate_slide`.
@@ -5648,6 +5807,22 @@ pub fn dispatch_slide(
             &s("after_label").if_empty("After"),
             &s("description"),
             &s("divider_style").if_empty("line"),
+            bg_style,
+            &bg_img,
+            img_opacity,
+            theme,
+            _archetype,
+            &s("padding"),
+        )),
+        "qr_destination" => Ok(qr_destination_slide(
+            tokens,
+            &s("destination_url").if_empty(&s("url")),
+            &s("heading").if_empty(&s("headline")),
+            &s("caption").if_empty(&s("description")),
+            &s("cta_text").if_empty(&s("button_text").if_empty("Scan to open")),
+            &s("short_url"),
+            &s("incentive_text"),
+            &s("variant").if_empty("full-conversion"),
             bg_style,
             &bg_img,
             img_opacity,
@@ -6990,3 +7165,99 @@ pub fn image_comparison_slide(
         "archetype": archetype
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::design_system::derive_palette;
+
+    #[test]
+    fn test_qr_destination_slide_rendering() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+
+        // 1. Test full-conversion layout
+        let res = qr_destination_slide(
+            &tokens,
+            "https://example.com/dest",
+            "Scan this QR code",
+            "Some caption text about this conversion",
+            "Scan now",
+            "example.com/short",
+            "Free Ebook included",
+            "full-conversion",
+            "dark",
+            "",
+            0.4,
+            "minimal",
+            "educator",
+            "",
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains("data:image/svg+xml;utf8,"));
+        assert!(html.contains("Scan this QR code"));
+        assert!(html.contains("Some caption text about this conversion"));
+        assert!(html.contains("Scan now"));
+        assert!(html.contains("example.com/short"));
+        assert!(html.contains("Free Ebook included"));
+
+        // 2. Test minimal variant
+        let res_min = qr_destination_slide(
+            &tokens,
+            "https://example.com/dest",
+            "Scan this QR code",
+            "Some caption text about this conversion",
+            "Scan now",
+            "example.com/short",
+            "Free Ebook included",
+            "minimal",
+            "light",
+            "",
+            0.4,
+            "minimal",
+            "educator",
+            "",
+        );
+        let html_min = res_min["html"].as_str().unwrap();
+        assert!(html_min.contains("data:image/svg+xml;utf8,"));
+        assert!(!html_min.contains("Scan this QR code"));
+        assert!(!html_min.contains("Some caption text about this conversion"));
+        assert!(html_min.contains("Scan now"));
+        assert!(html_min.contains("example.com/short"));
+
+        // 3. Test without-heading variant
+        let res_no_h = qr_destination_slide(
+            &tokens,
+            "https://example.com/dest",
+            "Scan this QR code",
+            "Some caption text about this conversion",
+            "Scan now",
+            "example.com/short",
+            "Free Ebook included",
+            "without-heading",
+            "light",
+            "",
+            0.4,
+            "minimal",
+            "educator",
+            "",
+        );
+        let html_no_h = res_no_h["html"].as_str().unwrap();
+        assert!(html_no_h.contains("data:image/svg+xml;utf8,"));
+        assert!(!html_no_h.contains("Scan this QR code"));
+        assert!(html_no_h.contains("Some caption text about this conversion"));
+        assert!(html_no_h.contains("Scan now"));
+        assert!(html_no_h.contains("example.com/short"));
+    }
+}
+

@@ -326,6 +326,15 @@ pub fn get_registry() -> Value {
             "default_variant": "line",
             "layout_family": "image",
             "best_for": ["image", "comparison", "before-after"]
+        },
+        "qr_destination": {
+            "description": "Conversion slide with scannable QR code, heading, caption, CTA, and optional short URL fallback",
+            "required_params": ["destination_url", "cta_text"],
+            "optional_params": ["heading", "caption", "short_url", "brand_name", "brand_logo", "incentive_text", "qr_alt_text", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["theme-bg", "image-bg", "minimal", "with-heading", "without-heading", "with-caption", "with-cta", "full-conversion"],
+            "default_variant": "full-conversion",
+            "layout_family": "conversion",
+            "best_for": ["conversion", "closing", "off-platform", "blog", "donation", "digital-product", "newsletter", "link-hub"]
         }
     })
 }
@@ -419,10 +428,19 @@ mod tests {
             "image_gallery",
             "image_collage",
             "image_comparison",
+            "qr_destination",
         ];
         for t in &expected {
             assert!(types.contains(&t.to_string()), "Missing type: {t}");
         }
+    }
+
+    #[test]
+    fn test_qr_destination_registry_metadata() {
+        let info = get_slide_type_info("qr_destination").expect("qr_destination exists");
+        assert_eq!(info["layout_family"], "conversion");
+        assert!(info["best_for"].as_array().unwrap().iter().any(|v| v == "conversion"));
+        assert!(info["variants"].as_array().unwrap().iter().any(|v| v == "full-conversion"));
     }
 
     #[test]
