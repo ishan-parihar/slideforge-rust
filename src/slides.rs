@@ -805,4 +805,3 @@ mod tests {
         assert!(html.contains("height: var(--slide-height)"));
     }
 }
-

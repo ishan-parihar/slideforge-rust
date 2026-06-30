@@ -32,7 +32,6 @@ use serde_json::{Value, json};
 use qrcode::QrCode;
 use qrcode::render::svg;
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageTreatment {
     pub image_filter: String,
@@ -287,7 +286,8 @@ pub fn resolve_archetype_preset(
 pub fn render_qr_svg_data_uri(destination_url: &str) -> Result<String, String> {
     let code = QrCode::new(destination_url.as_bytes())
         .map_err(|e| format!("Failed to generate QR code: {e}"))?;
-    let svg = code.render::<svg::Color>()
+    let svg = code
+        .render::<svg::Color>()
         .min_dimensions(256, 256)
         .dark_color(svg::Color("#0B0A0F"))
         .light_color(svg::Color("#FFFFFF"))
@@ -4949,10 +4949,18 @@ pub fn qr_destination_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-    let effective_variant = if variant.is_empty() { "full-conversion" } else { variant };
+    let effective_variant = if variant.is_empty() {
+        "full-conversion"
+    } else {
+        variant
+    };
     let qr_src = render_qr_svg_data_uri(destination_url).unwrap_or_default();
     let radius = current_component_radius(tokens, "card");
-    let qr_size = if matches!(effective_variant, "minimal" | "without-heading") { "208px" } else { "188px" };
+    let qr_size = if matches!(effective_variant, "minimal" | "without-heading") {
+        "208px"
+    } else {
+        "188px"
+    };
 
     // Brand header outside QR card (above QR image) if present and not empty
     let brand_html = if !brand_logo.is_empty() || !brand_name.is_empty() {
@@ -4980,9 +4988,7 @@ pub fn qr_destination_slide(
                 {}
                 {}
             </div>"#,
-            qr_size,
-            logo_img,
-            name_text
+            qr_size, logo_img, name_text
         )
     } else {
         String::new()
@@ -5045,17 +5051,24 @@ pub fn qr_destination_slide(
     let html = if effective_variant == "minimal" || effective_variant == "with-cta" {
         let content = format!(
             r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#,
-            brand_html,
-            qr_html,
-            cta_html
+            brand_html, qr_html, cta_html
         );
         slide_base(&content, tokens, bg_style, false, layout_padding, "center")
     } else {
         let mut left_elements = Vec::new();
 
-        let include_heading = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "with-heading");
-        let include_caption = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "with-caption" | "without-heading");
-        let include_incentive = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "without-heading");
+        let include_heading = matches!(
+            effective_variant,
+            "full-conversion" | "theme-bg" | "image-bg" | "with-heading"
+        );
+        let include_caption = matches!(
+            effective_variant,
+            "full-conversion" | "theme-bg" | "image-bg" | "with-caption" | "without-heading"
+        );
+        let include_incentive = matches!(
+            effective_variant,
+            "full-conversion" | "theme-bg" | "image-bg" | "without-heading"
+        );
 
         if include_heading && !heading.is_empty() {
             let h_html = format!(
@@ -5084,7 +5097,11 @@ pub fn qr_destination_slide(
                     <span style="color:{};">🎁</span>
                     <span>{}</span>
                 </div>"#,
-                if colors.is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.03)" },
+                if colors.is_dark {
+                    "rgba(255,255,255,0.06)"
+                } else {
+                    "rgba(0,0,0,0.03)"
+                },
                 colors.border,
                 badge_radius,
                 tokens.body_font,
@@ -5106,9 +5123,7 @@ pub fn qr_destination_slide(
                 {}
                 {}
             </div>"#,
-            brand_html,
-            qr_html,
-            cta_html
+            brand_html, qr_html, cta_html
         );
 
         let content = format!(
@@ -5132,7 +5147,6 @@ pub fn qr_destination_slide(
         "theme": theme
     })
 }
-
 
 /// Route a slide type name + JSON params to the appropriate slide generator.
 ///
@@ -7395,4 +7409,3 @@ mod tests {
         assert!(html_with_cta.contains("example.com/short"));
     }
 }
-

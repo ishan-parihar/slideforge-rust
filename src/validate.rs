@@ -87,22 +87,33 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
             let primary_val = params.get(primary_key);
             let alt_val = params.get(alt);
 
-            if primary_val.is_none() && alt_val.is_none() {
+            let is_non_empty_str_or_arr = |val: Option<&serde_json::Value>| match val {
+                Some(serde_json::Value::String(s)) => !s.trim().is_empty(),
+                Some(serde_json::Value::Array(arr)) => !arr.is_empty(),
+                _ => false,
+            };
+
+            let is_missing_or_null_or_non_str_arr = |val: Option<&serde_json::Value>| match val {
+                None | Some(serde_json::Value::Null) => true,
+                Some(serde_json::Value::String(_)) | Some(serde_json::Value::Array(_)) => false,
+                _ => true,
+            };
+
+            if is_missing_or_null_or_non_str_arr(primary_val)
+                && is_missing_or_null_or_non_str_arr(alt_val)
+            {
                 result.add_error(format!(
                     "Missing required param '{primary_key}' for slide type '{slide_type}'"
                 ));
             } else {
-                let is_empty_val = |val: &serde_json::Value| match val {
-                    serde_json::Value::String(s) => s.trim().is_empty(),
-                    serde_json::Value::Array(arr) => arr.is_empty(),
-                    _ => false,
-                };
-
-                let primary_ok = primary_val.map(|v| !is_empty_val(v)).unwrap_or(false);
-                let alt_ok = alt_val.map(|v| !is_empty_val(v)).unwrap_or(false);
+                let primary_ok = is_non_empty_str_or_arr(primary_val);
+                let alt_ok = is_non_empty_str_or_arr(alt_val);
 
                 if !primary_ok && !alt_ok {
-                    if primary_val.is_some() {
+                    if primary_val
+                        .map(|v| v.is_string() || v.is_array())
+                        .unwrap_or(false)
+                    {
                         let val = primary_val.unwrap();
                         match val {
                             serde_json::Value::Array(_) => {
@@ -116,7 +127,10 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
                                 ));
                             }
                         }
-                    } else if alt_val.is_some() {
+                    } else if alt_val
+                        .map(|v| v.is_string() || v.is_array())
+                        .unwrap_or(false)
+                    {
                         let val = alt_val.unwrap();
                         match val {
                             serde_json::Value::Array(_) => {
@@ -156,15 +170,34 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
     }
 
     if slide_type == "qr_destination" {
-        let has_heading = params.get("heading").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false)
-            || params.get("headline").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
-        let has_caption = params.get("caption").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false)
-            || params.get("description").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
+        let has_heading = params
+            .get("heading")
+            .and_then(|v| v.as_str())
+            .map(|s| !s.trim().is_empty())
+            .unwrap_or(false)
+            || params
+                .get("headline")
+                .and_then(|v| v.as_str())
+                .map(|s| !s.trim().is_empty())
+                .unwrap_or(false);
+        let has_caption = params
+            .get("caption")
+            .and_then(|v| v.as_str())
+            .map(|s| !s.trim().is_empty())
+            .unwrap_or(false)
+            || params
+                .get("description")
+                .and_then(|v| v.as_str())
+                .map(|s| !s.trim().is_empty())
+                .unwrap_or(false);
         if !has_heading && !has_caption {
-            result.add_warning("qr_destination should include heading or caption so users know why to scan.");
+            result.add_warning(
+                "qr_destination should include heading or caption so users know why to scan.",
+            );
         }
 
-        let has_short_url = params.get("short_url")
+        let has_short_url = params
+            .get("short_url")
             .and_then(|v| v.as_str())
             .map(|s| !s.trim().is_empty())
             .unwrap_or(false);
@@ -172,19 +205,26 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
             result.add_warning("qr_destination should include short_url as a manual fallback for users who cannot scan.");
         }
 
-        let cta_text_val = params.get("cta_text")
-            .or_else(|| params.get("button_text"))
+        let cta_text_val = params
+            .get("cta_text")
             .and_then(|v| v.as_str())
+            .or_else(|| params.get("button_text").and_then(|v| v.as_str()))
             .unwrap_or("");
         if cta_text_val.chars().count() > 34 {
-            result.add_warning("qr_destination cta_text should be 34 characters or fewer for slide readability.");
+            result.add_warning(
+                "qr_destination cta_text should be 34 characters or fewer for slide readability.",
+            );
         }
 
-        let dest_url_val = params.get("destination_url")
-            .or_else(|| params.get("url"))
+        let dest_url_val = params
+            .get("destination_url")
             .and_then(|v| v.as_str())
+            .or_else(|| params.get("url").and_then(|v| v.as_str()))
             .unwrap_or("");
-        if !dest_url_val.is_empty() && !dest_url_val.starts_with("http://") && !dest_url_val.starts_with("https://") {
+        if !dest_url_val.is_empty()
+            && !dest_url_val.starts_with("http://")
+            && !dest_url_val.starts_with("https://")
+        {
             result.add_warning("qr_destination destination_url should be an absolute http(s) URL.");
         }
     }
@@ -536,6 +576,37 @@ mod tests {
         });
         let r = validate_slide_spec("qr_destination", &params);
         assert!(r.warnings.iter().any(|w| w.contains("destination_url")));
+    }
+
+    #[test]
+    fn test_qr_destination_fallback_null_and_non_string() {
+        // Test fallback for cta_text and destination_url when primary key is null/non-string
+        let params = json!({
+            "destination_url": null,
+            "url": "https://example.com/from-fallback",
+            "cta_text": 12345, // non-string value
+            "button_text": "Button Fallback",
+            "heading": "Fallback Test",
+            "short_url": "ex.co"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        // Should compile/run and be valid since fallback keys are valid non-empty strings.
+        assert!(r.valid, "errors: {:?}", r.errors);
+        assert!(r.warnings.is_empty(), "warnings: {:?}", r.warnings);
+
+        // Also test when both are null/non-string (should treat as missing/error)
+        let params = json!({
+            "destination_url": null,
+            "url": 123,
+            "cta_text": true,
+            "button_text": null,
+            "heading": "Fallback Test",
+            "short_url": "ex.co"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("destination_url")));
+        assert!(r.errors.iter().any(|e| e.contains("cta_text")));
     }
 }
 

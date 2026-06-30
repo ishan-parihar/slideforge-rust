@@ -39,11 +39,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 1350,
             aspect_ratio: "4:5".to_string(),
             default_aspect_ratio: "4:5".to_string(),
-            allowed_aspect_ratios: vec![
-                "4:5".to_string(),
-                "3:4".to_string(),
-                "1:1".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["4:5".to_string(), "3:4".to_string(), "1:1".to_string()],
             format: "portrait".to_string(),
             description: "Instagram portrait carousel".to_string(),
             recommended_for: vec![
@@ -58,10 +54,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 1080,
             aspect_ratio: "1:1".to_string(),
             default_aspect_ratio: "1:1".to_string(),
-            allowed_aspect_ratios: vec![
-                "1:1".to_string(),
-                "4:5".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["1:1".to_string(), "4:5".to_string()],
             format: "square".to_string(),
             description: "Instagram square posts".to_string(),
             recommended_for: vec![
@@ -76,10 +69,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 1920,
             aspect_ratio: "9:16".to_string(),
             default_aspect_ratio: "9:16".to_string(),
-            allowed_aspect_ratios: vec![
-                "9:16".to_string(),
-                "3:4".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["9:16".to_string(), "3:4".to_string()],
             format: "portrait".to_string(),
             description: "Instagram/TikTok Stories".to_string(),
             recommended_for: vec![
@@ -94,9 +84,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 1920,
             aspect_ratio: "9:16".to_string(),
             default_aspect_ratio: "9:16".to_string(),
-            allowed_aspect_ratios: vec![
-                "9:16".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["9:16".to_string()],
             format: "portrait".to_string(),
             description: "TikTok vertical video/slides".to_string(),
             recommended_for: vec![
@@ -111,10 +99,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 627,
             aspect_ratio: "~1.9:1".to_string(),
             default_aspect_ratio: "4:5".to_string(),
-            allowed_aspect_ratios: vec![
-                "4:5".to_string(),
-                "1:1".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["4:5".to_string(), "1:1".to_string()],
             format: "landscape".to_string(),
             description: "LinkedIn document posts".to_string(),
             recommended_for: vec![
@@ -129,10 +114,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 675,
             aspect_ratio: "16:9".to_string(),
             default_aspect_ratio: "1:1".to_string(),
-            allowed_aspect_ratios: vec![
-                "1:1".to_string(),
-                "4:5".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["1:1".to_string(), "4:5".to_string()],
             format: "landscape".to_string(),
             description: "Twitter/X card images".to_string(),
             recommended_for: vec![
@@ -147,11 +129,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 630,
             aspect_ratio: "~1.9:1".to_string(),
             default_aspect_ratio: "3:4".to_string(),
-            allowed_aspect_ratios: vec![
-                "3:4".to_string(),
-                "4:5".to_string(),
-                "1:1".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["3:4".to_string(), "4:5".to_string(), "1:1".to_string()],
             format: "landscape".to_string(),
             description: "Facebook post images".to_string(),
             recommended_for: vec![
@@ -166,9 +144,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 1080,
             aspect_ratio: "16:9".to_string(),
             default_aspect_ratio: "16:9".to_string(),
-            allowed_aspect_ratios: vec![
-                "16:9".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["16:9".to_string()],
             format: "landscape".to_string(),
             description: "Presentation slides (16:9)".to_string(),
             recommended_for: vec![
@@ -183,9 +159,7 @@ fn build_platforms() -> Vec<PlatformSpec> {
             height: 768,
             aspect_ratio: "4:3".to_string(),
             default_aspect_ratio: "4:3".to_string(),
-            allowed_aspect_ratios: vec![
-                "4:3".to_string(),
-            ],
+            allowed_aspect_ratios: vec!["4:3".to_string()],
             format: "landscape".to_string(),
             description: "Presentation slides (4:3)".to_string(),
             recommended_for: vec![
@@ -254,7 +228,10 @@ pub fn aspect_ratio_dimensions(ratio: &str) -> Option<AspectRatioSpec> {
     }
 }
 
-pub fn resolve_canvas(platform: &str, aspect_ratio: Option<&str>) -> Result<PlatformCanvas, String> {
+pub fn resolve_canvas(
+    platform: &str,
+    aspect_ratio: Option<&str>,
+) -> Result<PlatformCanvas, String> {
     let spec = get_platform(platform).ok_or_else(|| format!("Unknown platform: {platform}"))?;
     let ratio = aspect_ratio
         .filter(|s| !s.trim().is_empty())
@@ -318,4 +295,3 @@ mod tests {
         assert!(err.contains("not allowed"));
     }
 }
-

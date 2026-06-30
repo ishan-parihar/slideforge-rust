@@ -373,7 +373,8 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
         _ => return vec![],
     };
 
-    let matched = map.iter()
+    let matched = map
+        .iter()
         .filter_map(|(slide_type, info): (&String, &Value)| {
             let best_for = info.get("best_for")?.as_array()?;
             let matches = best_for
@@ -388,7 +389,11 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
         .collect::<Vec<String>>();
 
     if context == "conversion" {
-        let preferred = vec!["qr_destination".to_string(), "cta".to_string(), "pricing_plan".to_string()];
+        let preferred = vec![
+            "qr_destination".to_string(),
+            "cta".to_string(),
+            "pricing_plan".to_string(),
+        ];
         let mut result = Vec::new();
         for p in preferred {
             if matched.contains(&p) {
@@ -461,8 +466,20 @@ mod tests {
     fn test_qr_destination_registry_metadata() {
         let info = get_slide_type_info("qr_destination").expect("qr_destination exists");
         assert_eq!(info["layout_family"], "conversion");
-        assert!(info["best_for"].as_array().unwrap().iter().any(|v| v == "conversion"));
-        assert!(info["variants"].as_array().unwrap().iter().any(|v| v == "full-conversion"));
+        assert!(
+            info["best_for"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|v| v == "conversion")
+        );
+        assert!(
+            info["variants"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|v| v == "full-conversion")
+        );
     }
 
     #[test]

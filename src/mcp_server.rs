@@ -400,7 +400,10 @@ impl Server {
         state.hashtags = req.hashtags.clone().unwrap_or_default();
         state.show_progress = req.show_progress.unwrap_or(true);
         state.archetype = req.archetype.clone().unwrap_or_default();
-        let platform = req.platform.clone().unwrap_or_else(|| "instagram_portrait".to_string());
+        let platform = req
+            .platform
+            .clone()
+            .unwrap_or_else(|| "instagram_portrait".to_string());
         let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
         state.platform = canvas.platform.clone();
@@ -603,7 +606,9 @@ impl Server {
             ));
         }
 
-        let platform = req.platform.clone()
+        let platform = req
+            .platform
+            .clone()
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| state.platform.clone());
         let platform = if platform.is_empty() {
@@ -612,7 +617,9 @@ impl Server {
             platform
         };
 
-        let aspect_ratio = req.aspect_ratio.clone()
+        let aspect_ratio = req
+            .aspect_ratio
+            .clone()
             .filter(|s| !s.is_empty())
             .or_else(|| Some(state.aspect_ratio.clone()))
             .filter(|s| !s.is_empty());
@@ -692,7 +699,9 @@ impl Server {
             (state.platform.clone(), state.aspect_ratio.clone())
         };
 
-        let platform = req.preset.clone()
+        let platform = req
+            .preset
+            .clone()
             .filter(|s| !s.is_empty())
             .unwrap_or(state_platform);
         let platform = if platform.is_empty() {
@@ -701,7 +710,9 @@ impl Server {
             platform
         };
 
-        let aspect_ratio = req.aspect_ratio.clone()
+        let aspect_ratio = req
+            .aspect_ratio
+            .clone()
             .filter(|s| !s.is_empty())
             .or_else(|| Some(state_aspect_ratio))
             .filter(|s| !s.is_empty());
@@ -1015,7 +1026,7 @@ mod tests {
     #[tokio::test]
     async fn test_render_carousel_empty_aspect_ratio_and_platform_fallback() {
         let server = Server::new();
-        
+
         // Configure design to setup state
         let config_req = ConfigureDesignRequest {
             primary_color: "#4f46e5".to_string(),
@@ -1037,8 +1048,11 @@ mod tests {
             aspect_ratio: None,
             bg_style: None,
         };
-        
-        let _ = server.configure_design(Parameters(config_req)).await.unwrap();
+
+        let _ = server
+            .configure_design(Parameters(config_req))
+            .await
+            .unwrap();
 
         // 1. If state has empty platform/aspect_ratio (which it does by default or since we didn't specify them in configure_design),
         // let's verify that render_carousel falls back to "instagram_portrait" and None aspect ratio, and resolves successfully.
@@ -1066,7 +1080,10 @@ mod tests {
             aspect_ratio: Some("".to_string()), // Empty string, should filter to None
         };
 
-        let res = server.render_carousel(Parameters(render_req)).await.unwrap();
+        let res = server
+            .render_carousel(Parameters(render_req))
+            .await
+            .unwrap();
         // Since we fell back to instagram_portrait (which is 1080x1350, so 4:5), let's make sure it rendered successfully.
         assert_eq!(res.0.total_slides, 1);
     }
@@ -1074,7 +1091,7 @@ mod tests {
     #[tokio::test]
     async fn test_export_carousel_slides_empty_aspect_ratio_and_preset_fallback() {
         let server = Server::new();
-        
+
         // Setup state platform to empty to test default fallback
         {
             let mut state = server.state.lock().unwrap();

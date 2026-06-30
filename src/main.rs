@@ -109,9 +109,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let canvas = platforms::resolve_canvas(preset, aspect_ratio.as_deref())?;
             println!(
                 "Exporting {} slides from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
-                slides, html, output_dir, canvas.width, canvas.height, canvas.platform, canvas.aspect_ratio
+                slides,
+                html,
+                output_dir,
+                canvas.width,
+                canvas.height,
+                canvas.platform,
+                canvas.aspect_ratio
             );
-            let paths = export::export_slides(html, output_dir, *slides, canvas.width, canvas.height).await?;
+            let paths =
+                export::export_slides(html, output_dir, *slides, canvas.width, canvas.height)
+                    .await?;
             println!("Export complete! Slides saved:");
             for p in paths {
                 println!(" - {}", p);
@@ -133,7 +141,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             for p in &all {
                 println!(
                     "  {:<25} {}×{} (aspect ratio: {}, default aspect ratio: {}, allowed ratios: {})",
-                    p.name, p.width, p.height, p.aspect_ratio, p.default_aspect_ratio, p.allowed_aspect_ratios.join(", ")
+                    p.name,
+                    p.width,
+                    p.height,
+                    p.aspect_ratio,
+                    p.default_aspect_ratio,
+                    p.allowed_aspect_ratios.join(", ")
                 );
             }
         }
