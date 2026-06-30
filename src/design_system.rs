@@ -254,7 +254,7 @@ pub fn auto_clamp_border(
 pub fn generate_spacing_scale() -> IndexMap<i32, i32> {
     let base = 8;
     let mut map = IndexMap::new();
-    let steps = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12];
+    let steps = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 28, 32];
     for step in steps {
         map.insert(step, base * step);
     }
