@@ -78,6 +78,15 @@ Available MCP tools include:
 - `list_themes`
 - `recommend_color_scheme`
 
+## Agent Workflow
+
+1. Call `list_platforms` and choose `platform` plus `aspect_ratio`.
+2. Call `configure_design` with `platform`, `aspect_ratio`, brand, topic, URL, and hashtags.
+3. Call `get_slide_types_for_context` for each narrative job.
+4. Use `qr_destination` for off-platform actions such as blog posts, donations, digital products, newsletters, or link hubs.
+5. Call `validate_layout` before generation and `validate_design` after rendering.
+6. Export with the same `platform` and `aspect_ratio` used during render.
+
 ## Quality Gates
 
 Run the local verification suite before release:
