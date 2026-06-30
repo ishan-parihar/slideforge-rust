@@ -5038,13 +5038,13 @@ pub fn qr_destination_slide(
 
     let layout_padding = if !_padding.is_empty() {
         _padding
-    } else if effective_variant == "minimal" {
+    } else if effective_variant == "minimal" || effective_variant == "with-cta" {
         "80px 64px 80px"
     } else {
         "80px 52px 80px"
     };
 
-    let html = if effective_variant == "minimal" {
+    let html = if effective_variant == "minimal" || effective_variant == "with-cta" {
         let content = format!(
             r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {}</div>"#,
             qr_html,
@@ -7365,6 +7365,33 @@ mod tests {
         assert!(html_custom.contains("MyBrand"));
         assert!(html_custom.contains("https://example.com/logo.png"));
         assert!(html_custom.contains("alt=\"Scan MyBrand QR Code\""));
+
+        // 5. Test with-cta variant layout behaves like minimal
+        let res_with_cta = qr_destination_slide(
+            &tokens,
+            "https://example.com/dest",
+            "Scan this QR code",
+            "Some caption text about this conversion",
+            "Scan now",
+            "example.com/short",
+            "Free Ebook included",
+            "with-cta",
+            "light",
+            "",
+            0.4,
+            "minimal",
+            "educator",
+            "",
+            "",
+            "",
+            "",
+        );
+        let html_with_cta = res_with_cta["html"].as_str().unwrap();
+        assert!(html_with_cta.contains("data:image/svg+xml;utf8,"));
+        assert!(!html_with_cta.contains("Scan this QR code"));
+        assert!(!html_with_cta.contains("Some caption text about this conversion"));
+        assert!(html_with_cta.contains("Scan now"));
+        assert!(html_with_cta.contains("example.com/short"));
     }
 }
 

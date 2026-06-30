@@ -71,29 +71,95 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
 
     // 3. Validate each required param.
     for param in &required_params {
-        match params.get(param) {
-            None => {
+        let (primary_key, alt_key) = if slide_type == "qr_destination" {
+            if param == "destination_url" {
+                (param.as_str(), Some("url"))
+            } else if param == "cta_text" {
+                (param.as_str(), Some("button_text"))
+            } else {
+                (param.as_str(), None)
+            }
+        } else {
+            (param.as_str(), None)
+        };
+
+        if let Some(alt) = alt_key {
+            let primary_val = params.get(primary_key);
+            let alt_val = params.get(alt);
+
+            if primary_val.is_none() && alt_val.is_none() {
                 result.add_error(format!(
-                    "Missing required param '{param}' for slide type '{slide_type}'"
+                    "Missing required param '{primary_key}' for slide type '{slide_type}'"
                 ));
+            } else {
+                let is_empty_val = |val: &serde_json::Value| match val {
+                    serde_json::Value::String(s) => s.trim().is_empty(),
+                    serde_json::Value::Array(arr) => arr.is_empty(),
+                    _ => false,
+                };
+
+                let primary_ok = primary_val.map(|v| !is_empty_val(v)).unwrap_or(false);
+                let alt_ok = alt_val.map(|v| !is_empty_val(v)).unwrap_or(false);
+
+                if !primary_ok && !alt_ok {
+                    if primary_val.is_some() {
+                        let val = primary_val.unwrap();
+                        match val {
+                            serde_json::Value::Array(_) => {
+                                result.add_warning(format!(
+                                    "Required param '{primary_key}' is an empty array for slide type '{slide_type}'"
+                                ));
+                            }
+                            _ => {
+                                result.add_warning(format!(
+                                    "Required param '{primary_key}' is present but empty for slide type '{slide_type}'"
+                                ));
+                            }
+                        }
+                    } else if alt_val.is_some() {
+                        let val = alt_val.unwrap();
+                        match val {
+                            serde_json::Value::Array(_) => {
+                                result.add_warning(format!(
+                                    "Required param '{alt}' is an empty array for slide type '{slide_type}'"
+                                ));
+                            }
+                            _ => {
+                                result.add_warning(format!(
+                                    "Required param '{alt}' is present but empty for slide type '{slide_type}'"
+                                ));
+                            }
+                        }
+                    }
+                }
             }
-            Some(Value::String(s)) if s.trim().is_empty() => {
-                result.add_warning(format!(
-                    "Required param '{param}' is present but empty for slide type '{slide_type}'"
-                ));
+        } else {
+            match params.get(param) {
+                None => {
+                    result.add_error(format!(
+                        "Missing required param '{param}' for slide type '{slide_type}'"
+                    ));
+                }
+                Some(Value::String(s)) if s.trim().is_empty() => {
+                    result.add_warning(format!(
+                        "Required param '{param}' is present but empty for slide type '{slide_type}'"
+                    ));
+                }
+                Some(Value::Array(arr)) if arr.is_empty() => {
+                    result.add_warning(format!(
+                        "Required param '{param}' is an empty array for slide type '{slide_type}'"
+                    ));
+                }
+                _ => {} // present and non-empty — OK
             }
-            Some(Value::Array(arr)) if arr.is_empty() => {
-                result.add_warning(format!(
-                    "Required param '{param}' is an empty array for slide type '{slide_type}'"
-                ));
-            }
-            _ => {} // present and non-empty — OK
         }
     }
 
     if slide_type == "qr_destination" {
-        let has_heading = params.get("heading").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
-        let has_caption = params.get("caption").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
+        let has_heading = params.get("heading").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false)
+            || params.get("headline").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
+        let has_caption = params.get("caption").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false)
+            || params.get("description").and_then(|v| v.as_str()).map(|s| !s.trim().is_empty()).unwrap_or(false);
         if !has_heading && !has_caption {
             result.add_warning("qr_destination should include heading or caption so users know why to scan.");
         }
@@ -374,6 +440,44 @@ mod tests {
         let r = validate_slide_spec("qr_destination", &params);
         assert!(r.valid);
         assert!(r.warnings.iter().any(|w| w.contains("heading")));
+    }
+
+    #[test]
+    fn test_qr_destination_accepts_alternatives() {
+        let params = json!({
+            "url": "https://example.com/guide",
+            "button_text": "Scan to read",
+            "headline": "Read the full guide"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.valid);
+        assert!(r.errors.is_empty());
+        assert!(r.warnings.is_empty());
+    }
+
+    #[test]
+    fn test_qr_destination_description_fallback_suppresses_warning() {
+        let params = json!({
+            "destination_url": "https://example.com/guide",
+            "cta_text": "Scan to read",
+            "description": "This is a fallback caption"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.valid);
+        assert!(r.warnings.is_empty());
+    }
+
+    #[test]
+    fn test_qr_destination_empty_alternatives_warn() {
+        let params = json!({
+            "url": "",
+            "button_text": "   ",
+            "headline": "Read the full guide"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.valid);
+        assert!(r.warnings.iter().any(|w| w.contains("url")));
+        assert!(r.warnings.iter().any(|w| w.contains("button_text")));
     }
 }
 
