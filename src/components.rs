@@ -284,7 +284,7 @@ pub fn resolve_archetype_preset(
     Some(crate::archetypes::get_slide_preset(&arch, slide_type))
 }
 
-fn render_qr_svg_data_uri(destination_url: &str) -> Result<String, String> {
+pub fn render_qr_svg_data_uri(destination_url: &str) -> Result<String, String> {
     let code = QrCode::new(destination_url.as_bytes())
         .map_err(|e| format!("Failed to generate QR code: {e}"))?;
     let svg = code.render::<svg::Color>()
@@ -4943,6 +4943,9 @@ pub fn qr_destination_slide(
     theme: &str,
     _archetype: &str,
     _padding: &str,
+    brand_name: &str,
+    brand_logo: &str,
+    qr_alt_text: &str,
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
@@ -4951,21 +4954,73 @@ pub fn qr_destination_slide(
     let radius = current_component_radius(tokens, "card");
     let qr_size = if matches!(effective_variant, "minimal" | "without-heading") { "208px" } else { "188px" };
 
+    // Brand header inside QR card (above QR image) if present and not empty
+    let brand_html = if !brand_logo.is_empty() || !brand_name.is_empty() {
+        let logo_img = if !brand_logo.is_empty() {
+            format!(
+                r#"<img src="{}" alt="{}" style="max-height:24px;max-width:80px;object-fit:contain;display:block;" />"#,
+                escape_html(brand_logo),
+                escape_html(brand_name)
+            )
+        } else {
+            String::new()
+        };
+        let name_text = if !brand_name.is_empty() {
+            format!(
+                r#"<span style="font-family:{};font-size:12px;font-weight:700;color:#0B0A0F;letter-spacing:-0.01em;white-space:nowrap;">{}</span>"#,
+                tokens.body_font,
+                escape_html(brand_name)
+            )
+        } else {
+            String::new()
+        };
+        format!(
+            r#"<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;max-width:{};justify-content:center;overflow:hidden;">
+                {}
+                {}
+            </div>"#,
+            qr_size,
+            logo_img,
+            name_text
+        )
+    } else {
+        String::new()
+    };
+
+    let effective_alt = if !qr_alt_text.is_empty() {
+        qr_alt_text
+    } else if !cta_text.is_empty() {
+        cta_text
+    } else {
+        "Scan QR code"
+    };
+
+    let mut qr_elements = Vec::new();
+    if !brand_html.is_empty() {
+        qr_elements.push(brand_html);
+    }
+    qr_elements.push(format!(
+        r#"<img src="{}" alt="{}" style="width:{};height:{};display:block;" />"#,
+        qr_src,
+        escape_html(effective_alt),
+        qr_size,
+        qr_size
+    ));
+    if !short_url.is_empty() {
+        qr_elements.push(format!(
+            r#"<div style="font-family:{};font-size:11px;font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
+            tokens.body_font,
+            qr_size,
+            escape_html(short_url)
+        ));
+    }
+
     let qr_html = format!(
         r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:16px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 14px 34px rgba(0,0,0,0.14);">
-            <img src="{}" alt="{}" style="width:{};height:{};display:block;" />
             {}
         </div>"#,
         radius,
-        qr_src,
-        escape_html(if cta_text.is_empty() { "Scan QR code" } else { cta_text }),
-        qr_size,
-        qr_size,
-        if !short_url.is_empty() {
-            format!(r#"<div style="font-family:{};font-size:11px;font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#, tokens.body_font, qr_size, escape_html(short_url))
-        } else {
-            String::new()
-        }
+        qr_elements.join("\n")
     );
 
     let cta_html = if !cta_text.is_empty() {
@@ -4981,22 +5036,29 @@ pub fn qr_destination_slide(
         String::new()
     };
 
-    let html = if effective_variant == "minimal" || effective_variant == "without-heading" {
-        let content = if effective_variant == "minimal" {
-            format!(r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {}</div>"#, qr_html, cta_html)
-        } else {
-            let cap_html = if !caption.is_empty() {
-                format!(r#"<div style="font-family:{};font-size:15px;line-height:1.5;color:{};text-align:center;max-width:400px;margin-bottom:20px;">{}</div>"#, tokens.body_font, colors.text_secondary, escape_html(caption))
-            } else {
-                String::new()
-            };
-            format!(r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#, cap_html, qr_html, cta_html)
-        };
-        slide_base(&content, tokens, bg_style, false, "80px 64px 80px", "center")
+    let layout_padding = if !_padding.is_empty() {
+        _padding
+    } else if effective_variant == "minimal" {
+        "80px 64px 80px"
+    } else {
+        "80px 52px 80px"
+    };
+
+    let html = if effective_variant == "minimal" {
+        let content = format!(
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {}</div>"#,
+            qr_html,
+            cta_html
+        );
+        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
     } else {
         let mut left_elements = Vec::new();
 
-        if !heading.is_empty() {
+        let include_heading = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "with-heading");
+        let include_caption = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "with-caption" | "without-heading");
+        let include_incentive = matches!(effective_variant, "full-conversion" | "theme-bg" | "image-bg" | "without-heading");
+
+        if include_heading && !heading.is_empty() {
             let h_html = format!(
                 r#"<h2 style="font-family:{};font-size:32px;font-weight:900;color:{};margin:0;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
                 tokens.heading_font,
@@ -5006,7 +5068,7 @@ pub fn qr_destination_slide(
             left_elements.push(h_html);
         }
 
-        if !caption.is_empty() {
+        if include_caption && !caption.is_empty() {
             let c_html = format!(
                 r#"<p style="font-family:{};font-size:15px;line-height:1.55;color:{};margin:0;">{}</p>"#,
                 tokens.body_font,
@@ -5016,7 +5078,7 @@ pub fn qr_destination_slide(
             left_elements.push(c_html);
         }
 
-        if !incentive_text.is_empty() {
+        if include_incentive && !incentive_text.is_empty() {
             let badge_radius = current_component_radius(tokens, "chip");
             let inc_html = format!(
                 r#"<div style="display:inline-flex;align-items:center;gap:8px;background:{};border:1px solid {};border-radius:{};padding:8px 12px;font-family:{};font-size:13px;font-weight:700;color:{};align-self:flex-start;">
@@ -5048,7 +5110,11 @@ pub fn qr_destination_slide(
             cta_html
         );
 
-        split_layout(&left_col, &right_col, tokens, bg_style, "40px", "1.2fr 1fr", false)
+        let content = format!(
+            r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:40px;overflow:hidden;"><div style="min-width:0;">{}</div><div style="min-width:0;">{}</div></div>"#,
+            left_col, right_col
+        );
+        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
     };
 
     let bg_img_to_inject = if effective_variant == "image-bg" {
@@ -5829,6 +5895,9 @@ pub fn dispatch_slide(
             theme,
             _archetype,
             &s("padding"),
+            &s("brand_name"),
+            &s("brand_logo"),
+            &s("qr_alt_text"),
         )),
         other => Err(format!("Unknown slide type: '{}'", other)),
     };
@@ -7202,6 +7271,9 @@ mod tests {
             "minimal",
             "educator",
             "",
+            "",
+            "",
+            "",
         );
         let html = res["html"].as_str().unwrap();
         assert!(html.contains("data:image/svg+xml;utf8,"));
@@ -7227,6 +7299,9 @@ mod tests {
             "minimal",
             "educator",
             "",
+            "",
+            "",
+            "",
         );
         let html_min = res_min["html"].as_str().unwrap();
         assert!(html_min.contains("data:image/svg+xml;utf8,"));
@@ -7251,6 +7326,9 @@ mod tests {
             "minimal",
             "educator",
             "",
+            "",
+            "",
+            "",
         );
         let html_no_h = res_no_h["html"].as_str().unwrap();
         assert!(html_no_h.contains("data:image/svg+xml;utf8,"));
@@ -7258,6 +7336,35 @@ mod tests {
         assert!(html_no_h.contains("Some caption text about this conversion"));
         assert!(html_no_h.contains("Scan now"));
         assert!(html_no_h.contains("example.com/short"));
+
+        // 4. Test custom padding, brand logo/name, alternative QR text, and variant filtering
+        let res_custom = qr_destination_slide(
+            &tokens,
+            "https://example.com/dest",
+            "Scan this QR code",
+            "Some caption text about this conversion",
+            "Scan now",
+            "example.com/short",
+            "Free Ebook included",
+            "with-heading",
+            "light",
+            "",
+            0.4,
+            "minimal",
+            "educator",
+            "100px 50px 100px",
+            "MyBrand",
+            "https://example.com/logo.png",
+            "Scan MyBrand QR Code",
+        );
+        let html_custom = res_custom["html"].as_str().unwrap();
+        assert!(html_custom.contains("data:image/svg+xml;utf8,"));
+        assert!(html_custom.contains("Scan this QR code"));
+        assert!(!html_custom.contains("Some caption text about this conversion"));
+        assert!(html_custom.contains("padding:100px 50px 100px;"));
+        assert!(html_custom.contains("MyBrand"));
+        assert!(html_custom.contains("https://example.com/logo.png"));
+        assert!(html_custom.contains("alt=\"Scan MyBrand QR Code\""));
     }
 }
 
