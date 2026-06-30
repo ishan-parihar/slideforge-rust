@@ -62,6 +62,9 @@ enum Commands {
         /// presentation_16_9, presentation_4_3
         #[arg(long, default_value = "instagram_portrait")]
         preset: String,
+        /// Custom aspect ratio override
+        #[arg(long)]
+        aspect_ratio: Option<String>,
     },
     /// List all available slide types with descriptions
     ListSlides,
@@ -101,21 +104,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             output_dir,
             slides,
             preset,
+            aspect_ratio,
         }) => {
-            let (width, height) = platforms::get_platform(preset)
-                .map(|p| (p.width, p.height))
-                .unwrap_or_else(|| match preset.as_str() {
-                    "linkedin" => (1200, 1200),
-                    "tiktok" | "story" => (1080, 1920),
-                    "facebook" => (1200, 630),
-                    "square" => (1080, 1080),
-                    _ => (1080, 1350),
-                });
+            let canvas = platforms::resolve_canvas(preset, aspect_ratio.as_deref())?;
             println!(
-                "Exporting {} slides from {} → {} at {}×{} (preset: {})...",
-                slides, html, output_dir, width, height, preset
+                "Exporting {} slides from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
+                slides, html, output_dir, canvas.width, canvas.height, canvas.platform, canvas.aspect_ratio
             );
-            let paths = export::export_slides(html, output_dir, *slides, width, height).await?;
+            let paths = export::export_slides(html, output_dir, *slides, canvas.width, canvas.height).await?;
             println!("Export complete! Slides saved:");
             for p in paths {
                 println!(" - {}", p);
@@ -226,6 +222,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         let color = brand_colors[idx % brand_colors.len()];
         let theme = themes[idx % themes.len()];
         let carousel_id = idx + 1;
+        let canvas = platforms::resolve_canvas(platform, None)?;
 
         // Choose 4 random slide types
         let mut chosen_types = slide_types.clone();
@@ -549,6 +546,10 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             show_progress: true,
             visual_theme: theme.to_string(),
             include_ig_frame: true,
+            platform: canvas.platform,
+            aspect_ratio: canvas.aspect_ratio,
+            canvas_width: canvas.width,
+            canvas_height: canvas.height,
         };
 
         let html = slides::render_carousel_html(&spec);

@@ -127,6 +127,7 @@ pub struct RenderCarouselRequest {
     pub url: Option<String>,
     pub hashtags: Option<Vec<String>>,
     pub show_progress: Option<bool>,
+    pub platform: Option<String>,
     pub aspect_ratio: Option<String>,
 }
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -581,6 +582,11 @@ impl Server {
             ));
         }
 
+        let platform = req.platform.clone().unwrap_or_else(|| state.platform.clone());
+        let aspect_ratio = req.aspect_ratio.clone().filter(|s| !s.is_empty()).or_else(|| Some(state.aspect_ratio.clone()));
+        let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+
         let spec = CarouselSpec {
             slides: req.slides,
             css_variables: css_vars,
@@ -613,6 +619,10 @@ impl Server {
             show_progress: req.show_progress.unwrap_or(state.show_progress),
             visual_theme: state.visual_theme.clone(),
             include_ig_frame: req.include_ig_frame.unwrap_or(true),
+            platform: canvas.platform.clone(),
+            aspect_ratio: canvas.aspect_ratio.clone(),
+            canvas_width: canvas.width,
+            canvas_height: canvas.height,
         };
         drop(state);
 
@@ -644,7 +654,7 @@ impl Server {
         &self,
         Parameters(req): Parameters<ExportCarouselSlidesRequest>,
     ) -> Result<Json<ExportResponse>, ErrorData> {
-        let preset_name = req.preset.clone().unwrap_or_else(|| {
+        let platform = req.preset.clone().unwrap_or_else(|| {
             let state = self.state.lock().unwrap();
             let p = state.platform.clone();
             if p.is_empty() {
@@ -653,33 +663,34 @@ impl Server {
                 p
             }
         });
-
-        let (width, height) = platforms::get_platform(&preset_name)
-            .map(|p| (p.width, p.height))
-            .unwrap_or_else(|| match preset_name.as_str() {
-                "linkedin" => (1200, 1200),
-                "tiktok" | "story" => (1080, 1920),
-                "facebook" => (1200, 630),
-                "square" => (1080, 1080),
-                _ => (1080, 1350),
-            });
+        let aspect_ratio = req.aspect_ratio.clone().filter(|s| !s.is_empty()).or_else(|| {
+            let state = self.state.lock().unwrap();
+            let ar = state.aspect_ratio.clone();
+            if ar.is_empty() {
+                None
+            } else {
+                Some(ar)
+            }
+        });
+        let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
 
         let paths = export::export_slides(
             &req.html_path,
             &req.output_dir,
             req.total_slides,
-            width,
-            height,
+            canvas.width,
+            canvas.height,
         )
         .await
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
         let total = paths.len();
-        let dimensions = format!("{}×{}", width, height);
+        let dimensions = format!("{}×{}", canvas.width, canvas.height);
         Ok(Json(ExportResponse {
             exported_slides: paths,
             dimensions,
-            preset: preset_name,
+            preset: canvas.platform,
             total_exported: total,
         }))
     }

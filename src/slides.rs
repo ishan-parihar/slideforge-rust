@@ -25,16 +25,23 @@ pub struct CarouselSpec {
     pub show_progress: bool,
     pub visual_theme: String,
     pub include_ig_frame: bool,
+    pub platform: String,
+    pub aspect_ratio: String,
+    pub canvas_width: u32,
+    pub canvas_height: u32,
 }
 
 pub fn render_carousel_html(spec: &CarouselSpec) -> String {
-    let slide_width = 420;
-    let slide_height = 525;
     let total = spec.slides.len();
 
     // Core CSS
     let mut css_block = r#"
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: [SLIDE_WIDTH]px;
+  --slide-height: [SLIDE_HEIGHT]px;
+}
 
 [CSS_VARS]
 
@@ -44,11 +51,11 @@ body {
   font-family: var(--font-body, system-ui, sans-serif);
 }
 
-.carousel-viewport { width: 420px; height: 525px; overflow: hidden; position: relative; }
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
 .carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
 
 .slide {
-  min-width: 420px; height: 525px; position: relative;
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
   display: flex; flex-direction: column;
   overflow: hidden;
 }
@@ -229,7 +236,9 @@ body {
 .overlay__hashtags { font-family: var(--body); font-size: 9.5px; text-align: right; max-width: 40%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-"#.replace("[CSS_VARS]", &spec.css_variables);
+"#.replace("[CSS_VARS]", &spec.css_variables)
+        .replace("[SLIDE_WIDTH]", &spec.canvas_width.to_string())
+        .replace("[SLIDE_HEIGHT]", &spec.canvas_height.to_string());
 
     let theme_overrides = get_theme_css_overrides(&spec.visual_theme);
     css_block.push_str(theme_overrides);
@@ -237,7 +246,7 @@ body {
     if spec.include_ig_frame {
         css_block.push_str(r#"
 .ig-frame {
-  width: 420px; background: #fff; border-radius: 0;
+  width: var(--slide-width); background: #fff; border-radius: 0;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -488,7 +497,7 @@ body {
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));
     track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    track.style.transform = `translateX(${-current * 420}px)`;
+    track.style.transform = `translateX(${-current * [SLIDE_WIDTH]}px)`;
     if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
   }
 
@@ -513,7 +522,7 @@ body {
   });
 })();
 </script>
-"#.replace("[TOTAL]", &total.to_string());
+"#.replace("[TOTAL]", &total.to_string()).replace("[SLIDE_WIDTH]", &spec.canvas_width.to_string());
     }
 
     let font_link = if !spec.google_fonts_url.is_empty() {
@@ -756,3 +765,44 @@ fn escape_html(input: &str) -> String {
     }
     s
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_render_carousel_uses_canvas_dimensions() {
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "light".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "3:4".to_string(),
+            canvas_width: 360,
+            canvas_height: 480,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert!(html.contains("--slide-width: 360px"));
+        assert!(html.contains("--slide-height: 480px"));
+        assert!(html.contains("width: var(--slide-width)"));
+        assert!(html.contains("height: var(--slide-height)"));
+    }
+}
+
