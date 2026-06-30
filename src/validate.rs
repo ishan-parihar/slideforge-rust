@@ -163,6 +163,30 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         if !has_heading && !has_caption {
             result.add_warning("qr_destination should include heading or caption so users know why to scan.");
         }
+
+        let has_short_url = params.get("short_url")
+            .and_then(|v| v.as_str())
+            .map(|s| !s.trim().is_empty())
+            .unwrap_or(false);
+        if !has_short_url {
+            result.add_warning("qr_destination should include short_url as a manual fallback for users who cannot scan.");
+        }
+
+        let cta_text_val = params.get("cta_text")
+            .or_else(|| params.get("button_text"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
+        if cta_text_val.chars().count() > 34 {
+            result.add_warning("qr_destination cta_text should be 34 characters or fewer for slide readability.");
+        }
+
+        let dest_url_val = params.get("destination_url")
+            .or_else(|| params.get("url"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
+        if !dest_url_val.is_empty() && !dest_url_val.starts_with("http://") && !dest_url_val.starts_with("https://") {
+            result.add_warning("qr_destination destination_url should be an absolute http(s) URL.");
+        }
     }
 
     result
@@ -447,7 +471,8 @@ mod tests {
         let params = json!({
             "url": "https://example.com/guide",
             "button_text": "Scan to read",
-            "headline": "Read the full guide"
+            "headline": "Read the full guide",
+            "short_url": "ex.co"
         });
         let r = validate_slide_spec("qr_destination", &params);
         assert!(r.valid);
@@ -460,7 +485,8 @@ mod tests {
         let params = json!({
             "destination_url": "https://example.com/guide",
             "cta_text": "Scan to read",
-            "description": "This is a fallback caption"
+            "description": "This is a fallback caption",
+            "short_url": "ex.co"
         });
         let r = validate_slide_spec("qr_destination", &params);
         assert!(r.valid);
@@ -478,6 +504,38 @@ mod tests {
         assert!(r.valid);
         assert!(r.warnings.iter().any(|w| w.contains("url")));
         assert!(r.warnings.iter().any(|w| w.contains("button_text")));
+    }
+
+    #[test]
+    fn test_qr_destination_warnings() {
+        // Test short_url absent
+        let params = json!({
+            "destination_url": "https://example.com/guide",
+            "cta_text": "Scan to read",
+            "heading": "Scan Me"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.warnings.iter().any(|w| w.contains("short_url")));
+
+        // Test cta_text too long (over 34 chars)
+        let params = json!({
+            "destination_url": "https://example.com/guide",
+            "cta_text": "Scan to read the full developer guide right now",
+            "short_url": "ex.co",
+            "heading": "Scan Me"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.warnings.iter().any(|w| w.contains("cta_text")));
+
+        // Test destination_url not absolute http(s)
+        let params = json!({
+            "destination_url": "ftp://example.com/guide",
+            "cta_text": "Scan to read",
+            "short_url": "ex.co",
+            "heading": "Scan Me"
+        });
+        let r = validate_slide_spec("qr_destination", &params);
+        assert!(r.warnings.iter().any(|w| w.contains("destination_url")));
     }
 }
 
