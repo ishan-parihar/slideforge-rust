@@ -114,6 +114,8 @@ pub struct DesignSystemRequest {
     pub type_scale_base: Option<i32>,
     pub type_scale_ratio: Option<f32>,
     pub overrides: Option<IndexMap<String, String>>,
+    pub canvas_width: Option<u32>,
+    pub canvas_height: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -127,6 +129,8 @@ pub struct GenerateSlideRequest {
     pub bg_style: Option<String>,
     pub theme: Option<String>,
     pub archetype: Option<String>,
+    pub platform: Option<String>,
+    pub aspect_ratio: Option<String>,
     /// Slide-type-specific parameters (headline, items, stats, etc.)
     pub params: Option<serde_json::Value>,
 }
@@ -304,9 +308,20 @@ impl Server {
         let ratio = state.type_scale_ratio;
         let visual_theme = state.visual_theme.clone();
         let primary = state.primary_color.clone();
+        let platform = state.platform.clone();
+        let aspect_ratio = state.aspect_ratio.clone();
         drop(state);
 
-        design_system::derive_palette(
+        let canvas = platforms::resolve_canvas(&platform, Some(&aspect_ratio))
+            .unwrap_or_else(|_| platforms::PlatformCanvas {
+                platform: platform.clone(),
+                width: 1080,
+                height: 1350,
+                aspect_ratio: aspect_ratio.clone(),
+                format: "portrait".to_string(),
+            });
+
+        design_system::derive_palette_with_canvas(
             &primary,
             &style,
             base,
@@ -316,6 +331,8 @@ impl Server {
             None,
             None,
             None,
+            canvas.width,
+            canvas.height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))
     }
@@ -361,7 +378,15 @@ impl Server {
         let type_scale_base = req.type_scale_base.unwrap_or(16);
         let type_scale_ratio = req.type_scale_ratio.unwrap_or(1.25);
 
-        let tokens = design_system::derive_palette(
+        // Resolve canvas for scaling
+        let platform = req
+            .platform
+            .clone()
+            .unwrap_or_else(|| "instagram_portrait".to_string());
+        let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+
+        let tokens = design_system::derive_palette_with_canvas(
             &req.primary_color,
             &style,
             type_scale_base,
@@ -371,6 +396,8 @@ impl Server {
             None,
             None,
             None,
+            canvas.width,
+            canvas.height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -400,12 +427,6 @@ impl Server {
         state.hashtags = req.hashtags.clone().unwrap_or_default();
         state.show_progress = req.show_progress.unwrap_or(true);
         state.archetype = req.archetype.clone().unwrap_or_default();
-        let platform = req
-            .platform
-            .clone()
-            .unwrap_or_else(|| "instagram_portrait".to_string());
-        let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
         state.platform = canvas.platform.clone();
         state.aspect_ratio = canvas.aspect_ratio.clone();
         state.bg_style = req.bg_style.clone().unwrap_or_else(|| "light".to_string());
@@ -455,7 +476,11 @@ impl Server {
         let base = req.type_scale_base.unwrap_or(16);
         let ratio = req.type_scale_ratio.unwrap_or(1.25);
 
-        let tokens = design_system::derive_palette(
+        // Use default canvas for stateless design_system call
+        let canvas_width = req.canvas_width.unwrap_or(1080);
+        let canvas_height = req.canvas_height.unwrap_or(1350);
+
+        let tokens = design_system::derive_palette_with_canvas(
             &req.primary_color,
             &style,
             base,
@@ -465,6 +490,8 @@ impl Server {
             req.overrides.as_ref(),
             None,
             None,
+            canvas_width,
+            canvas_height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -557,10 +584,32 @@ impl Server {
 
         let base = state.type_scale_base.max(12);
         let ratio = state.type_scale_ratio;
+        
+        // Resolve canvas for scaling
+        let platform = req
+            .platform
+            .clone()
+            .or_else(|| Some(state.platform.clone()))
+            .unwrap_or_else(|| state.platform.clone());
+        let platform = if platform.is_empty() {
+            "instagram_portrait".to_string()
+        } else {
+            platform
+        };
+        
+        let aspect_ratio = req
+            .aspect_ratio
+            .clone()
+            .or_else(|| Some(state.aspect_ratio.clone()))
+            .filter(|s| !s.is_empty());
+        let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+        
         drop(state);
 
-        let tokens = design_system::derive_palette(
+        let tokens = design_system::derive_palette_with_canvas(
             &primary, &style, base, ratio, &preset, &theme, None, None, None,
+            canvas.width, canvas.height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -962,7 +1011,7 @@ impl Server {
 
         let mut schemes = Vec::new();
         for &p in presets.iter().take(num) {
-            if let Ok(tokens) = design_system::derive_palette(
+            if let Ok(tokens) = design_system::derive_palette_with_canvas(
                 &req.primary_color,
                 style,
                 16,
@@ -972,6 +1021,8 @@ impl Server {
                 None,
                 None,
                 None,
+                1080, // default canvas width
+                1350, // default canvas height
             ) {
                 schemes.push(serde_json::json!({
                     "preset": p,

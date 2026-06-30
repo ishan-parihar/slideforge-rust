@@ -272,8 +272,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             carousel_id, total_carousels, archetype, platform, aspect_ratio, theme, carousel_types
         );
 
-        // 1. Derive tokens
-        let tokens = design_system::derive_palette(
+        // 1. Derive tokens with canvas-aware scaling
+        let tokens = design_system::derive_palette_with_canvas(
             color,
             "modern",
             16,
@@ -283,6 +283,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             None,
             None,
             None,
+            canvas.width,
+            canvas.height,
         );
 
         let tokens = match tokens {

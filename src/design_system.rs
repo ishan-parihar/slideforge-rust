@@ -447,6 +447,34 @@ pub fn derive_palette(
     secondary_hex: Option<&str>,
     tertiary_hex: Option<&str>,
 ) -> Result<DesignTokens, String> {
+    derive_palette_with_canvas(
+        primary_hex,
+        style,
+        type_scale_base,
+        type_scale_ratio,
+        preset,
+        visual_theme,
+        overrides,
+        secondary_hex,
+        tertiary_hex,
+        1080, // default width
+        1350, // default height (4:5 aspect ratio)
+    )
+}
+
+pub fn derive_palette_with_canvas(
+    primary_hex: &str,
+    style: &str,
+    type_scale_base: i32,
+    type_scale_ratio: f32,
+    preset: &str,
+    visual_theme: &str,
+    overrides: Option<&IndexMap<String, String>>,
+    secondary_hex: Option<&str>,
+    tertiary_hex: Option<&str>,
+    canvas_width: u32,
+    canvas_height: u32,
+) -> Result<DesignTokens, String> {
     let primary = parse_hex(primary_hex)?;
     let mut primary_str = to_hex(&primary);
 
@@ -653,34 +681,70 @@ pub fn derive_palette(
     );
 
     let fonts = get_font_pairing(style);
-    let type_scale = generate_type_scale(type_scale_base, type_scale_ratio);
-    let spacing = generate_spacing_scale();
+    
+    // Calculate scaling factor based on canvas dimensions
+    // Default baseline is 1080x1350 (4:5 aspect ratio)
+    let baseline_width = 1080.0;
+    let baseline_height = 1350.0;
+    let baseline_area = baseline_width * baseline_height;
+    
+    let current_area = canvas_width as f32 * canvas_height as f32;
+    let area_scale = (current_area / baseline_area).sqrt(); // Use square root for proportional scaling
+    
+    // Scale type scale and spacing based on canvas size
+    let scaled_type_scale_base = (type_scale_base as f32 * area_scale).round() as i32;
+    let type_scale = generate_type_scale(scaled_type_scale_base, type_scale_ratio);
+    
+    // Scale spacing proportionally
+    let base_spacing = generate_spacing_scale();
+    let mut spacing = IndexMap::new();
+    for (step, pixels) in &base_spacing {
+        let scaled_pixels = ((*pixels as f32) * area_scale).round() as i32;
+        spacing.insert(step.clone(), scaled_pixels);
+    }
 
     let mut shadows = IndexMap::new();
-    shadows.insert("sm".to_string(), "0 1px 2px rgba(0,0,0,0.05)".to_string());
+    let scale_value = |val: f32| -> i32 {
+        (val * area_scale).round() as i32
+    };
+    
+    // Scale shadow values
+    shadows.insert("sm".to_string(), format!("0 {}px 2px rgba(0,0,0,0.05)", scale_value(1.0)));
     shadows.insert(
         "md".to_string(),
-        "0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05)".to_string(),
+        format!("0 {}px {}px -1px rgba(0,0,0,0.08), 0 {}px {}px -2px rgba(0,0,0,0.05)", 
+                scale_value(4.0), scale_value(6.0), scale_value(2.0), scale_value(4.0)),
     );
     shadows.insert(
         "lg".to_string(),
-        "0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05)".to_string(),
+        format!("0 {}px {}px -3px rgba(0,0,0,0.08), 0 {}px {}px -4px rgba(0,0,0,0.05)",
+                scale_value(10.0), scale_value(15.0), scale_value(4.0), scale_value(6.0)),
     );
     shadows.insert(
         "xl".to_string(),
-        "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05)".to_string(),
+        format!("0 {}px {}px -5px rgba(0,0,0,0.1), 0 {}px {}px -6px rgba(0,0,0,0.05)",
+                scale_value(20.0), scale_value(25.0), scale_value(8.0), scale_value(10.0)),
     );
     shadows.insert(
         "inner".to_string(),
-        "inset 0 2px 4px rgba(0,0,0,0.06)".to_string(),
+        format!("inset 0 {}px 2px 4px rgba(0,0,0,0.06)", scale_value(2.0)),
     );
-    shadows.insert("glow".to_string(), format!("0 0 20px {}40", primary_str));
+    shadows.insert("glow".to_string(), format!("0 0 {}px {}40", scale_value(20.0), primary_str));
 
     let mut radii = IndexMap::new();
-    radii.insert("sm".to_string(), "6px".to_string());
-    radii.insert("md".to_string(), "10px".to_string());
-    radii.insert("lg".to_string(), "16px".to_string());
-    radii.insert("xl".to_string(), "24px".to_string());
+    let scale_radius = |val: f32| -> String {
+        if val > 100.0 { // Keep pill radius as is
+            format!("{}px", val as i32)
+        } else {
+            let scaled = (val * area_scale).round() as i32;
+            format!("{}px", scaled.max(1)) // Ensure minimum 1px
+        }
+    };
+    
+    radii.insert("sm".to_string(), scale_radius(6.0));
+    radii.insert("md".to_string(), scale_radius(10.0));
+    radii.insert("lg".to_string(), scale_radius(16.0));
+    radii.insert("xl".to_string(), scale_radius(24.0));
     radii.insert("pill".to_string(), "9999px".to_string());
 
     let mut gradients_map = IndexMap::new();
