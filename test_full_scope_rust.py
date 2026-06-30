@@ -74,6 +74,39 @@ SLIDE_CONTENT = {
     "text_columns": [
         {"title": "Platform Overview", "columns": [{"heading": "Scalability", "body": "Automatically scales to handle millions of requests per second."}, {"heading": "Security", "body": "SOC 2 Type II certified with end-to-end encryption."}]},
     ],
+    "section_divider": [
+        {"kicker": "Chapter 02", "title": "From Insight to Execution", "subtitle": "A sharper operating model for the next growth cycle."},
+    ],
+    "problem_solution": [
+        {"title": "The Execution Gap", "problem": "Teams collect insights but lose momentum before action.", "solution": "Convert every signal into a tracked next step.", "proof_points": [{"title": "Faster handoff", "description": "Decisions move directly into owners and timelines."}, {"title": "Clearer focus", "description": "Only the highest-leverage work enters the plan."}]},
+    ],
+    "myth_fact": [
+        {"myth": "More dashboards automatically create better decisions.", "fact": "Better decisions come from fewer signals with clearer ownership.", "explanation": "The slide should help teams challenge a common assumption."},
+    ],
+    "checklist_action_plan": [
+        {"title": "Launch Checklist", "items": [{"label": "Lock the customer promise"}, {"label": "Validate the funnel event map"}, {"label": "Assign owners to each risk"}, {"label": "Schedule the post-launch review"}]},
+    ],
+    "case_study_result": [
+        {"client": "Northstar Labs", "challenge": "Launch cycles were slow and approval-heavy.", "solution": "A two-track workflow separated creative iteration from compliance review.", "results": [{"title": "42%", "description": "Faster campaign launch"}, {"title": "3.1x", "description": "More creative variants tested"}]},
+    ],
+    "pricing_plan": [
+        {"title": "Choose a Plan", "plans": [{"name": "Starter", "price": "$49", "description": "For focused solo workflows."}, {"name": "Growth", "price": "$149", "description": "For teams scaling repeatable systems."}, {"name": "Scale", "price": "Custom", "description": "For enterprise governance and support."}]},
+    ],
+    "testimonial_avatar": [
+        {"quote": "The team finally has one operating view for decisions and follow-through.", "author": "Maya Patel", "role": "COO, Northstar Labs"},
+    ],
+    "logo_cloud": [
+        {"title": "Trusted by Modern Teams", "logos": ["Nexus", "Aster", "Northstar", "Helio", "Quanta", "SignalWorks"]},
+    ],
+    "faq": [
+        {"title": "Common Questions", "questions": [{"question": "How fast can we launch?", "answer": "Most teams ship the first workflow in one week."}, {"question": "Can this support approvals?", "answer": "Yes, review steps can be mapped into the same flow."}]},
+    ],
+    "process_map": [
+        {"title": "Operating Flow", "steps": [{"label": "Capture signal"}, {"label": "Prioritize opportunity"}, {"label": "Assign owner"}, {"label": "Review outcome"}]},
+    ],
+    "before_after_story": [
+        {"title": "Before and After", "before": "Scattered updates across docs, chats, and dashboards.", "after": "One narrative that connects signal, decision, owner, and result.", "metric": "37% fewer status meetings after rollout."},
+    ],
     "progress_rings": [
         {"title": "Project Completion", "description": "Overall progress across all workstreams", "items": [{"label": "Design", "value": 85, "color": "#6366F1"}, {"label": "Backend", "value": 60, "color": "#10B981"}, {"label": "Frontend", "value": 45, "color": "#F59E0B"}]},
     ],
@@ -174,6 +207,9 @@ IMAGE_VARIANT_OVERRIDES = {
         {"style": "scattered"},
         {"style": "layered"},
         {"style": "geometric"},
+        {"style": "editorial_stack"},
+        {"style": "mosaic"},
+        {"style": "filmstrip"},
     ],
     "image_comparison": [
         {"divider_style": "line"},
@@ -245,6 +281,9 @@ def run_test():
 
     output_dir = "./test-drafts/full-scope-test-output-rust"
     os.makedirs(output_dir, exist_ok=True)
+    for filename in os.listdir(output_dir):
+        if filename.startswith("carousel_") and filename.endswith(".html"):
+            os.remove(os.path.join(output_dir, filename))
 
     print("Connecting to Rust MCP Server...")
     client = RustMcpClient(binary_path)

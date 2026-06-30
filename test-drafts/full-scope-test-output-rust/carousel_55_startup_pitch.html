@@ -9,46 +9,46 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --primary: #2A7F26;
-  --primary-light: #74C76E;
-  --primary-dark: #005300;
-  --surface-light: #F0F8EF;
-  --surface-dark: #000200;
-  --text-primary: #090C08;
-  --text-secondary: #3E453D;
-  --text-on-dark: #EBF0EA;
-  --text-on-dark-secondary: #C8D0C7;
-  --border-light: #C5CDC4;
-  --border-dark: #253224;
-  --accent: #92489C;
-  --secondary: #86A883;
-  --tertiary: #3FAFB8;
-  --gradient: linear-gradient(165deg, #000200 0%, #005300 60%, #000200 100%);
+  --primary: #0069E3;
+  --primary-light: #62BBFF;
+  --primary-dark: #0038B0;
+  --surface-light: #EFF6FF;
+  --surface-dark: #000205;
+  --text-primary: #090B0F;
+  --text-secondary: #3D434B;
+  --text-on-dark: #EAEFF5;
+  --text-on-dark-secondary: #C8CED8;
+  --border-light: #C1C8D1;
+  --border-dark: #242E3D;
+  --accent: #AE5800;
+  --secondary: #597DB1;
+  --tertiary: #9C5FB1;
+  --gradient: linear-gradient(165deg, #000205 0%, #0038B0 60%, #000205 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #2A7F2640;
+  --shadow-glow: 0 0 20px #0069E340;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F0F8EF 0%, #2A7F2608 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #000200 0%, #00530030 50%, #000200 100%);
+  --gradient-subtle: linear-gradient(135deg, #EFF6FF 0%, #0069E308 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #0069E315 0px, transparent 50%), radial-gradient(at 80% 0%, #AE580010 0px, transparent 50%), radial-gradient(at 0% 50%, #62BBFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #000205 0%, #0038B030 50%, #000205 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #000200CC;
+  --glass-dark-bg: #000205CC;
   --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #25322440;
-  --glass-frosted-bg: #F0F8EFE6;
+  --glass-dark-border: 1px solid #242E3D40;
+  --glass-frosted-bg: #EFF6FFE6;
   --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #C5CDC430;
-  --glass-light-bg: #F0F8EFCC;
+  --glass-frosted-border: 1px solid #C1C8D130;
+  --glass-light-bg: #EFF6FFCC;
   --glass-light-blur: 12px;
-  --glass-light-border: 1px solid #C5CDC440;
+  --glass-light-border: 1px solid #C1C8D140;
   --font-heading: 'Plus Jakarta Sans', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
@@ -352,55 +352,25 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0069E315 0px, transparent 50%), radial-gradient(at 80% 0%, #AE580010 0px, transparent 50%), radial-gradient(at 0% 50%, #62BBFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;width:100%;height:100%;align-items:center;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Workspace Setup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #090B0F; margin: 0; text-align: left; letter-spacing: -0.015em">Our Platform vs Legacy</h2><div style="width:100%;margin-top:28px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;font-weight:600;">
+                <span>Our Platform</span>
+                <span>Legacy</span>
             </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;">
-            <h3 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:700;color:#090C08;margin:0 0 8px;line-height:1.2;">Workspace Setup</h3>
-            <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#3E453D;margin:0;line-height:1.45;">Ergonomic keyboard, mouse, and multi-monitor layout.</p>
-        </div>
-                </div>
+            <div style="width:100%;height:16px;background:#C1C8D130;border-radius:8px;overflow:hidden;display:flex;">
+                <div style="width:60.5%;height:100%;background:#0069E3;border-radius:8px 0 0 8px;"></div>
+                <div style="width:39.5%;height:100%;background:#3D434B;border-radius:0 8px 8px 0;"></div>
             </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 55</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
-            
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Unlock Your Potential" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:#0069E3;">95 score</span>
+                <span style="color:#3D434B;">62 score</span>
             </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <h2 style="font-family:Plus Jakarta Sans;font-size:31px;font-weight:800;color:white;margin:0;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Unlock Your Potential</h2>
-                <p style="font-family:Plus Jakarta Sans;font-size:14px;color:rgba(255,255,255,0.85);margin:12px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">The journey starts here.</p>
-            </div>
+        </div><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#3D434B;margin:20px 0 0;line-height:1.45;text-align:center;width:100%;">Direct performance comparison</p>
         </div>
             </div>
         </div>
@@ -415,45 +385,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
-            
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Simplicity is the ultimate sophistication." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>
-            </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <div style="font-size:40px;color:rgba(255,255,255,0.4);line-height:1;margin-bottom:-10px;">“</div>
-                <p style="font-family:Plus Jakarta Sans;font-size:25px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Simplicity is the ultimate sophistication.</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:white;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Leonardo da Vinci</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:11px;color:rgba(255,255,255,0.7);margin:2px 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Polymath</p>
-            </div>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 55</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -462,39 +394,77 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); inset: 0; z-index: 1; pointer-events: none; opacity: 0.04"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0069E315 0px, transparent 50%), radial-gradient(at 80% 0%, #AE580010 0px, transparent 50%), radial-gradient(at 0% 50%, #62BBFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="position:relative;width:100%;height:240px;">
-                <div style="position:relative;width:100%;height:240px;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                <div style="position:absolute;left:30.0%;top:40.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#2A7F26;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Processor">
-                    1
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #090B0F; margin: 0; text-align: left; letter-spacing: -0.015em">Key Metrics</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;width:100%;box-sizing:border-box;"><div style="background:rgba(0,0,0,0.02);border:1px solid #C1C8D130;border-radius:10px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#3D434B;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Rating</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#090B0F;">4.9</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.3</span>
                 </div>
-            </div><div style="position:absolute;left:70.0%;top:60.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#2A7F26;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Battery">
-                    2
+            </div><div style="background:rgba(0,0,0,0.02);border:1px solid #C1C8D130;border-radius:10px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#3D434B;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Uptime</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#090B0F;">99.9%</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.1%</span>
                 </div>
+            </div><div style="background:rgba(0,0,0,0.02);border:1px solid #C1C8D130;border-radius:10px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#3D434B;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Latency</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#090B0F;">120ms</span>
+                    <span style="font-size:9px;font-weight:700;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:6px;">-15ms</span>
+                </div>
+            </div><div style="background:rgba(0,0,0,0.02);border:1px solid #C1C8D130;border-radius:10px;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#3D434B;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Requests</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#090B0F;">2.1M</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+42%</span>
+                </div>
+            </div></div>
+        </div>
             </div>
-            </div>
-            <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#3E453D;margin:16px 0 0;line-height:1.45;text-align:left;">Key hardware features highlights.</p>
-            <div style="margin-top:20px;display:flex;flex-direction:column;text-align:left;"><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#2A7F26;color:white;font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">1</span>
-                    <div>
-                        <h4 style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#090C08;margin:0 0 2px;">Processor</h4>
-                        <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#3E453D;margin:0;line-height:1.35;">Ultra-fast octa-core processor</p>
-                    </div>
-                </div><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#2A7F26;color:white;font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">2</span>
-                    <div>
-                        <h4 style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#090C08;margin:0 0 2px;">Battery</h4>
-                        <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#3E453D;margin:0;line-height:1.35;">Long-lasting 5000mAh battery</p>
-                    </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 55</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div>
+<div class="slide slide--light has-progress">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0069E315 0px, transparent 50%), radial-gradient(at 80% 0%, #AE580010 0px, transparent 50%), radial-gradient(at 0% 50%, #62BBFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #090B0F; margin: 0; text-align: left; letter-spacing: -0.01em">Conversion Funnel</h2>
+            <div style="width:100%;margin-top:20px;box-sizing:border-box;"><div style="width:100%;background:#0069E3;opacity:1.00;border-radius:4px;padding:8px 14px;box-sizing:border-box;margin:0 auto 6px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Visitors</span>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:white;">100K</strong>
+                </div><div style="text-align:center;font-size:11px;color:#0069E399;margin-bottom:6px;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto 6px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#090B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Signups</span>
+                    <div style="width:25%;background:#0069E3;opacity:0.80;border-radius:4px;height:32px;min-width:8px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#090B0F;flex:1;">25K</strong>
+                </div><div style="text-align:center;font-size:11px;color:#0069E399;margin-bottom:6px;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto 6px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#090B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Paying</span>
+                    <div style="width:10%;background:#0069E3;opacity:0.60;border-radius:4px;height:32px;min-width:8px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#090B0F;flex:1;">8K</strong>
                 </div></div>
         </div>
             </div>
@@ -510,7 +480,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -519,77 +489,15 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; opacity: 0.04"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0069E315 0px, transparent 50%), radial-gradient(at 80% 0%, #AE580010 0px, transparent 50%), radial-gradient(at 0% 50%, #62BBFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;gap:16px;width:100%;height:100%;justify-content:center;">
-                    <div style="position:relative;width:100%;height:220px;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Uptime Guaranteed" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;text-align:left;">
-            <span style="font-family:Plus Jakarta Sans;font-size:48px;font-weight:800;color:#2A7F26;margin:0 0 4px;line-height:1;">99.9%</span>
-            <span style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:600;color:#090C08;margin:0 0 8px;line-height:1.2;text-transform:uppercase;letter-spacing:0.05em;">Uptime Guaranteed</span>
-            <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#3E453D;margin:0;line-height:1.4;">Enterprise SLA backing our cloud deployment.</p>
-        </div>
-                </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 55</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div>
-<div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:700;color:#090C08;margin-bottom:12px;letter-spacing:-0.01em;">Project Lifecycle</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;height:190px;width:100%;">
-                <div style="position:relative;width:100%;height:100%;border-radius:0;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Design Phase" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                <div style="padding:6px;background:rgba(0,0,0,0.4);position:absolute;bottom:0;left:0;right:0;z-index:3;color:white;font-family:Plus Jakarta Sans;font-size:10px;text-align:center;">
-                    Design Phase
-                </div>
-            </div><div style="position:relative;width:100%;height:100%;border-radius:0;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Development" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                <div style="padding:6px;background:rgba(0,0,0,0.4);position:absolute;bottom:0;left:0;right:0;z-index:3;color:white;font-family:Plus Jakarta Sans;font-size:10px;text-align:center;">
-                    Development
-                </div>
-            </div><div style="position:relative;width:100%;height:100%;border-radius:0;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Launch" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                <div style="padding:6px;background:rgba(0,0,0,0.4);position:absolute;bottom:0;left:0;right:0;z-index:3;color:white;font-family:Plus Jakarta Sans;font-size:10px;text-align:center;">
-                    Launch
-                </div>
-            </div>
-            </div>
-            <div style="font-family:Plus Jakarta Sans;font-size:13px;color:#3E453D;margin-top:10px;line-height:1.4;">End-to-end execution phases</div>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #090B0F; margin: 0; text-align: left; letter-spacing: -0.01em">Quarterly Results</h2><table style="width:100%;border-collapse:collapse;margin-top:12px;">
+            <thead><tr><th style="padding:8px 12px;text-align:left;font-family:Plus Jakarta Sans;font-size:11px;font-weight:700;color:#090B0F;border-bottom:2px solid #C1C8D1;text-transform:uppercase;letter-spacing:0.04em;">Quarter</th><th style="padding:8px 12px;text-align:left;font-family:Plus Jakarta Sans;font-size:11px;font-weight:700;color:#090B0F;border-bottom:2px solid #C1C8D1;text-transform:uppercase;letter-spacing:0.04em;">Revenue</th><th style="padding:8px 12px;text-align:left;font-family:Plus Jakarta Sans;font-size:11px;font-weight:700;color:#090B0F;border-bottom:2px solid #C1C8D1;text-transform:uppercase;letter-spacing:0.04em;">Growth</th></tr></thead>
+            <tbody><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">Q1</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">$4.2M</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">+12%</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:transparent;border-bottom:1px solid #C1C8D120;">Q2</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:transparent;border-bottom:1px solid #C1C8D120;">$5.1M</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:transparent;border-bottom:1px solid #C1C8D120;">+21%</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">Q3</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">$6.8M</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#090B0F;background:#C1C8D115;border-bottom:1px solid #C1C8D120;">+33%</td></tr></tbody>
+        </table>
         </div>
             </div>
         </div>
@@ -604,110 +512,14 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div>
-<div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; z-index: 1; opacity: 0.04; pointer-events: none; inset: 0"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:700;color:#090C08;margin-bottom:12px;letter-spacing:-0.01em;">Creative Process</div>
-            <div style="position:relative;width:100%;height:260;margin:0 auto;box-sizing:border-box;">
-            <div style="position:absolute;left:8px;top:8px;width:146px;height:140px;transform:rotate(-2deg);z-index:1;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 1" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-            </div><div style="position:absolute;left:162px;top:8px;width:146px;height:140px;transform:rotate(2deg);z-index:2;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 2" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-            </div><div style="position:absolute;left:8px;top:156px;width:300px;height:96px;transform:rotate(0deg);z-index:3;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 3" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-            </div>
-        </div>
-            <div style="font-family:Plus Jakarta Sans;font-size:13px;color:#3E453D;margin-top:10px;line-height:1.4;">Visual collage showcase</div>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 55</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div>
-<div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
-            <div style="position:relative;width:100%;height:220px;display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:0;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border: 1px solid #C5CDC430;background:#C5CDC420;">
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Before Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;left:12px;">Before Optimization</span>
-                </div>
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="After Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;right:12px;">After Optimization</span>
-                </div>
-                <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#2A7F26;color:white;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:4;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-weight:bold;">
-                ⇄
-            </div>
-            </div>
-            <p style="font-family:Plus Jakarta Sans;font-size:13px;color:#3E453D;margin:16px 0 0;line-height:1.45;text-align:center;width:100%;">Visual comparison of page layout rendering.</p>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 55</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 
 </div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -728,7 +540,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 8;
+  const total = 4;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

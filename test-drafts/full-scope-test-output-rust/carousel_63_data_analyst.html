@@ -9,46 +9,46 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --primary: #D02285;
-  --primary-light: #FFA0F4;
-  --primary-dark: #9B005A;
-  --surface-light: #FEF1F6;
-  --surface-dark: #040102;
-  --text-primary: #0F090C;
-  --text-secondary: #493F43;
-  --text-on-dark: #F4ECEF;
-  --text-on-dark-secondary: #D6CACF;
-  --border-light: #D0C3C8;
-  --border-dark: #3A282F;
-  --accent: #009D6B;
-  --secondary: #AE6987;
-  --tertiary: #C46415;
-  --gradient: linear-gradient(165deg, #040102 0%, #9B005A 60%, #040102 100%);
+  --primary: #BB35A1;
+  --primary-light: #FF8CF6;
+  --primary-dark: #880073;
+  --surface-light: #FCF1F9;
+  --surface-dark: #040103;
+  --text-primary: #0E0A0D;
+  --text-secondary: #483F45;
+  --text-on-dark: #F3ECF1;
+  --text-on-dark-secondary: #D5CAD1;
+  --border-light: #CEC4CB;
+  --border-dark: #382833;
+  --accent: #00963F;
+  --secondary: #9E6790;
+  --tertiary: #BF5A3D;
+  --gradient: linear-gradient(165deg, #040103 0%, #880073 60%, #040103 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #D0228540;
+  --shadow-glow: 0 0 20px #BB35A140;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #FEF1F6 0%, #D0228508 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #040102 0%, #9B005A30 50%, #040102 100%);
+  --gradient-subtle: linear-gradient(135deg, #FCF1F9 0%, #BB35A108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #BB35A115 0px, transparent 50%), radial-gradient(at 80% 0%, #00963F10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF8CF612 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #040103 0%, #88007330 50%, #040103 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #040102CC;
+  --glass-dark-bg: #040103CC;
   --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #3A282F40;
-  --glass-frosted-bg: #FEF1F6E6;
+  --glass-dark-border: 1px solid #38283340;
+  --glass-frosted-bg: #FCF1F9E6;
   --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #D0C3C830;
-  --glass-light-bg: #FEF1F6CC;
+  --glass-frosted-border: 1px solid #CEC4CB30;
+  --glass-light-bg: #FCF1F9CC;
   --glass-light-blur: 12px;
-  --glass-light-border: 1px solid #D0C3C840;
+  --glass-light-border: 1px solid #CEC4CB40;
   --font-heading: 'Bricolage Grotesque', serif;
   --font-body: 'Bricolage Grotesque', sans-serif;
   --text-display-size: 31px;
@@ -351,21 +351,23 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BB35A115 0px, transparent 50%), radial-gradient(at 80% 0%, #00963F10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF8CF612 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; pointer-events: none; inset: 0; background: var(--texture-grain); z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;height:100%;align-items:center;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Uptime Guaranteed" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;text-align:left;">
-            <span style="font-family:Bricolage Grotesque;font-size:48px;font-weight:800;color:#D02285;margin:0 0 4px;line-height:1;">99.9%</span>
-            <span style="font-family:Bricolage Grotesque;font-size:14px;font-weight:600;color:#0F090C;margin:0 0 8px;line-height:1.2;text-transform:uppercase;letter-spacing:0.05em;">Uptime Guaranteed</span>
-            <p style="font-family:Bricolage Grotesque;font-size:12px;color:#493F43;margin:0;line-height:1.4;">Enterprise SLA backing our cloud deployment.</p>
-        </div>
-                </div>
+                <h2 style="font-family: Bricolage Grotesque; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0E0A0D; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Metrics</h2><div style="display:flex;gap:12px;margin-top:16px;"><div style="flex:1;background:#FCF1F9;border:1px solid #CEC4CB25;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0E0A0D;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Data Points</div>
+                            <div style="font-family:Bricolage Grotesque;font-size:25px;font-weight:700;color:#BB35A1;line-height:1;">10M+</div>
+                            
+                        </div><div style="flex:1;background:#FCF1F9;border:1px solid #CEC4CB25;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0E0A0D;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Uptime</div>
+                            <div style="font-family:Bricolage Grotesque;font-size:25px;font-weight:700;color:#BB35A1;line-height:1;">99.9%</div>
+                            
+                        </div><div style="flex:1;background:#FCF1F9;border:1px solid #CEC4CB25;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0E0A0D;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Response</div>
+                            <div style="font-family:Bricolage Grotesque;font-size:25px;font-weight:700;color:#BB35A1;line-height:1;">50ms</div>
+                            
+                        </div></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -388,39 +390,32 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BB35A115 0px, transparent 50%), radial-gradient(at 80% 0%, #00963F10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF8CF612 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="font-family:Bricolage Grotesque;font-size:20px;font-weight:700;color:#0F090C;margin-bottom:12px;letter-spacing:-0.01em;">Project Lifecycle</div>
-            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;width:100%;"><div style="display:flex;flex-direction:column;width:100%;">
-                    <div style="position:relative;width:100%;height:155px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                        <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Design Phase" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-                    </div>
-                    <div style="padding:6px 0 0;font-family:Bricolage Grotesque;font-size:10px;font-weight:600;color:#493F43;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Design Phase</div>
-                </div> <div style="display:flex;flex-direction:column;width:100%;">
-                    <div style="position:relative;width:100%;height:155px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                        <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Development" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-                    </div>
-                    <div style="padding:6px 0 0;font-family:Bricolage Grotesque;font-size:10px;font-weight:600;color:#493F43;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Development</div>
-                </div> <div style="display:flex;flex-direction:column;width:100%;">
-                    <div style="position:relative;width:100%;height:155px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                        <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Launch" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-                    </div>
-                    <div style="padding:6px 0 0;font-family:Bricolage Grotesque;font-size:10px;font-weight:600;color:#493F43;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Launch</div>
-                </div></div>
-            <div style="font-family:Bricolage Grotesque;font-size:13px;color:#493F43;margin-top:10px;line-height:1.4;">End-to-end execution phases</div>
-        </div>
+                <h2 style="font-family: Bricolage Grotesque; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0E0A0D; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Implementation Roadmap</h2><div style="margin-top:16px;"><div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:17px;top:36px;bottom:-16px;width:2px;background:#BB35A130;"></div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:#BB35A112;border:2px solid #BB35A1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#BB35A1;flex-shrink:0;z-index:2;">1</div>
+                        <div>
+                            <h3 style="font-family:Bricolage Grotesque;font-size:16px;font-weight:600;color:#0E0A0D;margin:0 0 4px;">Discovery</h3>
+                            <p style="font-family:Bricolage Grotesque;font-size:13px;color:#483F45;margin:0;line-height:1.4;">Analyze needs</p>
+                        </div>
+                    </div><div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
+                        <div style="position:absolute;left:17px;top:36px;bottom:-16px;width:2px;background:#BB35A130;"></div>
+                        <div style="width:36px;height:36px;border-radius:50%;background:#BB35A112;border:2px solid #BB35A1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#BB35A1;flex-shrink:0;z-index:2;">2</div>
+                        <div>
+                            <h3 style="font-family:Bricolage Grotesque;font-size:16px;font-weight:600;color:#0E0A0D;margin:0 0 4px;">Setup</h3>
+                            <p style="font-family:Bricolage Grotesque;font-size:13px;color:#483F45;margin:0;line-height:1.4;">Configure platform</p>
+                        </div>
+                    </div><div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
+                        
+                        <div style="width:36px;height:36px;border-radius:50%;background:#BB35A112;border:2px solid #BB35A1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#BB35A1;flex-shrink:0;z-index:2;">3</div>
+                        <div>
+                            <h3 style="font-family:Bricolage Grotesque;font-size:16px;font-weight:600;color:#0E0A0D;margin:0 0 4px;">Launch</h3>
+                            <p style="font-family:Bricolage Grotesque;font-size:13px;color:#483F45;margin:0;line-height:1.4;">Go live</p>
+                        </div>
+                    </div></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -443,31 +438,23 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; position: absolute; pointer-events: none; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BB35A115 0px, transparent 50%), radial-gradient(at 80% 0%, #00963F10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF8CF612 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="font-family:Bricolage Grotesque;font-size:20px;font-weight:700;color:#0F090C;margin-bottom:12px;letter-spacing:-0.01em;">Creative Process</div>
-            <div style="position:relative;width:100%;height:260px;margin:0 auto;box-sizing:border-box;">
-            <div style="position:absolute;left:10px;top:8px;width:129px;height:108px;transform:rotate(-6deg);z-index:1;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:10px;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 1" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BB35A1;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;right:-40px;bottom:-30px;font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
+            <div style="border-radius: 16px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: #FCF1F9CC; border: 1px solid #CEC4CB40; border-left: 6px solid #BB35A1;padding:36px 32px;box-shadow: 0 8px 32px -4px #BB35A11f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BB35A11a;color:#BB35A1;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BB35A1;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Bricolage Grotesque;font-size:20px;font-weight:800;color:#0E0A0D;margin:0;line-height:1.2;">Pro Tip</h2>
+                    </div>
+                </div>
+                <p style="font-family:Bricolage Grotesque;font-size:16px;line-height:1.65;color:#483F45;margin:0;overflow-wrap:break-word;word-break:break-word;">Start with a pilot program to validate before full deployment.</p>
             </div>
-            </div><div style="position:absolute;left:188px;top:20px;width:118px;height:140px;transform:rotate(4deg);z-index:2;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:10px;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 2" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-            </div><div style="position:absolute;left:88px;top:100px;width:140px;height:96px;transform:rotate(-2deg);z-index:3;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:10px;overflow:hidden;border:2px solid white;">
-                <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Collage 3" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-            </div>
-        </div>
-            <div style="font-family:Bricolage Grotesque;font-size:13px;color:#493F43;margin-top:10px;line-height:1.4;">Visual collage showcase</div>
         </div>
             </div>
         </div>
@@ -491,32 +478,24 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0; position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BB35A115 0px, transparent 50%), radial-gradient(at 80% 0%, #00963F10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF8CF612 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; z-index: 1; inset: 0; opacity: 0.04; pointer-events: none"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
-            <div style="position:relative;width:100%;height:220px;display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border: 1px solid #D0C3C830;background:#D0C3C820;">
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Before Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
+                <h2 style="font-family: Bricolage Grotesque; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0E0A0D; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Performance</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:16px;">
+                <div><div style="position:relative;width:100%;height:180px;border-radius: 16px;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Performance" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.12) saturate(1.10) brightness(1.02);" />
                 
+            </div></div>
+                <div><div style="margin-bottom:20px;">
+                <h3 style="font-family:Bricolage Grotesque;font-size:16px;font-weight:600;color:#0E0A0D;margin:0 0 6px;">Sub-100ms latency</h3>
+                <p style="font-family:Bricolage Grotesque;font-size:13px;color:#483F45;margin:0;line-height:1.45;">Global edge servers</p>
+            </div><div style="margin-bottom:20px;">
+                <h3 style="font-family:Bricolage Grotesque;font-size:16px;font-weight:600;color:#0E0A0D;margin:0 0 6px;">99.99% availability</h3>
+                <p style="font-family:Bricolage Grotesque;font-size:13px;color:#483F45;margin:0;line-height:1.45;">Multi-region fallback</p>
+            </div></div>
             </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Bricolage Grotesque;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;left:12px;">Before Optimization</span>
-                </div>
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="After Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: right;filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);opacity:0.32;" />
-                
-            </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Bricolage Grotesque;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;right:12px;">After Optimization</span>
-                </div>
-                <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#D02285;color:white;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:4;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-weight:bold;">
-                ⇄
-            </div>
-            </div>
-            <p style="font-family:Bricolage Grotesque;font-size:13px;color:#493F43;margin:16px 0 0;line-height:1.45;text-align:center;width:100%;">Visual comparison of page layout rendering.</p>
-        </div>
             </div>
         </div>
   <div class="slide__overlay">

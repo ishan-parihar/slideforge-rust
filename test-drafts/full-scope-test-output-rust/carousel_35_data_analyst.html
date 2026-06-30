@@ -352,30 +352,23 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0078A415 0px, transparent 50%), radial-gradient(at 80% 0%, #A05A2810 0px, transparent 50%), radial-gradient(at 0% 50%, #66C3F312 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="inset: 0; z-index: 1; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
-            <div style="position:relative;width:100%;height:220px;display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:0;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border: 1px solid #C1CCD330;background:#C1CCD320;">
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Before Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.12) saturate(1.10) brightness(1.02);" />
-                
-            </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Bricolage Grotesque;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;left:12px;">Before Optimization</span>
-                </div>
-                <div style="position:relative;width:100%;height:100%;">
-                    <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="After Optimization" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.12) saturate(1.10) brightness(1.02);" />
-                
-            </div>
-                    <span style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:Bricolage Grotesque;font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;right:12px;">After Optimization</span>
-                </div>
-                <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#0078A4;color:white;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:4;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-weight:bold;">
-                ⇄
-            </div>
-            </div>
-            <p style="font-family:Bricolage Grotesque;font-size:13px;color:#3B4449;margin:16px 0 0;line-height:1.45;text-align:center;width:100%;">Visual comparison of page layout rendering.</p>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Bricolage Grotesque; font-size: 20px; font-weight: 600; line-height: 1.18; color: #070C0F; margin: 0; text-align: left; letter-spacing: -0.01em">Conversion Funnel</h2>
+            <div style="width:100%;margin-top:20px;box-sizing:border-box;"><div style="width:100%;background:#0078A4;opacity:1.00;border-radius:4px;padding:8px 14px;box-sizing:border-box;margin:0 auto 6px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Bricolage Grotesque;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Visitors</span>
+                    <strong style="font-family:Bricolage Grotesque;font-size:12px;color:white;">100K</strong>
+                </div><div style="text-align:center;font-size:11px;color:#0078A499;margin-bottom:6px;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto 6px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-family:Bricolage Grotesque;font-size:10px;font-weight:700;color:#070C0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Signups</span>
+                    <div style="width:25%;background:#0078A4;opacity:0.80;border-radius:4px;height:32px;min-width:8px;flex-shrink:0;"></div>
+                    <strong style="font-family:Bricolage Grotesque;font-size:12px;color:#070C0F;flex:1;">25K</strong>
+                </div><div style="text-align:center;font-size:11px;color:#0078A499;margin-bottom:6px;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto 6px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-family:Bricolage Grotesque;font-size:10px;font-weight:700;color:#070C0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Paying</span>
+                    <div style="width:10%;background:#0078A4;opacity:0.60;border-radius:4px;height:32px;min-width:8px;flex-shrink:0;"></div>
+                    <strong style="font-family:Bricolage Grotesque;font-size:12px;color:#070C0F;flex:1;">8K</strong>
+                </div></div>
         </div>
             </div>
         </div>

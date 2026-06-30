@@ -138,6 +138,105 @@ pub fn get_registry() -> Value {
             "layout_family": "content",
             "best_for": ["comparison", "content", "two-sides"]
         },
+        "section_divider": {
+            "description": "Chapter opener or section break with kicker, title, and subtitle",
+            "required_params": ["title"],
+            "optional_params": ["subtitle", "kicker", "background_image", "image_opacity", "variant"],
+            "variants": ["chapter", "minimal", "statement"],
+            "default_variant": "chapter",
+            "layout_family": "hero",
+            "best_for": ["opening", "section-intro", "chapter-break"]
+        },
+        "problem_solution": {
+            "description": "Problem and solution pair with optional proof points",
+            "required_params": ["problem", "solution"],
+            "optional_params": ["title", "proof_points", "variant"],
+            "variants": ["split", "proof-grid"],
+            "default_variant": "split",
+            "layout_family": "strategy",
+            "best_for": ["education", "sales", "positioning"]
+        },
+        "myth_fact": {
+            "description": "Myth versus fact educational contrast slide",
+            "required_params": ["myth", "fact"],
+            "optional_params": ["explanation", "variant"],
+            "variants": ["split", "debunk"],
+            "default_variant": "split",
+            "layout_family": "educational",
+            "best_for": ["education", "thought-leadership"]
+        },
+        "checklist_action_plan": {
+            "description": "Action checklist with numbered execution steps",
+            "required_params": ["title", "items"],
+            "optional_params": ["variant"],
+            "variants": ["numbered", "checklist"],
+            "default_variant": "numbered",
+            "layout_family": "process",
+            "best_for": ["how-to", "closing", "steps"]
+        },
+        "case_study_result": {
+            "description": "Case study with challenge, solution, and result proof points",
+            "required_params": ["challenge", "solution", "results"],
+            "optional_params": ["client", "title", "variant"],
+            "variants": ["summary", "results-grid"],
+            "default_variant": "summary",
+            "layout_family": "social-proof",
+            "best_for": ["case-study", "proof", "results"]
+        },
+        "pricing_plan": {
+            "description": "Pricing or offer stack with up to three plans",
+            "required_params": ["title", "plans"],
+            "optional_params": ["variant"],
+            "variants": ["cards", "offer-stack"],
+            "default_variant": "cards",
+            "layout_family": "conversion",
+            "best_for": ["pricing", "offer", "conversion"]
+        },
+        "testimonial_avatar": {
+            "description": "Testimonial quote with person/avatar attribution",
+            "required_params": ["quote", "author"],
+            "optional_params": ["role", "avatar_url", "variant"],
+            "variants": ["centered", "profile"],
+            "default_variant": "centered",
+            "layout_family": "social-proof",
+            "best_for": ["testimonial", "social-proof"]
+        },
+        "logo_cloud": {
+            "description": "Grid of customer, press, or partner names/logos",
+            "required_params": ["title", "logos"],
+            "optional_params": ["variant"],
+            "variants": ["grid", "strip"],
+            "default_variant": "grid",
+            "layout_family": "social-proof",
+            "best_for": ["credibility", "logos", "partners"]
+        },
+        "faq": {
+            "description": "Frequently asked questions or objection handling slide",
+            "required_params": ["title", "questions"],
+            "optional_params": ["variant"],
+            "variants": ["stack", "compact"],
+            "default_variant": "stack",
+            "layout_family": "content",
+            "best_for": ["objections", "education", "support"]
+        },
+        "process_map": {
+            "description": "Process map or workflow with sequential steps",
+            "required_params": ["title", "steps"],
+            "optional_params": ["variant"],
+            "variants": ["numbered", "map"],
+            "default_variant": "numbered",
+            "layout_family": "process",
+            "best_for": ["process", "workflow", "roadmap"]
+        },
+        "before_after_story": {
+            "description": "Text and metric before/after transformation story",
+            "required_params": ["title", "before", "after"],
+            "optional_params": ["metric", "variant"],
+            "variants": ["split", "metric"],
+            "default_variant": "split",
+            "layout_family": "story",
+            "best_for": ["transformation", "results", "case-study"]
+        },
         "metric_card": {
             "description": "Single prominent metric with optional trend indicator",
             "required_params": ["metric", "value"],
@@ -214,7 +313,7 @@ pub fn get_registry() -> Value {
             "description": "Artistic collage of overlapping images",
             "required_params": ["images"],
             "optional_params": ["style", "title", "section_caption", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
-            "variants": ["scattered", "layered", "geometric"],
+            "variants": ["scattered", "layered", "geometric", "editorial_stack", "mosaic", "filmstrip"],
             "default_variant": "scattered",
             "layout_family": "image",
             "best_for": ["image", "collage", "visual"]
@@ -300,6 +399,17 @@ mod tests {
             "stat_row",
             "text_block",
             "text_columns",
+            "section_divider",
+            "problem_solution",
+            "myth_fact",
+            "checklist_action_plan",
+            "case_study_result",
+            "pricing_plan",
+            "testimonial_avatar",
+            "logo_cloud",
+            "faq",
+            "process_map",
+            "before_after_story",
             "timeline",
             "image_caption",
             "image_headline",

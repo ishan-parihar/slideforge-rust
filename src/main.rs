@@ -1,3 +1,5 @@
+#![recursion_limit = "512"]
+
 use clap::{Parser, Subcommand};
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng, rngs::StdRng};

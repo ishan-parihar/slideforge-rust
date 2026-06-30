@@ -9,46 +9,46 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --primary: #5B5CE7;
-  --primary-light: #9EAAFF;
-  --primary-dark: #3828B3;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #ECEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C4C7D1;
-  --border-dark: #2A2D3D;
-  --accent: #966D00;
-  --secondary: #6E77B1;
-  --tertiary: #AE5999;
-  --gradient: linear-gradient(165deg, #010105 0%, #3828B3 60%, #010105 100%);
+  --primary: #804FE8;
+  --primary-light: #C79EFF;
+  --primary-dark: #5813B4;
+  --surface-light: #F5F3FF;
+  --surface-dark: #020105;
+  --text-primary: #0B0A0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CECCD7;
+  --border-light: #C7C6D0;
+  --border-dark: #2E2B3C;
+  --accent: #7B7F00;
+  --secondary: #8477B7;
+  --tertiary: #C2588A;
+  --gradient: linear-gradient(165deg, #020105 0%, #5813B4 60%, #020105 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5B5CE740;
+  --shadow-glow: 0 0 20px #804FE840;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5B5CE708 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3828B330 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #F5F3FF 0%, #804FE808 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #020105 0%, #5813B430 50%, #020105 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #010105CC;
+  --glass-dark-bg: #020105CC;
   --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #2A2D3D40;
-  --glass-frosted-bg: #F2F4FFE6;
+  --glass-dark-border: 1px solid #2E2B3C40;
+  --glass-frosted-bg: #F5F3FFE6;
   --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #C4C7D130;
-  --glass-light-bg: #F2F4FFCC;
+  --glass-frosted-border: 1px solid #C7C6D030;
+  --glass-light-bg: #F5F3FFCC;
   --glass-light-blur: 12px;
-  --glass-light-border: 1px solid #C4C7D140;
+  --glass-light-border: 1px solid #C7C6D040;
   --font-heading: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
@@ -352,20 +352,11 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;gap:20px;width:100%;height:100%;justify-content:center;">
-                    <div style="position:relative;width:100%;height:240px;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Workspace Setup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;opacity:0.32;" />
-                
-            </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;">
-            <h3 style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#0A0B0F;margin:0 0 8px;line-height:1.2;">Workspace Setup</h3>
-            <p style="font-family:DM Sans;font-size:13px;color:#40424B;margin:0;line-height:1.45;">Ergonomic keyboard, mouse, and multi-monitor layout.</p>
-        </div>
-                </div>
+                <div style="display:flex;flex-direction:column;gap:0"><div style="width: 56px; height: 56px; background: #804FE812; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 0 16px;"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#804FE8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#804FE8;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0B0A0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em"><span style="color:#804FE8;font-weight:800;margin-right:12px;font-family:Playfair Display;">10x</span>Lightning Fast</h2><p style="font-family: DM Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #42414A; margin: 0; text-align: left">10x faster processing</p></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -387,21 +378,24 @@ body {
     </svg>
   </div>
 </div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; z-index: 1; inset: 0; opacity: 0.04"></div>
+<div class="slide slide--light has-progress">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; z-index: 1; position: absolute; opacity: 0.04; pointer-events: none"></div>
             
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Unlock Your Potential" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;opacity:0.32;" />
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>
-            </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <h2 style="font-family:Playfair Display;font-size:31px;font-weight:800;color:white;margin:0;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Unlock Your Potential</h2>
-                <p style="font-family:DM Sans;font-size:14px;color:rgba(255,255,255,0.85);margin:12px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">The journey starts here.</p>
-            </div>
-        </div>
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0B0A0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Key Benefits</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#804FE8;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0B0A0F;">Automated workflows</div>
+                            <div style="font-size:13px;color:#42414A;margin-top:4px;">Save 5+ hours weekly</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#804FE8;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0B0A0F;">Real-time insights</div>
+                            <div style="font-size:13px;color:#42414A;margin-top:4px;">Never miss a critical event</div>
+                        </div>
+                    </div></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -423,23 +417,18 @@ body {
     </svg>
   </div>
 </div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none"></div>
+<div class="slide slide--light has-progress">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute"></div>
             
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Simplicity is the ultimate sophistication." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;opacity:0.32;" />
-                <div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.75) 100%);z-index:2;"></div>
+            <div style="position:relative;z-index:10;padding:80px 44px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="background: #F5F3FFCC; backdrop-filter: blur(12px); border-radius: 10px; -webkit-backdrop-filter: blur(12px); border: 1px solid #C7C6D040;padding:32px;box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Playfair Display;font-size:25px;font-weight:600;line-height:1.2;color:#0B0A0F;margin:0;text-align:center;text-wrap:balance;">This tool transformed how we work. The results are incredible.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #0B0A0F20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #0B0A0F; flex-shrink: 0;">S</div>
+            <div>
+                <div style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0B0A0F;">Sarah Chen</div>
+                <div style="font-family:DM Sans;font-size:10px;color:#42414A;"> · VP Engineering</div>
             </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <div style="font-size:40px;color:rgba(255,255,255,0.4);line-height:1;margin-bottom:-10px;">“</div>
-                <p style="font-family:Playfair Display;font-size:25px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Simplicity is the ultimate sophistication.</p>
-                <p style="font-family:DM Sans;font-size:13px;font-weight:600;color:white;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Leonardo da Vinci</p>
-                <p style="font-family:DM Sans;font-size:11px;color:rgba(255,255,255,0.7);margin:2px 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Polymath</p>
-            </div>
-        </div>
+        </div></div></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -462,41 +451,18 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; inset: 0"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="position:relative;width:100%;height:240px;">
-                <div style="position:relative;width:100%;height:240px;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;opacity:0.32;" />
-                
-            </div>
-                <div style="position:absolute;left:30.0%;top:40.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#5B5CE7;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Processor">
-                    1
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0B0A0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Why Choose Us?</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px;margin-top:16px;width:100%;box-sizing:border-box;align-items:stretch;place-items:start;">
+                    <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#804FE8;padding-bottom:10px;border-bottom:2px solid #804FE8;">Traditional</div>
+                    <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#42414A;padding-bottom:10px;border-bottom:2px solid #C7C6D0;">AI-Powered</div>
+                    <div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Manual processing</div>
+                       <div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Automated</div><div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Hours of work</div>
+                       <div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Instant results</div><div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Human error</div>
+                       <div style="font-family:DM Sans;font-size:16px;color:#0B0A0F;padding:10px 0;border-bottom:1px solid #C7C6D020;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Error-free</div>
                 </div>
-            </div><div style="position:absolute;left:70.0%;top:60.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#5B5CE7;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Battery">
-                    2
-                </div>
-            </div>
-            </div>
-            <p style="font-family:DM Sans;font-size:13px;color:#40424B;margin:16px 0 0;line-height:1.45;text-align:left;">Key hardware features highlights.</p>
-            <div style="margin-top:20px;display:flex;flex-direction:column;text-align:left;"><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#5B5CE7;color:white;font-family:DM Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">1</span>
-                    <div>
-                        <h4 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 2px;">Processor</h4>
-                        <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.35;">Ultra-fast octa-core processor</p>
-                    </div>
-                </div><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#5B5CE7;color:white;font-family:DM Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">2</span>
-                    <div>
-                        <h4 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 2px;">Battery</h4>
-                        <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.35;">Long-lasting 5000mAh battery</p>
-                    </div>
-                </div></div>
-        </div>
             </div>
         </div>
   <div class="slide__overlay">

@@ -4248,6 +4248,484 @@ fn text_columns_slide(
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
 
+fn simple_text(v: &Value, keys: &[&str]) -> String {
+    keys.iter()
+        .find_map(|key| v.get(*key).and_then(|x| x.as_str()))
+        .unwrap_or("")
+        .to_string()
+}
+
+fn render_compact_items(
+    tokens: &DesignTokens,
+    colors: &crate::layouts::SlideColors,
+    items: &[Value],
+    title_keys: &[&str],
+    body_keys: &[&str],
+) -> String {
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    items
+        .iter()
+        .take(4)
+        .enumerate()
+        .map(|(idx, item)| {
+            let title = simple_text(item, title_keys);
+            let body = simple_text(item, body_keys);
+            format!(
+                r#"<div style="background:{};border:1px solid {};border-radius:{};padding:14px 16px;box-sizing:border-box;">
+                    <div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:6px;text-transform:uppercase;">{:02}</div>
+                    <div style="font-family:{};font-size:15px;font-weight:800;color:{};line-height:1.2;margin-bottom:5px;">{}</div>
+                    <div style="font-family:{};font-size:12px;color:{};line-height:1.35;">{}</div>
+                </div>"#,
+                card_bg,
+                colors.border,
+                radius,
+                tokens.body_font,
+                colors.primary,
+                idx + 1,
+                tokens.heading_font,
+                colors.text_primary,
+                escape_html(&title),
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(&body)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+pub fn section_divider_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    subtitle: &str,
+    kicker: &str,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let content = format!(
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:{};font-size:12px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">{}</div>
+            <h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>
+            <div style="width:76px;height:4px;background:{};border-radius:{};margin:24px 0;"></div>
+            <p style="font-family:{};font-size:15px;color:{};line-height:1.45;margin:0;max-width:300px;">{}</p>
+        </div>"#,
+        tokens.body_font,
+        colors.primary,
+        escape_html(kicker),
+        tokens.heading_font,
+        tokens
+            .type_scale
+            .get("display")
+            .map(|t| t.font_size)
+            .unwrap_or(40),
+        colors.text_primary,
+        escape_html(title),
+        colors.primary,
+        current_component_radius(tokens, "chip"),
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(subtitle)
+    );
+    let html = slide_base(&content, tokens, bg_style, true, "80px 52px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "section_divider", "theme": theme})
+}
+
+pub fn problem_solution_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    problem: &str,
+    solution: &str,
+    proof_points: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let points = render_compact_items(
+        tokens,
+        &colors,
+        &proof_points,
+        &["title", "label"],
+        &["description", "body"],
+    );
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:14px;color:{};line-height:1.4;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:14px;color:{};line-height:1.4;margin:0;">{}</p></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">{}</div>
+        </div>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(title),
+        radius,
+        card_bg,
+        colors.border,
+        tokens.body_font,
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(problem),
+        radius,
+        card_bg,
+        colors.border,
+        tokens.body_font,
+        colors.primary,
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(solution),
+        points
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "problem_solution", "theme": theme})
+}
+
+pub fn myth_fact_slide(
+    tokens: &DesignTokens,
+    myth: &str,
+    fact: &str,
+    explanation: &str,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    problem_solution_slide(
+        tokens,
+        "Myth vs Fact",
+        myth,
+        fact,
+        vec![json!({"title":"Context","description": explanation})],
+        bg_style,
+        theme,
+        background_image,
+        image_opacity,
+    )
+}
+
+pub fn checklist_action_plan_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    items: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let rows = items
+        .iter()
+        .take(6)
+        .enumerate()
+        .map(|(idx, item)| {
+            let label = simple_text(item, &["label", "title", "task"]);
+            format!(
+                r#"<div style="display:flex;gap:12px;align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:12px 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;flex-shrink:0;">{}</div>
+                    <div style="font-family:{};font-size:14px;font-weight:700;color:{};line-height:1.3;">{}</div>
+                </div>"#,
+                card_bg,
+                colors.border,
+                radius,
+                colors.primary,
+                tokens.body_font,
+                idx + 1,
+                tokens.body_font,
+                colors.text_primary,
+                escape_html(&label)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("");
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0;">{}</h2><div style="display:flex;flex-direction:column;gap:10px;">{}</div></div>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(title),
+        rows
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "70px 44px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "checklist_action_plan", "theme": theme})
+}
+
+pub fn case_study_result_slide(
+    tokens: &DesignTokens,
+    client: &str,
+    challenge: &str,
+    solution: &str,
+    results: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let title = if client.is_empty() {
+        "Case Study"
+    } else {
+        client
+    };
+    problem_solution_slide(
+        tokens,
+        title,
+        challenge,
+        solution,
+        results,
+        bg_style,
+        theme,
+        background_image,
+        image_opacity,
+    )
+}
+
+pub fn pricing_plan_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    plans: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let cards = plans
+        .iter()
+        .take(3)
+        .map(|plan| {
+            let name = simple_text(plan, &["name", "title"]);
+            let price = simple_text(plan, &["price", "value"]);
+            let desc = simple_text(plan, &["description", "caption"]);
+            format!(
+                r#"<div style="flex:1;background:{};border:1px solid {};border-radius:{};padding:18px;box-sizing:border-box;">
+                    <div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div>
+                    <div style="font-family:{};font-size:30px;font-weight:900;color:{};margin:12px 0 8px;">{}</div>
+                    <p style="font-family:{};font-size:12px;color:{};line-height:1.35;margin:0;">{}</p>
+                </div>"#,
+                card_bg,
+                colors.border,
+                radius,
+                tokens.heading_font,
+                colors.text_primary,
+                escape_html(&name),
+                tokens.heading_font,
+                colors.primary,
+                escape_html(&price),
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(&desc)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("");
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:22px;"><h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0;">{}</h2><div style="display:flex;gap:12px;">{}</div></div>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(title),
+        cards
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "72px 40px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "pricing_plan", "theme": theme})
+}
+
+pub fn testimonial_avatar_slide(
+    tokens: &DesignTokens,
+    quote: &str,
+    author: &str,
+    role: &str,
+    avatar_url: &str,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let avatar = if avatar_url.is_empty() {
+        format!(
+            r#"<div style="width:72px;height:72px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:24px;font-weight:900;">{}</div>"#,
+            colors.primary,
+            tokens.heading_font,
+            author.chars().next().unwrap_or('A')
+        )
+    } else {
+        format!(
+            r#"<img src="{}" alt="{}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid {};">"#,
+            avatar_url,
+            escape_html(author),
+            if colors.is_dark {
+                "rgba(255,255,255,0.16)"
+            } else {
+                "white"
+            }
+        )
+    };
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;">{}<p style="font-family:{};font-size:28px;font-weight:800;color:{};line-height:1.2;margin:0;">“{}”</p><div><div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div><div style="font-family:{};font-size:12px;color:{};">{}</div></div></div>"#,
+        avatar,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(quote),
+        tokens.body_font,
+        colors.text_primary,
+        escape_html(author),
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(role)
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "80px 44px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "testimonial_avatar", "theme": theme})
+}
+
+pub fn logo_cloud_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    logos: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let cells = logos
+        .iter()
+        .take(8)
+        .map(|logo| {
+            let label = logo
+                .as_str()
+                .map(|s| s.to_string())
+                .unwrap_or_else(|| simple_text(logo, &["name", "label"]));
+            format!(
+                r#"<div style="height:54px;border-radius:{};border:1px solid {};background:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:13px;font-weight:800;color:{};">{}</div>"#,
+                radius,
+                colors.border,
+                card_bg,
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(&label)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("");
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;text-align:center;">{}</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">{}</div></div>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(title),
+        cells
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "76px 44px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "logo_cloud", "theme": theme})
+}
+
+pub fn faq_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    questions: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let items = questions
+        .into_iter()
+        .map(|q| {
+            json!({"label": format!("{} - {}", simple_text(&q, &["question", "q"]), simple_text(&q, &["answer", "a"]))})
+        })
+        .collect();
+    checklist_action_plan_slide(
+        tokens,
+        title,
+        items,
+        bg_style,
+        theme,
+        background_image,
+        image_opacity,
+    )
+}
+
+pub fn process_map_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    steps: Vec<Value>,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    checklist_action_plan_slide(
+        tokens,
+        title,
+        steps,
+        bg_style,
+        theme,
+        background_image,
+        image_opacity,
+    )
+}
+
+pub fn before_after_story_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    before: &str,
+    after: &str,
+    metric: &str,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    problem_solution_slide(
+        tokens,
+        title,
+        before,
+        after,
+        vec![json!({"title":"Result","description": metric})],
+        bg_style,
+        theme,
+        background_image,
+        image_opacity,
+    )
+}
+
 /// Route a slide type name + JSON params to the appropriate slide generator.
 ///
 /// This is the single entry-point used by `mcp_server::generate_slide`.
@@ -4707,6 +5185,167 @@ pub fn dispatch_slide(
                 img_opacity,
             ))
         }
+        "section_divider" => Ok(section_divider_slide(
+            tokens,
+            &s("title").if_empty(&s("headline")),
+            &s("subtitle").if_empty(&s("subheadline")),
+            &s("kicker").if_empty(&s("label")),
+            bg_style,
+            theme,
+            &bg_img,
+            img_opacity,
+        )),
+        "problem_solution" => {
+            let proof_points = p
+                .get("proof_points")
+                .or_else(|| p.get("points"))
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(problem_solution_slide(
+                tokens,
+                &s("title"),
+                &s("problem"),
+                &s("solution"),
+                proof_points,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "myth_fact" => Ok(myth_fact_slide(
+            tokens,
+            &s("myth"),
+            &s("fact"),
+            &s("explanation"),
+            bg_style,
+            theme,
+            &bg_img,
+            img_opacity,
+        )),
+        "checklist_action_plan" => {
+            let items = p
+                .get("items")
+                .or_else(|| p.get("steps"))
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(checklist_action_plan_slide(
+                tokens,
+                &s("title"),
+                items,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "case_study_result" => {
+            let results = p
+                .get("results")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(case_study_result_slide(
+                tokens,
+                &s("client").if_empty(&s("title")),
+                &s("challenge"),
+                &s("solution"),
+                results,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "pricing_plan" => {
+            let plans = p
+                .get("plans")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(pricing_plan_slide(
+                tokens,
+                &s("title"),
+                plans,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "testimonial_avatar" => Ok(testimonial_avatar_slide(
+            tokens,
+            &s("quote"),
+            &s("author"),
+            &s("role"),
+            &s("avatar_url"),
+            bg_style,
+            theme,
+            &bg_img,
+            img_opacity,
+        )),
+        "logo_cloud" => {
+            let logos = p
+                .get("logos")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(logo_cloud_slide(
+                tokens,
+                &s("title"),
+                logos,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "faq" => {
+            let questions = p
+                .get("questions")
+                .or_else(|| p.get("items"))
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(faq_slide(
+                tokens,
+                &s("title"),
+                questions,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "process_map" => {
+            let steps = p
+                .get("steps")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            Ok(process_map_slide(
+                tokens,
+                &s("title"),
+                steps,
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
+        "before_after_story" => Ok(before_after_story_slide(
+            tokens,
+            &s("title"),
+            &s("before"),
+            &s("after"),
+            &s("metric"),
+            bg_style,
+            theme,
+            &bg_img,
+            img_opacity,
+        )),
         "image_caption" => Ok(image_caption_slide(
             tokens,
             &s("image_url"),
@@ -5684,7 +6323,7 @@ pub fn image_collage_slide(
 
     let has_header = !title.is_empty();
     let has_footer = !section_caption.is_empty();
-    let collage_height_px = if has_header || has_footer { 260 } else { 320 };
+    let collage_height_px = if has_header || has_footer { 276 } else { 332 };
 
     struct CollageSlot {
         x: i32,
@@ -5696,92 +6335,237 @@ pub fn image_collage_slide(
     }
     let image_count = images.len().min(4).max(1);
     let slots: Vec<CollageSlot> = if image_count <= 2 {
-        let frame_h = collage_height_px - 16;
+        let frame_h = collage_height_px - 22;
         vec![
             CollageSlot {
-                x: 8,
-                y: 8,
-                w: 146,
+                x: 4,
+                y: 10,
+                w: 186,
                 h: frame_h,
                 rot: -2,
-                z: 1,
+                z: 2,
             },
             CollageSlot {
-                x: 162,
-                y: 8,
-                w: 146,
-                h: frame_h,
-                rot: 2,
-                z: 2,
+                x: 202,
+                y: 34,
+                w: 110,
+                h: frame_h - 48,
+                rot: 3,
+                z: 3,
             },
         ]
     } else if image_count == 3 {
-        let top_h = ((collage_height_px as f32) * 0.54) as i32;
-        let bottom_y = top_h + 16;
-        let bottom_h = collage_height_px - bottom_y - 8;
-        vec![
-            CollageSlot {
-                x: 8,
-                y: 8,
-                w: 146,
-                h: top_h,
-                rot: -2,
-                z: 1,
-            },
-            CollageSlot {
-                x: 162,
-                y: 8,
-                w: 146,
-                h: top_h,
-                rot: 2,
-                z: 2,
-            },
-            CollageSlot {
-                x: 8,
-                y: bottom_y,
-                w: 300,
-                h: bottom_h,
-                rot: 0,
-                z: 3,
-            },
-        ]
+        match style {
+            "layered" | "editorial_stack" => vec![
+                CollageSlot {
+                    x: 4,
+                    y: 14,
+                    w: 184,
+                    h: collage_height_px - 34,
+                    rot: -2,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 202,
+                    y: 10,
+                    w: 110,
+                    h: 116,
+                    rot: 3,
+                    z: 3,
+                },
+                CollageSlot {
+                    x: 194,
+                    y: 148,
+                    w: 118,
+                    h: 112,
+                    rot: -3,
+                    z: 4,
+                },
+            ],
+            "geometric" | "mosaic" => vec![
+                CollageSlot {
+                    x: 4,
+                    y: 8,
+                    w: 148,
+                    h: collage_height_px - 26,
+                    rot: 0,
+                    z: 1,
+                },
+                CollageSlot {
+                    x: 164,
+                    y: 8,
+                    w: 148,
+                    h: 124,
+                    rot: 0,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 164,
+                    y: 146,
+                    w: 148,
+                    h: collage_height_px - 164,
+                    rot: 0,
+                    z: 3,
+                },
+            ],
+            "filmstrip" => vec![
+                CollageSlot {
+                    x: 4,
+                    y: 20,
+                    w: 96,
+                    h: collage_height_px - 54,
+                    rot: -2,
+                    z: 1,
+                },
+                CollageSlot {
+                    x: 110,
+                    y: 8,
+                    w: 96,
+                    h: collage_height_px - 30,
+                    rot: 0,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 216,
+                    y: 20,
+                    w: 96,
+                    h: collage_height_px - 54,
+                    rot: 2,
+                    z: 3,
+                },
+            ],
+            _ => vec![
+                CollageSlot {
+                    x: 8,
+                    y: 18,
+                    w: 182,
+                    h: collage_height_px - 48,
+                    rot: -3,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 204,
+                    y: 8,
+                    w: 104,
+                    h: 112,
+                    rot: 3,
+                    z: 3,
+                },
+                CollageSlot {
+                    x: 198,
+                    y: 144,
+                    w: 110,
+                    h: 108,
+                    rot: -2,
+                    z: 4,
+                },
+            ],
+        }
     } else {
-        let frame_w = 146;
-        let frame_h = (collage_height_px - 24) / 2;
-        vec![
-            CollageSlot {
-                x: 8,
-                y: 8,
-                w: frame_w,
-                h: frame_h,
-                rot: -2,
-                z: 1,
-            },
-            CollageSlot {
-                x: 162,
-                y: 8,
-                w: frame_w,
-                h: frame_h,
-                rot: 2,
-                z: 2,
-            },
-            CollageSlot {
-                x: 8,
-                y: frame_h + 16,
-                w: frame_w,
-                h: frame_h,
-                rot: 2,
-                z: 3,
-            },
-            CollageSlot {
-                x: 162,
-                y: frame_h + 16,
-                w: frame_w,
-                h: frame_h,
-                rot: -2,
-                z: 4,
-            },
-        ]
+        match style {
+            "geometric" | "mosaic" => vec![
+                CollageSlot {
+                    x: 4,
+                    y: 8,
+                    w: 148,
+                    h: 124,
+                    rot: 0,
+                    z: 1,
+                },
+                CollageSlot {
+                    x: 164,
+                    y: 8,
+                    w: 148,
+                    h: 124,
+                    rot: 0,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 4,
+                    y: 146,
+                    w: 148,
+                    h: collage_height_px - 164,
+                    rot: 0,
+                    z: 3,
+                },
+                CollageSlot {
+                    x: 164,
+                    y: 146,
+                    w: 148,
+                    h: collage_height_px - 164,
+                    rot: 0,
+                    z: 4,
+                },
+            ],
+            "filmstrip" => vec![
+                CollageSlot {
+                    x: 4,
+                    y: 20,
+                    w: 72,
+                    h: collage_height_px - 54,
+                    rot: -2,
+                    z: 1,
+                },
+                CollageSlot {
+                    x: 84,
+                    y: 8,
+                    w: 72,
+                    h: collage_height_px - 30,
+                    rot: 0,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 164,
+                    y: 8,
+                    w: 72,
+                    h: collage_height_px - 30,
+                    rot: 0,
+                    z: 3,
+                },
+                CollageSlot {
+                    x: 244,
+                    y: 20,
+                    w: 68,
+                    h: collage_height_px - 54,
+                    rot: 2,
+                    z: 4,
+                },
+            ],
+            _ => vec![
+                CollageSlot {
+                    x: 6,
+                    y: 16,
+                    w: 154,
+                    h: 142,
+                    rot: -3,
+                    z: 2,
+                },
+                CollageSlot {
+                    x: 172,
+                    y: 8,
+                    w: 138,
+                    h: 112,
+                    rot: 2,
+                    z: 3,
+                },
+                CollageSlot {
+                    x: 20,
+                    y: 174,
+                    w: 120,
+                    h: 86,
+                    rot: 2,
+                    z: 4,
+                },
+                CollageSlot {
+                    x: 154,
+                    y: 140,
+                    w: 156,
+                    h: 120,
+                    rot: -2,
+                    z: 5,
+                },
+            ],
+        }
     };
 
     let shadow_md = tokens
@@ -5816,18 +6600,33 @@ pub fn image_collage_slide(
         );
 
         img_html.push_str(&format!(
-            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;border:2px solid white;">
+            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;border:2px solid {};background:{};padding:3px;box-sizing:border-box;">
                 {}
             </div>"#,
-            x, y, w, h, rot, z, shadow_md, radius_md, themed_img
+            x,
+            y,
+            w,
+            h,
+            rot,
+            z,
+            shadow_md,
+            radius_md,
+            if is_dark { "rgba(255,255,255,0.82)" } else { "rgba(255,255,255,0.96)" },
+            if is_dark { "rgba(255,255,255,0.08)" } else { "rgba(255,255,255,0.94)" },
+            themed_img
         ));
     }
 
     let collage_html = format!(
-        r#"<div style="position:relative;width:100%;height:{};margin:0 auto;box-sizing:border-box;">
+        r#"<div style="position:relative;width:316px;max-width:100%;height:{};margin:0 auto;box-sizing:border-box;">
+            <div style="position:absolute;left:38px;top:26px;width:230px;height:210px;border-radius:{};background:{};opacity:{};z-index:0;"></div>
             {}
         </div>"#,
-        collage_height_px, img_html
+        collage_height_px,
+        radius_md,
+        colors.primary,
+        if is_dark { "0.12" } else { "0.08" },
+        img_html
     );
 
     let title_html = if !title.is_empty() {

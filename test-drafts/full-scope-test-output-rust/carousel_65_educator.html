@@ -9,46 +9,46 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --primary: #5B5CE7;
-  --primary-light: #9EAAFF;
-  --primary-dark: #3828B3;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #ECEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C4C7D1;
-  --border-dark: #2A2D3D;
-  --accent: #966D00;
-  --secondary: #6E77B1;
-  --tertiary: #AE5999;
-  --gradient: linear-gradient(165deg, #010105 0%, #3828B3 60%, #010105 100%);
+  --primary: #00804D;
+  --primary-light: #67CC94;
+  --primary-dark: #005424;
+  --surface-light: #EDF8F2;
+  --surface-dark: #000301;
+  --text-primary: #080C09;
+  --text-secondary: #3C453F;
+  --text-on-dark: #E9F1EC;
+  --text-on-dark-secondary: #C6D1CA;
+  --border-light: #C0CAC3;
+  --border-dark: #213228;
+  --accent: #974B85;
+  --secondary: #78AA91;
+  --tertiary: #4BABCA;
+  --gradient: linear-gradient(165deg, #000301 0%, #005424 60%, #000301 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5B5CE740;
+  --shadow-glow: 0 0 20px #00804D40;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5B5CE708 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3828B330 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #EDF8F2 0%, #00804D08 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #000301 0%, #00542430 50%, #000301 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #010105CC;
+  --glass-dark-bg: #000301CC;
   --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #2A2D3D40;
-  --glass-frosted-bg: #F2F4FFE6;
+  --glass-dark-border: 1px solid #21322840;
+  --glass-frosted-bg: #EDF8F2E6;
   --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #C4C7D130;
-  --glass-light-bg: #F2F4FFCC;
+  --glass-frosted-border: 1px solid #C0CAC330;
+  --glass-light-bg: #EDF8F2CC;
   --glass-light-blur: 12px;
-  --glass-light-border: 1px solid #C4C7D140;
+  --glass-light-border: 1px solid #C0CAC340;
   --font-heading: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
@@ -352,20 +352,24 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;gap:20px;width:100%;height:100%;justify-content:center;">
-                    <div style="position:relative;width:100%;height:240px;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Workspace Setup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;">
-            <h3 style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#0A0B0F;margin:0 0 8px;line-height:1.2;">Workspace Setup</h3>
-            <p style="font-family:DM Sans;font-size:13px;color:#40424B;margin:0;line-height:1.45;">Ergonomic keyboard, mouse, and multi-monitor layout.</p>
-        </div>
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#00804D;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;right:-40px;bottom:-30px;font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
+            <div style="-webkit-backdrop-filter: blur(12px); background: #EDF8F2CC; border: 1px solid #C0CAC340; backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #00804D;padding:36px 32px;box-shadow: 0 8px 32px -4px #00804D1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#00804D1a;color:#00804D;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#00804D;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#080C09;margin:0;line-height:1.2;">Pro Tip</h2>
+                    </div>
                 </div>
+                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#3C453F;margin:0;overflow-wrap:break-word;word-break:break-word;">Start with a pilot program to validate before full deployment.</p>
+            </div>
+        </div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -387,21 +391,25 @@ body {
     </svg>
   </div>
 </div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04"></div>
+<div class="slide slide--light has-progress">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); position: absolute; z-index: 1; opacity: 0.04; inset: 0"></div>
             
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Unlock Your Potential" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #080C09; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Performance</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:16px;">
+                <div><div style="position:relative;width:100%;height:180px;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Performance" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: grayscale(78%) contrast(1.06) brightness(1.04) saturate(0.96);" />
+                
+            </div></div>
+                <div><div style="margin-bottom:20px;">
+                <h3 style="font-family:DM Sans;font-size:16px;font-weight:600;color:#080C09;margin:0 0 6px;">Sub-100ms latency</h3>
+                <p style="font-family:DM Sans;font-size:13px;color:#3C453F;margin:0;line-height:1.45;">Global edge servers</p>
+            </div><div style="margin-bottom:20px;">
+                <h3 style="font-family:DM Sans;font-size:16px;font-weight:600;color:#080C09;margin:0 0 6px;">99.99% availability</h3>
+                <p style="font-family:DM Sans;font-size:13px;color:#3C453F;margin:0;line-height:1.45;">Multi-region fallback</p>
+            </div></div>
             </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <h2 style="font-family:Playfair Display;font-size:31px;font-weight:800;color:white;margin:0;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Unlock Your Potential</h2>
-                <p style="font-family:DM Sans;font-size:14px;color:rgba(255,255,255,0.85);margin:12px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">The journey starts here.</p>
-            </div>
-        </div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -423,23 +431,24 @@ body {
     </svg>
   </div>
 </div>
-<div class="slide slide--dark has-progress">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none"></div>
+<div class="slide slide--light has-progress">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Simplicity is the ultimate sophistication." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>
-            </div>
-            <div style="position:absolute;inset:0;padding:80px 40px 80px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <div style="font-size:40px;color:rgba(255,255,255,0.4);line-height:1;margin-bottom:-10px;">“</div>
-                <p style="font-family:Playfair Display;font-size:25px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Simplicity is the ultimate sophistication.</p>
-                <p style="font-family:DM Sans;font-size:13px;font-weight:600;color:white;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Leonardo da Vinci</p>
-                <p style="font-family:DM Sans;font-size:11px;color:rgba(255,255,255,0.7);margin:2px 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Polymath</p>
-            </div>
-        </div>
+            <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #080C09; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Capabilities</h2><div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;width:100%;margin-top:16px;"><div style="flex:1;min-width:0;background:#EDF8F2;border:1px solid #C0CAC325;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:10px;display:flex;align-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00804D" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#00804D;"><rect x="4" y="4" width="16" height="16" rx="2" stroke-width="2"/><rect x="9" y="9" width="6" height="6" stroke-width="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#080C09;margin:0 0 6px;line-height:1.2;">AI Models</h3>
+                <p style="font-family:DM Sans;font-size:11px;color:#3C453F;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Custom LLMs</p>
+            </div><div style="flex:1;min-width:0;background:#EDF8F2;border:1px solid #C0CAC325;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:10px;display:flex;align-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00804D" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#00804D;"><line x1="18" y1="20" x2="18" y2="10" stroke-width="2"/><line x1="12" y1="20" x2="12" y2="4" stroke-width="2"/><line x1="6" y1="20" x2="6" y2="14" stroke-width="2"/><path d="M3 20h18" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#080C09;margin:0 0 6px;line-height:1.2;">Analytics</h3>
+                <p style="font-family:DM Sans;font-size:11px;color:#3C453F;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Visual reports</p>
+            </div><div style="flex:1;min-width:0;background:#EDF8F2;border:1px solid #C0CAC325;border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:10px;display:flex;align-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00804D" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#00804D;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#080C09;margin:0 0 6px;line-height:1.2;">Security</h3>
+                <p style="font-family:DM Sans;font-size:11px;color:#3C453F;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Role-based access</p>
+            </div></div></div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -462,40 +471,14 @@ body {
   </div>
 </div>
 <div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; z-index: 1; inset: 0; opacity: 0.04; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none"></div>
             
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="position:relative;width:100%;height:240px;">
-                <div style="position:relative;width:100%;height:240px;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;" />
-                
-            </div>
-                <div style="position:absolute;left:30.0%;top:40.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#5B5CE7;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Processor">
-                    1
-                </div>
-            </div><div style="position:absolute;left:70.0%;top:60.0%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:#5B5CE7;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="Battery">
-                    2
-                </div>
-            </div>
-            </div>
-            <p style="font-family:DM Sans;font-size:13px;color:#40424B;margin:16px 0 0;line-height:1.45;text-align:left;">Key hardware features highlights.</p>
-            <div style="margin-top:20px;display:flex;flex-direction:column;text-align:left;"><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#5B5CE7;color:white;font-family:DM Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">1</span>
-                    <div>
-                        <h4 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 2px;">Processor</h4>
-                        <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.35;">Ultra-fast octa-core processor</p>
-                    </div>
-                </div><div style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#5B5CE7;color:white;font-family:DM Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">2</span>
-                    <div>
-                        <h4 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 2px;">Battery</h4>
-                        <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.35;">Long-lasting 5000mAh battery</p>
-                    </div>
-                </div></div>
+            <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="text-align: center; max-width: 440px; margin: 0 auto; width:100%; position:relative; z-index:3;">
+            <span style="background: linear-gradient(135deg, #080C09 0%, #3C453F 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 16px; display: block; letter-spacing: -0.02em">The Next Chapter</span>
+            <div style="width: 60px; height: 3.5px; background: #00804D; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px #00804D40;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#3C453F;margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">Announcing our $20M Series B funding round.</p>
         </div>
             </div>
         </div>
