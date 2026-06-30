@@ -152,6 +152,17 @@ SLIDE_CONTENT = {
     "image_comparison": [
         {"before_image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f", "after_image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f", "before_label": "Before Optimization", "after_label": "After Optimization", "description": "Visual comparison of page layout rendering.", "divider_style": "arrow"}
     ],
+    "qr_destination": [
+        {
+            "destination_url": "https://nexusai.io/blog/agentic-slide-workflows",
+            "heading": "Read the full workflow",
+            "caption": "A practical guide to turning carousel attention into owned traffic.",
+            "cta_text": "Scan to read",
+            "short_url": "nexusai.io/guide",
+            "incentive_text": "Includes templates and examples.",
+            "variant": "full-conversion",
+        }
+    ],
 }
 
 ARCHETYPES = [
@@ -163,6 +174,14 @@ PLATFORMS = ["instagram_portrait", "instagram_square", "instagram_story", "tikto
 BRAND_COLORS = ["#6366F1", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16"]
 THEMES = ["editorial", "bold", "minimal", "dark", "vibrant", "natural"]
 BG_STYLES = ["light", "dark", "gradient"]
+ASPECT_RATIOS = ["4:5", "9:16", "3:4", "1:1"]
+PLATFORM_RATIO_OVERRIDES = {
+    "instagram_portrait": ["4:5", "3:4", "1:1"],
+    "instagram_square": ["1:1", "4:5"],
+    "instagram_story": ["9:16", "3:4"],
+    "tiktok_vertical": ["9:16"],
+    "linkedin_landscape": ["4:5", "1:1"],
+}
 IMAGE_SLIDE_TYPES = [
     "image_caption", "image_headline", "image_quote", "image_callout",
     "image_stat", "image_gallery", "image_collage", "image_comparison",
@@ -303,6 +322,8 @@ def run_test():
         theme = THEMES[i % len(THEMES)]
         archetype = ARCHETYPES[i % len(ARCHETYPES)]
         platform = PLATFORMS[i % len(PLATFORMS)]
+        allowed = PLATFORM_RATIO_OVERRIDES.get(platform, ["4:5"])
+        aspect_ratio = allowed[i % len(allowed)]
         color = BRAND_COLORS[i % len(BRAND_COLORS)]
         overrides = {}
         if slide_type in IMAGE_VARIANT_OVERRIDES:
@@ -326,6 +347,7 @@ def run_test():
             "id": carousel_id,
             "archetype": archetype,
             "platform": platform,
+            "aspect_ratio": aspect_ratio,
             "color": color,
             "theme": theme,
             "slide_types": [slide_type],
@@ -337,13 +359,20 @@ def run_test():
         carousel_id += 1
     
     # Run tests
-    results = {"success": 0, "failed": 0, "errors": [], "slide_coverage": set()}
+    results = {
+        "success": 0,
+        "failed": 0,
+        "errors": [],
+        "slide_coverage": set(),
+        "ratio_coverage": set()
+    }
     
     configs_to_run = test_configs
     for config in configs_to_run:
         carousel_id = config["id"]
         archetype = config["archetype"]
         platform = config["platform"]
+        aspect_ratio = config["aspect_ratio"]
         color = config["color"]
         theme = config["theme"]
         slide_types = config["slide_types"]
@@ -358,6 +387,7 @@ def run_test():
                 "visual_theme": theme,
                 "archetype": archetype,
                 "platform": platform,
+                "aspect_ratio": aspect_ratio,
                 "brand_name": "NexusAI",
                 "brand_handle": "@nexusai",
                 "topic": f"Rust Scope Test: {carousel_id}",
@@ -388,12 +418,15 @@ def run_test():
                 
                 slides.append(slide_data)
                 results["slide_coverage"].add(st)
+                results["ratio_coverage"].add(aspect_ratio)
             
             # 3. Render carousel
             html_path = os.path.join(output_dir, f"carousel_{carousel_id}_{archetype}.html")
             render_res = client.call_tool("render_carousel", {
                 "slides": slides,
-                "output_path": html_path
+                "output_path": html_path,
+                "platform": platform,
+                "aspect_ratio": aspect_ratio,
             })
             
             if os.path.exists(html_path):
@@ -413,17 +446,30 @@ def run_test():
     print(f"Failed: {results['failed']}")
     print(f"Slide type coverage: {len(results['slide_coverage'])}/{len(all_slide_types)}")
     print(f"Covered slide types: {', '.join(sorted(results['slide_coverage']))}")
+    print(f"Ratio coverage: {len(results['ratio_coverage'])}/{len(ASPECT_RATIOS)}")
+    print(f"Covered aspect ratios: {', '.join(sorted(results['ratio_coverage']))}")
     
     # Check for missing slide types
     missing_types = set(all_slide_types) - results["slide_coverage"]
     if missing_types:
         print(f"Missing slide types: {', '.join(sorted(missing_types))}")
     
+    # Check for missing aspect ratios
+    missing_ratios = set(ASPECT_RATIOS) - results["ratio_coverage"]
+    if missing_ratios:
+        results["failed"] += 1
+        results["errors"].append(f"Missing aspect ratios: {', '.join(sorted(missing_ratios))}")
+        print(f"Missing aspect ratios: {', '.join(sorted(missing_ratios))}")
+    
     if results["errors"]:
         print("Errors:")
         for err in results["errors"]:
             print(f"  - {err}")
     print(f"HTML files saved in: {output_dir}")
+    
+    # Exit with failure if any failed
+    if results["failed"] > 0:
+        sys.exit(1)
 
 if __name__ == "__main__":
     run_test()

@@ -72,7 +72,7 @@ enum Commands {
     ListPlatforms,
     /// List all available brand archetypes
     ListArchetypes,
-    /// Run an exhaustive full-scope test generating 23 carousels covering all archetypes, themes, and slide types
+    /// Run an exhaustive full-scope test generating 24 carousels covering all archetypes, themes, and slide types
     TestFullScope {
         /// Output directory for test HTML files
         #[arg(long, default_value = "./test-drafts/full-scope-test-output-rust")]
@@ -200,6 +200,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "metric_sparkline",
         "column_chart",
         "text_columns",
+        "qr_destination",
     ];
 
     let archetypes_list = vec![
@@ -219,6 +220,16 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "linkedin_landscape",
     ];
 
+    let platform_ratio_overrides: std::collections::HashMap<&str, Vec<&str>> = [
+        ("instagram_portrait", vec!["4:5", "3:4", "1:1"]),
+        ("instagram_square", vec!["1:1", "4:5"]),
+        ("instagram_story", vec!["9:16", "3:4"]),
+        ("tiktok_vertical", vec!["9:16"]),
+        ("linkedin_landscape", vec!["4:5", "1:1"]),
+    ].iter().cloned().collect();
+
+    let default_ratios = vec!["4:5"];
+
     let brand_colors = vec![
         "#6366F1", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16",
     ];
@@ -228,14 +239,17 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
     let mut rng = StdRng::seed_from_u64(42);
     let mut success = 0;
     let mut failed = 0;
+    let total_carousels = 24; // Updated to include qr_destination
 
-    for idx in 0..23 {
+    for idx in 0..total_carousels {
         let archetype = archetypes_list[idx % archetypes_list.len()];
         let platform = platforms_list[idx % platforms_list.len()];
+        let allowed_ratios = platform_ratio_overrides.get(platform).unwrap_or(&default_ratios);
+        let aspect_ratio = allowed_ratios[idx % allowed_ratios.len()];
         let color = brand_colors[idx % brand_colors.len()];
         let theme = themes[idx % themes.len()];
         let carousel_id = idx + 1;
-        let canvas = platforms::resolve_canvas(platform, None)?;
+        let canvas = platforms::resolve_canvas(platform, Some(aspect_ratio))?;
 
         // Choose 4 random slide types
         let mut chosen_types = slide_types.clone();
@@ -254,8 +268,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         let topic = topics_list[idx % topics_list.len()];
 
         println!(
-            "[{}/23] Testing archetype: {}, platform: {}, color: {}, theme: {} with slides: {:?}",
-            carousel_id, archetype, platform, color, theme, carousel_types
+            "[{}/{}] Testing {}, platform: {}, ratio: {}, theme: {} with slides: {:?}",
+            carousel_id, total_carousels, archetype, platform, aspect_ratio, theme, carousel_types
         );
 
         // 1. Derive tokens
@@ -478,6 +492,16 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                         {"heading": "Parity", "text": "Pixel-perfect alignment with Python reference."},
                         {"heading": "Scalability", "text": "Handles thousands of slides without degradation."}
                     ],
+                    "bg_style": rand_bg
+                }),
+                "qr_destination" => json!({
+                    "destination_url": "https://nexusai.io/blog/agentic-slide-workflows",
+                    "heading": "Read the full workflow",
+                    "caption": "A practical guide to turning carousel attention into owned traffic.",
+                    "cta_text": "Scan to read",
+                    "short_url": "nexusai.io/guide",
+                    "incentive_text": "Includes templates and examples.",
+                    "variant": "full-conversion",
                     "bg_style": rand_bg
                 }),
                 "chart" => {
