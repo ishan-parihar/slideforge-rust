@@ -1,4 +1,4 @@
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 /// Returns the full slide type registry as a JSON object.
 pub fn get_registry() -> Value {
@@ -155,6 +155,78 @@ pub fn get_registry() -> Value {
             "default_variant": "bar",
             "layout_family": "data",
             "best_for": ["data", "trends", "comparison", "results"]
+        },
+        "image_caption": {
+            "description": "Single image with caption/description below or overlay",
+            "required_params": ["image_url", "caption"],
+            "optional_params": ["description", "layout", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["image-top", "image-bottom", "image-left", "image-right", "image-overlay"],
+            "default_variant": "image-top",
+            "layout_family": "image",
+            "best_for": ["image", "visual", "caption"]
+        },
+        "image_headline": {
+            "description": "Image with large headline overlay",
+            "required_params": ["image_url", "headline"],
+            "optional_params": ["subheadline", "overlay_position", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["center", "bottom", "top"],
+            "default_variant": "bottom",
+            "layout_family": "image",
+            "best_for": ["image", "hero", "visual"]
+        },
+        "image_quote": {
+            "description": "Image with quote overlay",
+            "required_params": ["image_url", "quote"],
+            "optional_params": ["author", "role", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "image",
+            "best_for": ["image", "quote", "social-proof"]
+        },
+        "image_callout": {
+            "description": "Image with annotation/callout pointing to a feature",
+            "required_params": ["image_url", "callouts"],
+            "optional_params": ["description", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "image",
+            "best_for": ["image", "diagram", "annotated"]
+        },
+        "image_stat": {
+            "description": "Image with prominent statistic overlay",
+            "required_params": ["image_url", "stat_value", "stat_label"],
+            "optional_params": ["description", "layout", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["image-left", "image-right", "image-top", "image-bottom"],
+            "default_variant": "image-left",
+            "layout_family": "image",
+            "best_for": ["image", "stat", "data"]
+        },
+        "image_gallery": {
+            "description": "Grid of 2-6 images in various layouts",
+            "required_params": ["images"],
+            "optional_params": ["layout", "title", "section_caption", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["2-grid", "3-grid", "4-grid", "featured-1-2", "featured-2-1"],
+            "default_variant": "2-grid",
+            "layout_family": "image",
+            "best_for": ["image", "gallery", "portfolio"]
+        },
+        "image_collage": {
+            "description": "Artistic collage of overlapping images",
+            "required_params": ["images"],
+            "optional_params": ["style", "title", "section_caption", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["scattered", "layered", "geometric"],
+            "default_variant": "scattered",
+            "layout_family": "image",
+            "best_for": ["image", "collage", "visual"]
+        },
+        "image_comparison": {
+            "description": "Two images side by side for before/after comparison",
+            "required_params": ["before_image", "after_image"],
+            "optional_params": ["before_label", "after_label", "description", "divider_style", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
+            "variants": ["line", "arrow"],
+            "default_variant": "line",
+            "layout_family": "image",
+            "best_for": ["image", "comparison", "before-after"]
         }
     })
 }
@@ -164,9 +236,7 @@ pub fn list_slide_types() -> Vec<String> {
     let registry = get_registry();
     let mut types: Vec<String> = registry
         .as_object()
-        .map(|m: &serde_json::Map<String, Value>| {
-            m.keys().cloned().collect::<Vec<String>>()
-        })
+        .map(|m: &serde_json::Map<String, Value>| m.keys().cloned().collect::<Vec<String>>())
         .unwrap_or_default();
     types.sort();
     types
@@ -194,9 +264,9 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
     map.iter()
         .filter_map(|(slide_type, info): (&String, &Value)| {
             let best_for = info.get("best_for")?.as_array()?;
-            let matches = best_for.iter().any(|v: &Value| {
-                v.as_str().map(|s| s == context).unwrap_or(false)
-            });
+            let matches = best_for
+                .iter()
+                .any(|v: &Value| v.as_str().map(|s| s == context).unwrap_or(false));
             if matches {
                 Some(slide_type.clone())
             } else {
@@ -214,10 +284,31 @@ mod tests {
     fn test_registry_has_all_types() {
         let types = list_slide_types();
         let expected = [
-            "callout", "chart", "comparison", "cta", "definition",
-            "feature", "grid_cards", "headline_subheadline", "hero",
-            "list", "metric_card", "quote", "split_features",
-            "stat_row", "text_block", "text_columns", "timeline",
+            "callout",
+            "chart",
+            "comparison",
+            "cta",
+            "definition",
+            "feature",
+            "grid_cards",
+            "headline_subheadline",
+            "hero",
+            "list",
+            "metric_card",
+            "quote",
+            "split_features",
+            "stat_row",
+            "text_block",
+            "text_columns",
+            "timeline",
+            "image_caption",
+            "image_headline",
+            "image_quote",
+            "image_callout",
+            "image_stat",
+            "image_gallery",
+            "image_collage",
+            "image_comparison",
         ];
         for t in &expected {
             assert!(types.contains(&t.to_string()), "Missing type: {t}");

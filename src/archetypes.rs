@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 // ---------------------------------------------------------------------------
@@ -83,39 +83,114 @@ fn build_archetypes() -> Vec<Archetype> {
         // ── educator ────────────────────────────────────────────────────────
         Archetype {
             name: "educator".to_string(),
-            description: "Learning-focused, clean layout with left-aligned text and minimal decorations".to_string(),
+            description:
+                "Learning-focused, clean layout with left-aligned text and minimal decorations"
+                    .to_string(),
             primary_theme: "light".to_string(),
             default_bg_style: "clean_white".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("center", "split",   false, false, "lg", "center", false, "minimal")),
-                ("feature",    preset("left",   "default", false, false, "md", "start",  false, "minimal")),
-                ("list",       preset("left",   "default", false, false, "md", "start",  false, "minimal")),
-                ("quote",      preset("center", "quote",   false, false, "lg", "center", false, "minimal")),
-                ("cta",        preset("center", "default", false, false, "md", "center", false, "moderate")),
-                ("stat_row",   preset("center", "stat",    false, false, "md", "center", false, "minimal")),
-                ("timeline",   preset("left",   "timeline",false, false, "md", "start",  false, "minimal")),
-                ("comparison", preset("center", "grid",    false, false, "md", "center", false, "minimal")),
+                (
+                    "hero",
+                    preset(
+                        "center", "split", false, false, "lg", "center", false, "minimal",
+                    ),
+                ),
+                (
+                    "feature",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset(
+                        "center", "quote", false, false, "lg", "center", false, "minimal",
+                    ),
+                ),
+                (
+                    "cta",
+                    preset(
+                        "center", "default", false, false, "md", "center", false, "moderate",
+                    ),
+                ),
+                (
+                    "stat_row",
+                    preset(
+                        "center", "stat", false, false, "md", "center", false, "minimal",
+                    ),
+                ),
+                (
+                    "timeline",
+                    preset(
+                        "left", "timeline", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "comparison",
+                    preset(
+                        "center", "grid", false, false, "md", "center", false, "minimal",
+                    ),
+                ),
             ]),
         },
-
         // ── thought_leader ──────────────────────────────────────────────────
         Archetype {
             name: "thought_leader".to_string(),
-            description: "Professional authority with bold statements and gradient headlines".to_string(),
+            description: "Professional authority with bold statements and gradient headlines"
+                .to_string(),
             primary_theme: "dark".to_string(),
             default_bg_style: "dark_gradient".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("center", "bold",    true,  true,  "xl", "center", true,  "moderate")),
-                ("feature",    preset("left",   "split",   true,  false, "md", "start",  true,  "moderate")),
-                ("list",       preset("left",   "default", false, false, "md", "start",  false, "moderate")),
-                ("quote",      preset("center", "quote",   true,  true,  "xl", "center", true,  "bold")),
-                ("cta",        preset("center", "bold",    true,  true,  "lg", "center", true,  "bold")),
-                ("stat_row",   preset("center", "stat",    true,  false, "md", "center", true,  "bold")),
-                ("timeline",   preset("left",   "timeline",false, false, "md", "start",  false, "moderate")),
-                ("comparison", preset("center", "grid",    true,  false, "md", "center", false, "moderate")),
+                (
+                    "hero",
+                    preset(
+                        "center", "bold", true, true, "xl", "center", true, "moderate",
+                    ),
+                ),
+                (
+                    "feature",
+                    preset(
+                        "left", "split", true, false, "md", "start", true, "moderate",
+                    ),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "moderate",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset("center", "quote", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "cta",
+                    preset("center", "bold", true, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "stat_row",
+                    preset("center", "stat", true, false, "md", "center", true, "bold"),
+                ),
+                (
+                    "timeline",
+                    preset(
+                        "left", "timeline", false, false, "md", "start", false, "moderate",
+                    ),
+                ),
+                (
+                    "comparison",
+                    preset(
+                        "center", "grid", true, false, "md", "center", false, "moderate",
+                    ),
+                ),
             ]),
         },
-
         // ── startup_pitch ───────────────────────────────────────────────────
         Archetype {
             name: "startup_pitch".to_string(),
@@ -123,17 +198,42 @@ fn build_archetypes() -> Vec<Archetype> {
             primary_theme: "dark".to_string(),
             default_bg_style: "vibrant_dark".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("center", "bold",    true,  true,  "xl", "center", true,  "bold")),
-                ("feature",    preset("left",   "split",   true,  true,  "md", "start",  true,  "bold")),
-                ("list",       preset("left",   "default", true,  false, "md", "start",  false, "moderate")),
-                ("quote",      preset("center", "quote",   true,  true,  "lg", "center", true,  "bold")),
-                ("cta",        preset("center", "bold",    true,  true,  "xl", "center", true,  "bold")),
-                ("stat_row",   preset("center", "stat",    true,  true,  "lg", "center", true,  "bold")),
-                ("timeline",   preset("left",   "timeline",true,  true,  "md", "start",  false, "bold")),
-                ("comparison", preset("center", "grid",    true,  true,  "md", "center", true,  "bold")),
+                (
+                    "hero",
+                    preset("center", "bold", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "feature",
+                    preset("left", "split", true, true, "md", "start", true, "bold"),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", true, false, "md", "start", false, "moderate",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset("center", "quote", true, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "cta",
+                    preset("center", "bold", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "stat_row",
+                    preset("center", "stat", true, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "timeline",
+                    preset("left", "timeline", true, true, "md", "start", false, "bold"),
+                ),
+                (
+                    "comparison",
+                    preset("center", "grid", true, true, "md", "center", true, "bold"),
+                ),
             ]),
         },
-
         // ── brand_storyteller ───────────────────────────────────────────────
         Archetype {
             name: "brand_storyteller".to_string(),
@@ -141,35 +241,119 @@ fn build_archetypes() -> Vec<Archetype> {
             primary_theme: "warm".to_string(),
             default_bg_style: "warm_gradient".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("center", "full_bleed", false, true,  "xl", "center", true,  "moderate")),
-                ("feature",    preset("center", "split",      false, true,  "lg", "center", false, "moderate")),
-                ("list",       preset("left",   "default",    false, false, "md", "start",  false, "minimal")),
-                ("quote",      preset("center", "quote",      false, true,  "xl", "center", true,  "moderate")),
-                ("cta",        preset("center", "bold",       false, true,  "lg", "center", true,  "bold")),
-                ("stat_row",   preset("center", "stat",       false, true,  "md", "center", false, "moderate")),
-                ("timeline",   preset("left",   "timeline",   false, true,  "md", "start",  false, "moderate")),
-                ("comparison", preset("center", "grid",       false, true,  "md", "center", false, "moderate")),
+                (
+                    "hero",
+                    preset(
+                        "center",
+                        "full_bleed",
+                        false,
+                        true,
+                        "xl",
+                        "center",
+                        true,
+                        "moderate",
+                    ),
+                ),
+                (
+                    "feature",
+                    preset(
+                        "center", "split", false, true, "lg", "center", false, "moderate",
+                    ),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset(
+                        "center", "quote", false, true, "xl", "center", true, "moderate",
+                    ),
+                ),
+                (
+                    "cta",
+                    preset("center", "bold", false, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "stat_row",
+                    preset(
+                        "center", "stat", false, true, "md", "center", false, "moderate",
+                    ),
+                ),
+                (
+                    "timeline",
+                    preset(
+                        "left", "timeline", false, true, "md", "start", false, "moderate",
+                    ),
+                ),
+                (
+                    "comparison",
+                    preset(
+                        "center", "grid", false, true, "md", "center", false, "moderate",
+                    ),
+                ),
             ]),
         },
-
         // ── data_analyst ────────────────────────────────────────────────────
         Archetype {
             name: "data_analyst".to_string(),
-            description: "Data-heavy, structured grids with stat cards and clean typography".to_string(),
+            description: "Data-heavy, structured grids with stat cards and clean typography"
+                .to_string(),
             primary_theme: "light".to_string(),
             default_bg_style: "structured_light".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("left",   "split",   false, false, "lg", "start",  false, "minimal")),
-                ("feature",    preset("left",   "default", false, false, "md", "start",  false, "minimal")),
-                ("list",       preset("left",   "default", false, false, "md", "start",  false, "minimal")),
-                ("quote",      preset("center", "quote",   false, false, "md", "center", false, "minimal")),
-                ("cta",        preset("center", "default", false, false, "md", "center", false, "moderate")),
-                ("stat_row",   preset("center", "stat",    false, false, "lg", "center", false, "bold")),
-                ("timeline",   preset("left",   "timeline",false, false, "md", "start",  false, "minimal")),
-                ("comparison", preset("center", "grid",    false, false, "lg", "center", false, "moderate")),
+                (
+                    "hero",
+                    preset(
+                        "left", "split", false, false, "lg", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "feature",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset(
+                        "center", "quote", false, false, "md", "center", false, "minimal",
+                    ),
+                ),
+                (
+                    "cta",
+                    preset(
+                        "center", "default", false, false, "md", "center", false, "moderate",
+                    ),
+                ),
+                (
+                    "stat_row",
+                    preset(
+                        "center", "stat", false, false, "lg", "center", false, "bold",
+                    ),
+                ),
+                (
+                    "timeline",
+                    preset(
+                        "left", "timeline", false, false, "md", "start", false, "minimal",
+                    ),
+                ),
+                (
+                    "comparison",
+                    preset(
+                        "center", "grid", false, false, "lg", "center", false, "moderate",
+                    ),
+                ),
             ]),
         },
-
         // ── creator ─────────────────────────────────────────────────────────
         Archetype {
             name: "creator".to_string(),
@@ -177,14 +361,40 @@ fn build_archetypes() -> Vec<Archetype> {
             primary_theme: "vibrant".to_string(),
             default_bg_style: "neon_gradient".to_string(),
             slide_presets: slide_map(vec![
-                ("hero",       preset("center", "bold",    true,  true,  "xl", "center", true,  "bold")),
-                ("feature",    preset("center", "split",   true,  true,  "lg", "center", true,  "bold")),
-                ("list",       preset("left",   "default", true,  false, "md", "start",  false, "moderate")),
-                ("quote",      preset("center", "quote",   true,  true,  "xl", "center", true,  "bold")),
-                ("cta",        preset("center", "bold",    true,  true,  "xl", "center", true,  "bold")),
-                ("stat_row",   preset("center", "stat",    true,  true,  "lg", "center", true,  "bold")),
-                ("timeline",   preset("left",   "timeline",true,  true,  "md", "start",  false, "bold")),
-                ("comparison", preset("center", "grid",    true,  true,  "md", "center", true,  "bold")),
+                (
+                    "hero",
+                    preset("center", "bold", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "feature",
+                    preset("center", "split", true, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "list",
+                    preset(
+                        "left", "default", true, false, "md", "start", false, "moderate",
+                    ),
+                ),
+                (
+                    "quote",
+                    preset("center", "quote", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "cta",
+                    preset("center", "bold", true, true, "xl", "center", true, "bold"),
+                ),
+                (
+                    "stat_row",
+                    preset("center", "stat", true, true, "lg", "center", true, "bold"),
+                ),
+                (
+                    "timeline",
+                    preset("left", "timeline", true, true, "md", "start", false, "bold"),
+                ),
+                (
+                    "comparison",
+                    preset("center", "grid", true, true, "md", "center", true, "bold"),
+                ),
             ]),
         },
     ]

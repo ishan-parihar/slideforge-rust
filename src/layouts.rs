@@ -1,22 +1,22 @@
+use crate::design_system::{DesignTokens, contrast_ratio, get_contrast_safe_color};
+use crate::effects::{floating_shape, noise_overlay, slide_background};
 use std::collections::HashMap;
-use crate::design_system::{DesignTokens, get_contrast_safe_color, contrast_ratio};
-use crate::effects::{slide_background, noise_overlay, floating_shape, mesh_gradient};
 
 /// Theme-specific surface color overrides (mirrors CSS THEME_CSS_OVERRIDES).
 pub fn theme_surface_overrides(theme: &str, variant: &str) -> Option<&'static str> {
     match (theme, variant) {
         ("editorial", "light") => Some("#F8F6F3"),
-        ("editorial", "dark")  => Some("#0A0A0F"),
-        ("bold", "light")      => Some("#F0F0F5"),
-        ("bold", "dark")       => Some("#050508"),
-        ("minimal", "light")   => Some("#FFFFFF"),
-        ("minimal", "dark")    => Some("#111111"),
-        ("dark", "light")      => Some("#1A1A2E"),  // "dark" theme makes "light" slides dark
-        ("dark", "dark")       => Some("#0D0D14"),
-        ("vibrant", "light")   => Some("#F5F3FF"),
-        ("vibrant", "dark")    => Some("#0A0515"),
-        ("natural", "light")   => Some("#FAF8F5"),
-        ("natural", "dark")    => Some("#0F0D0A"),
+        ("editorial", "dark") => Some("#0A0A0F"),
+        ("bold", "light") => Some("#F0F0F5"),
+        ("bold", "dark") => Some("#050508"),
+        ("minimal", "light") => Some("#FFFFFF"),
+        ("minimal", "dark") => Some("#111111"),
+        ("dark", "light") => Some("#1A1A2E"), // "dark" theme makes "light" slides dark
+        ("dark", "dark") => Some("#0D0D14"),
+        ("vibrant", "light") => Some("#F5F3FF"),
+        ("vibrant", "dark") => Some("#0A0515"),
+        ("natural", "light") => Some("#FAF8F5"),
+        ("natural", "dark") => Some("#0F0D0A"),
         _ => None,
     }
 }
@@ -55,6 +55,7 @@ pub struct SlideColors {
 
 pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> SlideColors {
     let eff_surf = effective_surface(tokens, bg_style, theme);
+    // theme "dark" forces visually dark surface even on "light" bg style
     let is_dark = is_dark_bg(bg_style) || is_visually_dark_surface(&eff_surf);
 
     let bg_stops = if matches!(bg_style, "gradient" | "hero") {
@@ -63,8 +64,17 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
         vec![eff_surf.clone()]
     };
 
-    let base_primary = if is_dark { &tokens.text_on_dark } else { &tokens.text_primary };
-    let base_secondary = if is_dark { &tokens.text_on_dark_secondary } else { &tokens.text_secondary };
+    // Ensure we start with base colors that match the actual target background luminance, not bg_style
+    let base_primary = if is_dark {
+        &tokens.text_on_dark
+    } else {
+        &tokens.text_primary
+    };
+    let base_secondary = if is_dark {
+        &tokens.text_on_dark_secondary
+    } else {
+        &tokens.text_secondary
+    };
 
     let text_primary = get_contrast_safe_color(base_primary, &bg_stops, 7.0)
         .unwrap_or_else(|_| base_primary.clone());
@@ -72,12 +82,9 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
         .unwrap_or_else(|_| base_secondary.clone());
     let text_tertiary = get_contrast_safe_color(base_secondary, &bg_stops, 4.5)
         .unwrap_or_else(|_| base_secondary.clone());
-    let primary = get_contrast_safe_color(
-        &tokens.primary,
-        &bg_stops,
-        if is_dark { 5.5 } else { 4.5 },
-    )
-    .unwrap_or_else(|_| tokens.primary.clone());
+    let primary =
+        get_contrast_safe_color(&tokens.primary, &bg_stops, if is_dark { 5.5 } else { 4.5 })
+            .unwrap_or_else(|_| tokens.primary.clone());
 
     let (button_bg, button_text) = if is_dark {
         let bbg = tokens.primary_light.clone();
@@ -91,13 +98,29 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
         (bbg, bt)
     };
 
-    let border = if is_dark { tokens.border_dark.clone() } else { tokens.border_light.clone() };
+    let border = if is_dark {
+        tokens.border_dark.clone()
+    } else {
+        tokens.border_light.clone()
+    };
 
-    SlideColors { text_primary, text_secondary, text_tertiary, primary, button_bg, button_text, border, is_dark }
+    SlideColors {
+        text_primary,
+        text_secondary,
+        text_tertiary,
+        primary,
+        button_bg,
+        button_text,
+        border,
+        is_dark,
+    }
 }
 
 fn format_styles(map: &HashMap<String, String>) -> String {
-    map.iter().map(|(k, v)| format!("{}: {}", k, v)).collect::<Vec<_>>().join("; ")
+    map.iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ")
 }
 
 fn build_shapes(tokens: &DesignTokens, bg_style: &str) -> String {
@@ -120,8 +143,16 @@ fn build_shapes(tokens: &DesignTokens, bg_style: &str) -> String {
     };
     c2.insert("right".to_string(), "-40px".to_string());
 
-    let c1_css = c1_map.iter().map(|(k, v)| format!("{}: {}", k, v)).collect::<Vec<_>>().join("; ");
-    let c2_css = c2.iter().map(|(k, v)| format!("{}: {}", k, v)).collect::<Vec<_>>().join("; ");
+    let c1_css = c1_map
+        .iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ");
+    let c2_css = c2
+        .iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ");
 
     format!(
         r#"<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="{}"></div><div style="{}"></div></div>"#,
@@ -138,7 +169,11 @@ pub fn slide_base(
     justify: &str,
 ) -> String {
     let is_dark = is_dark_bg(bg_style);
-    let bg_var = if is_dark { "var(--surface-dark)" } else { "var(--surface-light)" };
+    let bg_var = if is_dark {
+        "var(--surface-dark)"
+    } else {
+        "var(--surface-light)"
+    };
 
     let bg = {
         let raw = slide_background(tokens, bg_style, None);
@@ -154,11 +189,19 @@ pub fn slide_base(
         }
     };
 
-    let shapes = if decorations { build_shapes(tokens, bg_style) } else { String::new() };
+    let shapes = if decorations {
+        build_shapes(tokens, bg_style)
+    } else {
+        String::new()
+    };
 
     let mut noise_style = noise_overlay(0.04);
     noise_style.insert("z-index".to_string(), "1".to_string());
-    let noise_css = noise_style.iter().map(|(k, v)| format!("{}: {}", k, v)).collect::<Vec<_>>().join("; ");
+    let noise_css = noise_style
+        .iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ");
 
     format!(
         r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
@@ -180,7 +223,14 @@ pub fn centered_layout(
     padding: &str,
     justify: &str,
 ) -> String {
-    slide_base(content_html, tokens, bg_style, decorations, padding, justify)
+    slide_base(
+        content_html,
+        tokens,
+        bg_style,
+        decorations,
+        padding,
+        justify,
+    )
 }
 
 pub fn hero_layout(
@@ -190,7 +240,19 @@ pub fn hero_layout(
     decorations: bool,
     justify: &str,
 ) -> String {
-    slide_base(content_html, tokens, bg_style, decorations, "80px 64px 80px", justify)
+    let justify_val = if justify == "center" {
+        "center"
+    } else {
+        "center"
+    }; // slide_base flex align needs center to keep vertically centered
+    slide_base(
+        content_html,
+        tokens,
+        bg_style,
+        decorations,
+        "80px 52px 80px",
+        justify_val,
+    )
 }
 
 pub fn stack_layout(
@@ -219,10 +281,17 @@ pub fn split_layout(
     decorations: bool,
 ) -> String {
     let content = format!(
-        r#"<div style="display:grid;grid-template-columns:{};gap:{};"><div>{}</div><div>{}</div></div>"#,
+        r#"<div style="display:grid;grid-template-columns:{};gap:{};overflow:hidden;"><div style="min-width:0;">{}</div><div style="min-width:0;">{}</div></div>"#,
         ratio, gap, left_html, right_html
     );
-    slide_base(&content, tokens, bg_style, decorations, "80px 52px 80px", "center")
+    slide_base(
+        &content,
+        tokens,
+        bg_style,
+        decorations,
+        "80px 52px 80px",
+        "center",
+    )
 }
 
 pub fn grid_layout(
@@ -234,10 +303,17 @@ pub fn grid_layout(
     decorations: bool,
 ) -> String {
     let content = format!(
-        r#"<div style="display:grid;grid-template-columns:repeat({},1fr);gap:{};">{}</div>"#,
+        r#"<div style="display:grid;grid-template-columns:repeat({},1fr);gap:{};overflow:hidden;">{}</div>"#,
         columns, gap, items_html
     );
-    slide_base(&content, tokens, bg_style, decorations, "80px 52px 80px", "center")
+    slide_base(
+        &content,
+        tokens,
+        bg_style,
+        decorations,
+        "80px 52px 80px",
+        "center",
+    )
 }
 
 pub fn timeline_layout(
@@ -247,9 +323,15 @@ pub fn timeline_layout(
     bg_style: &str,
 ) -> String {
     let content = if orientation == "horizontal" {
-        format!(r#"<div style="display:flex;gap:24px;">{}</div>"#, content_html)
+        format!(
+            r#"<div style="display:flex;gap:24px;">{}</div>"#,
+            content_html
+        )
     } else {
-        format!(r#"<div style="display:flex;flex-direction:column;gap:16px;">{}</div>"#, content_html)
+        format!(
+            r#"<div style="display:flex;flex-direction:column;gap:16px;">{}</div>"#,
+            content_html
+        )
     };
     slide_base(&content, tokens, bg_style, true, "80px 52px 80px", "center")
 }
@@ -260,7 +342,10 @@ pub fn cta_layout(
     align: &str,
     bg_style: &str,
 ) -> String {
-    let content = format!(r#"<div style="text-align:{};">{}</div>"#, align, content_html);
+    let content = format!(
+        r#"<div style="text-align:{};">{}</div>"#,
+        align, content_html
+    );
     slide_base(&content, tokens, bg_style, true, "80px 64px 80px", "center")
 }
 
@@ -272,7 +357,7 @@ pub fn bento_layout(
     gap: &str,
 ) -> String {
     let content = format!(
-        r#"<div style="display:grid;grid-template-columns:{};gap:{};">{}</div>"#,
+        r#"<div style="display:grid;grid-template-columns:{};gap:{};overflow:hidden;">{}</div>"#,
         columns, gap, content_html
     );
     slide_base(&content, tokens, bg_style, true, "80px 52px 80px", "center")

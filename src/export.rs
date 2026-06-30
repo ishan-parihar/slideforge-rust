@@ -1,7 +1,7 @@
-use std::path::Path;
-use std::fs;
-use headless_chrome::{Browser, LaunchOptions};
 use headless_chrome::protocol::cdp::Page::CaptureScreenshotFormatOption;
+use headless_chrome::{Browser, LaunchOptions};
+use std::fs;
+use std::path::Path;
 
 pub async fn export_slides(
     html_path: &str,
@@ -31,7 +31,8 @@ pub async fn export_slides(
         top: None,
         width: Some(width as f64),
         height: Some(height as f64),
-    }).map_err(|e| e.to_string())?;
+    })
+    .map_err(|e| e.to_string())?;
 
     tab.navigate_to(&file_url).map_err(|e| e.to_string())?;
     tab.wait_until_navigated().map_err(|e| e.to_string())?;
@@ -81,16 +82,13 @@ pub async fn export_slides(
             i * width as usize
         );
         let _ = tab.evaluate(&swipe_js, false);
-        
+
         // Reflow wait
         tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
-        let screenshot_png = tab.capture_screenshot(
-            CaptureScreenshotFormatOption::Png,
-            None,
-            None,
-            true,
-        ).map_err(|e| e.to_string())?;
+        let screenshot_png = tab
+            .capture_screenshot(CaptureScreenshotFormatOption::Png, None, None, true)
+            .map_err(|e| e.to_string())?;
 
         let slide_name = format!("slide_{}.png", i + 1);
         let slide_path = out.join(&slide_name);
