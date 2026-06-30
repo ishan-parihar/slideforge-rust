@@ -582,8 +582,19 @@ impl Server {
             ));
         }
 
-        let platform = req.platform.clone().unwrap_or_else(|| state.platform.clone());
-        let aspect_ratio = req.aspect_ratio.clone().filter(|s| !s.is_empty()).or_else(|| Some(state.aspect_ratio.clone()));
+        let platform = req.platform.clone()
+            .filter(|s| !s.is_empty())
+            .unwrap_or_else(|| state.platform.clone());
+        let platform = if platform.is_empty() {
+            "instagram_portrait".to_string()
+        } else {
+            platform
+        };
+
+        let aspect_ratio = req.aspect_ratio.clone()
+            .filter(|s| !s.is_empty())
+            .or_else(|| Some(state.aspect_ratio.clone()))
+            .filter(|s| !s.is_empty());
         let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
 
@@ -654,24 +665,24 @@ impl Server {
         &self,
         Parameters(req): Parameters<ExportCarouselSlidesRequest>,
     ) -> Result<Json<ExportResponse>, ErrorData> {
-        let platform = req.preset.clone().unwrap_or_else(|| {
+        let (state_platform, state_aspect_ratio) = {
             let state = self.state.lock().unwrap();
-            let p = state.platform.clone();
-            if p.is_empty() {
-                "instagram_portrait".to_string()
-            } else {
-                p
-            }
-        });
-        let aspect_ratio = req.aspect_ratio.clone().filter(|s| !s.is_empty()).or_else(|| {
-            let state = self.state.lock().unwrap();
-            let ar = state.aspect_ratio.clone();
-            if ar.is_empty() {
-                None
-            } else {
-                Some(ar)
-            }
-        });
+            (state.platform.clone(), state.aspect_ratio.clone())
+        };
+
+        let platform = req.preset.clone()
+            .filter(|s| !s.is_empty())
+            .unwrap_or(state_platform);
+        let platform = if platform.is_empty() {
+            "instagram_portrait".to_string()
+        } else {
+            platform
+        };
+
+        let aspect_ratio = req.aspect_ratio.clone()
+            .filter(|s| !s.is_empty())
+            .or_else(|| Some(state_aspect_ratio))
+            .filter(|s| !s.is_empty());
         let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
 
@@ -971,4 +982,101 @@ pub async fn run_server() -> Result<(), Box<dyn std::error::Error>> {
     let running = rmcp::serve_server(server, transport).await?;
     running.waiting().await?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::slides::SlideSpec;
+
+    #[tokio::test]
+    async fn test_render_carousel_empty_aspect_ratio_and_platform_fallback() {
+        let server = Server::new();
+        
+        // Configure design to setup state
+        let config_req = ConfigureDesignRequest {
+            primary_color: "#4f46e5".to_string(),
+            font_style: None,
+            type_scale_base: None,
+            type_scale_ratio: None,
+            preset: None,
+            brand_name: Some("TestBrand".to_string()),
+            brand_handle: Some("@testbrand".to_string()),
+            visual_theme: None,
+            layout_theme: None,
+            effect_theme: None,
+            topic: None,
+            url: None,
+            hashtags: None,
+            show_progress: None,
+            archetype: None,
+            platform: None,
+            aspect_ratio: None,
+            bg_style: None,
+        };
+        
+        let _ = server.configure_design(Parameters(config_req)).await.unwrap();
+
+        // 1. If state has empty platform/aspect_ratio (which it does by default or since we didn't specify them in configure_design),
+        // let's verify that render_carousel falls back to "instagram_portrait" and None aspect ratio, and resolves successfully.
+        let render_req = RenderCarouselRequest {
+            slides: vec![SlideSpec {
+                html: "<div class=\"slide\">Hello</div>".to_string(),
+                background: "light".to_string(),
+                variant: "hero".to_string(),
+                theme: "modern".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: Some(":root { --primary: #4f46e5; }".to_string()),
+            google_fonts_url: None,
+            heading_font: None,
+            body_font: None,
+            brand_name: None,
+            brand_handle: None,
+            include_ig_frame: Some(false),
+            output_path: None,
+            topic: None,
+            url: None,
+            hashtags: None,
+            show_progress: None,
+            platform: Some("".to_string()), // Empty string, should fallback to instagram_portrait
+            aspect_ratio: Some("".to_string()), // Empty string, should filter to None
+        };
+
+        let res = server.render_carousel(Parameters(render_req)).await.unwrap();
+        // Since we fell back to instagram_portrait (which is 1080x1350, so 4:5), let's make sure it rendered successfully.
+        assert_eq!(res.0.total_slides, 1);
+    }
+
+    #[tokio::test]
+    async fn test_export_carousel_slides_empty_aspect_ratio_and_preset_fallback() {
+        let server = Server::new();
+        
+        // Setup state platform to empty to test default fallback
+        {
+            let mut state = server.state.lock().unwrap();
+            state.platform = "".to_string();
+            state.aspect_ratio = "".to_string();
+        }
+
+        let export_req = ExportCarouselSlidesRequest {
+            html_path: "nonexistent.html".to_string(),
+            output_dir: "./nonexistent_dir".to_string(),
+            total_slides: 1,
+            preset: Some("".to_string()), // empty preset -> instagram_portrait
+            aspect_ratio: Some("".to_string()), // empty aspect_ratio -> None
+        };
+
+        let res = server.export_carousel_slides(Parameters(export_req)).await;
+        // It should either return an error about file not found (internal error) or similar, but NOT invalid request.
+        match res {
+            Err(e) => {
+                // If it got past platforms::resolve_canvas, it will try to export, which fails with internal error.
+                // If platforms::resolve_canvas failed, it would return invalid_request about unknown platform or aspect ratio.
+                assert!(!e.message.contains("Unknown platform preset"));
+                assert!(!e.message.contains("not allowed"));
+            }
+            _ => {}
+        }
+    }
 }
