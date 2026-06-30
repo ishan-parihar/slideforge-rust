@@ -292,6 +292,61 @@ mod tests {
         assert_eq!(report.error_count, 1);
         assert_eq!(report.issues[0].r#type, "image_visibility");
     }
+
+    #[test]
+    fn test_validate_design_invalid_dimension_unit_errors() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="position:relative;width:316px;height:238;margin:0 auto;">
+                    <img src="test.jpg" style="display:block;width:100%;height:100%;object-fit:cover;" />
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(report.error_count >= 1);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "invalid_dimension")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_bottom_image_caption_warns() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="position:relative;width:100%;height:86px;overflow:hidden;">
+                    <img src="test.jpg" style="display:block;width:100%;height:100%;object-fit:cover;" />
+                    <div style="padding:6px;background:rgba(0,0,0,0.4);position:absolute;bottom:0;left:0;right:0;font-size:10px;">Design Phase</div>
+                </div>
+                <div style="font-size:13px;margin-top:8px;">Section caption</div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "image_caption_overlay")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_narrow_text_column_warns() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="width:82px;font-size:16px;line-height:1.2;">Sub 100ms latency improves global delivery</div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "text_constriction")
+        );
+    }
 }
 
 use crate::design_system::contrast_ratio;
@@ -353,6 +408,54 @@ fn numeric_style_value(style: &str, property: &str) -> Option<f32> {
     Some(numeric)
 }
 
+fn numeric_px_style_value(style: &str, property: &str) -> Option<f32> {
+    let raw = style_value(style, property)?;
+    let trimmed = raw.trim();
+    if !trimmed.ends_with("px") {
+        return None;
+    }
+    trimmed.trim_end_matches("px").parse::<f32>().ok()
+}
+
+fn style_has_unitless_dimension(style: &str) -> Option<String> {
+    for property in ["width", "height", "left", "top", "right", "bottom"] {
+        let Some(raw) = style_value(style, property) else {
+            continue;
+        };
+        let trimmed = raw.trim();
+        if trimmed.parse::<f32>().is_ok() {
+            return Some(format!("{property}:{trimmed}"));
+        }
+    }
+    None
+}
+
+fn has_recent_backing_container(slide_html: &str, element_start: usize) -> bool {
+    let lookback_start = element_start.saturating_sub(900);
+    let context = &slide_html[lookback_start..element_start];
+    if (context.contains("padding:")
+        || context.contains("box-shadow:")
+        || context.contains("border:"))
+        && (context.contains("background:rgba")
+            || context.contains("background:#")
+            || context.contains("background-color:")
+            || context.contains("backdrop-filter:"))
+    {
+        return true;
+    }
+    let Some(last_div_start) = context.rfind("<div") else {
+        return false;
+    };
+    let candidate = &context[last_div_start..];
+    if candidate.contains("</div>") {
+        return false;
+    }
+    candidate.contains("background:")
+        || candidate.contains("background-color:")
+        || candidate.contains("backdrop-filter:")
+        || candidate.contains("box-shadow:")
+}
+
 #[derive(Clone, Copy)]
 struct Rect {
     x: f32,
@@ -390,8 +493,18 @@ pub fn validate_design(html: &str) -> ValidationReport {
     // Regex for text tags without backreferences
     let text_tag_re =
         Regex::new(r#"(?s)<(p|h[1-6]|span|div)\s*([^>]*?)>(.*?)</(p|h[1-6]|span|div)>"#).unwrap();
+    let styled_text_re =
+        Regex::new(r#"(?s)<(?:p|h[1-6]|span|div)\s+[^>]*style="([^"]*)"[^>]*>([^<]{3,})</"#)
+            .unwrap();
     let style_re = Regex::new(r#"style="([^"]*?)""#).unwrap();
     let img_re = Regex::new(r#"<img\s+[^>]*style="([^"]*)""#).unwrap();
+    let any_style_re = Regex::new(r#"style="([^"]*)""#).unwrap();
+    let image_card_re =
+        Regex::new(r#"(?s)<div\s+style="([^"]*position:relative[^"]*)"[^>]*>.*?<img"#).unwrap();
+    let bottom_caption_re = Regex::new(
+        r#"(?s)<div\s+style="[^"]*position:relative[^"]*"[^>]*>.*?<img.*?<div\s+style="([^"]*position:absolute;[^"]*bottom:0[^"]*)""#,
+    )
+    .unwrap();
     let frame_re = Regex::new(r#"<div\s+style="([^"]*position:absolute;[^"]*left:[^"]*top:[^"]*width:[^"]*height:[^"]*)"[^>]*>\s*<div[^>]*>\s*<img"#).unwrap();
 
     for (slide_idx, slide_html) in slides.iter().enumerate() {
@@ -400,6 +513,23 @@ pub fn validate_design(html: &str) -> ValidationReport {
         let has_background_image = slide_html.contains("background-image")
             || slide_html.contains("background-size:cover")
             || slide_html.contains("background-size: cover");
+
+        for style_cap in any_style_re.captures_iter(slide_html) {
+            let style = style_cap.get(1).map(|m| m.as_str()).unwrap_or("");
+            if let Some(detail) = style_has_unitless_dimension(style) {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "invalid_dimension".to_string(),
+                    severity: "error".to_string(),
+                    detail: format!("Style uses unitless positional dimension '{detail}'."),
+                    message: "CSS width/height/position dimensions need explicit units."
+                        .to_string(),
+                    suggestion:
+                        "Use px, %, rem, or another explicit CSS unit for positional dimensions."
+                            .to_string(),
+                });
+            }
+        }
 
         for img_cap in img_re.captures_iter(slide_html) {
             let style = img_cap.get(1).map(|m| m.as_str()).unwrap_or("");
@@ -412,6 +542,58 @@ pub fn validate_design(html: &str) -> ValidationReport {
                         detail: format!("Content image opacity is {:.2}, which can make the image appear washed out.", opacity),
                         message: "Content image opacity is too low for a primary image.".to_string(),
                         suggestion: "Keep primary content images near full opacity; reserve opacity controls for background images and overlays.".to_string(),
+                    });
+                }
+            }
+        }
+
+        for cap in image_card_re.captures_iter(slide_html) {
+            let style = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+            if let Some(height) = numeric_style_value(style, "height") {
+                if height > 0.0 && height < 96.0 {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "image_constriction".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!("Image frame height is only {:.0}px.", height),
+                        message: "Image frame is too short to carry a clear visual.".to_string(),
+                        suggestion: "Increase the frame height or switch to a layout with fewer image slots.".to_string(),
+                    });
+                }
+            }
+        }
+
+        for cap in bottom_caption_re.captures_iter(slide_html) {
+            let style = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+            issues.push(DesignIssue {
+                slide: slide_num,
+                r#type: "image_caption_overlay".to_string(),
+                severity: "warning".to_string(),
+                detail: format!("Image caption uses bottom absolute positioning: '{style}'."),
+                message: "Bottom image captions can visually collide with adjacent captions or obscure the image.".to_string(),
+                suggestion: "Move image labels to a top chip, outside the frame, or reserve explicit caption space below the frame.".to_string(),
+            });
+        }
+
+        for cap in styled_text_re.captures_iter(slide_html) {
+            let style = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+            let plain_text = cap.get(2).map(|m| m.as_str()).unwrap_or("").trim();
+            let word_count = plain_text.split_whitespace().count();
+            let width = numeric_px_style_value(style, "width")
+                .or_else(|| numeric_px_style_value(style, "max-width"));
+            let font_size = numeric_style_value(style, "font-size").unwrap_or(12.0);
+            if let Some(width) = width {
+                if width > 0.0 && width < 120.0 && font_size >= 12.0 && word_count >= 3 {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "text_constriction".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Text '{}' is constrained to {:.0}px at {:.0}px font size.",
+                            plain_text, width, font_size
+                        ),
+                        message: "Text container is narrow enough to force poor one-word-per-line wrapping.".to_string(),
+                        suggestion: "Use a wider text area, smaller type, or stack the content vertically.".to_string(),
                     });
                 }
             }
@@ -451,12 +633,16 @@ pub fn validate_design(html: &str) -> ValidationReport {
 
         // Find all text elements inside this slide
         for cap in text_tag_re.captures_iter(slide_html) {
+            let element_start = cap.get(0).map(|m| m.start()).unwrap_or(0);
             let tag_open = &cap[1];
             let attrs = &cap[2];
             let text_content = cap[3].trim();
             let tag_close = &cap[4];
 
             if tag_open != tag_close {
+                continue;
+            }
+            if tag_open == "div" && text_content.contains('<') {
                 continue;
             }
 
@@ -497,7 +683,11 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 }
             }
 
-            if has_background_image && !has_bg && !has_shadow {
+            if has_background_image
+                && !has_bg
+                && !has_shadow
+                && !has_recent_backing_container(slide_html, element_start)
+            {
                 let display_text = if plain_text.len() > 20 {
                     format!("{}...", &plain_text[..20])
                 } else {
@@ -512,6 +702,26 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     message: format!("Text '{}' is placed directly over an image background without a backing shape or text-shadow.", display_text),
                     suggestion: "Wrap text in a card with semi-transparent background (glassmorphism), add a dark overlay over the image, or add a text-shadow.".to_string(),
                 });
+            }
+
+            let word_count = plain_text.split_whitespace().count();
+            let width = numeric_px_style_value(style_str, "width")
+                .or_else(|| numeric_px_style_value(style_str, "max-width"));
+            let font_size = numeric_style_value(style_str, "font-size").unwrap_or(12.0);
+            if let Some(width) = width {
+                if width > 0.0 && width < 120.0 && font_size >= 12.0 && word_count >= 3 {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "text_constriction".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Text '{}' is constrained to {:.0}px at {:.0}px font size.",
+                            plain_text, width, font_size
+                        ),
+                        message: "Text container is narrow enough to force poor one-word-per-line wrapping.".to_string(),
+                        suggestion: "Use a wider text area, smaller type, or stack the content vertically.".to_string(),
+                    });
+                }
             }
         }
     }

@@ -2519,7 +2519,8 @@ pub fn split_features_slide(
         .get("sm")
         .cloned()
         .unwrap_or_else(|| "none".to_string());
-    let mut features_html = String::new();
+    let image_feature_layout = !effective_img.is_empty();
+    let mut feature_cards = Vec::new();
     for (idx, feat) in features.iter().enumerate() {
         let t = feat.get("title").and_then(|v| v.as_str()).unwrap_or("");
         let d = feat
@@ -2530,9 +2531,27 @@ pub fn split_features_slide(
             .get("icon")
             .and_then(|v| v.as_str())
             .unwrap_or(if idx == 0 { "✦" } else { "→" });
-        let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, 30);
-        features_html.push_str(&format!(
-            r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;box-sizing:border-box;">
+        let badge_size = if image_feature_layout { 26 } else { 30 };
+        let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, badge_size);
+        let card_padding = if image_feature_layout { "11px" } else { "14px" };
+        let card_gap = if image_feature_layout { "9px" } else { "12px" };
+        let card_margin = if image_feature_layout {
+            "0"
+        } else {
+            "0 0 12px"
+        };
+        let title_size = if image_feature_layout {
+            body_fs.saturating_sub(2)
+        } else {
+            body_fs
+        };
+        let desc_size = if image_feature_layout {
+            caption_fs.saturating_sub(1)
+        } else {
+            caption_fs
+        };
+        feature_cards.push(format!(
+            r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:{};display:flex;gap:{};align-items:flex-start;margin:{};box-sizing:border-box;min-width:0;">
                 {}
                 <div style="min-width:0;">
                     <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;">{}</h3>
@@ -2543,13 +2562,25 @@ pub fn split_features_slide(
             colors.border,
             feature_radius,
             feature_shadow,
+            card_padding,
+            card_gap,
+            card_margin,
             badge,
-            tokens.body_font, body_fs, colors.text_primary, escape_html(t),
-            tokens.body_font, caption_fs, colors.text_secondary, escape_html(d)
+            tokens.body_font, title_size, colors.text_primary, escape_html(t),
+            tokens.body_font, desc_size, colors.text_secondary, escape_html(d)
         ));
     }
+    let features_html = feature_cards.join("");
 
-    let content = if effective_variant == "reversed" {
+    let content = if image_feature_layout {
+        format!(
+            r#"{}<div style="width:100%;display:flex;flex-direction:column;gap:14px;">
+                {}
+                <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;width:100%;">{}</div>
+            </div>"#,
+            heading, left_visual, features_html
+        )
+    } else if effective_variant == "reversed" {
         format!(
             r#"{}{}
             <div style="display:grid;grid-template-columns:1.02fr 1fr;gap:20px;margin-top:16px;align-items:center;">
@@ -2577,7 +2608,11 @@ pub fn split_features_slide(
     };
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        if image_feature_layout {
+            "68px 44px 76px"
+        } else {
+            "80px 52px 80px"
+        }
     } else {
         padding
     };
@@ -6266,7 +6301,7 @@ pub fn image_gallery_slide(
             render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
         let caption_html = if !cap.is_empty() {
             format!(
-                r#"<div style="padding:6px;background:rgba(0,0,0,0.4);position:absolute;bottom:0;left:0;right:0;z-index:3;color:white;font-family:{};font-size:10px;text-align:center;">
+                r#"<div style="padding:5px 8px;background:rgba(0,0,0,0.62);position:absolute;top:8px;left:8px;max-width:calc(100% - 16px);z-index:3;color:white;font-family:{};font-size:9px;font-weight:800;text-align:left;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                     {}
                 </div>"#,
                 tokens.body_font,
