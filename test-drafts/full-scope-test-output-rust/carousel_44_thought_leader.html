@@ -314,7 +314,7 @@ body {
             }
         
 .ig-frame {
-  width: 420px; background: #fff; border-radius: 12px;
+  width: 420px; background: #fff; border-radius: 0;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -353,12 +353,12 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light has-progress">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #866E0015 0px, transparent 50%), radial-gradient(at 80% 0%, #5C6AB110 0px, transparent 50%), radial-gradient(at 0% 50%, #CEB55D12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="font-family:Fraunces;font-size:20px;font-weight:700;color:#0C0B07;margin-bottom:12px;letter-spacing:-0.01em;">Project Lifecycle</div>
-            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px;height:190px;width:100%;">
+            <div style="font-family:Fraunces;font-size:20px;font-weight:800;color:#0C0B07;margin-bottom:10px;letter-spacing:-0.01em;line-height:1.1;">Project Lifecycle</div>
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px;height:172px;width:100%;">
                 <div style="position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
                 <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Design Phase" style="display:block;width:100%;height:100%;object-fit: cover; object-position: top;filter: sepia(18%) saturate(1.12) hue-rotate(-6deg) contrast(1.04) brightness(1.03);" />
@@ -389,7 +389,7 @@ body {
             </div>
                 </div>
             </div>
-            <div style="font-family:Outfit;font-size:13px;color:#454239;margin-top:10px;line-height:1.4;">End-to-end execution phases</div>
+            <div style="font-family:Outfit;font-size:13px;color:#454239;margin-top:8px;line-height:1.25;">End-to-end execution phases</div>
         </div>
             </div>
         </div>

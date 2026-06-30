@@ -237,7 +237,7 @@ body {
     if spec.include_ig_frame {
         css_block.push_str(r#"
 .ig-frame {
-  width: 420px; background: #fff; border-radius: 12px;
+  width: 420px; background: #fff; border-radius: 0;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }

@@ -2508,18 +2508,42 @@ pub fn split_features_slide(
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
 
+    let feature_card_bg = if is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let feature_radius = current_component_radius(tokens, "card");
+    let feature_shadow = tokens
+        .shadows
+        .get("sm")
+        .cloned()
+        .unwrap_or_else(|| "none".to_string());
     let mut features_html = String::new();
-    for feat in &features {
+    for (idx, feat) in features.iter().enumerate() {
         let t = feat.get("title").and_then(|v| v.as_str()).unwrap_or("");
         let d = feat
             .get("description")
             .and_then(|v| v.as_str())
             .unwrap_or("");
+        let icon = feat
+            .get("icon")
+            .and_then(|v| v.as_str())
+            .unwrap_or(if idx == 0 { "✦" } else { "→" });
+        let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, 30);
         features_html.push_str(&format!(
-            r#"<div style="margin-bottom:20px;">
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 6px;">{}</h3>
-                <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;">{}</p>
+            r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;box-sizing:border-box;">
+                {}
+                <div style="min-width:0;">
+                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;">{}</h3>
+                    <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.38;">{}</p>
+                </div>
             </div>"#,
+            feature_card_bg,
+            colors.border,
+            feature_radius,
+            feature_shadow,
+            badge,
             tokens.body_font, body_fs, colors.text_primary, escape_html(t),
             tokens.body_font, caption_fs, colors.text_secondary, escape_html(d)
         ));
@@ -2528,7 +2552,7 @@ pub fn split_features_slide(
     let content = if effective_variant == "reversed" {
         format!(
             r#"{}{}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:16px;">
+            <div style="display:grid;grid-template-columns:1.02fr 1fr;gap:20px;margin-top:16px;align-items:center;">
                 <div>{}</div>
                 <div>{}</div>
             </div>{}"#,
@@ -2544,7 +2568,7 @@ pub fn split_features_slide(
     } else {
         format!(
             r#"{}{}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:16px;">
+            <div style="display:grid;grid-template-columns:1fr 1.02fr;gap:20px;margin-top:16px;align-items:center;">
                 <div>{}</div>
                 <div>{}</div>
             </div>{}"#,
@@ -4556,28 +4580,33 @@ pub fn pricing_plan_slide(
     } else {
         "rgba(255,255,255,0.92)"
     };
-    let cards = plans
+    let cards: Vec<String> = plans
         .iter()
         .take(3)
-        .map(|plan| {
+        .enumerate()
+        .map(|(idx, plan)| {
             let name = simple_text(plan, &["name", "title"]);
             let price = simple_text(plan, &["price", "value"]);
             let desc = simple_text(plan, &["description", "caption"]);
-            let visual = visual_badge_html(tokens, &colors, plan, &name, 34);
+            let visual = visual_badge_html(tokens, &colors, plan, &name, if idx == 0 { 36 } else { 30 });
+            let price_size = if idx == 0 { 30 } else { 22 };
+            let padding = if idx == 0 { "16px 18px" } else { "13px 14px" };
             format!(
-                r#"<div style="flex:1;background:{};border:1px solid {};border-radius:{};padding:18px;box-sizing:border-box;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">{}<div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div></div>
-                    <div style="font-family:{};font-size:30px;font-weight:900;color:{};margin:12px 0 8px;">{}</div>
-                    <p style="font-family:{};font-size:12px;color:{};line-height:1.35;margin:0;">{}</p>
+                r#"<div style="min-width:0;background:{};border:1px solid {};border-radius:{};padding:{};box-sizing:border-box;height:100%;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;min-width:0;">{}<div style="font-family:{};font-size:14px;font-weight:900;color:{};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div></div>
+                    <div style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:8px 0 6px;line-height:1;">{}</div>
+                    <p style="font-family:{};font-size:11px;color:{};line-height:1.32;margin:0;">{}</p>
                 </div>"#,
                 card_bg,
                 colors.border,
                 radius,
+                padding,
                 visual,
                 tokens.heading_font,
                 colors.text_primary,
                 escape_html(&name),
                 tokens.heading_font,
+                price_size,
                 colors.primary,
                 escape_html(&price),
                 tokens.body_font,
@@ -4585,14 +4614,29 @@ pub fn pricing_plan_slide(
                 escape_html(&desc)
             )
         })
-        .collect::<Vec<_>>()
-        .join("");
+        .collect();
+    let plan_grid = if cards.len() >= 3 {
+        format!(
+            r#"<div style="display:grid;grid-template-columns:1.06fr 1fr;grid-template-rows:1fr 1fr;gap:10px;width:100%;min-width:0;">
+                <div style="grid-row:1 / span 2;min-width:0;">{}</div>
+                <div style="min-width:0;">{}</div>
+                <div style="min-width:0;">{}</div>
+            </div>"#,
+            cards[0], cards[1], cards[2]
+        )
+    } else {
+        format!(
+            r#"<div style="display:grid;grid-template-columns:repeat({}, minmax(0, 1fr));gap:10px;width:100%;min-width:0;">{}</div>"#,
+            cards.len().max(1),
+            cards.join("")
+        )
+    };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:22px;"><h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0;">{}</h2><div style="display:flex;gap:12px;">{}</div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;min-width:0;"><h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.05;">{}</h2>{}</div>"#,
         tokens.heading_font,
         colors.text_primary,
         escape_html(title),
-        cards
+        plan_grid
     );
     let html = slide_base(&content, tokens, bg_style, false, "72px 40px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
@@ -4760,17 +4804,73 @@ pub fn before_after_story_slide(
     background_image: &str,
     image_opacity: f32,
 ) -> Value {
-    problem_solution_slide(
-        tokens,
-        title,
-        before,
-        after,
-        vec![json!({"title":"Result","description": metric})],
-        bg_style,
-        theme,
-        background_image,
-        image_opacity,
-    )
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark {
+        "rgba(255,255,255,0.06)"
+    } else {
+        "rgba(255,255,255,0.92)"
+    };
+    let metric_html = if metric.is_empty() {
+        String::new()
+    } else {
+        format!(
+            r#"<div style="margin-top:14px;border-radius:{};background:{};border:1px solid {};padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:{};background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:16px;font-weight:900;flex-shrink:0;">↗</div>
+                <div style="font-family:{};font-size:13px;font-weight:800;color:{};line-height:1.32;">{}</div>
+            </div>"#,
+            radius,
+            card_bg,
+            colors.border,
+            current_component_radius(tokens, "chip"),
+            colors.primary,
+            tokens.heading_font,
+            tokens.body_font,
+            colors.text_primary,
+            escape_html(metric)
+        )
+    };
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;">
+                <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
+                    <div style="font-family:{};font-size:11px;font-weight:900;color:#EF4444;margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
+                    <p style="font-family:{};font-size:13px;color:{};line-height:1.38;margin:0;">{}</p>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;color:{};font-family:{};font-size:22px;font-weight:900;">→</div>
+                <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
+                    <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
+                    <p style="font-family:{};font-size:13px;color:{};line-height:1.38;margin:0;">{}</p>
+                </div>
+            </div>
+            {}
+        </div>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(title),
+        radius,
+        card_bg,
+        colors.border,
+        tokens.body_font,
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(before),
+        colors.primary,
+        tokens.heading_font,
+        radius,
+        card_bg,
+        colors.border,
+        tokens.body_font,
+        colors.primary,
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(after),
+        metric_html
+    );
+    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({"html": html, "background": bg_style, "variant": "before_after_story", "theme": theme})
 }
 
 /// Route a slide type name + JSON params to the appropriate slide generator.
@@ -6195,13 +6295,13 @@ pub fn image_gallery_slide(
 
     let grid_height = if layout == "3-grid" && any_captions {
         if has_header || has_footer {
-            "155px"
+            "132px"
         } else {
             "185px"
         }
     } else {
         if has_header || has_footer {
-            "190px"
+            "172px"
         } else {
             "240px"
         }
@@ -6216,7 +6316,7 @@ pub fn image_gallery_slide(
                 render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
             let inner_cap = if !cap.is_empty() {
                 format!(
-                    r#"<div style="padding:6px 0 0;font-family:{};font-size:10px;font-weight:600;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
+                    r#"<div style="padding:5px 0 0;font-family:{};font-size:9px;font-weight:700;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
                     tokens.body_font,
                     colors.text_secondary,
                     escape_html(cap)
@@ -6235,7 +6335,7 @@ pub fn image_gallery_slide(
             ));
         }
         format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;width:100%;">{}</div>"#,
+            r#"<div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:10px;width:100%;">{}</div>"#,
             three_cards.join(" ")
         )
     } else if layout == "4-grid" {
@@ -6291,13 +6391,14 @@ pub fn image_gallery_slide(
 
     let title_html = if !title.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};margin-bottom:12px;letter-spacing:-0.01em;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:10px;letter-spacing:-0.01em;line-height:1.1;">{}</div>"#,
             tokens.heading_font,
             tokens
                 .type_scale
                 .get("title")
                 .map(|t| t.font_size)
-                .unwrap_or(24),
+                .unwrap_or(24)
+                .min(22),
             colors.text_primary,
             escape_html(title)
         )
@@ -6307,7 +6408,7 @@ pub fn image_gallery_slide(
 
     let caption_html = if !section_caption.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:10px;line-height:1.4;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:8px;line-height:1.25;">{}</div>"#,
             tokens.body_font,
             tokens
                 .type_scale
@@ -6370,7 +6471,7 @@ pub fn image_collage_slide(
 
     let has_header = !title.is_empty();
     let has_footer = !section_caption.is_empty();
-    let collage_height_px = if has_header || has_footer { 276 } else { 332 };
+    let collage_height_px = if has_header || has_footer { 238 } else { 320 };
 
     struct CollageSlot {
         x: i32,
@@ -6665,7 +6766,7 @@ pub fn image_collage_slide(
     }
 
     let collage_html = format!(
-        r#"<div style="position:relative;width:316px;max-width:100%;height:{};margin:0 auto;box-sizing:border-box;">
+        r#"<div style="position:relative;width:316px;max-width:100%;height:{}px;margin:0 auto;box-sizing:border-box;">
             <div style="position:absolute;left:38px;top:26px;width:230px;height:210px;border-radius:{};background:{};opacity:{};z-index:0;"></div>
             {}
         </div>"#,
@@ -6678,13 +6779,14 @@ pub fn image_collage_slide(
 
     let title_html = if !title.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};margin-bottom:12px;letter-spacing:-0.01em;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:10px;letter-spacing:-0.01em;line-height:1.1;">{}</div>"#,
             tokens.heading_font,
             tokens
                 .type_scale
                 .get("title")
                 .map(|t| t.font_size)
-                .unwrap_or(24),
+                .unwrap_or(24)
+                .min(22),
             colors.text_primary,
             escape_html(title)
         )
@@ -6694,7 +6796,7 @@ pub fn image_collage_slide(
 
     let caption_html = if !section_caption.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:10px;line-height:1.4;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:8px;line-height:1.25;">{}</div>"#,
             tokens.body_font,
             tokens
                 .type_scale
