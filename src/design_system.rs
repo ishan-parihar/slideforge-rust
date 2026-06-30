@@ -683,29 +683,27 @@ pub fn derive_palette_with_canvas(
     let fonts = get_font_pairing(style);
     
     // Calculate scaling factor based on canvas dimensions
-    // Default baseline is 1080x1350 (4:5 aspect ratio)
-    let baseline_width = 1080.0;
-    let baseline_height = 1350.0;
-    let baseline_area = baseline_width * baseline_height;
-    
-    let current_area = canvas_width as f32 * canvas_height as f32;
-    let area_scale = (current_area / baseline_area).sqrt(); // Use square root for proportional scaling
+    // Original system used 420x525 with fixed fonts (32px display, 24px heading, 14px body)
+    // Apply linear scaling based on width to maintain component proportions
+    let original_width = 420.0;
+    let target_width = canvas_width as f32;
+    let linear_scale = target_width / original_width;
     
     // Scale type scale and spacing based on canvas size
-    let scaled_type_scale_base = (type_scale_base as f32 * area_scale).round() as i32;
+    let scaled_type_scale_base = (type_scale_base as f32 * linear_scale).round() as i32;
     let type_scale = generate_type_scale(scaled_type_scale_base, type_scale_ratio);
     
     // Scale spacing proportionally
     let base_spacing = generate_spacing_scale();
     let mut spacing = IndexMap::new();
     for (step, pixels) in &base_spacing {
-        let scaled_pixels = ((*pixels as f32) * area_scale).round() as i32;
+        let scaled_pixels = ((*pixels as f32) * linear_scale).round() as i32;
         spacing.insert(step.clone(), scaled_pixels);
     }
 
     let mut shadows = IndexMap::new();
     let scale_value = |val: f32| -> i32 {
-        (val * area_scale).round() as i32
+        (val * linear_scale).round() as i32
     };
     
     // Scale shadow values
@@ -736,7 +734,7 @@ pub fn derive_palette_with_canvas(
         if val > 100.0 { // Keep pill radius as is
             format!("{}px", val as i32)
         } else {
-            let scaled = (val * area_scale).round() as i32;
+            let scaled = (val * linear_scale).round() as i32;
             format!("{}px", scaled.max(1)) // Ensure minimum 1px
         }
     };
