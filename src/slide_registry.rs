@@ -363,13 +363,17 @@ pub fn get_slide_type_info(slide_type: &str) -> Option<Value> {
 ///
 /// Valid context values: "opening", "closing", "data", "social-proof", "features"
 pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
+    if context == "off-platform" {
+        return vec!["qr_destination".to_string(), "cta".to_string()];
+    }
+
     let registry = get_registry();
     let map: serde_json::Map<String, Value> = match registry.into() {
         Value::Object(m) => m,
         _ => return vec![],
     };
 
-    map.iter()
+    let matched = map.iter()
         .filter_map(|(slide_type, info): (&String, &Value)| {
             let best_for = info.get("best_for")?.as_array()?;
             let matches = best_for
@@ -381,7 +385,25 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
                 None
             }
         })
-        .collect::<Vec<String>>()
+        .collect::<Vec<String>>();
+
+    if context == "conversion" {
+        let preferred = vec!["qr_destination".to_string(), "cta".to_string(), "pricing_plan".to_string()];
+        let mut result = Vec::new();
+        for p in preferred {
+            if matched.contains(&p) {
+                result.push(p);
+            }
+        }
+        for m in matched {
+            if !result.contains(&m) {
+                result.push(m);
+            }
+        }
+        result
+    } else {
+        matched
+    }
 }
 
 #[cfg(test)]
@@ -466,5 +488,18 @@ mod tests {
         let types = get_slide_types_for_context("data");
         assert!(types.contains(&"chart".to_string()));
         assert!(types.contains(&"stat_row".to_string()));
+    }
+
+    #[test]
+    fn test_get_slide_types_for_context_conversion_includes_qr() {
+        let types = get_slide_types_for_context("conversion");
+        assert!(types.contains(&"qr_destination".to_string()));
+        assert!(types.contains(&"cta".to_string()));
+    }
+
+    #[test]
+    fn test_get_slide_types_for_context_off_platform_prefers_qr() {
+        let types = get_slide_types_for_context("off-platform");
+        assert_eq!(types.first().map(|s| s.as_str()), Some("qr_destination"));
     }
 }
