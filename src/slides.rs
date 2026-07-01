@@ -92,11 +92,14 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition expands to fill the entire slide so backgrounds,
-   noise, and shapes from slide_base() naturally extend to the full canvas. */
-.slide--full-bleed .slide-composition {
-  width: 100%;
-  height: 100%;
+/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
+   centered within the slide via flexbox. The slide CSS-class background fills
+   the bleed area so gradients seamlessly extend beyond the composition. */
+/* Light/mesh slides need the mesh gradient on .slide too, because
+   .slide--light only sets background-color (flat), missing the gradient. */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
 }
 
 .slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }

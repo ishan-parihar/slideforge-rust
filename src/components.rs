@@ -5012,7 +5012,7 @@ pub fn qr_destination_slide(
     ));
     if !short_url.is_empty() {
         qr_elements.push(format!(
-            r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:var(--text-primary,#0B0A0F);max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
             tokens.body_font,
             qr_size,
             escape_html(short_url)
