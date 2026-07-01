@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 747px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+}
 
 :root {
   --primary: #00804D;
@@ -28,7 +35,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
-  --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
   --shadow-glow: 0 0 20px #00804D40;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -49,8 +56,8 @@
   --glass-light-bg: #EDF8F2CC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #C0CAC340;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -90,8 +97,16 @@
   --space-6: 48px;
   --space-7: 56px;
   --space-8: 64px;
+  --space-9: 72px;
   --space-10: 80px;
   --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
 }
 
 body {
@@ -100,15 +115,24 @@ body {
   font-family: var(--font-body, system-ui, sans-serif);
 }
 
-.carousel-viewport { width: 420px; height: 525px; overflow: hidden; position: relative; }
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
 .carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
 
 .slide {
-  min-width: 420px; height: 525px; position: relative;
-  display: flex; flex-direction: column;
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-.slide.has-progress { padding-bottom: 0; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: composition expands to fill the entire slide so backgrounds,
+   noise, and shapes from slide_base() naturally extend to the full canvas. */
+.slide--full-bleed .slide-composition {
+  width: 100%;
+  height: 100%;
+}
 
 .slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
 .slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
@@ -125,30 +149,34 @@ body {
 
 .slide-layout {
   position: relative; z-index: 2; display: flex; flex-direction: column;
-  height: 100%; padding: 80px 52px 90px; width: 100%;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
 }
 .slide-layout--center { justify-content: center; }
 
-.grid-2 { display: flex; gap: 24px; width: 100%; }
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
 .grid-2 > * { flex: 1; min-width: 0; }
 
 .serif { font-family: var(--font-heading, serif); }
 .sans { font-family: var(--font-body, sans-serif); }
 
 .display-text {
-  font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-  margin-bottom: 16px; text-wrap: balance;
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
 }
 .heading-text {
-  font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em;
-  margin-bottom: 16px; text-wrap: balance;
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
 }
 .body-text {
-  font-size: 14px; font-weight: 400; line-height: 1.5;
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
   text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
 }
 .caption-text {
-  font-size: 11px; font-weight: 500; line-height: 1.4; letter-spacing: 0.02em;
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
   text-wrap: pretty; overflow-wrap: break-word;
 }
 
@@ -162,7 +190,7 @@ body {
 }
 
 .card {
-  padding: 20px; border-radius: var(--radius-lg, 12px);
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
   background: var(--surface-light, #F3F5FC);
   border: 1px solid var(--border-light, #C4C7D1);
   box-shadow: var(--shadow-sm);
@@ -186,9 +214,9 @@ body {
 }
 
 .badge {
-  display: inline-block; padding: 6px 16px; font-size: 13px; font-weight: 600;
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
   border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
-  letter-spacing: 0.05em; margin-bottom: 24px;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
 }
 .slide--light .badge, .slide--mesh .badge {
   background: var(--primary)15; color: var(--primary);
@@ -201,7 +229,7 @@ body {
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  padding: 12px 28px; font-size: 14px; font-weight: 600;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
   border-radius: var(--radius-pill, 9999px); text-decoration: none;
   box-shadow: var(--shadow-md); transition: transform 0.2s;
 }
@@ -214,23 +242,23 @@ body {
 }
 
 .icon-box {
-  width: 56px; height: 56px; border-radius: var(--radius-md, 8px);
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; margin-bottom: 24px;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
 }
 .slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
 .slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
 
-.timeline { display: flex; flex-direction: column; gap: 16px; }
-.timeline-item { display: flex; gap: 16px; align-items: flex-start; }
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
 .timeline-number {
-  font-size: 26px; font-weight: 300; color: var(--primary);
-  min-width: 36px; line-height: 1;
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
 }
 .timeline-content { flex: 1; }
 
 .callout {
-  display: flex; gap: 16px; align-items: flex-start; padding: 16px;
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
   border-radius: var(--radius-md, 8px); border: 1px solid transparent;
 }
 .callout--warning {
@@ -241,7 +269,7 @@ body {
 }
 
 .breadcrumb-progress {
-  position: absolute; bottom: 42px; left: 28px; right: 28px;
+  position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
   display: flex; align-items: center; gap: 5px;
   z-index: 50;
 }
@@ -260,7 +288,7 @@ body {
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
 
 .swipe-arrow {
-  position: absolute; top: 0; right: 0; bottom: 0; width: 48px;
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
   display: flex; align-items: center; justify-content: center; pointer-events: none;
   z-index: 50;
 }
@@ -270,7 +298,7 @@ body {
 .slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
 .slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
 
-.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; }
+.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
 .slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
 .overlay__brand { font-family: var(--heading); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
@@ -314,7 +342,7 @@ body {
             }
         
 .ig-frame {
-  width: 420px; background: #fff; border-radius: 0;
+  width: var(--slide-width); background: #fff; border-radius: 0;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -341,7 +369,9 @@ body {
 </head>
 <body>
 
-<div class="ig-frame">
+<div style="width:1080px;height:2307px;overflow:hidden;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:897px;">
+    <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">N</div>
     <div>
@@ -351,17 +381,38 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--light has-progress">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
+<div class="slide slide--mesh has-bg-image slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.16;z-index:0;filter: grayscale(78%) contrast(1.06) brightness(1.04) saturate(0.96);-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"></div><div style="position:absolute;inset:0;background:linear-gradient(135deg, #00804D33, #974B8522);z-index:1;"></div>
+            <div style="pointer-events: none; z-index: 1; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #080C09; margin: 0; text-align: left; letter-spacing: -0.015em">Skill Assessment</h2><div style="width:100%;max-width:320px;height:280px;margin:0 auto;"><svg width="100%" height="280px" viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="160.0,112.0 183.0,135.0 160.0,158.0 137.0,135.0" fill="none" stroke="#C0CAC333" stroke-width="1" /><polygon points="160.0,89.0 206.0,135.0 160.0,181.0 114.0,135.0" fill="none" stroke="#C0CAC333" stroke-width="1" /><polygon points="160.0,66.0 229.0,135.0 160.0,204.0 91.0,135.0" fill="none" stroke="#C0CAC333" stroke-width="1" /><polygon points="160.0,43.0 252.0,135.0 160.0,227.0 68.0,135.0" fill="none" stroke="#C0CAC333" stroke-width="1" /><polygon points="160.0,20.0 275.0,135.0 160.0,250.0 45.0,135.0" fill="none" stroke="#C0CAC333" stroke-width="1" />
-            <line x1="160" y1="135" x2="160.0" y2="20.0" stroke="#C0CAC333" stroke-width="1" /><text x="160.0" y="13.0" font-size="8px" fill="#3C453F" text-anchor="middle">Speed</text><line x1="160" y1="135" x2="275.0" y2="135.0" stroke="#C0CAC333" stroke-width="1" /><text x="291.0" y="138.0" font-size="8px" fill="#3C453F" text-anchor="start">Accuracy</text><line x1="160" y1="135" x2="160.0" y2="250.0" stroke="#C0CAC333" stroke-width="1" /><text x="160.0" y="263.0" font-size="8px" fill="#3C453F" text-anchor="middle">Scale</text><line x1="160" y1="135" x2="45.0" y2="135.0" stroke="#C0CAC333" stroke-width="1" /><text x="29.0" y="138.0" font-size="8px" fill="#3C453F" text-anchor="end">UX</text>
-            <polygon points="160.0,28.8 275.0,135.0 160.0,232.5 50.0,135.0" fill="#00804D" fill-opacity="0.25" stroke="#00804D" stroke-width="2" />
-            <g><circle cx="160.0" cy="28.8" r="3" fill="#00804D" stroke="#ffffff" stroke-width="1" /><text x="160.0" y="23.8" font-size="7px" fill="#080C09" text-anchor="middle" font-weight="600">85</text></g><g><circle cx="275.0" cy="135.0" r="3" fill="#00804D" stroke="#ffffff" stroke-width="1" /><text x="275.0" y="130.0" font-size="7px" fill="#080C09" text-anchor="middle" font-weight="600">92</text></g><g><circle cx="160.0" cy="232.5" r="3" fill="#00804D" stroke="#ffffff" stroke-width="1" /><text x="160.0" y="227.5" font-size="7px" fill="#080C09" text-anchor="middle" font-weight="600">78</text></g><g><circle cx="50.0" cy="135.0" r="3" fill="#00804D" stroke="#ffffff" stroke-width="1" /><text x="50.0" y="130.0" font-size="7px" fill="#080C09" text-anchor="middle" font-weight="600">88</text></g>
-        </svg></div></div>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em">Completion Metrics</h2>
+            <div style="display:flex;gap:24px;width:100%;margin-top:24px;justify-content:center;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#10B981 0deg 306deg, rgba(0,0,0,0.06) 306deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:700;color:#080C09;">306%</span>
+                    </div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#3C453F;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Tasks Done</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#6366F1 0deg 259deg, rgba(0,0,0,0.06) 259deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:700;color:#080C09;">259%</span>
+                    </div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#3C453F;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Code Quality</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#EF4444 0deg 328deg, rgba(0,0,0,0.06) 328deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:700;color:#080C09;">328%</span>
+                    </div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#3C453F;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Test Coverage</span>
+            </div></div>
+            
+        </div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -375,14 +426,116 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--gradient slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #E9F1EC; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Verified Performance Growth</h2><div style="display:flex;gap:var(--space-1);margin-top:16px;"><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#C6D1CA;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">API Reliability</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#00804D;line-height:1;">99.99%</div>
+                            
+                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#C6D1CA;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Slides Generated</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#00804D;line-height:1;">12.8M</div>
+                            
+                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#C6D1CA;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Customer Rating</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#00804D;line-height:1;">4.8/5</div>
+                            
+                        </div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 19</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #educator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #C0CAC333;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
+            <span style="font-family:Plus Jakarta Sans;font-size:52px;font-weight:900;color:#00804D;margin:0;line-height:1;">89.2%</span>
+            <h3 style="font-family:Plus Jakarta Sans;font-size:15px;font-weight:600;color:#080C09;margin:var(--space-1) 0 6px;line-height:1.2;">System Health</h3>
+            <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#10B981;display:block;margin-bottom:8px;">↑ Stable</span>
+            <div style="margin:var(--space-2) auto;display:flex;justify-content:center;"><svg width="280" height="40" viewBox="0 0 280 40"><polyline points="0.0,17.2 40.0,14.8 80.0,12.7 120.0,10.2 160.0,11.3 200.0,9.2 240.0,8.1 280.0,8.8" fill="none" stroke="#00804D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#3C453F;margin:0;line-height:1.4;">Last 8 measurements</p>
+        </div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 19</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #educator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; width: 300px; border-radius: 50%; background: #00804D; top: -70px; position: absolute; opacity: 0.06; left: -70px; height: 300px"></div><div style="right: -40px; height: 160px; position: absolute; width: 160px; opacity: 0.04; left: auto; pointer-events: none; top: 65%; background: #974B85; border-radius: 9999px"></div></div>
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);overflow:hidden;"><div style="min-width:0;"><div style="display: inline-block; padding: 6px 16px; background: #00804D15; border: 1px solid #00804D30; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #00804D; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #080C09 0%, #3C453F 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Introducing AI Analytics for educator</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #3C453F; margin: 8px 0 0; text-align: left">Powering content workflows at scale via tiktok_vertical platform.</p></div><div style="min-width:0;"><div style="position:relative;width:100%;height:var(--space-28);background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);">
+                    <div style="position:absolute;width:var(--space-18);height:var(--space-18);border-radius:50%;background:#00804D;opacity:0.15;filter:blur(var(--space-5));-webkit-filter:blur(var(--space-5));left:20%;top:20%;"></div>
+                    <div style="position:absolute;width:var(--space-12);height:var(--space-12);border-radius:50%;background:#005424;opacity:0.1;filter:blur(var(--space-4));-webkit-filter:blur(var(--space-4));right:10%;bottom:10%;"></div>
+                </div></div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 19</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #educator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 
-</div>
+</div></div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -394,6 +547,8 @@ body {
     <span class="timestamp">2 hours ago</span>
   </div>
 </div>
+  </div>
+</div>
 
 
 <script>
@@ -403,7 +558,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 1;
+  const total = 4;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

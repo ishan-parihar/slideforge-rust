@@ -457,8 +457,8 @@ pub fn derive_palette(
         overrides,
         secondary_hex,
         tertiary_hex,
-        1080, // default width
-        1350, // default height (4:5 aspect ratio)
+        420, // default width (base for vectoric scaling)
+        525, // default height (4:5 at 420 base)
     )
 }
 

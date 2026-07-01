@@ -66,7 +66,9 @@ pub fn text_block(
         &tokens.body_font
     };
 
-    let text_color = color.unwrap_or(&tokens.text_primary);
+    // When no explicit color, use CSS variable so slide theme classes
+    // (e.g. .slide--dark) can override via cascading styles.
+    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
 
     let mut styles = vec![
         ("font-family", font.clone()),
@@ -160,7 +162,9 @@ pub fn heading_block(
         }
     }
 
-    let text_color = color.unwrap_or(&tokens.text_primary);
+    // When no explicit color, use CSS variable so slide theme classes
+    // (e.g. .slide--dark) can override via cascading styles.
+    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
 
     let mut styles = vec![
         ("font-family", tokens.heading_font.clone()),
@@ -341,7 +345,7 @@ pub fn quote_block(
         fs,
         scale.font_weight,
         scale.line_height,
-        color.unwrap_or(&tokens.text_primary),
+        color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string()),
         margin,
         scale.letter_spacing,
         accent,
@@ -439,7 +443,7 @@ pub fn attribution_block(
     margin: &str,
     alignment: &str,
 ) -> String {
-    let text_color = color.unwrap_or(&tokens.text_primary);
+    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
     let role_text = if !role.is_empty() {
         format!(" · {}", role)
     } else {
@@ -512,13 +516,8 @@ pub fn list_item_block(
         }
     });
 
-    let text_color = color.unwrap_or_else(|| {
-        if let Some(t) = tokens {
-            &t.text_primary
-        } else {
-            "#0a0a0a"
-        }
-    });
+    let text_color_owned = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
+    let text_color = text_color_owned.as_str();
 
     let sub_color = if let Some(t) = tokens {
         &t.text_secondary

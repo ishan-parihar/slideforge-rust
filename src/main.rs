@@ -250,6 +250,9 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         let theme = themes[idx % themes.len()];
         let carousel_id = idx + 1;
         let canvas = platforms::resolve_canvas(platform, Some(aspect_ratio))?;
+        // Token generation always uses 4:5 composition (420×525)
+        let base_width = 420;
+        let base_height = 525;
 
         // Choose 4 random slide types
         let mut chosen_types = slide_types.clone();
@@ -272,7 +275,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             carousel_id, total_carousels, archetype, platform, aspect_ratio, theme, carousel_types
         );
 
-        // 1. Derive tokens with canvas-aware scaling
+        // 1. Derive tokens at 420px base (vectoric scaling handles upscaling)
         let tokens = design_system::derive_palette_with_canvas(
             color,
             "modern",
@@ -283,8 +286,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             None,
             None,
             None,
-            canvas.width,
-            canvas.height,
+            base_width,
+            base_height,
         );
 
         let tokens = match tokens {

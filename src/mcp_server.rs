@@ -312,13 +312,16 @@ impl Server {
         let aspect_ratio = state.aspect_ratio.clone();
         drop(state);
 
-        let canvas = platforms::resolve_canvas(&platform, Some(&aspect_ratio))
-            .unwrap_or_else(|_| platforms::PlatformCanvas {
+        let render = platforms::resolve_render_canvas(&platform, Some(&aspect_ratio))
+            .unwrap_or_else(|_| platforms::RenderCanvas {
                 platform: platform.clone(),
-                width: 1080,
-                height: 1350,
+                base_width: 420,
+                base_height: 525,
+                target_width: 1080,
+                target_height: 1350,
                 aspect_ratio: aspect_ratio.clone(),
                 format: "portrait".to_string(),
+                scale_factor: 1080.0 / 420.0,
             });
 
         design_system::derive_palette_with_canvas(
@@ -331,8 +334,8 @@ impl Server {
             None,
             None,
             None,
-            canvas.width,
-            canvas.height,
+            render.base_width,
+            render.base_height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))
     }
@@ -385,6 +388,9 @@ impl Server {
             .unwrap_or_else(|| "instagram_portrait".to_string());
         let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
+        // Token generation always uses 4:5 composition (420×525)
+        let base_width = 420;
+        let base_height = 525;
 
         let tokens = design_system::derive_palette_with_canvas(
             &req.primary_color,
@@ -396,8 +402,8 @@ impl Server {
             None,
             None,
             None,
-            canvas.width,
-            canvas.height,
+            base_width,
+            base_height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -476,9 +482,9 @@ impl Server {
         let base = req.type_scale_base.unwrap_or(16);
         let ratio = req.type_scale_ratio.unwrap_or(1.25);
 
-        // Use default canvas for stateless design_system call
-        let canvas_width = req.canvas_width.unwrap_or(1080);
-        let canvas_height = req.canvas_height.unwrap_or(1350);
+        // Use 420 base canvas for vectoric scaling
+        let canvas_width = req.canvas_width.unwrap_or(420);
+        let canvas_height = req.canvas_height.unwrap_or(525);
 
         let tokens = design_system::derive_palette_with_canvas(
             &req.primary_color,
@@ -602,14 +608,14 @@ impl Server {
             .clone()
             .or_else(|| Some(state.aspect_ratio.clone()))
             .filter(|s| !s.is_empty());
-        let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
+        let render = platforms::resolve_render_canvas(&platform, aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
         
         drop(state);
 
         let tokens = design_system::derive_palette_with_canvas(
             &primary, &style, base, ratio, &preset, &theme, None, None, None,
-            canvas.width, canvas.height,
+            render.base_width, render.base_height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -1021,8 +1027,8 @@ impl Server {
                 None,
                 None,
                 None,
-                1080, // default canvas width
-                1350, // default canvas height
+                420, // 420 base width
+                525, // 525 base height (4:5 at 420)
             ) {
                 schemes.push(serde_json::json!({
                     "preset": p,
