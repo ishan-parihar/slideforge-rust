@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -384,7 +401,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
+            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:80px 48px 90px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;text-align:left;max-width:320px;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;">
@@ -413,7 +430,7 @@ body {
 </div></div>
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00815915 0px, transparent 50%), radial-gradient(at 80% 0%, #9A4F7E10 0px, transparent 50%), radial-gradient(at 0% 50%, #68CCA012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain); inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;"><div style="min-width:0;overflow:hidden;"><div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;min-width:0;"><h2 style="font-family:Plus Jakarta Sans;font-size:var(--text-2xl);font-weight:900;color:#080D0A;margin:0;line-height:1.15;letter-spacing:-0.02em;">Read the full workflow</h2>
@@ -452,7 +469,7 @@ body {
 </div></div>
 <div class="slide slide--gradient slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute; opacity: 0.04"></div>
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -506,8 +523,8 @@ body {
 </div></div>
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; width: 320px; background: #008159; position: absolute; height: 320px; pointer-events: none; left: -80px; top: -80px; opacity: 0.07"></div><div style="left: auto; background: #9A4F7E; transform: rotate(60deg); top: 60%; right: -40px; position: absolute; width: 120px; opacity: 0.05; height: 120px; pointer-events: none; border-radius: 4px"></div></div>
+            <div style="position: absolute; z-index: 1; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; width: 320px; left: -80px; top: -80px; opacity: 0.07; border-radius: 50%; position: absolute; height: 320px; background: #008159"></div><div style="opacity: 0.05; left: auto; width: 120px; top: 60%; pointer-events: none; background: #9A4F7E; height: 120px; position: absolute; transform: rotate(60deg); border-radius: 4px; right: -40px"></div></div>
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><span style="background: linear-gradient(135deg, #FFFFFF 0%, #E9F1EC 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Ready to Scale your B2B SaaS Growth?</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C5D1CB; margin: 0 0 20px; text-align: center">No credit card required • Instant setup</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #68CCA0; color: #000301; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00553140; letter-spacing: 0.02em; margin: 0;">Launch Free Trial</a></div></div>
             </div>

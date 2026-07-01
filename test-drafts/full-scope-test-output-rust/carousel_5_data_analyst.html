@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -385,7 +402,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:68px 44px 76px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0F090C; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Benefits</h2><div style="width:100%;display:flex;flex-direction:column;gap:14px;">
@@ -430,7 +447,7 @@ body {
 </div></div>
 <div class="slide slide--mesh"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); z-index: 1; opacity: 0.04; position: absolute; inset: 0"></div>
+            <div style="pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #D0C3C833;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
@@ -463,7 +480,7 @@ body {
 </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04"></div>
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -516,8 +533,8 @@ body {
 <div class="slide slide--mesh has-bg-image"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475');background-size: cover; background-position: center;opacity:0.18;z-index:0;filter: contrast(1.12) saturate(1.10) brightness(1.02);"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.55));z-index:1;"></div>
-            <div style="background: var(--texture-grain); z-index: 1; inset: 0; opacity: 0.04; position: absolute; pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #D02285; opacity: 0.06; top: -70px; position: absolute; pointer-events: none; height: 300px; border-radius: 50%; width: 300px; left: -70px"></div><div style="left: auto; width: 160px; pointer-events: none; right: -40px; opacity: 0.04; background: #009D6B; position: absolute; border-radius: 9999px; top: 65%; height: 160px"></div></div>
+            <div style="inset: 0; position: absolute; z-index: 1; pointer-events: none; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -70px; width: 300px; background: #D02285; border-radius: 50%; top: -70px; height: 300px; position: absolute; opacity: 0.06; pointer-events: none"></div><div style="height: 160px; border-radius: 9999px; position: absolute; width: 160px; top: 65%; background: #009D6B; left: auto; pointer-events: none; opacity: 0.04; right: -40px"></div></div>
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;max-width:400px;margin:0 auto;box-sizing:border-box;"><div style="display: inline-block; padding: 6px 16px; background: #D0228515; border: 1px solid #D0228530; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #D02285; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #0F090C 0%, #493F43 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0; display: block; letter-spacing: -0.02em">Introducing AI Analytics for data_analyst</span><div style="width:var(--space-6);height:2px;background:#D02285;margin:var(--space-2) auto;border-radius:1px;opacity:0.85;"></div><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #493F43; margin: 8px 0 0; text-align: center">Powering content workflows at scale via linkedin_landscape platform.</p></div>
             </div>
