@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -384,7 +401,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04"></div>
+            <div style="pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2C2C3D33;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
@@ -418,8 +435,8 @@ body {
 <div class="slide slide--gradient has-bg-image slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.42;z-index:0;filter: sepia(20%) saturate(1.10) contrast(1.06) brightness(1.10);-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"></div><div style="position:absolute;inset:0;background:#6964BF44;z-index:1;"></div>
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; inset: 0; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; position: absolute; height: 320px; opacity: 0.07; background: #6964BF; left: -80px; width: 320px; top: -80px; pointer-events: none"></div><div style="position: absolute; transform: rotate(60deg); background: #817400; top: 60%; opacity: 0.05; pointer-events: none; border-radius: 4px; right: -40px; left: auto; height: 120px; width: 120px"></div></div>
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; top: -80px; width: 320px; border-radius: 50%; left: -80px; height: 320px; pointer-events: none; background: #6964BF; opacity: 0.07"></div><div style="background: #817400; width: 120px; height: 120px; pointer-events: none; opacity: 0.05; right: -40px; top: 60%; position: absolute; left: auto; border-radius: 4px; transform: rotate(60deg)"></div></div>
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><div style="display: inline-block; padding: 6px 16px; background: #C2C2FF15; border: 1px solid #C2C2FF30; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #C2C2FF; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Introducing AI Analytics for creator</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #CCCDD8; margin: 8px 0 0; text-align: left">Powering content workflows at scale via tiktok_vertical platform.</p></div>
             </div>
@@ -446,7 +463,7 @@ body {
 <div class="slide slide--light has-bg-image slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6964BF15 0px, transparent 50%), radial-gradient(at 80% 0%, #81740010 0px, transparent 50%), radial-gradient(at 0% 50%, #ADABFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');background-size: cover; background-position: center;opacity:0.16;z-index:0;filter: sepia(16%) saturate(1.08) contrast(1.04) brightness(1.03);-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"></div><div style="position:absolute;inset:0;background:#6964BF22;z-index:1;"></div>
-            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
+            <div style="inset: 0; position: absolute; z-index: 1; background: var(--texture-grain); pointer-events: none; opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Advanced Capabilities</h2><div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;margin-top:16px;"><div style="flex:1;min-width:0;background:#F3F4FF;border:1px solid #C9C9D425;border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
@@ -485,10 +502,10 @@ body {
 </div></div>
 <div class="slide slide--gradient slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; z-index: 1; pointer-events: none; position: absolute"></div>
+            <div style="background: var(--texture-grain); z-index: 1; position: absolute; opacity: 0.04; pointer-events: none; inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 44px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="backdrop-filter: blur(12px); border-radius: var(--radius-lg); border: 1px solid #2C2C3D40; background: #010105CC; -webkit-backdrop-filter: blur(12px);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:600;line-height:1.2;color:#EDEEF5;margin:0;text-align:center;text-wrap:balance;">SlideForge has fundamentally changed our design turnaround. Parity is absolute.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="border: 1px solid #2C2C3D40; border-radius: var(--radius-lg); background: #010105CC; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:600;line-height:1.2;color:#EDEEF5;margin:0;text-align:center;text-wrap:balance;">SlideForge has fundamentally changed our design turnaround. Parity is absolute.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #EDEEF520; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #EDEEF5; flex-shrink: 0;">M</div>
             <div>
                 <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#EDEEF5;">Marcus Aurelius</div>

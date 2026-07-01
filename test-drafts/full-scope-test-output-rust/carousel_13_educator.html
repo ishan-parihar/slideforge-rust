@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -386,8 +403,8 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; left: -70px; pointer-events: none; position: absolute; opacity: 0.06; height: 300px; top: -70px; width: 300px; background: #804FE8"></div><div style="left: auto; pointer-events: none; position: absolute; border-radius: 9999px; background: #7B7F00; opacity: 0.04; top: 65%; height: 160px; width: 160px; right: -40px"></div></div>
+            <div style="opacity: 0.04; inset: 0; z-index: 1; position: absolute; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 300px; background: #804FE8; top: -70px; position: absolute; opacity: 0.06; pointer-events: none; width: 300px; left: -70px; border-radius: 50%"></div><div style="height: 160px; position: absolute; opacity: 0.04; width: 160px; left: auto; pointer-events: none; border-radius: 9999px; right: -40px; background: #7B7F00; top: 65%"></div></div>
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);overflow:hidden;"><div style="min-width:0;"><div style="display: inline-block; padding: 6px 16px; background: #804FE815; border: 1px solid #804FE830; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #804FE8; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #0B0A0F 0%, #42414A 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Introducing AI Analytics for educator</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #42414A; margin: 8px 0 0; text-align: left">Powering content workflows at scale via instagram_story platform.</p></div><div style="min-width:0;"><div style="position:relative;width:100%;height:var(--space-28);background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);">
                     <div style="position:absolute;width:var(--space-18);height:var(--space-18);border-radius:50%;background:#804FE8;opacity:0.15;filter:blur(var(--space-5));-webkit-filter:blur(var(--space-5));left:20%;top:20%;"></div>
@@ -416,7 +433,7 @@ body {
 </div></div>
 <div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; inset: 0; z-index: 1; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -468,7 +485,7 @@ body {
 </div></div>
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -500,7 +517,7 @@ body {
 </div></div>
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; position: absolute; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain); position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:var(--space-10) var(--space-6) var(--space-10);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;align-items:center;gap:var(--space-3);"><div><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0B0A0F; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em"><span style="color:#804FE8;font-weight:800;margin-right:12px;font-family:Plus Jakarta Sans;">12x</span>Unmatched Performance</h2><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #42414A; margin: 0; text-align: left">Engineered with optimized native system kernels.</p></div><div style="flex-shrink:0;"><div style="width: var(--space-7); height: var(--space-7); background: #804FE812; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: var(--space-3); margin: 0;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#804FE8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#804FE8;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div></div></div>

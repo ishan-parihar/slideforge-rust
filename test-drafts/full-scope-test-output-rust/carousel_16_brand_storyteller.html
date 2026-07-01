@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -392,7 +409,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00820015 0px, transparent 50%), radial-gradient(at 80% 0%, #983CA510 0px, transparent 50%), radial-gradient(at 0% 50%, #66CE5F12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(255,255,255,0.05);border:1px solid #25322433;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
@@ -424,7 +441,7 @@ body {
 </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(255,255,255,0.05);border:1px solid #25322433;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
@@ -457,13 +474,13 @@ body {
 </div></div>
 <div class="slide slide--gradient"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
+            <div style="opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
             <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#10B981;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">🛡️</div>
-            <div style="border-radius: 16px; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); background: #000200CC; border: 1px solid #25322440; border-left: 6px solid #10B981;padding:36px 32px;box-shadow: 0 8px 32px -4px #10B9811f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border-radius: 16px; backdrop-filter: blur(12px); border: 1px solid #25322440; background: #000200CC; -webkit-backdrop-filter: blur(12px); border-left: 6px solid #10B981;padding:36px 32px;box-shadow: 0 8px 32px -4px #10B9811f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
                     <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#10B9811a;color:#10B981;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">🛡️</div>
                     <div>
@@ -497,7 +514,7 @@ body {
 </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00820015 0px, transparent 50%), radial-gradient(at 80% 0%, #983CA510 0px, transparent 50%), radial-gradient(at 0% 50%, #66CE5F12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
+            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">

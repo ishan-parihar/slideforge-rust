@@ -127,11 +127,28 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
-   centered within the slide via flexbox. The slide CSS-class background fills
-   the bleed area so gradients seamlessly extend beyond the composition. */
-/* Light/mesh slides need the mesh gradient on .slide too, because
-   .slide--light only sets background-color (flat), missing the gradient. */
+/* Full-bleed: extend composition background to cover entire slide canvas.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+}
+.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
@@ -386,7 +403,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:var(--space-10) var(--space-6) var(--space-10);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEA; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em"><span style="color:#E45B2A;font-weight:800;margin-right:12px;font-family:Plus Jakarta Sans;">12x</span>Unmatched Performance</h2><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #D7CBC7; margin: 0; text-align: left">Engineered with optimized native system kernels.</p></div>
@@ -413,7 +430,7 @@ body {
 </div></div>
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C8400015 0px, transparent 50%), radial-gradient(at 80% 0%, #0089BB10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9C6D12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            <div style="pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #D4C7C333;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
@@ -446,7 +463,7 @@ body {
 </div></div>
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C8400015 0px, transparent 50%), radial-gradient(at 80% 0%, #0089BB10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9C6D12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; position: absolute"></div>
+            <div style="pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;"><div style="min-width:0;overflow:hidden;"><div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;min-width:0;"><h2 style="font-family:Plus Jakarta Sans;font-size:var(--text-2xl);font-weight:900;color:#0F0A08;margin:0;line-height:1.15;letter-spacing:-0.02em;">Read the full workflow</h2>
@@ -485,13 +502,13 @@ body {
 </div></div>
 <div class="slide slide--mesh"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; position: absolute; z-index: 1; opacity: 0.04; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
             <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#10B981;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">🛡️</div>
-            <div style="border-radius: 16px; background: #FFF2EDCC; -webkit-backdrop-filter: blur(12px); border: 1px solid #D4C7C340; backdrop-filter: blur(12px); border-left: 6px solid #10B981;padding:36px 32px;box-shadow: 0 8px 32px -4px #10B9811f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="background: #FFF2EDCC; border: 1px solid #D4C7C340; border-radius: 16px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-left: 6px solid #10B981;padding:36px 32px;box-shadow: 0 8px 32px -4px #10B9811f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
                     <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#10B9811a;color:#10B981;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">🛡️</div>
                     <div>
