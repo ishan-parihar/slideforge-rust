@@ -127,11 +127,14 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: composition expands to fill the entire slide so backgrounds,
-   noise, and shapes from slide_base() naturally extend to the full canvas. */
-.slide--full-bleed .slide-composition {
-  width: 100%;
-  height: 100%;
+/* Full-bleed: composition stays at 420×525 (its designed dimensions) and is
+   centered within the slide via flexbox. The slide CSS-class background fills
+   the bleed area so gradients seamlessly extend beyond the composition. */
+/* Light/mesh slides need the mesh gradient on .slide too, because
+   .slide--light only sets background-color (flat), missing the gradient. */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
 }
 
 .slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
@@ -389,7 +392,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D11E6715 0px, transparent 50%), radial-gradient(at 80% 0%, #00998410 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA2D512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; inset: 0; pointer-events: none"></div>
+            <div style="inset: 0; z-index: 1; background: var(--texture-grain); pointer-events: none; opacity: 0.04; position: absolute"></div>
             
             <div style="position:relative;z-index:10;padding:68px 44px 76px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Benefits</h2><div style="width:100%;display:flex;flex-direction:column;gap:14px;">
@@ -435,7 +438,7 @@ body {
 <div class="slide slide--dark has-bg-image"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475');background-size: cover; background-position: center;opacity:0.32;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
-            <div style="opacity: 0.04; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04; pointer-events: none; inset: 0"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Verified Performance Growth</h2><div style="display:flex;gap:var(--space-1);margin-top:16px;"><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
@@ -474,7 +477,7 @@ body {
 </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0; opacity: 0.04"></div>
+            <div style="background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
@@ -505,7 +508,7 @@ body {
 </div></div>
 <div class="slide slide--mesh"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
+            <div style="position: absolute; pointer-events: none; opacity: 0.04; inset: 0; z-index: 1; background: var(--texture-grain)"></div>
             
             <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
