@@ -1,0 +1,14 @@
+<output>
+<facts>
+<PROJECT_RULES>
+* When calling `delegate_task`, always include `load_skills=[]` and `run_in_background=true`.
+</PROJECT_RULES>
+</facts>
+<user_observations>
+* User employs highly structured, mode-based prompting with explicit behavioral constraints (e.g., ANALYSIS MODE, PONYTAIL MODE).
+</user_observations>
+<meta>
+<messages_processed></messages_processed>
+<unprocessed_from>1</unprocessed_from>
+</meta>
+</output>

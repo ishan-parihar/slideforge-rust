@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@300,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 525px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+}
 
 :root {
   --primary: #D11E67;
@@ -28,7 +35,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
-  --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
   --shadow-glow: 0 0 20px #D11E6740;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -49,8 +56,8 @@
   --glass-light-bg: #FFF1F4CC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #D0C3C640;
-  --font-heading: 'Space Grotesk', serif;
-  --font-body: 'Space Grotesk', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -90,8 +97,16 @@
   --space-6: 48px;
   --space-7: 56px;
   --space-8: 64px;
+  --space-9: 72px;
   --space-10: 80px;
   --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
 }
 
 body {
@@ -100,15 +115,24 @@ body {
   font-family: var(--font-body, system-ui, sans-serif);
 }
 
-.carousel-viewport { width: 420px; height: 525px; overflow: hidden; position: relative; }
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
 .carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
 
 .slide {
-  min-width: 420px; height: 525px; position: relative;
-  display: flex; flex-direction: column;
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-.slide.has-progress { padding-bottom: 0; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: composition expands to fill the entire slide so backgrounds,
+   noise, and shapes from slide_base() naturally extend to the full canvas. */
+.slide--full-bleed .slide-composition {
+  width: 100%;
+  height: 100%;
+}
 
 .slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
 .slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
@@ -125,30 +149,34 @@ body {
 
 .slide-layout {
   position: relative; z-index: 2; display: flex; flex-direction: column;
-  height: 100%; padding: 80px 52px 90px; width: 100%;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
 }
 .slide-layout--center { justify-content: center; }
 
-.grid-2 { display: flex; gap: 24px; width: 100%; }
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
 .grid-2 > * { flex: 1; min-width: 0; }
 
 .serif { font-family: var(--font-heading, serif); }
 .sans { font-family: var(--font-body, sans-serif); }
 
 .display-text {
-  font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-  margin-bottom: 16px; text-wrap: balance;
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
 }
 .heading-text {
-  font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em;
-  margin-bottom: 16px; text-wrap: balance;
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
 }
 .body-text {
-  font-size: 14px; font-weight: 400; line-height: 1.5;
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
   text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
 }
 .caption-text {
-  font-size: 11px; font-weight: 500; line-height: 1.4; letter-spacing: 0.02em;
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
   text-wrap: pretty; overflow-wrap: break-word;
 }
 
@@ -162,7 +190,7 @@ body {
 }
 
 .card {
-  padding: 20px; border-radius: var(--radius-lg, 12px);
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
   background: var(--surface-light, #F3F5FC);
   border: 1px solid var(--border-light, #C4C7D1);
   box-shadow: var(--shadow-sm);
@@ -186,9 +214,9 @@ body {
 }
 
 .badge {
-  display: inline-block; padding: 6px 16px; font-size: 13px; font-weight: 600;
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
   border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
-  letter-spacing: 0.05em; margin-bottom: 24px;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
 }
 .slide--light .badge, .slide--mesh .badge {
   background: var(--primary)15; color: var(--primary);
@@ -201,7 +229,7 @@ body {
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  padding: 12px 28px; font-size: 14px; font-weight: 600;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
   border-radius: var(--radius-pill, 9999px); text-decoration: none;
   box-shadow: var(--shadow-md); transition: transform 0.2s;
 }
@@ -214,23 +242,23 @@ body {
 }
 
 .icon-box {
-  width: 56px; height: 56px; border-radius: var(--radius-md, 8px);
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; margin-bottom: 24px;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
 }
 .slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
 .slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
 
-.timeline { display: flex; flex-direction: column; gap: 16px; }
-.timeline-item { display: flex; gap: 16px; align-items: flex-start; }
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
 .timeline-number {
-  font-size: 26px; font-weight: 300; color: var(--primary);
-  min-width: 36px; line-height: 1;
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
 }
 .timeline-content { flex: 1; }
 
 .callout {
-  display: flex; gap: 16px; align-items: flex-start; padding: 16px;
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
   border-radius: var(--radius-md, 8px); border: 1px solid transparent;
 }
 .callout--warning {
@@ -241,7 +269,7 @@ body {
 }
 
 .breadcrumb-progress {
-  position: absolute; bottom: 42px; left: 28px; right: 28px;
+  position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
   display: flex; align-items: center; gap: 5px;
   z-index: 50;
 }
@@ -260,7 +288,7 @@ body {
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
 
 .swipe-arrow {
-  position: absolute; top: 0; right: 0; bottom: 0; width: 48px;
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
   display: flex; align-items: center; justify-content: center; pointer-events: none;
   z-index: 50;
 }
@@ -270,7 +298,7 @@ body {
 .slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
 .slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
 
-.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; }
+.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
 .slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
 .overlay__brand { font-family: var(--heading); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
@@ -320,7 +348,7 @@ body {
             }
         
 .ig-frame {
-  width: 420px; background: #fff; border-radius: 0;
+  width: var(--slide-width); background: #fff; border-radius: 0;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -347,7 +375,9 @@ body {
 </head>
 <body>
 
-<div class="ig-frame">
+<div style="width:1080px;height:1736px;overflow:hidden;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+    <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">N</div>
     <div>
@@ -357,27 +387,100 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark has-bg-image has-progress">
+<div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D11E6715 0px, transparent 50%), radial-gradient(at 80% 0%, #00998410 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA2D512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.36;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
-            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; inset: 0; pointer-events: none"></div>
             
-            <div style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#F5ECEE;margin:0;line-height:1.08;">The Execution Gap</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:16px 24px 16px 24px;padding:18px;background:rgba(255,255,255,0.06);border:1px solid #3B282C;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Space Grotesk;font-size:14px;color:#D7CACC;line-height:1.4;margin:0;">Teams collect insights but lose momentum before action.</p></div>
-                <div style="border-radius:16px 24px 16px 24px;padding:18px;background:rgba(255,255,255,0.06);border:1px solid #3B282C;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#FF538D;margin-bottom:8px;">SOLUTION</div><p style="font-family:Space Grotesk;font-size:14px;color:#D7CACC;line-height:1.4;margin:0;">Convert every signal into a tracked next step.</p></div>
+            <div style="position:relative;z-index:10;padding:68px 44px 76px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Benefits</h2><div style="width:100%;display:flex;flex-direction:column;gap:14px;">
+                <div style="position:relative;width:100%;height:180px;border-radius: 16px;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Platform Benefits" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);" />
+                <div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.75) 100%);z-index:2;"></div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:16px 24px 16px 24px;padding:14px 16px;box-sizing:border-box;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:16px 24px 16px 24px;background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:11px;font-weight:900;flex-shrink:0;">F</div><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#FF538D;text-transform:uppercase;">01</div></div>
-                    <div style="font-family:Space Grotesk;font-size:15px;font-weight:800;color:#F5ECEE;line-height:1.2;margin-bottom:5px;">Faster handoff</div>
-                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.35;">Decisions move directly into owners and timelines.</div>
-                </div><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:16px 24px 16px 24px;padding:14px 16px;box-sizing:border-box;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:16px 24px 16px 24px;background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:11px;font-weight:900;flex-shrink:0;">C</div><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#FF538D;text-transform:uppercase;">02</div></div>
-                    <div style="font-family:Space Grotesk;font-size:15px;font-weight:800;color:#F5ECEE;line-height:1.2;margin-bottom:5px;">Clearer focus</div>
-                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.35;">Only the highest-leverage work enters the plan.</div>
-                </div></div>
+                <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;width:100%;"><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:11px;display:flex;gap:9px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="width:26px;height:26px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;flex-shrink:0;">✦</div>
+                <div style="min-width:0;">
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:800;color:#F5ECEE;margin:0 0 5px;line-height:1.2;">Sub-100ms Edge Latency</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CACC;margin:0;line-height:1.38;">Distributed content networks serving assets globally.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:11px;display:flex;gap:9px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="width:26px;height:26px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;flex-shrink:0;">→</div>
+                <div style="min-width:0;">
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:800;color:#F5ECEE;margin:0 0 5px;line-height:1.2;">Intelligent Centering</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CACC;margin:0;line-height:1.38;">Automatically validates flexbox align and vertical centering parameters.</p>
+                </div>
+            </div></div>
+            </div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 22</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--dark has-bg-image"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475');background-size: cover; background-position: center;opacity:0.32;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
+            <div style="opacity: 0.04; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Verified Performance Growth</h2><div style="display:flex;gap:var(--space-1);margin-top:16px;"><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">API Reliability</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">99.99%</div>
+                            
+                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Slides Generated</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">12.8M</div>
+                            
+                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Customer Rating</div>
+                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">4.8/5</div>
+                            
+                        </div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 22</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0; opacity: 0.04"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
+            <span style="background: linear-gradient(135deg, #FFFFFF 0%, #F5ECEE 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 16px; display: block; letter-spacing: -0.02em">Announcing the Next Generation of AI Analytics</span>
+            <div style="width: 60px; height: 3.5px; background: #F54884; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px #F5488440;"></div>
+            <p style="font-family:Plus Jakarta Sans;font-size:15px;color:#D7CACC;margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">Unifying design system definitions across Rust and Python engines.</p>
         </div>
             </div>
         </div>
@@ -392,14 +495,68 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--mesh"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
+            
+            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em">Key Performance Indicators</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);margin-top:16px;width:100%;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Slides Generated</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">12.8M</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+24%</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">API Uptime</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">99.99%</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.01%</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">User Rating</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">4.8/5</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.3</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Avg Render Time</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">180ms</span>
+                    <span style="font-size:9px;font-weight:700;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:6px;">-15ms</span>
+                </div>
+            </div></div>
+        </div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 22</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 
-</div>
+</div></div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -411,6 +568,8 @@ body {
     <span class="timestamp">2 hours ago</span>
   </div>
 </div>
+  </div>
+</div>
 
 
 <script>
@@ -420,7 +579,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 1;
+  const total = 4;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

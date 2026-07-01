@@ -24,6 +24,22 @@ pub struct PlatformCanvas {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct RenderCanvas {
+    pub platform: String,
+    /// Base rendering width (always 420 for vectoric scaling)
+    pub base_width: u32,
+    /// Base rendering height computed from aspect ratio
+    pub base_height: u32,
+    /// Target output width
+    pub target_width: u32,
+    /// Target output height
+    pub target_height: u32,
+    pub aspect_ratio: String,
+    pub format: String,
+    pub scale_factor: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct AspectRatioSpec {
     pub ratio: String,
     pub width: u32,
@@ -255,6 +271,30 @@ pub fn resolve_canvas(
         height,
         aspect_ratio: ratio.to_string(),
         format,
+    })
+}
+
+/// Resolve a render-plan: target dimensions + base (420px) dimensions + scale factor.
+pub fn resolve_render_canvas(
+    platform: &str,
+    aspect_ratio: Option<&str>,
+) -> Result<RenderCanvas, String> {
+    let canvas = resolve_canvas(platform, aspect_ratio)?;
+    let target_width = canvas.width;
+    let target_height = canvas.height;
+    let base_width: u32 = 420;
+    let base_height: u32 = 525; // Always 4:5 composition
+    let scale_factor = target_width as f32 / base_width as f32;
+
+    Ok(RenderCanvas {
+        platform: canvas.platform,
+        base_width,
+        base_height,
+        target_width,
+        target_height,
+        aspect_ratio: canvas.aspect_ratio,
+        format: canvas.format,
+        scale_factor,
     })
 }
 

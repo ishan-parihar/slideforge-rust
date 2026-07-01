@@ -34,13 +34,42 @@ pub struct CarouselSpec {
 pub fn render_carousel_html(spec: &CarouselSpec) -> String {
     let total = spec.slides.len();
 
+    // Composition is always 4:5 (420×525). Canvas extends to fill target aspect ratio.
+    // For taller targets (9:16, 3:4): composition fills width, BG bleeds top/bottom.
+    // For wider targets (1:1, 16:9): composition fills height, BG bleeds sides.
+    const COMP_WIDTH: u32 = 420;
+    const COMP_HEIGHT: u32 = 525;
+    let target_w = spec.canvas_width;
+    let target_h = spec.canvas_height;
+    let target_ratio = target_w as f32 / target_h as f32;
+    let native_ratio = COMP_WIDTH as f32 / COMP_HEIGHT as f32; // 0.8
+
+    let (base_w, base_h) = if target_ratio <= native_ratio {
+        // Taller target: composition fills canvas width, canvas extends vertically
+        (COMP_WIDTH, (COMP_WIDTH as f32 / target_w as f32 * target_h as f32).round() as u32)
+    } else {
+        // Wider target: composition fills canvas height, canvas extends horizontally
+        ((COMP_HEIGHT as f32 / target_h as f32 * target_w as f32).round() as u32, COMP_HEIGHT)
+    };
+
+    let scale_factor = target_w as f32 / base_w as f32;
+    let sf = format!("{:.6}", scale_factor);
+
+    // IG frame overhead at base scale (header ~56px + footer ~90px = ~146px, rounded to 150)
+    // This prevents clipping of the IG header and footer elements below the viewport
+    let ig_overhead: u32 = if spec.include_ig_frame { 150 } else { 0 };
+    let total_base_height = base_h + ig_overhead;
+    let total_target_height = (total_base_height as f32 * scale_factor).round() as u32;
+
     // Core CSS
     let mut css_block = r#"
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --slide-width: [SLIDE_WIDTH]px;
-  --slide-height: [SLIDE_HEIGHT]px;
+  --slide-width: [BASE_WIDTH]px;
+  --slide-height: [BASE_HEIGHT]px;
+  --composition-width: 420px;
+  --composition-height: 525px;
 }
 
 [CSS_VARS]
@@ -56,10 +85,19 @@ body {
 
 .slide {
   min-width: var(--slide-width); height: var(--slide-height); position: relative;
-  display: flex; flex-direction: column;
+  display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-.slide.has-progress { padding-bottom: 0; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: composition expands to fill the entire slide so backgrounds,
+   noise, and shapes from slide_base() naturally extend to the full canvas. */
+.slide--full-bleed .slide-composition {
+  width: 100%;
+  height: 100%;
+}
 
 .slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
 .slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
@@ -241,8 +279,8 @@ body {
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 "#.replace("[CSS_VARS]", &spec.css_variables)
-        .replace("[SLIDE_WIDTH]", &spec.canvas_width.to_string())
-        .replace("[SLIDE_HEIGHT]", &spec.canvas_height.to_string());
+        .replace("[BASE_WIDTH]", &base_w.to_string())
+        .replace("[BASE_HEIGHT]", &base_h.to_string());
 
     let theme_overrides = get_theme_css_overrides(&spec.visual_theme);
     css_block.push_str(theme_overrides);
@@ -426,15 +464,22 @@ body {
                 .to_string();
         }
 
+        // Full-bleed: when canvas differs from 4:5 composition, the composition
+        // expands via CSS to fill the entire slide, so slide_base() backgrounds,
+        // noise, and shapes naturally extend to the full canvas.
+        let is_full_bleed = base_w != COMP_WIDTH || base_h != COMP_HEIGHT;
+        let full_bleed_class = if is_full_bleed { " slide--full-bleed" } else { "" };
+
         slides_html.push_str(&format!(
-            r#"<div class="slide {}{}"{}>
+            r#"<div class="slide {}{}"{}><div class="slide-composition">
 {}
 {}
 {}
 {}
-</div>
+</div></div>
 "#,
-            bg_class, progress_class, bg_style, slide.html, overlay_html, progress_html, arrow_html
+            bg_class, full_bleed_class, bg_style,
+            slide.html, overlay_html, progress_html, arrow_html
         ));
     }
 
@@ -526,7 +571,7 @@ body {
   });
 })();
 </script>
-"#.replace("[TOTAL]", &total.to_string()).replace("[SLIDE_WIDTH]", &spec.canvas_width.to_string());
+"#.replace("[TOTAL]", &total.to_string()).replace("[SLIDE_WIDTH]", &base_w.to_string());
     }
 
     let font_link = if !spec.google_fonts_url.is_empty() {
@@ -538,31 +583,52 @@ body {
         String::new()
     };
 
+    let carousel_html = format!(
+        r#"{header}
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+{slides}
+</div>
+</div>
+{footer}"#,
+        header = ig_header,
+        slides = slides_html,
+        footer = ig_footer,
+    );
+
+    // Wrap in vectoric scale container
+    // outer container uses total_target_height to include IG frame elements
     format!(
         r#"<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{}
+{font}
 <style>
-{}
+{style}
 </style>
 </head>
 <body>
 
-{}
-<div class="carousel-viewport">
-<div class="carousel-track" id="carouselTrack">
-{}
+<div style="width:{target_w}px;height:{target_h_ig}px;overflow:hidden;position:relative;margin:0 auto;">
+  <div style="transform:scale({sf});transform-origin:top left;width:{base_w}px;height:{total_base_h}px;">
+    {carousel}
+  </div>
 </div>
-</div>
-{}
 
-{}
+{js}
 </body>
 </html>"#,
-        font_link, css_block, ig_header, slides_html, ig_footer, js_block
+        font = font_link,
+        style = css_block,
+        target_w = spec.canvas_width,
+        target_h_ig = total_target_height,
+        sf = sf,
+        base_w = base_w,
+        total_base_h = total_base_height,
+        carousel = carousel_html,
+        js = js_block,
     )
 }
 
@@ -803,9 +869,130 @@ mod tests {
         };
 
         let html = render_carousel_html(&spec);
-        assert!(html.contains("--slide-width: 360px"));
-        assert!(html.contains("--slide-height: 480px"));
+        assert!(html.contains("--slide-width: 420px"));
+        assert!(html.contains("--slide-height: 560px"));  // 3:4 → taller, canvas extends vertically
+        assert!(html.contains("--composition-width: 420px"));
+        assert!(html.contains("--composition-height: 525px"));
+        assert!(html.contains("slide-composition"));
         assert!(html.contains("width: var(--slide-width)"));
         assert!(html.contains("height: var(--slide-height)"));
+        assert!(html.contains("transform:scale(0.857143)"));
+        assert!(html.contains("width:360px;height:480px"));  // outer container
+        // Full-bleed: 3:4 differs from 4:5, so full-bleed class present
+        assert!(html.contains("slide--full-bleed"));
+    }
+
+    #[test]
+    fn test_render_carousel_4_5_native_no_full_bleed() {
+        // 4:5 → exact fit, no full-bleed needed
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "dark".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "4:5".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1350,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert!(html.contains("--slide-width: 420px"));
+        assert!(html.contains("--slide-height: 525px"));  // 4:5 → exact native fit
+        assert!(html.contains("--composition-width: 420px"));
+        assert!(html.contains("--composition-height: 525px"));
+        // No slide-level noise div for 4:5 (noise only appears as class on .slide elements)
+        assert!(!html.contains(r#"<div style="position:absolute;inset:0;background:var(--texture-grain);opacity:0.04;pointer-events:none;z-index:1;"></div>"#));
+        assert!(html.contains("transform:scale(2.571429)"));
+        assert!(html.contains("width:1080px;height:1350px"));
+    }
+
+    #[test]
+    fn test_render_carousel_9_16_full_bleed() {
+        // 9:16 → much taller, full-bleed with BG bleed top/bottom
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "gradient".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_reels".to_string(),
+            aspect_ratio: "9:16".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1920,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert!(html.contains("--slide-width: 420px"));
+        assert!(html.contains("--slide-height: 747px"));  // 9:16 → canvas extends vertically
+        assert!(html.contains("--composition-width: 420px"));
+        assert!(html.contains("--composition-height: 525px"));
+        assert!(html.contains("slide--full-bleed"));  // full-bleed for 9:16
+    }
+
+    #[test]
+    fn test_render_carousel_1_1_full_bleed_wider() {
+        // 1:1 → wider, full-bleed with BG bleed sides
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "light".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_square".to_string(),
+            aspect_ratio: "1:1".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1080,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert!(html.contains("--slide-width: 525px"));  // 1:1 → wider canvas
+        assert!(html.contains("--slide-height: 525px"));
+        assert!(html.contains("--composition-width: 420px"));
+        assert!(html.contains("--composition-height: 525px"));
+        assert!(html.contains("slide--full-bleed"));  // full-bleed for 1:1
     }
 }

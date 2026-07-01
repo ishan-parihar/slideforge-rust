@@ -1,0 +1,9 @@
+<output>
+<user_observations>
+* User employs a structured `[analyze-mode]` block to coordinate agent roles and enforce tool-calling constraints.
+</user_observations>
+<meta>
+<messages_processed></messages_processed>
+<unprocessed_from>103</unprocessed_from>
+</meta>
+</output>

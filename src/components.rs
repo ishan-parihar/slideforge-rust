@@ -4956,11 +4956,12 @@ pub fn qr_destination_slide(
     };
     let qr_src = render_qr_svg_data_uri(destination_url).unwrap_or_default();
     let radius = current_component_radius(tokens, "card");
-    let qr_size = if matches!(effective_variant, "minimal" | "without-heading") {
-        "208px"
+    let qr_size_px = if matches!(effective_variant, "minimal" | "without-heading") {
+        208
     } else {
-        "188px"
+        188
     };
+    let qr_size = format!("{}px", qr_size_px);
 
     // Brand header outside QR card (above QR image) if present and not empty
     let brand_html = if !brand_logo.is_empty() || !brand_name.is_empty() {
@@ -5004,15 +5005,14 @@ pub fn qr_destination_slide(
 
     let mut qr_elements = Vec::new();
     qr_elements.push(format!(
-        r#"<img src="{}" alt="{}" style="width:{};height:{};display:block;" />"#,
+        r#"<img src="{}" alt="{}" style="max-width:100%;height:auto;width:{};display:block;" />"#,
         qr_src,
         escape_html(effective_alt),
         qr_size,
-        qr_size
     ));
     if !short_url.is_empty() {
         qr_elements.push(format!(
-            r#"<div style="font-family:{};font-size:11px;font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:#0B0A0F;max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
             tokens.body_font,
             qr_size,
             escape_html(short_url)
@@ -5020,16 +5020,17 @@ pub fn qr_destination_slide(
     }
 
     let qr_html = format!(
-        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:16px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 14px 34px rgba(0,0,0,0.14);">
+        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:var(--space-2);display:flex;flex-direction:column;align-items:center;gap:var(--space-1);box-shadow:0 14px 34px rgba(0,0,0,0.14);width:100%;max-width:{};">
             {}
         </div>"#,
         radius,
+        qr_size,
         qr_elements.join("\n")
     );
 
     let cta_html = if !cta_text.is_empty() {
         format!(
-            r#"<div style="margin-top:16px;background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:8px 16px;border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;">{}</div>"#,
+            r#"<div style="margin-top:var(--space-2);background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:var(--space-1) var(--space-2);border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;">{}</div>"#,
             colors.primary,
             colors.button_text,
             tokens.heading_font,
@@ -5072,7 +5073,7 @@ pub fn qr_destination_slide(
 
         if include_heading && !heading.is_empty() {
             let h_html = format!(
-                r#"<h2 style="font-family:{};font-size:32px;font-weight:900;color:{};margin:0;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
+                r#"<h2 style="font-family:{};font-size:var(--text-2xl);font-weight:900;color:{};margin:0;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
                 tokens.heading_font,
                 colors.text_primary,
                 escape_html(heading)
@@ -5082,7 +5083,7 @@ pub fn qr_destination_slide(
 
         if include_caption && !caption.is_empty() {
             let c_html = format!(
-                r#"<p style="font-family:{};font-size:15px;line-height:1.55;color:{};margin:0;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:var(--text-base);line-height:1.55;color:{};margin:0;">{}</p>"#,
                 tokens.body_font,
                 colors.text_secondary,
                 escape_html(caption)
@@ -5093,7 +5094,7 @@ pub fn qr_destination_slide(
         if include_incentive && !incentive_text.is_empty() {
             let badge_radius = current_component_radius(tokens, "chip");
             let inc_html = format!(
-                r#"<div style="display:inline-flex;align-items:center;gap:var(--space-1);background:{};border:1px solid {};border-radius:{};padding:8px 12px;font-family:{};font-size:var(--text-sm);font-weight:700;color:{};align-self:flex-start;">
+                r#"<div style="display:inline-flex;align-items:center;gap:var(--space-1);background:{};border:1px solid {};border-radius:{};padding:var(--space-1) var(--space-2);font-family:{};font-size:var(--text-sm);font-weight:700;color:{};align-self:flex-start;">
                     <span style="color:{};">🎁</span>
                     <span>{}</span>
                 </div>"#,
@@ -5113,12 +5114,12 @@ pub fn qr_destination_slide(
         }
 
         let left_col = format!(
-            r#"<div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;">{}</div>"#,
+            r#"<div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;min-width:0;">{}</div>"#,
             left_elements.join("\n")
         );
 
         let right_col = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-width:0;">
                 {}
                 {}
                 {}
@@ -5127,7 +5128,7 @@ pub fn qr_destination_slide(
         );
 
         let content = format!(
-            r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;"><div style="min-width:0;">{}</div><div style="min-width:0;">{}</div></div>"#,
+            r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;"><div style="min-width:0;overflow:hidden;">{}</div><div style="min-width:0;overflow:hidden;">{}</div></div>"#,
             left_col, right_col
         );
         slide_base(&content, tokens, bg_style, false, layout_padding, "center")
