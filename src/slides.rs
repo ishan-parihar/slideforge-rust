@@ -400,9 +400,19 @@ body {
             || !spec.url.is_empty()
             || !spec.hashtags.is_empty()
         {
+            // When the slide has a background image, add inline text-shadow
+            // to overlay spans so the validator recognizes the contrast
+            // backing and the text remains legible over photographic backgrounds.
+            let has_bg_img = slide.html.contains("background-image");
+            let shadow_attr = if has_bg_img {
+                r#" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);""#
+            } else {
+                ""
+            };
             let top_left = if !spec.brand_name.is_empty() {
                 format!(
-                    r#"<span class="overlay__brand">{}</span>"#,
+                    r#"<span class="overlay__brand"{}>{}</span>"#,
+                    shadow_attr,
                     escape_html(&spec.brand_name)
                 )
             } else {
@@ -410,7 +420,8 @@ body {
             };
             let top_right = if !spec.topic.is_empty() {
                 format!(
-                    r#"<span class="overlay__topic">{}</span>"#,
+                    r#"<span class="overlay__topic"{}>{}</span>"#,
+                    shadow_attr,
                     escape_html(&spec.topic)
                 )
             } else {
@@ -418,7 +429,8 @@ body {
             };
             let bottom_left = if !spec.url.is_empty() {
                 format!(
-                    r#"<span class="overlay__url">{}</span>"#,
+                    r#"<span class="overlay__url"{}>{}</span>"#,
+                    shadow_attr,
                     escape_html(&spec.url)
                 )
             } else {
@@ -439,7 +451,8 @@ body {
             let hashtags_str = clean_tags.join(" ");
             let bottom_right = if !hashtags_str.is_empty() {
                 format!(
-                    r#"<span class="overlay__hashtags">{}</span>"#,
+                    r#"<span class="overlay__hashtags"{}>{}</span>"#,
+                    shadow_attr,
                     escape_html(&hashtags_str)
                 )
             } else {
