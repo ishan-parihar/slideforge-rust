@@ -369,7 +369,9 @@ pub fn render_themed_image(
                 .unwrap_or_else(|| "var(--radius-lg)".to_string())
         );
     } else if fr == "organic" {
-        frame_css = format!("border-radius: var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);");
+        frame_css = format!(
+            "border-radius: var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);"
+        );
     } else if fr == "circle" {
         frame_css = format!(
             "border-radius: {};",
@@ -657,7 +659,9 @@ fn current_component_radius(tokens: &DesignTokens, role: &str) -> String {
                 "var(--radius-lg)".to_string()
             }
         }
-        "organic" => "var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg)".to_string(),
+        "organic" => {
+            "var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg)".to_string()
+        }
         _ => tokens
             .radii
             .get(if role == "frame" { "lg" } else { "md" })
@@ -896,12 +900,12 @@ pub fn hero_slide(
         let headline_html = heading_block(
             headline,
             tokens,
-            "display",
+            "title",
             None,
             true,
             Some((gradient_colors.0, gradient_colors.1)),
             "left",
-            "0",
+            "0 0 4px",
             true,
         );
         let sub_html = if !subheadline.is_empty() {
@@ -913,7 +917,7 @@ pub fn hero_slide(
                 false,
                 None,
                 "left",
-                None,
+                Some("100%"),
                 "8px 0 0",
             )
         } else {
@@ -927,11 +931,19 @@ pub fn hero_slide(
             )
         } else {
             format!(
-                r#"<div style="position:relative;width:100%;height:var(--space-28);background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);">
-                    <div style="position:absolute;width:var(--space-18);height:var(--space-18);border-radius:50%;background:{};opacity:0.15;filter:blur(var(--space-5));-webkit-filter:blur(var(--space-5));left:20%;top:20%;"></div>
-                    <div style="position:absolute;width:var(--space-12);height:var(--space-12);border-radius:50%;background:{};opacity:0.1;filter:blur(var(--space-4));-webkit-filter:blur(var(--space-4));right:10%;bottom:10%;"></div>
+                r#"<div style="position:relative;width:100%;height:var(--space-28);min-height:180px;background:linear-gradient(135deg, {}12, {}08);border:1px solid {}30;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:{};opacity:0.12;filter:blur(40px);-webkit-filter:blur(40px);left:-20px;top:-20px;"></div>
+                    <div style="position:absolute;width:140px;height:140px;border-radius:50%;background:{};opacity:0.10;filter:blur(30px);-webkit-filter:blur(30px);right:-10px;bottom:20%;"></div>
+                    <div style="position:absolute;width:80px;height:80px;border-radius:var(--radius-md);background:{};opacity:0.08;transform:rotate(12deg);left:30%;top:30%;"></div>
+                    <div style="position:absolute;width:60px;height:60px;border-radius:var(--radius-lg);background:{};opacity:0.06;transform:rotate(-8deg);right:25%;bottom:25%;"></div>
                 </div>"#,
-                colors.primary, colors.button_bg
+                colors.primary,
+                colors.primary,
+                colors.primary,
+                colors.primary,
+                colors.button_bg,
+                colors.primary,
+                colors.primary
             )
         };
         split_layout(
@@ -939,8 +951,8 @@ pub fn hero_slide(
             &right_visual,
             tokens,
             bg_style,
-            "var(--space-4)",
-            "1fr 1fr",
+            "var(--space-3)",
+            "1.2fr 1fr",
             true,
         )
     } else {
@@ -1047,7 +1059,14 @@ pub fn feature_slide(
 
     let html = match effective_variant {
         "icon-left" => {
-            let icon_html = icon_block(icon, tokens, Some(&colors.primary), "var(--space-7)", "var(--space-3)", "0");
+            let icon_html = icon_block(
+                icon,
+                tokens,
+                Some(&colors.primary),
+                "var(--space-7)",
+                "var(--space-3)",
+                "0",
+            );
             let title_html = heading_block(
                 &full_title,
                 tokens,
@@ -1077,7 +1096,14 @@ pub fn feature_slide(
             slide_base(&content, tokens, bg_style, false, padding, justify)
         }
         "icon-right" => {
-            let icon_html = icon_block(icon, tokens, Some(&colors.primary), "var(--space-7)", "var(--space-3)", "0");
+            let icon_html = icon_block(
+                icon,
+                tokens,
+                Some(&colors.primary),
+                "var(--space-7)",
+                "var(--space-3)",
+                "0",
+            );
             let title_html = heading_block(
                 &full_title,
                 tokens,
@@ -1388,7 +1414,7 @@ pub fn list_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -1880,7 +1906,7 @@ pub fn comparison_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -1968,7 +1994,9 @@ pub fn stat_row_slide(
 
     let grid = match effective_variant {
         "horizontal" => {
-            let mut g = format!(r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;">"#);
+            let mut g = format!(
+                r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;overflow:hidden;">"#
+            );
             for item in &stats {
                 let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
                 let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
@@ -1999,7 +2027,8 @@ pub fn stat_row_slide(
             g
         }
         "compact" => {
-            let mut g = format!(r#"<div style="display:flex;gap:var(--space-1);margin-top:12px;">"#);
+            let mut g =
+                format!(r#"<div style="display:flex;gap:var(--space-1);margin-top:12px;">"#);
             for item in &stats {
                 let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
                 let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
@@ -2015,7 +2044,7 @@ pub fn stat_row_slide(
                     String::new()
                 };
                 g.push_str(&format!(
-                    r#"<div style="flex:1;padding:var(--space-1) 8px;background:{};border:{};{}border-radius:{};text-align:center;">
+                    r#"<div style="flex:1;padding:var(--space-1) var(--space-2);background:{};border:{};{}border-radius:{};text-align:center;">
                         <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
                         <div style="font-size:{}px;color:{};margin-top:4px;">{}</div>
                         {}
@@ -2030,7 +2059,8 @@ pub fn stat_row_slide(
             g
         }
         "expanded" => {
-            let mut g = format!(r#"<div style="display:flex;gap:var(--space-2);margin-top:20px;">"#);
+            let mut g =
+                format!(r#"<div style="display:flex;gap:var(--space-2);margin-top:20px;">"#);
             for item in &stats {
                 let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
                 let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
@@ -2063,7 +2093,9 @@ pub fn stat_row_slide(
         _ => {
             // auto
             if stats.len() <= 3 {
-                let mut g = format!(r#"<div style="display:flex;gap:var(--space-1);margin-top:16px;">"#);
+                let mut g = format!(
+                    r#"<div style="display:flex;gap:var(--space-1);margin-top:16px;overflow:hidden;align-items:stretch;">"#
+                );
                 for item in &stats {
                     let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
                     let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
@@ -2134,7 +2166,7 @@ pub fn stat_row_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -2189,7 +2221,9 @@ pub fn timeline_slide(
 
     let steps_html = match effective_variant {
         "horizontal" => {
-            let mut s = format!(r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;">"#);
+            let mut s = format!(
+                r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;overflow:hidden;">"#
+            );
             for (i, step) in steps.iter().enumerate() {
                 let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
                 let step_desc = step
@@ -2199,7 +2233,7 @@ pub fn timeline_slide(
                 s.push_str(&format!(
                     r#"<div style="flex:1;text-align:center;">
                         <div style="width:32px;height:32px;border-radius:50%;background:{}12;border:2px solid {};display:inline-flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:{};margin-bottom:8px;">{}</div>
-                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;">{}</h3>
+                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;overflow-wrap:break-word;">{}</h3>
                         <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.3;">{}</p>
                     </div>"#,
                     tokens.primary, tokens.primary, tokens.primary, i + 1,
@@ -2280,7 +2314,7 @@ pub fn timeline_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -2402,7 +2436,7 @@ pub fn callout_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -2482,7 +2516,7 @@ pub fn split_features_slide(
             tokens,
             &treatment,
             "100%",
-            "180px",
+            "200px",
             title,
             is_dark,
         )
@@ -2553,8 +2587,16 @@ pub fn split_features_slide(
             .unwrap_or(if idx == 0 { "✦" } else { "→" });
         let badge_size = if image_feature_layout { 26 } else { 30 };
         let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, badge_size);
-        let card_padding = if image_feature_layout { "11px" } else { "var(--space-1)" };
-        let card_gap = if image_feature_layout { "9px" } else { "var(--space-1)" };
+        let card_padding = if image_feature_layout {
+            "11px"
+        } else {
+            "var(--space-1)"
+        };
+        let card_gap = if image_feature_layout {
+            "9px"
+        } else {
+            "var(--space-1)"
+        };
         let card_margin = if image_feature_layout {
             "0"
         } else {
@@ -2574,7 +2616,7 @@ pub fn split_features_slide(
             r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:{};display:flex;gap:{};align-items:flex-start;margin:{};box-sizing:border-box;min-width:0;">
                 {}
                 <div style="min-width:0;">
-                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;">{}</h3>
+                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                     <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.38;">{}</p>
                 </div>
             </div>"#,
@@ -2594,16 +2636,19 @@ pub fn split_features_slide(
 
     let content = if image_feature_layout {
         format!(
-            r#"{}<div style="width:100%;display:flex;flex-direction:column;gap:14px;">
+            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;gap:12px;overflow:hidden;">
                 {}
-                <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;width:100%;">{}</div>
+                <div style="display:grid;grid-template-columns:minmax(0, 0.96fr) minmax(0, 1.04fr);gap:14px;width:100%;flex:1;min-height:0;overflow:hidden;align-items:stretch;">
+                    <div style="min-width:0;min-height:0;max-height:100%;overflow:hidden;">{}</div>
+                    <div style="min-width:0;min-height:0;max-height:100%;display:grid;grid-template-columns:1fr;gap:10px;overflow:hidden;">{}</div>
+                </div>
             </div>"#,
             heading, left_visual, features_html
         )
     } else if effective_variant == "reversed" {
         format!(
             r#"{}{}
-            <div style="display:grid;grid-template-columns:1.02fr 1fr;gap:var(--space-2);margin-top:16px;align-items:center;">
+            <div style="display:grid;grid-template-columns:1.02fr 1fr;gap:var(--space-2);margin-top:16px;align-items:center;overflow:hidden;">
                 <div>{}</div>
                 <div>{}</div>
             </div>{}"#,
@@ -2613,15 +2658,15 @@ pub fn split_features_slide(
         format!(
             r#"{}{}
             <div style="margin-top:16px;">{}</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2);margin-top:16px;">{}</div>{}"#,
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2);margin-top:16px;overflow:hidden;">{}</div>{}"#,
             gc, heading, left_visual, features_html, gx
         )
     } else {
         format!(
             r#"{}{}
-            <div style="display:grid;grid-template-columns:1fr 1.02fr;gap:var(--space-2);margin-top:16px;align-items:center;">
-                <div>{}</div>
-                <div>{}</div>
+            <div style="display:grid;grid-template-columns:1fr 1.02fr;gap:var(--space-2);margin-top:16px;align-items:start;overflow:hidden;">
+                <div style="min-width:0;overflow:hidden;">{}</div>
+                <div style="min-width:0;overflow:hidden;">{}</div>
             </div>{}"#,
             gc, heading, left_visual, features_html, gx
         )
@@ -2629,9 +2674,9 @@ pub fn split_features_slide(
 
     let padding_val = if padding.is_empty() {
         if image_feature_layout {
-            "68px 44px 76px"
+            "52px 36px 60px"
         } else {
-            "80px 52px 80px"
+            "80px var(--space-6) 80px"
         }
     } else {
         padding
@@ -2752,7 +2797,7 @@ pub fn grid_cards_slide(
         format!(
             r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
                 <div style="margin-bottom:10px;display:flex;align-items:center;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 6px;line-height:1.2;">{}</h3>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 6px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                 {}
             </div>"#,
             card_bg,
@@ -3294,7 +3339,7 @@ pub fn text_block_slide(
     }
 
     let content = format!(
-        r#"<div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;">
+        r#"<div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
             {}
             <div style="margin-top:4px;">{}</div>
         </div>"#,
@@ -3306,7 +3351,7 @@ pub fn text_block_slide(
         tokens,
         bg_style,
         false,
-        "80px 48px 90px",
+        "80px 48px var(--space-12)",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -3358,7 +3403,7 @@ pub fn metric_card_slide(
                 "#10B981"
             };
         format!(
-            r#"<span style="font-family:{};font-size:12px;font-weight:600;color:{};display:block;margin-bottom:8px;">{}</span>"#,
+            r#"<span style="font-family:{};font-size:var(--text-sm);font-weight:600;color:{};display:block;margin-bottom:8px;">{}</span>"#,
             tokens.body_font,
             t_color,
             escape_html(trend)
@@ -3369,7 +3414,7 @@ pub fn metric_card_slide(
 
     let ctx_html = if !context.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:12px;color:{};margin:0;line-height:1.4;">{}</p>"#,
+            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};margin:0;line-height:1.4;">{}</p>"#,
             tokens.body_font,
             colors.text_secondary,
             escape_html(context)
@@ -3380,8 +3425,8 @@ pub fn metric_card_slide(
 
     let card_html = format!(
         r#"<div style="background:{};border:{};box-shadow:{};border-radius:{};padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
-            <span style="font-family:{};font-size:64px;font-weight:900;color:{};margin:0;line-height:1;">{}</span>
-            <h3 style="font-family:{};font-size:16px;font-weight:600;color:{};margin:var(--space-1) 0 6px;line-height:1.2;">{}</h3>
+            <span style="font-family:{};font-size:var(--text-display-size, 52px);font-weight:900;color:{};margin:0;line-height:1;">{}</span>
+            <h3 style="font-family:{};font-size:var(--text-base);font-weight:600;color:{};margin:var(--space-1) 0 6px;line-height:1.2;">{}</h3>
             {}
             {}
         </div>"#,
@@ -3409,7 +3454,7 @@ pub fn metric_card_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -3467,6 +3512,14 @@ pub fn chart_slide(
     let mut chart_html = String::new();
 
     if chart_type == "bar" {
+        let max_val = vals.iter().copied().fold(0.0_f64, f64::max).max(1.0);
+        let bar_colors: Vec<&str> = vec![
+            &colors.primary,
+            &tokens.accent,
+            &tokens.primary,
+            &colors.text_secondary,
+            &colors.primary,
+        ];
         let mut bars = String::new();
         for (idx, item) in data.iter().take(5).enumerate() {
             let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
@@ -3477,25 +3530,34 @@ pub fn chart_slide(
                         .or_else(|| v.as_str().and_then(|s| s.parse::<f64>().ok()))
                 })
                 .unwrap_or(0.0);
-            let pct = (val / max_val) * 100.0;
-            let bar_color = if idx == 0 {
-                &colors.primary
+            let pct = if max_val > 0.0 {
+                (val / max_val) * 100.0
             } else {
-                &colors.text_secondary
+                0.0
             };
-
+            let bar_color = bar_colors.get(idx).copied().unwrap_or(&colors.primary);
+            let val_display = if val >= 1000.0 {
+                format!("{:.0}", val)
+            } else if val >= 100.0 {
+                format!("{:.0}", val)
+            } else if val == val.floor() {
+                format!("{:.0}", val)
+            } else {
+                format!("{:.1}", val)
+            };
             bars.push_str(&format!(
-                r#"<div style="margin-bottom:14px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:{};font-size:11px;color:{};margin-bottom:4px;">
+                r#"<div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:{};font-size:12px;font-weight:600;color:{};margin-bottom:6px;">
                         <span>{}</span>
-                        <strong>{}</strong>
+                        <strong style="color:{};">{}</strong>
                     </div>
-                    <div style="width:100%;height:10px;background:{}33;border-radius:5px;overflow:hidden;">
-                        <div style="width:{:.1}%;height:100%;background:{};border-radius:5px;"></div>
+                    <div style="width:100%;height:12px;background:{}22;border-radius:6px;overflow:hidden;">
+                        <div style="width:{:.1}%;min-width:8px;height:100%;background:{};border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div>"#,
                 tokens.body_font, colors.text_primary, escape_html(lbl),
-                val, colors.border, pct, bar_color
+                bar_color, val_display,
+                bar_color, pct, bar_color
             ));
         }
         chart_html = format!(r#"<div style="width:100%;margin-top:16px;">{}</div>"#, bars);
@@ -3650,7 +3712,7 @@ pub fn chart_slide(
         tokens,
         bg_style,
         false,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -4199,7 +4261,11 @@ fn metric_sparkline_slide(
             .get("md")
             .map(|s| s.as_str())
             .unwrap_or("none"),
-        tokens.radii.get("lg").map(|s| s.as_str()).unwrap_or("var(--space-1)"),
+        tokens
+            .radii
+            .get("lg")
+            .map(|s| s.as_str())
+            .unwrap_or("var(--space-1)"),
         tokens.heading_font,
         colors.primary,
         escape_html(value),
@@ -4243,19 +4309,34 @@ fn column_chart_slide(
     let bars: String = data.iter().zip(vals.iter()).map(|(item, val)| {
         let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
         let pct = (val / max_val) * 100.0;
+        let val_display = if *val >= 1000.0 {
+            format!("{:.0}", val)
+        } else if *val == val.floor() {
+            format!("{:.0}", val)
+        } else {
+            format!("{:.1}", val)
+        };
         format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;">
-                <div style="width:100%;height:100px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:{:.1}%;background:{};border-radius:4px 4px 0 0;"></div>
+            r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                <div style="font-family:{};font-size:10px;font-weight:800;color:{};line-height:1;margin-bottom:6px;text-align:center;">{}</div>
+                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
                 </div>
-                <span style="font-family:{};font-size:9px;color:{};margin-top:6px;text-align:center;">{}</span>
+                <span style="font-family:{};font-size:9px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
             </div>"#,
-            pct, colors.primary, tokens.body_font, colors.text_secondary, escape_html(lbl)
+            tokens.body_font,
+            colors.text_primary,
+            val_display,
+            pct,
+            colors.primary,
+            tokens.body_font,
+            colors.text_secondary,
+            escape_html(lbl)
         )
     }).collect();
 
     let chart_html = format!(
-        r#"<div style="display:flex;gap:var(--space-1);width:100%;height:120px;margin-top:16px;">{}</div>"#,
+        r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
         bars
     );
 
@@ -4292,21 +4373,29 @@ fn text_columns_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "display", None, true, None, "left", "0", false,
+        title,
+        tokens,
+        "headline",
+        Some(&colors.text_primary),
+        true,
+        None,
+        "left",
+        "0 0 var(--space-1)",
+        false,
     );
     let cols: Vec<String> = columns.iter().map(|c| {
         let heading = c.get("heading").and_then(|v| v.as_str()).unwrap_or("");
         let body = c.get("body").and_then(|v| v.as_str()).unwrap_or("");
         let heading_html = if !heading.is_empty() {
-            heading_block(heading, tokens, "title", None, false, None, "left", "0 0 var(--space-1)", false)
+            heading_block(heading, tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 var(--space-1)", false)
         } else {
             String::new()
         };
-        format!(r#"<div style="flex:1;min-width:0;">{}<div style="font-size:var(--text-sm);color:{};line-height:1.6;">{}</div></div>"#,
+        format!(r#"<div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);">{}<div style="font-size:var(--text-sm);color:{};line-height:1.6;overflow-wrap:break-word;word-break:break-word;">{}</div></div>"#,
             heading_html, colors.text_secondary, body)
     }).collect();
     let columns_html = format!(
-        r#"<div style="display:flex;gap:24px;width:100%;margin-top:20px;">{}</div>"#,
+        r#"<div style="display:flex;gap:var(--space-3);width:100%;margin-top:var(--space-2);overflow:hidden;">{}</div>"#,
         cols.join("")
     );
     let content = format!("{}{}", title_html, columns_html);
@@ -4693,7 +4782,14 @@ pub fn pricing_plan_slide(
         escape_html(title),
         plan_grid
     );
-    let html = slide_base(&content, tokens, bg_style, false, "var(--space-9) var(--space-5)", "center");
+    let html = slide_base(
+        &content,
+        tokens,
+        bg_style,
+        false,
+        "var(--space-9) var(--space-5)",
+        "center",
+    );
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "pricing_plan", "theme": theme})
 }
@@ -4956,8 +5052,10 @@ pub fn qr_destination_slide(
     };
     let qr_src = render_qr_svg_data_uri(destination_url).unwrap_or_default();
     let radius = current_component_radius(tokens, "card");
-    let qr_size_px = if matches!(effective_variant, "minimal" | "without-heading") {
+    let qr_size_px = if matches!(effective_variant, "minimal" | "without-heading" | "poster") {
         208
+    } else if matches!(effective_variant, "compact") {
+        164
     } else {
         188
     };
@@ -5010,14 +5108,8 @@ pub fn qr_destination_slide(
         escape_html(effective_alt),
         qr_size,
     ));
-    if !short_url.is_empty() {
-        qr_elements.push(format!(
-            r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:var(--text-primary,#0B0A0F);max-width:{};overflow-wrap:anywhere;text-align:center;">{}</div>"#,
-            tokens.body_font,
-            qr_size,
-            escape_html(short_url)
-        ));
-    }
+    // URL text removed from QR card: was causing white-on-white contrast and line-breaking
+    // short_url parameter kept for API compatibility but no longer rendered in QR card
 
     let qr_html = format!(
         r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:var(--space-2);display:flex;flex-direction:column;align-items:center;gap:var(--space-1);box-shadow:0 14px 34px rgba(0,0,0,0.14);width:100%;max-width:{};">
@@ -5030,7 +5122,7 @@ pub fn qr_destination_slide(
 
     let cta_html = if !cta_text.is_empty() {
         format!(
-            r#"<div style="margin-top:var(--space-2);background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:var(--space-1) var(--space-2);border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;">{}</div>"#,
+            r#"<div style="margin-top:var(--space-2);background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:var(--space-2) var(--space-2);border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;overflow-wrap:break-word;">{}</div>"#,
             colors.primary,
             colors.button_text,
             tokens.heading_font,
@@ -5043,16 +5135,70 @@ pub fn qr_destination_slide(
 
     let layout_padding = if !padding.is_empty() {
         padding
-    } else if effective_variant == "minimal" || effective_variant == "with-cta" {
+    } else if matches!(effective_variant, "minimal" | "with-cta" | "compact") {
         "80px 64px 80px"
+    } else if matches!(effective_variant, "poster" | "stacked-badge") {
+        "64px var(--space-6) 72px"
     } else {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     };
 
-    let html = if effective_variant == "minimal" || effective_variant == "with-cta" {
+    let html = if matches!(effective_variant, "minimal" | "with-cta" | "compact") {
         let content = format!(
             r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#,
             brand_html, qr_html, cta_html
+        );
+        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
+    } else if matches!(effective_variant, "poster" | "stacked-badge") {
+        let heading_html = if !heading.is_empty() {
+            format!(
+                r#"<h2 style="font-family:{};font-size:var(--text-xl);font-weight:800;color:{};margin:0;line-height:1.12;text-align:center;overflow-wrap:break-word;word-break:break-word;">{}</h2>"#,
+                tokens.heading_font,
+                colors.text_primary,
+                escape_html(heading)
+            )
+        } else {
+            String::new()
+        };
+        let caption_html = if !caption.is_empty() {
+            format!(
+                r#"<p style="font-family:{};font-size:var(--text-sm);line-height:1.5;color:{};margin:0;text-align:center;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(caption)
+            )
+        } else {
+            String::new()
+        };
+        let incentive_html = if !incentive_text.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:800;color:{};background:{};border:1px solid {};border-radius:{};padding:var(--space-1) var(--space-2);text-align:center;">{}</div>"#,
+                tokens.body_font,
+                colors.text_primary,
+                if colors.is_dark {
+                    "rgba(255,255,255,0.06)"
+                } else {
+                    "rgba(0,0,0,0.035)"
+                },
+                colors.border,
+                current_component_radius(tokens, "chip"),
+                escape_html(incentive_text)
+            )
+        } else {
+            String::new()
+        };
+        let stack_order = if effective_variant == "stacked-badge" {
+            format!(
+                r#"{heading_html}{incentive_html}<div style="display:flex;flex-direction:column;align-items:center;">{brand_html}{qr_html}{cta_html}</div>{caption_html}"#
+            )
+        } else {
+            format!(
+                r#"{brand_html}{heading_html}{caption_html}<div style="display:flex;flex-direction:column;align-items:center;">{qr_html}{cta_html}</div>{incentive_html}"#
+            )
+        };
+        let content = format!(
+            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-2);overflow:hidden;">{}</div>"#,
+            stack_order
         );
         slide_base(&content, tokens, bg_style, false, layout_padding, "center")
     } else {
@@ -5060,20 +5206,25 @@ pub fn qr_destination_slide(
 
         let include_heading = matches!(
             effective_variant,
-            "full-conversion" | "theme-bg" | "image-bg" | "with-heading"
+            "full-conversion" | "theme-bg" | "image-bg" | "with-heading" | "split-card"
         );
         let include_caption = matches!(
             effective_variant,
-            "full-conversion" | "theme-bg" | "image-bg" | "with-caption" | "without-heading"
+            "full-conversion"
+                | "theme-bg"
+                | "image-bg"
+                | "with-caption"
+                | "without-heading"
+                | "split-card"
         );
         let include_incentive = matches!(
             effective_variant,
-            "full-conversion" | "theme-bg" | "image-bg" | "without-heading"
+            "full-conversion" | "theme-bg" | "image-bg" | "without-heading" | "split-card"
         );
 
         if include_heading && !heading.is_empty() {
             let h_html = format!(
-                r#"<h2 style="font-family:{};font-size:var(--text-2xl);font-weight:900;color:{};margin:0;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
+                r#"<h2 style="font-family:{};font-size:var(--text-lg);font-weight:700;color:{};margin:0 0 8px;line-height:1.25;letter-spacing:-0.015em;overflow-wrap:break-word;word-break:break-word;">{}</h2>"#,
                 tokens.heading_font,
                 colors.text_primary,
                 escape_html(heading)
@@ -5083,7 +5234,7 @@ pub fn qr_destination_slide(
 
         if include_caption && !caption.is_empty() {
             let c_html = format!(
-                r#"<p style="font-family:{};font-size:var(--text-base);line-height:1.55;color:{};margin:0;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:var(--text-base);line-height:1.55;color:{};margin:0;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
                 tokens.body_font,
                 colors.text_secondary,
                 escape_html(caption)
@@ -5127,9 +5278,14 @@ pub fn qr_destination_slide(
             brand_html, qr_html, cta_html
         );
 
+        let grid_cols = if effective_variant == "split-card" {
+            "minmax(0, 1fr) minmax(0, 0.82fr)"
+        } else {
+            "1.2fr 1fr"
+        };
         let content = format!(
-            r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;"><div style="min-width:0;overflow:hidden;">{}</div><div style="min-width:0;overflow:hidden;">{}</div></div>"#,
-            left_col, right_col
+            r#"<div style="display:grid;grid-template-columns:{};gap:var(--space-5);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;">{}</div><div style="min-width:0;overflow:hidden;">{}</div></div>"#,
+            grid_cols, left_col, right_col
         );
         slide_base(&content, tokens, bg_style, false, layout_padding, "center")
     };
@@ -5505,7 +5661,26 @@ pub fn dispatch_slide(
             ))
         }
         "comparison_bars" => {
-            let comparison = p.get("comparison").cloned().unwrap_or(json!({}));
+            let comparison = p.get("comparison").cloned().unwrap_or_else(|| {
+                p.get("metrics")
+                    .and_then(|v| v.as_array())
+                    .and_then(|metrics| metrics.first())
+                    .map(|metric| {
+                        json!({
+                            "left": {
+                                "label": metric.get("left_label").and_then(|v| v.as_str()).unwrap_or("Before"),
+                                "value": metric.get("left_value").and_then(|v| v.as_f64()).unwrap_or(0.0),
+                                "unit": metric.get("unit").and_then(|v| v.as_str()).unwrap_or("")
+                            },
+                            "right": {
+                                "label": metric.get("right_label").and_then(|v| v.as_str()).unwrap_or("After"),
+                                "value": metric.get("right_value").and_then(|v| v.as_f64()).unwrap_or(0.0),
+                                "unit": metric.get("unit").and_then(|v| v.as_str()).unwrap_or("")
+                            }
+                        })
+                    })
+                    .unwrap_or_else(|| json!({}))
+            });
             Ok(comparison_bars_slide(
                 tokens,
                 comparison,
@@ -6104,7 +6279,7 @@ pub fn image_caption_slide(
     };
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -6380,7 +6555,7 @@ pub fn image_callout_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -6506,7 +6681,7 @@ pub fn image_stat_slide(
     };
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -6727,7 +6902,7 @@ pub fn image_gallery_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -7115,7 +7290,7 @@ pub fn image_collage_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -7236,7 +7411,7 @@ pub fn image_comparison_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px 52px 80px"
+        "80px var(--space-6) 80px"
     } else {
         padding
     };
@@ -7296,7 +7471,9 @@ mod tests {
         assert!(html.contains("Scan this QR code"));
         assert!(html.contains("Some caption text about this conversion"));
         assert!(html.contains("Scan now"));
-        assert!(html.contains("example.com/short"));
+        // short_url no longer rendered as visible text in QR card (removed per design spec)
+        // The URL is still encoded in the QR code image itself
+        let _ = &res; // ensure res is still used
         assert!(html.contains("Free Ebook included"));
 
         // 2. Test minimal variant
@@ -7324,7 +7501,7 @@ mod tests {
         assert!(!html_min.contains("Scan this QR code"));
         assert!(!html_min.contains("Some caption text about this conversion"));
         assert!(html_min.contains("Scan now"));
-        assert!(html_min.contains("example.com/short"));
+        // short_url text removed from QR card per design spec
 
         // 3. Test without-heading variant
         let res_no_h = qr_destination_slide(
@@ -7351,7 +7528,7 @@ mod tests {
         assert!(!html_no_h.contains("Scan this QR code"));
         assert!(html_no_h.contains("Some caption text about this conversion"));
         assert!(html_no_h.contains("Scan now"));
-        assert!(html_no_h.contains("example.com/short"));
+        // short_url text removed from QR card per design spec
 
         // 4. Test custom padding, brand logo/name, alternative QR text, and variant filtering
         let res_custom = qr_destination_slide(
@@ -7407,6 +7584,120 @@ mod tests {
         assert!(!html_with_cta.contains("Scan this QR code"));
         assert!(!html_with_cta.contains("Some caption text about this conversion"));
         assert!(html_with_cta.contains("Scan now"));
-        assert!(html_with_cta.contains("example.com/short"));
+        // short_url text removed from QR card per design spec
+    }
+
+    #[test]
+    fn test_split_features_image_layout_uses_balanced_columns() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+
+        let res = split_features_slide(
+            &tokens,
+            "Platform Benefits",
+            vec![
+                json!({"title": "Signal Quality", "description": "Clean analytics for product teams."}),
+                json!({"title": "Operational Scale", "description": "Reliable rendering across channels."}),
+            ],
+            "",
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+            "light",
+            "default",
+            "",
+            0.4,
+            "minimal",
+            "data_analyst",
+            "",
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains("grid-template-columns:minmax(0, 0.96fr) minmax(0, 1.04fr)"));
+        assert!(html.contains("max-height:100%"));
+    }
+
+    #[test]
+    fn test_column_chart_renders_values_and_varied_bar_heights() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+
+        let res = column_chart_slide(
+            &tokens,
+            vec![
+                json!({"label": "Jan", "value": 1200.0}),
+                json!({"label": "Feb", "value": 1850.0}),
+                json!({"label": "Mar", "value": 2700.0}),
+            ],
+            "Monthly Active Users",
+            "Growth trajectory",
+            "light",
+            "minimal",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains(">1200<"));
+        assert!(html.contains(">1850<"));
+        assert!(html.contains(">2700<"));
+        assert!(html.contains("height:44.4%"));
+        assert!(html.contains("height:68.5%"));
+        assert!(html.contains("height:100.0%"));
+    }
+
+    #[test]
+    fn test_dispatch_comparison_bars_accepts_metrics_array() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+        let params = json!({
+            "title": "Performance Comparison",
+            "metrics": [
+                {"name": "Latency", "left_value": 120.0, "right_value": 45.0, "left_label": "Legacy", "right_label": "New"}
+            ]
+        });
+
+        let res = dispatch_slide(
+            "comparison_bars",
+            &tokens,
+            &params,
+            "light",
+            "minimal",
+            "data_analyst",
+        )
+        .unwrap();
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains("Legacy"));
+        assert!(html.contains("New"));
+        assert!(html.contains(">120<"));
+        assert!(html.contains(">45<"));
+        assert!(html.contains("width:72.7%"));
+        assert!(html.contains("width:27.3%"));
     }
 }

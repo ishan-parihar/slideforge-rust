@@ -187,6 +187,8 @@ pub struct ExportResponse {
 pub struct ValidateLayoutRequest {
     pub slide_type: String,
     pub params: serde_json::Value,
+    pub html: Option<String>,
+    pub aspect_ratio: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -590,7 +592,7 @@ impl Server {
 
         let base = state.type_scale_base.max(12);
         let ratio = state.type_scale_ratio;
-        
+
         // Resolve canvas for scaling
         let platform = req
             .platform
@@ -602,7 +604,7 @@ impl Server {
         } else {
             platform
         };
-        
+
         let aspect_ratio = req
             .aspect_ratio
             .clone()
@@ -610,12 +612,21 @@ impl Server {
             .filter(|s| !s.is_empty());
         let render = platforms::resolve_render_canvas(&platform, aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(e, None))?;
-        
+
         drop(state);
 
         let tokens = design_system::derive_palette_with_canvas(
-            &primary, &style, base, ratio, &preset, &theme, None, None, None,
-            render.base_width, render.base_height,
+            &primary,
+            &style,
+            base,
+            ratio,
+            &preset,
+            &theme,
+            None,
+            None,
+            None,
+            render.base_width,
+            render.base_height,
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
@@ -906,7 +917,12 @@ impl Server {
         &self,
         Parameters(req): Parameters<ValidateLayoutRequest>,
     ) -> Result<Json<ValidateLayoutResponse>, ErrorData> {
-        let result = validate::validate_slide_spec(&req.slide_type, &req.params);
+        let result = validate::validate_layout(
+            &req.slide_type,
+            &req.params,
+            req.html.as_deref(),
+            req.aspect_ratio.as_deref(),
+        );
         Ok(Json(ValidateLayoutResponse {
             valid: result.valid,
             errors: result.errors,

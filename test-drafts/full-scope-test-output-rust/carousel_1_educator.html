@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,8 +56,8 @@
   --glass-light-bg: #F2F4FFCC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #C4C7D140;
-  --font-heading: 'Plus Jakarta Sans', serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -123,6 +123,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
+.slide--full-bleed { overflow: hidden; }
 .slide-composition {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
@@ -131,7 +132,7 @@ body {
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
    while content stays at designed 420×525 composition dimensions. */
 .slide--full-bleed .slide-composition {
-  overflow: visible;
+  overflow: hidden;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -139,6 +140,7 @@ body {
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
+  overflow: hidden !important;
 }
 .slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
   position: absolute !important;
@@ -161,10 +163,11 @@ body {
 .slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
 
 .slide--dark, .slide--gradient, .slide--hero {
-  --text-primary: var(--text-on-dark, #ECEEF5);
-  --text-secondary: var(--text-on-dark-secondary, #B9BDC9);
-  --border-light: var(--border-dark, #2A2D3D);
-  --surface-light: var(--surface-dark, #010105);
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
 }
 
 .slide-layout {
@@ -290,11 +293,11 @@ body {
 
 .breadcrumb-progress {
   position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: 6px;
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 4px; flex: 1; border-radius: 2px;
+  height: 6px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -302,7 +305,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 5px; flex: 2.2;
+  height: 8px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -321,16 +324,16 @@ body {
 .slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
 .slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-.overlay__brand { font-family: var(--heading); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 10.5px; font-weight: 500; text-align: right; max-width: 40%; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
-.overlay__url { font-family: var(--body); font-size: 9.5px; letter-spacing: 0.02em; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
 .slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
 .slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-.overlay__hashtags { font-family: var(--body); font-size: 9.5px; text-align: right; max-width: 40%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 
@@ -346,7 +349,7 @@ body {
                 font-family: var(--font-heading), Georgia, serif !important;
                 font-style: normal !important;
                 text-transform: none !important;
-                font-size: 11.5px !important;
+                font-size: 12.5px !important;
                 font-weight: 700 !important;
                 letter-spacing: 0.02em !important;
                 opacity: 0.9 !important;
@@ -355,7 +358,7 @@ body {
                 font-family: var(--font-body), sans-serif !important;
                 font-style: normal !important;
                 text-transform: uppercase !important;
-                font-size: 9px !important;
+                font-size: 11.5px !important;
                 font-weight: 600 !important;
                 letter-spacing: 0.12em !important;
                 opacity: 0.75 !important;
@@ -389,7 +392,7 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:hidden;position:relative;margin:0 auto;">
+<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
   <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
@@ -401,30 +404,13 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--light"><div class="slide-composition">
+<div class="slide slide--light has-bg-image"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); z-index: 1; inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Platform Core Offerings</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">1</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Automated Workflows</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Saves 10+ hours per week of manual labor</div>
-                        </div>
-                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">2</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Visual Insights</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Interactive data visualization on any screen size</div>
-                        </div>
-                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">3</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Multi-channel Export</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Deploy to LinkedIn, TikTok, and Instagram instantly</div>
-                        </div>
-                    </div></div>
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.18;z-index:0;filter: grayscale(78%) contrast(1.06) brightness(1.04) saturate(0.96);-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"></div><div style="position:absolute;inset:0;background:linear-gradient(135deg, #5B5CE733, #966D0022);z-index:1;"></div>
+            <div style="position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; background: #5B5CE7; opacity: 0.06; left: -70px; top: -70px; position: absolute; width: 300px; height: 300px; pointer-events: none"></div><div style="height: 160px; right: -40px; background: #966D00; width: 160px; opacity: 0.04; position: absolute; border-radius: 9999px; top: 65%; pointer-events: none; left: auto"></div></div>
+            <div style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display: inline-block; padding: 6px 16px; background: #5B5CE715; border: 1px solid #5B5CE730; border-radius: 9999px; font-family: DM Sans; font-size: 13px; font-weight: 600; color: #5B5CE7; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #0A0B0F 0%, #40424B 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Introducing AI Analytics</span><p style="font-family: DM Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #40424B; margin: 8px 0 0; text-align: left">Transform your data into insights</p>
             </div>
         </div>
   <div class="slide__overlay">
@@ -438,127 +424,14 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#F2F4FF;border:1px solid #C4C7D133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
-            <span style="font-family:Plus Jakarta Sans;font-size:64px;font-weight:900;color:#5B5CE7;margin:0;line-height:1;">$48.2K</span>
-            <h3 style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#0A0B0F;margin:var(--space-1) 0 6px;line-height:1.2;">Average MRR Growth</h3>
-            <span style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#10B981;display:block;margin-bottom:8px;">↑ 42% monthly increase</span>
-            <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#40424B;margin:0;line-height:1.4;">Audited by SlideForge financial tracking core</p>
-        </div></div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 1</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #educator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--mesh"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em">Monthly Active Users</h2><div style="display:flex;gap:var(--space-1);width:100%;height:120px;margin-top:16px;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;">
-                <div style="width:100%;height:100px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:38.7%;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:9px;color:#40424B;margin-top:6px;text-align:center;">Jan</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;">
-                <div style="width:100%;height:100px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:59.7%;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:9px;color:#40424B;margin-top:6px;text-align:center;">Feb</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;">
-                <div style="width:100%;height:100px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:87.1%;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:9px;color:#40424B;margin-top:6px;text-align:center;">Mar</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;">
-                <div style="width:100%;height:100px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:100.0%;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:9px;color:#40424B;margin-top:6px;text-align:center;">Apr</span>
-            </div></div><p style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">Growth trajectory across product launch phases</p>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 1</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #educator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--mesh"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; position: absolute; inset: 0"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em">Feature Comparison</h2><table style="width:100%;border-collapse:collapse;margin-top:12px;">
-            <thead><tr></tr></thead>
-            <tbody><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Slides/mo</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">50</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">500</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Unlimited</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">Export</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">PNG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">PNG + SVG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">All Formats</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Support</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Community</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Email</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Priority</td></tr></tbody>
-        </table>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 1</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #educator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip active"></div>
   </div>
 
 </div></div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -581,7 +454,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 4;
+  const total = 1;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

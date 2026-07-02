@@ -226,7 +226,10 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         ("instagram_story", vec!["9:16", "3:4"]),
         ("tiktok_vertical", vec!["9:16"]),
         ("linkedin_landscape", vec!["4:5", "1:1"]),
-    ].iter().cloned().collect();
+    ]
+    .iter()
+    .cloned()
+    .collect();
 
     let default_ratios = vec!["4:5"];
 
@@ -244,7 +247,9 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
     for idx in 0..total_carousels {
         let archetype = archetypes_list[idx % archetypes_list.len()];
         let platform = platforms_list[idx % platforms_list.len()];
-        let allowed_ratios = platform_ratio_overrides.get(platform).unwrap_or(&default_ratios);
+        let allowed_ratios = platform_ratio_overrides
+            .get(platform)
+            .unwrap_or(&default_ratios);
         let aspect_ratio = allowed_ratios[idx % allowed_ratios.len()];
         let color = brand_colors[idx % brand_colors.len()];
         let theme = themes[idx % themes.len()];

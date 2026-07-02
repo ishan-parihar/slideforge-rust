@@ -254,7 +254,9 @@ pub fn auto_clamp_border(
 pub fn generate_spacing_scale() -> IndexMap<i32, i32> {
     let base = 8;
     let mut map = IndexMap::new();
-    let steps = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 28, 32];
+    let steps = vec![
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 28, 32,
+    ];
     for step in steps {
         map.insert(step, base * step);
     }
@@ -681,18 +683,18 @@ pub fn derive_palette_with_canvas(
     );
 
     let fonts = get_font_pairing(style);
-    
+
     // Calculate scaling factor based on canvas dimensions
     // Original system used 420x525 with fixed fonts (32px display, 24px heading, 14px body)
     // Apply linear scaling based on width to maintain component proportions
     let original_width = 420.0;
     let target_width = canvas_width as f32;
     let linear_scale = target_width / original_width;
-    
+
     // Scale type scale and spacing based on canvas size
     let scaled_type_scale_base = (type_scale_base as f32 * linear_scale).round() as i32;
     let type_scale = generate_type_scale(scaled_type_scale_base, type_scale_ratio);
-    
+
     // Scale spacing proportionally
     let base_spacing = generate_spacing_scale();
     let mut spacing = IndexMap::new();
@@ -702,43 +704,63 @@ pub fn derive_palette_with_canvas(
     }
 
     let mut shadows = IndexMap::new();
-    let scale_value = |val: f32| -> i32 {
-        (val * linear_scale).round() as i32
-    };
-    
+    let scale_value = |val: f32| -> i32 { (val * linear_scale).round() as i32 };
+
     // Scale shadow values
-    shadows.insert("sm".to_string(), format!("0 {}px 2px rgba(0,0,0,0.05)", scale_value(1.0)));
+    shadows.insert(
+        "sm".to_string(),
+        format!("0 {}px 2px rgba(0,0,0,0.05)", scale_value(1.0)),
+    );
     shadows.insert(
         "md".to_string(),
-        format!("0 {}px {}px -1px rgba(0,0,0,0.08), 0 {}px {}px -2px rgba(0,0,0,0.05)", 
-                scale_value(4.0), scale_value(6.0), scale_value(2.0), scale_value(4.0)),
+        format!(
+            "0 {}px {}px -1px rgba(0,0,0,0.08), 0 {}px {}px -2px rgba(0,0,0,0.05)",
+            scale_value(4.0),
+            scale_value(6.0),
+            scale_value(2.0),
+            scale_value(4.0)
+        ),
     );
     shadows.insert(
         "lg".to_string(),
-        format!("0 {}px {}px -3px rgba(0,0,0,0.08), 0 {}px {}px -4px rgba(0,0,0,0.05)",
-                scale_value(10.0), scale_value(15.0), scale_value(4.0), scale_value(6.0)),
+        format!(
+            "0 {}px {}px -3px rgba(0,0,0,0.08), 0 {}px {}px -4px rgba(0,0,0,0.05)",
+            scale_value(10.0),
+            scale_value(15.0),
+            scale_value(4.0),
+            scale_value(6.0)
+        ),
     );
     shadows.insert(
         "xl".to_string(),
-        format!("0 {}px {}px -5px rgba(0,0,0,0.1), 0 {}px {}px -6px rgba(0,0,0,0.05)",
-                scale_value(20.0), scale_value(25.0), scale_value(8.0), scale_value(10.0)),
+        format!(
+            "0 {}px {}px -5px rgba(0,0,0,0.1), 0 {}px {}px -6px rgba(0,0,0,0.05)",
+            scale_value(20.0),
+            scale_value(25.0),
+            scale_value(8.0),
+            scale_value(10.0)
+        ),
     );
     shadows.insert(
         "inner".to_string(),
         format!("inset 0 {}px 2px 4px rgba(0,0,0,0.06)", scale_value(2.0)),
     );
-    shadows.insert("glow".to_string(), format!("0 0 {}px {}40", scale_value(20.0), primary_str));
+    shadows.insert(
+        "glow".to_string(),
+        format!("0 0 {}px {}40", scale_value(20.0), primary_str),
+    );
 
     let mut radii = IndexMap::new();
     let scale_radius = |val: f32| -> String {
-        if val > 100.0 { // Keep pill radius as is
+        if val > 100.0 {
+            // Keep pill radius as is
             format!("{}px", val as i32)
         } else {
             let scaled = (val * linear_scale).round() as i32;
             format!("{}px", scaled.max(1)) // Ensure minimum 1px
         }
     };
-    
+
     radii.insert("sm".to_string(), scale_radius(6.0));
     radii.insert("md".to_string(), scale_radius(10.0));
     radii.insert("lg".to_string(), scale_radius(16.0));

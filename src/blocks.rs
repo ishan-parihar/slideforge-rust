@@ -68,7 +68,9 @@ pub fn text_block(
 
     // When no explicit color, use CSS variable so slide theme classes
     // (e.g. .slide--dark) can override via cascading styles.
-    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
+    let text_color = color
+        .map(|c| c.to_string())
+        .unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
 
     let mut styles = vec![
         ("font-family", font.clone()),
@@ -164,7 +166,9 @@ pub fn heading_block(
 
     // When no explicit color, use CSS variable so slide theme classes
     // (e.g. .slide--dark) can override via cascading styles.
-    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
+    let text_color = color
+        .map(|c| c.to_string())
+        .unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
 
     let mut styles = vec![
         ("font-family", tokens.heading_font.clone()),
@@ -179,6 +183,7 @@ pub fn heading_block(
     if scale.letter_spacing != 0.0 {
         styles.push(("letter-spacing", format!("{}em", scale.letter_spacing)));
     }
+    styles.push(("overflow-wrap", "break-word".to_string()));
 
     if gradient {
         if let Some((c1, c2)) = gradient_colors {
@@ -345,7 +350,9 @@ pub fn quote_block(
         fs,
         scale.font_weight,
         scale.line_height,
-        color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string()),
+        color
+            .map(|c| c.to_string())
+            .unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string()),
         margin,
         scale.letter_spacing,
         accent,
@@ -443,7 +450,9 @@ pub fn attribution_block(
     margin: &str,
     alignment: &str,
 ) -> String {
-    let text_color = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
+    let text_color = color
+        .map(|c| c.to_string())
+        .unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
     let role_text = if !role.is_empty() {
         format!(" · {}", role)
     } else {
@@ -516,7 +525,9 @@ pub fn list_item_block(
         }
     });
 
-    let text_color_owned = color.map(|c| c.to_string()).unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
+    let text_color_owned = color
+        .map(|c| c.to_string())
+        .unwrap_or_else(|| "var(--text-primary, #0B0A0F)".to_string());
     let text_color = text_color_owned.as_str();
 
     let sub_color = if let Some(t) = tokens {
