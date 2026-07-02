@@ -335,6 +335,96 @@ pub fn get_registry() -> Value {
             "default_variant": "full-conversion",
             "layout_family": "conversion",
             "best_for": ["conversion", "closing", "off-platform", "blog", "donation", "digital-product", "newsletter", "link-hub"]
+        },
+        "scatter_plot": {
+            "description": "Scatter plot showing correlation between two variables with data points",
+            "required_params": ["title", "data"],
+            "optional_params": ["x_label", "y_label", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["data", "correlation", "analysis"]
+        },
+        "gauge": {
+            "description": "Single-value gauge showing a percentage or 0-100 metric",
+            "required_params": ["value", "label"],
+            "optional_params": ["title", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["metrics", "progress", "health-check"]
+        },
+        "radar_chart": {
+            "description": "Radar/spider chart comparing multiple dimensions (e.g. skill assessment)",
+            "required_params": ["title", "data"],
+            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["comparison", "assessment", "multi-dimension"]
+        },
+        "progress_rings": {
+            "description": "Multiple circular progress rings showing completion across workstreams",
+            "required_params": ["title", "items"],
+            "optional_params": ["description", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["progress", "project-tracking", "multi-metric"]
+        },
+        "comparison_bars": {
+            "description": "Side-by-side horizontal bars comparing two entities on a single metric",
+            "required_params": ["title", "comparison"],
+            "optional_params": ["description", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["comparison", "versus", "benchmark"]
+        },
+        "metric_grid": {
+            "description": "2x2 grid of key metrics with values, labels, and trends",
+            "required_params": ["title", "metrics"],
+            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["metrics", "kpi", "dashboard"]
+        },
+        "funnel_chart": {
+            "description": "Funnel chart showing conversion stages with decreasing values",
+            "required_params": ["title", "steps"],
+            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["conversion", "pipeline", "stages"]
+        },
+        "table": {
+            "description": "Data table with headers and rows for structured information",
+            "required_params": ["headers", "rows"],
+            "optional_params": ["title", "caption", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["data", "comparison", "structured"]
+        },
+        "metric_sparkline": {
+            "description": "Single metric with sparkline trend line and context text",
+            "required_params": ["value", "label", "data"],
+            "optional_params": ["trend", "context", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["metrics", "trend", "timeseries"]
+        },
+        "column_chart": {
+            "description": "Vertical bar chart with labels and values for categorical comparison",
+            "required_params": ["title", "data"],
+            "optional_params": ["caption", "variant", "background_image", "image_opacity", "padding"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "data-viz",
+            "best_for": ["comparison", "ranking", "distribution"]
         }
     })
 }

@@ -453,6 +453,12 @@ pub fn render_themed_image(
     };
 
     // Build container
+    // Escape the image URL for safe insertion into HTML src="..." attribute.
+    // This prevents malformed HTML if the URL contains ", <, >, or &.
+    // Data URIs (data:image/...;base64,...) are safe to escape — base64
+    // alphabet doesn't include those chars, and the data: scheme prefix is
+    // left intact.
+    let safe_image_url = escape_html(image_url);
     if fr == "polaroid" {
         format!(
             r#"<div style="position:relative;width:{};height:{};background:white;padding:var(--space-1) var(--space-1) var(--space-4) var(--space-1);box-shadow:var(--shadow-md);overflow:hidden;box-sizing:border-box;">
@@ -463,7 +469,7 @@ pub fn render_themed_image(
             </div>"#,
             width,
             height,
-            image_url,
+            safe_image_url,
             escape_html(alt),
             pos_css,
             filter_css,
@@ -483,7 +489,7 @@ pub fn render_themed_image(
             height,
             frame_css,
             mask_css,
-            image_url,
+            safe_image_url,
             escape_html(alt),
             pos_css,
             filter_css,
@@ -808,9 +814,13 @@ fn inject_background_image(html: String, image_url: &str, opacity: f32, is_dark:
             }
         };
 
+        // Escape the image URL for safe insertion into CSS url('...') literal.
+        // Backslash-escape single quotes and backslashes so the CSS literal
+        // can't be broken. Data URIs and http(s) URLs are safe to escape.
+        let safe_bg_url = image_url.replace('\\', "\\\\").replace('\'', "\\'");
         let image_div = format!(
             r#"<div style="position:absolute;inset:0;background-image:url('{}');{}opacity:{:.2};z-index:0;{}{}{}"></div>{}"#,
-            image_url, pos_css, bg_opacity, filter_css, mask_css, frame_css, overlay_html
+            safe_bg_url, pos_css, bg_opacity, filter_css, mask_css, frame_css, overlay_html
         );
 
         if let Some(pos) = html.find("position:relative;width:100%;height:100%;") {
@@ -838,9 +848,10 @@ fn inject_background_image(html: String, image_url: &str, opacity: f32, is_dark:
             r#"<div style="position:absolute;inset:0;background:rgba(255,255,255,0.45);z-index:1;"></div>"#
         };
 
+        let safe_bg_url = image_url.replace('\\', "\\\\").replace('\'', "\\'");
         let image_div = format!(
             r#"<div style="position:absolute;inset:0;background-image:url('{}');background-size:cover;background-position:center;opacity:{:.2};z-index:0;{}"></div>{}"#,
-            image_url, bg_opacity, filter_css, overlay_html
+            safe_bg_url, bg_opacity, filter_css, overlay_html
         );
 
         if let Some(pos) = html.find("position:relative;width:100%;height:100%;") {
@@ -944,9 +955,10 @@ pub fn hero_slide(
         };
         let left_content = format!("{}{}{}{}{}", gc, badge_html, headline_html, sub_html, gx);
         let right_visual = if !background_image.is_empty() {
+            let safe_bg = background_image.replace('\\', "\\\\").replace('\'', "\\'");
             format!(
                 r#"<div style="position:relative;width:100%;height:var(--space-28);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);background-image:url('{}');background-size:cover;background-position:center;opacity:{};"></div>"#,
-                background_image, image_opacity
+                safe_bg, image_opacity
             )
         } else {
             format!(

@@ -171,7 +171,11 @@ pub struct ExportCarouselSlidesRequest {
     pub html_path: String,
     pub output_dir: String,
     pub total_slides: usize,
-    pub preset: Option<String>,
+    /// Platform name (e.g. "instagram_portrait", "tiktok_vertical"). Call
+    /// list_platforms to see all valid values. Note: this field was
+    /// previously named "preset" which was misleading — it has always been
+    /// used as the platform name.
+    pub platform: Option<String>,
     pub aspect_ratio: Option<String>,
 }
 
@@ -223,6 +227,21 @@ pub struct RecommendColorSchemeRequest {
     pub primary_color: String,
     pub style: Option<String>,
     pub num_schemes: Option<u8>,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct EmbedLocalImageRequest {
+    /// Absolute or relative path to the local image file. Supported: PNG, JPEG,
+    /// GIF, WebP, SVG.
+    pub file_path: String,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct PreviewSlideRequest {
+    /// The slide HTML (from generate_slide's response `html` field).
+    pub html: String,
+    /// Where to save the preview PNG. Defaults to /tmp/slideforge-preview.png.
+    pub output_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -511,7 +530,7 @@ impl Server {
     /// Generate HTML for a single slide using the configured session design.
     #[tool(
         name = "generate_slide",
-        description = "Generate HTML for a single slide (hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block)."
+        description = "Generate HTML for a single slide. Supports 47 slide types across 6 categories: (1) Text & Layout: hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, section_divider, text_columns. (2) Data Viz: chart, scatter_plot, gauge, radar_chart, column_chart, table, metric_sparkline, funnel_chart, metric_grid, comparison_bars, progress_rings. (3) Metrics: metric_card, stat_row. (4) Story: problem_solution, myth_fact, case_study_result, testimonial_avatar, before_after_story, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map. (5) Image: image_caption, image_headline, image_quote, image_callout, image_stat, image_gallery, image_collage, image_comparison. (6) Conversion: qr_destination. Call list_slide_types for full details (required params, optional params, variants) and get_slide_type_info for a specific type's schema. Image URLs must be supplied by the caller in the image_url or background_image param — use embed_local_image to convert a local file to a data URI."
     )]
     pub async fn generate_slide(
         &self,
@@ -766,7 +785,7 @@ impl Server {
         };
 
         let platform = req
-            .preset
+            .platform
             .clone()
             .filter(|s| !s.is_empty())
             .unwrap_or(state_platform);
@@ -1066,6 +1085,192 @@ impl Server {
             "tip": "Use configure_design with the preferred preset to lock it in for the session."
         }))))
     }
+
+    // ── embed_local_image ────────────────────────────────────────────────────
+
+    /// Convert a local image file to a base64 data URI that can be passed as
+    /// `image_url` or `background_image` to generate_slide. Supports PNG, JPEG,
+    /// GIF, WebP, and SVG.
+    #[tool(
+        name = "embed_local_image",
+        description = "Convert a local image file to a base64 data URI for use as image_url or background_image in generate_slide. Supports PNG, JPEG, GIF, WebP, and SVG. Returns a data:image/...;base64,... string that can be passed directly to any image parameter. This is the recommended way to use local images — no file:// scheme or external hosting needed."
+    )]
+    pub async fn embed_local_image(
+        &self,
+        Parameters(req): Parameters<EmbedLocalImageRequest>,
+    ) -> Result<Json<RawJson>, ErrorData> {
+        use std::fs;
+        use std::path::Path;
+
+        let path = req.file_path.trim();
+        if path.is_empty() {
+            return Err(ErrorData::invalid_request("file_path is required.", None));
+        }
+
+        let p = Path::new(path);
+        if !p.exists() {
+            let msg = format!("File not found: {}", path);
+            return Err(ErrorData::invalid_request(msg, None));
+        }
+
+        // Determine MIME type from extension
+        let ext = p
+            .extension()
+            .and_then(|e| e.to_str())
+            .map(|e| e.to_lowercase())
+            .unwrap_or_default();
+        let mime = match ext.as_str() {
+            "png" => "image/png",
+            "jpg" | "jpeg" => "image/jpeg",
+            "gif" => "image/gif",
+            "webp" => "image/webp",
+            "svg" => "image/svg+xml",
+            _ => {
+                let msg = format!(
+                    "Unsupported image extension '{}'. Supported: png, jpg/jpeg, gif, webp, svg.",
+                    ext
+                );
+                return Err(ErrorData::invalid_request(msg, None));
+            }
+        };
+
+        // Read file and base64-encode
+        let bytes = match fs::read(p) {
+            Ok(b) => b,
+            Err(e) => {
+                return Err(ErrorData::internal_error(
+                    format!("Failed to read file '{}': {}", path, e),
+                    None,
+                ));
+            }
+        };
+
+        // Check size — warn if > 2MB (data URIs inflate HTML size)
+        let size_kb = bytes.len() / 1024;
+        let warning = if size_kb > 2048 {
+            Some(format!(
+                "Image is {}KB — large data URIs inflate HTML size and may slow export. Consider resizing to <500KB before embedding.",
+                size_kb
+            ))
+        } else if size_kb > 500 {
+            Some(format!(
+                "Image is {}KB — consider resizing to <500KB for optimal export performance.",
+                size_kb
+            ))
+        } else {
+            None
+        };
+
+        let b64 = base64_encode(&bytes);
+        let data_uri = if mime == "image/svg+xml" {
+            // For SVG, use utf8 encoding (smaller, preserves text)
+            let svg_text = String::from_utf8_lossy(&bytes);
+            let encoded = svg_text
+                .replace('#', "%23")
+                .replace('<', "%3C")
+                .replace('>', "%3E")
+                .replace('"', "'");
+            format!("data:image/svg+xml;utf8,{}", encoded)
+        } else {
+            format!("data:{};base64,{}", mime, b64)
+        };
+
+        Ok(Json(RawJson(serde_json::json!({
+            "data_uri": data_uri,
+            "mime_type": mime,
+            "size_bytes": bytes.len(),
+            "size_kb": size_kb,
+            "warning": warning,
+            "usage": "Pass this data_uri string as image_url or background_image in generate_slide."
+        }))))
+    }
+
+    // ── preview_slide ────────────────────────────────────────────────────────
+
+    /// Render a single slide's HTML to a PNG for quick preview without
+    /// exporting the full carousel. Uses headless Chrome.
+    #[tool(
+        name = "preview_slide",
+        description = "Render a single slide's HTML to a PNG file for quick visual preview. Faster than export_carousel_slides for iterating on one slide. Pass the html (from generate_slide) and an output_path; returns the PNG file path."
+    )]
+    pub async fn preview_slide(
+        &self,
+        Parameters(req): Parameters<PreviewSlideRequest>,
+    ) -> Result<Json<RawJson>, ErrorData> {
+        use std::fs;
+
+        if req.html.is_empty() {
+            return Err(ErrorData::invalid_request(
+                "html is required. Call generate_slide first and pass its html field.",
+                None,
+            ));
+        }
+
+        let output_path = match &req.output_path {
+            Some(p) if !p.is_empty() => p.clone(),
+            _ => "/tmp/slideforge-preview.png".to_string(),
+        };
+
+        // Wrap the slide HTML in a minimal full HTML document for Chrome
+        let full_html = format!(
+            r#"<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:center; align-items:center; min-height:100vh; }}
+</style></head><body>{}</body></html>"#,
+            req.html
+        );
+
+        // Write to a temp file
+        let temp_html = "/tmp/slideforge-preview.html";
+        if let Err(e) = fs::write(temp_html, &full_html) {
+            return Err(ErrorData::internal_error(
+                format!("Failed to write temp HTML: {}", e),
+                None,
+            ));
+        }
+
+        // Render via headless Chrome
+        match export::render_html_to_png(temp_html, &output_path, 1.0) {
+            Ok(_) => Ok(Json(RawJson(serde_json::json!({
+                "png_path": output_path,
+                "message": format!("Preview saved to {}", output_path)
+            })))),
+            Err(e) => Err(ErrorData::internal_error(
+                format!(
+                    "Chrome render failed: {}. Ensure Chrome/Chromium is installed.",
+                    e
+                ),
+                None,
+            )),
+        }
+    }
+}
+
+// ── Base64 encoder (no external dependency) ──────────────────────────────────
+
+fn base64_encode(input: &[u8]) -> String {
+    const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut result = String::with_capacity((input.len() + 2) / 3 * 4);
+    for chunk in input.chunks(3) {
+        let b = match chunk.len() {
+            3 => ((chunk[0] as u32) << 16) | ((chunk[1] as u32) << 8) | (chunk[2] as u32),
+            2 => ((chunk[0] as u32) << 16) | ((chunk[1] as u32) << 8),
+            1 => (chunk[0] as u32) << 16,
+            _ => 0,
+        };
+        result.push(CHARS[((b >> 18) & 0x3F) as usize] as char);
+        result.push(CHARS[((b >> 12) & 0x3F) as usize] as char);
+        if chunk.len() > 1 {
+            result.push(CHARS[((b >> 6) & 0x3F) as usize] as char);
+        } else {
+            result.push('=');
+        }
+        if chunk.len() > 2 {
+            result.push(CHARS[(b & 0x3F) as usize] as char);
+        } else {
+            result.push('=');
+        }
+    }
+    result
 }
 
 // ── ServerHandler impl ────────────────────────────────────────────────────────
@@ -1176,7 +1381,7 @@ mod tests {
             html_path: "nonexistent.html".to_string(),
             output_dir: "./nonexistent_dir".to_string(),
             total_slides: 1,
-            preset: Some("".to_string()), // empty preset -> instagram_portrait
+            platform: Some("".to_string()), // empty platform -> instagram_portrait
             aspect_ratio: Some("".to_string()), // empty aspect_ratio -> None
         };
 

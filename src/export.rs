@@ -3,6 +3,56 @@ use headless_chrome::{Browser, LaunchOptions};
 use std::fs;
 use std::path::Path;
 
+/// Render a single HTML file to a PNG. Used by the `preview_slide` MCP tool
+/// for quick single-slide previews without the full carousel export dance.
+pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Result<(), String> {
+    let abs_html_path = fs::canonicalize(html_path)
+        .map_err(|e| format!("Could not canonicalize HTML path: {}", e))?;
+    let file_url = format!("file://{}", abs_html_path.to_string_lossy());
+
+    let ops = LaunchOptions::default_builder()
+        .headless(true)
+        .build()
+        .map_err(|e| e.to_string())?;
+    let browser = Browser::new(ops).map_err(|e| e.to_string())?;
+    let tab = browser.new_tab().map_err(|e| e.to_string())?;
+
+    use headless_chrome::types::Bounds;
+    // Use a generous viewport; the slide centers itself via body flexbox
+    tab.set_bounds(Bounds::Normal {
+        left: None,
+        top: None,
+        width: Some(800.0),
+        height: Some(1000.0),
+    })
+    .map_err(|e| e.to_string())?;
+
+    tab.navigate_to(&file_url).map_err(|e| e.to_string())?;
+    tab.wait_until_navigated().map_err(|e| e.to_string())?;
+
+    // Wait for fonts
+    let font_wait_js = r#"
+        async function waitForFonts(maxWaitMs = 5000) {
+            const start = Date.now();
+            while (Date.now() - start < maxWaitMs) {
+                if (document.fonts.status === 'loaded') return true;
+                await new Promise(r => setTimeout(r, 100));
+            }
+            return document.fonts.status === 'loaded';
+        }
+        waitForFonts();
+    "#;
+    let _ = tab.evaluate(font_wait_js, true);
+    std::thread::sleep(std::time::Duration::from_millis(500));
+
+    let screenshot_png = tab
+        .capture_screenshot(CaptureScreenshotFormatOption::Png, None, None, true)
+        .map_err(|e| e.to_string())?;
+
+    fs::write(output_path, screenshot_png).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 pub async fn export_slides(
     html_path: &str,
     output_dir: &str,
