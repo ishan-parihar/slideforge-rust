@@ -99,11 +99,12 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: extend composition background to cover entire slide canvas.
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
-   while content stays at designed 420×525 composition dimensions. */
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
 .slide--full-bleed .slide-composition {
-  overflow: hidden;
+  overflow: visible;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -270,7 +271,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 4px; flex: 1; border-radius: 999px;
+  height: 2px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -278,7 +279,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 5px; flex: 2.2;
+  height: 3px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -1037,7 +1038,8 @@ mod tests {
         assert!(html.contains("--composition-height: 525px"));
         assert!(html.contains("slide--full-bleed")); // full-bleed for 1:1
         assert!(html.contains(".slide--full-bleed { overflow: hidden; }"));
-        assert!(html.contains("overflow: hidden !important;"));
+        // Full-bleed composition allows overflow:visible so backgrounds bleed
+        assert!(html.contains("overflow: visible;"));
         assert!(!html.contains("Allow glow/shadow effects to extend beyond composition bounds"));
         // Full-bleed: content constrainer CSS is present
         assert!(html.contains("slide-content"));
@@ -1074,8 +1076,8 @@ mod tests {
         let html = render_carousel_html(&spec);
         assert!(html.contains(".overlay__brand { font-family: var(--heading); font-size: 12px;"));
         assert!(html.contains(".overlay__url { font-family: var(--body); font-size: 11.5px;"));
-        assert!(html.contains(".breadcrumb-chip {\n  height: 4px;"));
-        assert!(html.contains(".breadcrumb-chip.active {\n  height: 5px;"));
+        assert!(html.contains(".breadcrumb-chip {\n  height: 2px;"));
+        assert!(html.contains(".breadcrumb-chip.active {\n  height: 3px;"));
         assert!(!html.contains("font-size: 9px !important"));
         assert!(!html.contains("font-size: 9.5px !important"));
     }

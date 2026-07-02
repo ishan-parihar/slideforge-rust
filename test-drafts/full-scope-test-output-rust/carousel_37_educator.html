@@ -142,10 +142,12 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+/* Content constrainer: reposition content wrapper to original composition bounds
+   while the root div stretches to fill the slide canvas. */
+.slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: 0 !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -297,7 +299,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 6px; flex: 1; border-radius: 999px;
+  height: 4px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -305,7 +307,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 8px; flex: 2.2;
+  height: 5px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -406,9 +408,9 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #804FE815 0px, transparent 50%), radial-gradient(at 80% 0%, #7B7F0010 0px, transparent 50%), radial-gradient(at 0% 50%, #C79EFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute"></div>
+            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
             
-            <div style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #C7C6D033;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
             <span style="font-family:Playfair Display;font-size:52px;font-weight:900;color:#804FE8;margin:0;line-height:1;">892K</span>
             <h3 style="font-family:DM Sans;font-size:15px;font-weight:600;color:#0B0A0F;margin:var(--space-1) 0 6px;line-height:1.2;">Monthly Visits</h3>

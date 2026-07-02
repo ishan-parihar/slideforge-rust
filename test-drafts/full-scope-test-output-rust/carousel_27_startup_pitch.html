@@ -142,10 +142,12 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+/* Content constrainer: reposition content wrapper to original composition bounds
+   while the root div stretches to fill the slide canvas. */
+.slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: 0 !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -297,7 +299,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 6px; flex: 1; border-radius: 999px;
+  height: 4px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -305,7 +307,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 8px; flex: 2.2;
+  height: 5px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -406,9 +408,9 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
+            <div style="position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
-            <div style="position:relative;z-index:10;padding:80px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);"><div style="width:72px;height:72px;border-radius:50%;background:#2A7F26;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:24px;font-weight:900;">M</div><p style="font-family:Plus Jakarta Sans;font-size:28px;font-weight:800;color:#090C08;line-height:1.2;margin:0;">“The team finally has one operating view for decisions and follow-through.”</p><div><div style="font-family:Plus Jakarta Sans;font-size:15px;font-weight:900;color:#090C08;">Maya Patel</div><div style="font-family:Plus Jakarta Sans;font-size:12px;color:#3E453D;">COO, Northstar Labs</div></div></div>
             </div>
         </div>
