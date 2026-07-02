@@ -1,0 +1,116 @@
+{
+  "sessions": [
+    {
+      "sessionId": "ses_0dca3b0f6ffeR0OiO438UNJbf5",
+      "startedAt": "2026-07-02T15:04:42.532Z",
+      "lastActiveAt": "2026-07-02T15:04:42.532Z",
+      "agent": "dreamer-memory-mapper",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dca3b0dcffeqjbj39rGvpl4lj",
+      "startedAt": "2026-07-02T15:04:42.533Z",
+      "lastActiveAt": "2026-07-02T15:04:42.533Z",
+      "agent": "dreamer-reviewer",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dca2db42ffeF6Wy70sNY7TM7t",
+      "startedAt": "2026-07-02T15:05:37.912Z",
+      "lastActiveAt": "2026-07-02T15:18:35.139Z",
+      "agent": "​Sisyphus - Ultraworker",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dca23c63ffecmz6ZqrHQIZ2mt",
+      "startedAt": "2026-07-02T15:06:15.342Z",
+      "lastActiveAt": "2026-07-02T15:06:15.342Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dca12a36ffewt3RupBR6Hzk5S",
+      "startedAt": "2026-07-02T15:07:25.526Z",
+      "lastActiveAt": "2026-07-02T15:07:25.526Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dca01ffeffemRrMPIAxfo4dBj",
+      "startedAt": "2026-07-02T15:08:33.673Z",
+      "lastActiveAt": "2026-07-02T15:08:33.673Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9fe542ffeKOihikAfapB7nm",
+      "startedAt": "2026-07-02T15:08:48.716Z",
+      "lastActiveAt": "2026-07-02T15:08:48.716Z",
+      "agent": "dreamer-memory-mapper",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9e9332ffeyK7IfV4hUtveiM",
+      "startedAt": "2026-07-02T15:10:15.266Z",
+      "lastActiveAt": "2026-07-02T15:10:15.266Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9dba49ffe39JlpUIyuhzkZY",
+      "startedAt": "2026-07-02T15:11:10.788Z",
+      "lastActiveAt": "2026-07-02T15:11:10.788Z",
+      "agent": "dreamer-classifier",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9da556ffeg2sNvR2BzNHy46",
+      "startedAt": "2026-07-02T15:11:16.151Z",
+      "lastActiveAt": "2026-07-02T15:11:16.151Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9ce873ffeXO33bUEdCiOlOp",
+      "startedAt": "2026-07-02T15:12:04.528Z",
+      "lastActiveAt": "2026-07-02T15:12:04.528Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9c8b1fffeeC14qlgibep4SI",
+      "startedAt": "2026-07-02T15:12:28.396Z",
+      "lastActiveAt": "2026-07-02T15:12:28.396Z",
+      "agent": "dreamer-retrospective",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9bd151ffekYW0WMkXRpkvwC",
+      "startedAt": "2026-07-02T15:13:15.958Z",
+      "lastActiveAt": "2026-07-02T15:13:15.958Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9afb18ffen3Qquc5vHWpvnn",
+      "startedAt": "2026-07-02T15:14:10.800Z",
+      "lastActiveAt": "2026-07-02T15:14:10.800Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc9a68beffeqRBkitSJ6wBBjX",
+      "startedAt": "2026-07-02T15:14:48.273Z",
+      "lastActiveAt": "2026-07-02T15:14:48.273Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc999c84ffejMgd8D6VpngX13",
+      "startedAt": "2026-07-02T15:15:40.557Z",
+      "lastActiveAt": "2026-07-02T15:15:40.557Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    }
+  ]
+}

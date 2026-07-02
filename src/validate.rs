@@ -612,7 +612,7 @@ mod tests {
         let html = r#"
             <style>
               .overlay__url { font-size: 9.5px; }
-              .breadcrumb-chip { height: 4px; }
+              .breadcrumb-chip { height: 2px; }
             </style>
             <div class="slide bg-light">
                 <div class="slide__overlay"><span class="overlay__url">example.com</span></div>
@@ -1136,7 +1136,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
             .get(1)
             .and_then(|m| m.as_str().parse::<f32>().ok())
             .unwrap_or(0.0);
-        if height < 6.0 {
+        if height < 3.0 {
             issues.push(DesignIssue {
                 slide: 1,
                 r#type: "tiny_progress_indicator".to_string(),
@@ -1144,7 +1144,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 detail: format!("Progress chip CSS uses {:.1}px height.", height),
                 message: "Progress indicators are too thin to remain visible after export scaling."
                     .to_string(),
-                suggestion: "Use at least 6px base height, with a larger active state.".to_string(),
+                suggestion: "Use at least 3px base height, with a larger active state.".to_string(),
             });
         }
     }
