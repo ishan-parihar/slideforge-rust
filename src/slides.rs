@@ -113,10 +113,12 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+/* Content constrainer: reposition content wrapper to original composition bounds
+   while the root div stretches to fill the slide canvas. */
+.slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: 0 !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -268,7 +270,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 6px; flex: 1; border-radius: 999px;
+  height: 4px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -276,7 +278,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 8px; flex: 2.2;
+  height: 5px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -1037,6 +1039,8 @@ mod tests {
         assert!(html.contains(".slide--full-bleed { overflow: hidden; }"));
         assert!(html.contains("overflow: hidden !important;"));
         assert!(!html.contains("Allow glow/shadow effects to extend beyond composition bounds"));
+        // Full-bleed: content constrainer CSS is present
+        assert!(html.contains("slide-content"));
     }
 
     #[test]
@@ -1070,8 +1074,8 @@ mod tests {
         let html = render_carousel_html(&spec);
         assert!(html.contains(".overlay__brand { font-family: var(--heading); font-size: 12px;"));
         assert!(html.contains(".overlay__url { font-family: var(--body); font-size: 11.5px;"));
-        assert!(html.contains(".breadcrumb-chip {\n  height: 6px;"));
-        assert!(html.contains(".breadcrumb-chip.active {\n  height: 8px;"));
+        assert!(html.contains(".breadcrumb-chip {\n  height: 4px;"));
+        assert!(html.contains(".breadcrumb-chip.active {\n  height: 5px;"));
         assert!(!html.contains("font-size: 9px !important"));
         assert!(!html.contains("font-size: 9.5px !important"));
     }

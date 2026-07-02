@@ -207,7 +207,7 @@ pub fn slide_base(
         r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
             <div style="{}"></div>
             {}
-            <div style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+            <div class="slide-content" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 {}
             </div>
         </div>"#,
