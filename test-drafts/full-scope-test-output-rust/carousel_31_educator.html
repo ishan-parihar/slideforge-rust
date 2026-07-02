@@ -128,11 +128,12 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: extend composition background to cover entire slide canvas.
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
-   while content stays at designed 420×525 composition dimensions. */
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
 .slide--full-bleed .slide-composition {
-  overflow: hidden;
+  overflow: visible;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -294,12 +295,12 @@ body {
 }
 
 .breadcrumb-progress {
-  position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
+  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
   display: flex; align-items: center; gap: 6px;
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 4px; flex: 1; border-radius: 999px;
+  height: 2px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -307,7 +308,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 5px; flex: 2.2;
+  height: 3px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -408,7 +409,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007B9715 0px, transparent 50%), radial-gradient(at 80% 0%, #9F593F10 0px, transparent 50%), radial-gradient(at 0% 50%, #67C6E412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -431,7 +432,7 @@ body {
         </div>
             </div>
         </div>
-  <div class="slide__overlay">
+</div>  <div class="slide__overlay">
     <div class="slide__overlay-top">
       <span class="overlay__brand">NexusAI</span>
       <span class="overlay__topic">Rust Scope Test: 31</span>
@@ -444,8 +445,7 @@ body {
   <div class="breadcrumb-progress">
     <div class="breadcrumb-chip active"></div>
   </div>
-
-</div></div>
+</div>
 
 </div>
 </div>

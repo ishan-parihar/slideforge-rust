@@ -22,7 +22,7 @@ use crate::effects::glass_surface;
 #[allow(unused_imports)]
 use crate::layouts::{
     centered_layout, get_slide_colors, grid_layout, hero_layout, is_dark_bg, slide_base,
-    split_layout, stack_layout,
+    slide_base_bleed, split_layout, stack_layout,
 };
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
@@ -772,13 +772,13 @@ fn inject_background_image(html: String, image_url: &str, opacity: f32, is_dark:
         let mut mask_css = "";
         match treatment.image_mask.as_str() {
             "fade-bottom" => {
-                mask_css = "-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"
+                mask_css = "-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);"
             }
             "fade-top" => {
-                mask_css = "-webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%); mask-image: linear-gradient(to top, black 70%, transparent 100%);"
+                mask_css = "-webkit-mask-image: linear-gradient(to top, black 90%, transparent 100%); mask-image: linear-gradient(to top, black 90%, transparent 100%);"
             }
             "fade-sides" => {
-                mask_css = "-webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%);"
+                mask_css = "-webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);"
             }
             _ => {}
         }
@@ -2511,12 +2511,20 @@ pub fn split_features_slide(
         {
             treatment.image_frame = "rounded".to_string();
         }
+        // Image height adapts to feature count so the composition never
+        // overflows the 525px canvas. 1 feature → 240px, 2 → 180px, 3+ → 140px.
+        let feature_count = features.len().max(1);
+        let img_height = match feature_count {
+            1 => "240px",
+            2 => "180px",
+            _ => "140px",
+        };
         render_themed_image(
             &effective_img,
             tokens,
             &treatment,
             "100%",
-            "260px",
+            img_height,
             title,
             is_dark,
         )
@@ -2674,7 +2682,7 @@ pub fn split_features_slide(
 
     let padding_val = if padding.is_empty() {
         if image_feature_layout {
-            "52px 36px 60px"
+            "44px 32px 52px"
         } else {
             "80px var(--space-6) 80px"
         }
@@ -6369,7 +6377,7 @@ pub fn image_headline_slide(
         }
     );
 
-    let html = slide_base(&content, tokens, "dark", false, "0", "stretch");
+    let html = slide_base_bleed(&content, tokens, "dark", false, "0", "stretch");
     json!({
         "html": html,
         "background": "dark",
@@ -6442,7 +6450,7 @@ pub fn image_quote_slide(
         }
     );
 
-    let html = slide_base(&content, tokens, "dark", false, "0", "stretch");
+    let html = slide_base_bleed(&content, tokens, "dark", false, "0", "stretch");
     json!({
         "html": html,
         "background": "dark",

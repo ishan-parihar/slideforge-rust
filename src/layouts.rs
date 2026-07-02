@@ -233,6 +233,69 @@ pub fn centered_layout(
     )
 }
 
+/// Full-bleed image variant of `slide_base`.
+///
+/// Used by image-primary slides (image_headline, image_quote, image_stat, etc.)
+/// where the `<img>` must fill the entire slide canvas rather than being
+/// constrained to the 420×525 composition. The content wrapper uses the
+/// `slide-content--bleed` class instead of `slide-content`, so the
+/// `.slide--full-bleed .slide-content` constrainer rule does NOT apply and
+/// the content fills the first-of-type div (which is stretched to canvas).
+pub fn slide_base_bleed(
+    content_html: &str,
+    tokens: &DesignTokens,
+    bg_style: &str,
+    decorations: bool,
+    padding: &str,
+    justify: &str,
+) -> String {
+    let is_dark = is_dark_bg(bg_style);
+    let bg_var = if is_dark {
+        "var(--surface-dark)"
+    } else {
+        "var(--surface-light)"
+    };
+
+    let bg = {
+        let raw = slide_background(tokens, bg_style, None);
+        if !is_dark && bg_style == "light" {
+            let mesh = tokens.gradients.get("mesh").cloned().unwrap_or_default();
+            if !mesh.is_empty() {
+                format!("{}, {}", mesh, raw)
+            } else {
+                raw
+            }
+        } else {
+            raw
+        }
+    };
+
+    let shapes = if decorations {
+        build_shapes(tokens, bg_style)
+    } else {
+        String::new()
+    };
+
+    let mut noise_style = noise_overlay(0.04);
+    noise_style.insert("z-index".to_string(), "1".to_string());
+    let noise_css = noise_style
+        .iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ");
+
+    format!(
+        r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
+            <div style="{}"></div>
+            {}
+            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                {}
+            </div>
+        </div>"#,
+        bg, bg_var, noise_css, shapes, padding, justify, content_html
+    )
+}
+
 pub fn hero_layout(
     content_html: &str,
     tokens: &DesignTokens,
