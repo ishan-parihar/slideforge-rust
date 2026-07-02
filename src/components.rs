@@ -4597,14 +4597,26 @@ pub fn problem_solution_slide(
         &["title", "label"],
         &["description", "body"],
     );
+    // Adaptive grid: 1 item → single column (avoids empty right column);
+    // 2 items → 1fr 1fr; 3-4 items → 1fr 1fr (wraps to 2 rows).
+    let proof_count = proof_points.len().min(4);
+    let proof_grid_cols = if proof_count <= 1 { "1fr" } else { "1fr 1fr" };
+    let proof_grid_html = if proof_points.is_empty() {
+        String::new()
+    } else {
+        format!(
+            r#"<div style="display:grid;grid-template-columns:{};gap:10px;">{}</div>"#,
+            proof_grid_cols, points
+        )
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.4;margin:0;">{}</p></div>
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.4;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">{}</div>
+            {}
         </div>"#,
         tokens.heading_font,
         colors.text_primary,
@@ -4624,7 +4636,7 @@ pub fn problem_solution_slide(
         tokens.body_font,
         colors.text_secondary,
         escape_html(solution),
-        points
+        proof_grid_html
     );
     let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
