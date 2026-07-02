@@ -1380,6 +1380,37 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 suggestion: "Add: .slide--full-bleed .slide-composition > div:first-of-type { position:absolute!important; width:var(--slide-width)!important; height:var(--slide-height)!important; }".to_string(),
             });
         }
+
+        // Check 2b: .slide-content must be vertically CENTERED on full-bleed
+        // canvases. If the rule uses `top:0` instead of
+        // `top: calc((var(--slide-height) - var(--composition-height)) / 2)`,
+        // 9:16 slides will have content clumped at the top with empty bg below.
+        let content_top_re =
+            Regex::new(r#"(?s)\.slide--full-bleed\s+\.slide-content\s*\{[^}]*top\s*:\s*([^;]+);"#)
+                .unwrap();
+        if let Some(cap) = content_top_re.captures(html) {
+            let top_val = cap.get(1).map(|m| m.as_str().trim()).unwrap_or("");
+            // Acceptable: calc((var(--slide-height) - var(--composition-height)) / 2)
+            // or any calc() expression referencing both --slide-height and --composition-height.
+            // Flag: top:0 or top:0px (content clumped at top on 9:16).
+            let is_centered = top_val.contains("calc(")
+                && top_val.contains("--slide-height")
+                && top_val.contains("--composition-height");
+            let is_top_zero = top_val == "0" || top_val == "0px" || top_val == "0 !important";
+            if is_top_zero && !is_centered {
+                issues.push(DesignIssue {
+                    slide: 1,
+                    r#type: "full_bleed_content_top_anchored".to_string(),
+                    severity: "error".to_string(),
+                    detail: format!(
+                        ".slide--full-bleed .slide-content uses top:{} — content is anchored to the top of the canvas instead of vertically centered.",
+                        top_val
+                    ),
+                    message: "On portrait (9:16, 3:4) full-bleed canvases, content clumps at the top leaving a large empty band at the bottom.".to_string(),
+                    suggestion: "Use: top: calc((var(--slide-height) - var(--composition-height)) / 2) !important; to vertically center the 420x525 composition within the canvas.".to_string(),
+                });
+            }
+        }
     }
 
     // Check 3: content images trapped in slide-content for full-bleed slides.

@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -410,7 +413,7 @@ body {
 <div class="slide slide--light has-bg-image"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007C7E15 0px, transparent 50%), radial-gradient(at 80% 0%, #9A555910 0px, transparent 50%), radial-gradient(at 0% 50%, #67C7C812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');background-size: cover; background-position: center;opacity:0.18;z-index:0;"></div><div style="position:absolute;inset:0;background:rgba(255,255,255,0.30);z-index:1;"></div>
-            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            <div style="pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#EAF9F8;border:1px solid #BDCACA33;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">

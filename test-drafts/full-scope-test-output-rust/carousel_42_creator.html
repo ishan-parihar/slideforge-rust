@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -407,7 +410,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00815915 0px, transparent 50%), radial-gradient(at 80% 0%, #9A4F7E10 0px, transparent 50%), radial-gradient(at 0% 50%, #68CCA012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none; opacity: 0.04; position: absolute"></div>
+            <div style="z-index: 1; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -431,13 +434,13 @@ body {
                     <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#008159;color:white;font-family:Nunito Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">1</span>
                     <div>
                         <h4 style="font-family:Nunito Sans;font-size:var(--text-sm);font-weight:600;color:#080D0A;margin:0 0 2px;">Processor</h4>
-                        <p style="font-family:Nunito Sans;font-size:11px;color:#3B4540;margin:0;line-height:1.35;">Ultra-fast octa-core processor</p>
+                        <p style="font-family:Nunito Sans;font-size:11px;color:#3B4540;margin:0;line-height:1.45;">Ultra-fast octa-core processor</p>
                     </div>
                 </div><div style="margin-bottom:12px;display:flex;gap:var(--space-1);align-items:flex-start;">
                     <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#008159;color:white;font-family:Nunito Sans;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">2</span>
                     <div>
                         <h4 style="font-family:Nunito Sans;font-size:var(--text-sm);font-weight:600;color:#080D0A;margin:0 0 2px;">Battery</h4>
-                        <p style="font-family:Nunito Sans;font-size:11px;color:#3B4540;margin:0;line-height:1.35;">Long-lasting 5000mAh battery</p>
+                        <p style="font-family:Nunito Sans;font-size:11px;color:#3B4540;margin:0;line-height:1.45;">Long-lasting 5000mAh battery</p>
                     </div>
                 </div></div>
         </div>

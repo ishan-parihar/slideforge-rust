@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -408,7 +411,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -418,7 +421,7 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:var(--space-10) var(--space-5) var(--space-10);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
                 <div style="font-size:var(--text-2xl);color:rgba(255,255,255,0.4);line-height:1;margin-bottom:var(--space-1);">“</div>
-                <p style="font-family:Bricolage Grotesque;font-size:25px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Simplicity is the ultimate sophistication.</p>
+                <p style="font-family:Bricolage Grotesque;font-size:25px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Simplicity is the ultimate sophistication.</p>
                 <p style="font-family:Bricolage Grotesque;font-size:var(--text-sm);font-weight:600;color:white;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Leonardo da Vinci</p>
                 <p style="font-family:Bricolage Grotesque;font-size:11px;color:rgba(255,255,255,0.7);margin:var(--space-0) 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Polymath</p>
             </div>
