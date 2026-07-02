@@ -248,7 +248,14 @@ pub fn resolve_canvas(
     platform: &str,
     aspect_ratio: Option<&str>,
 ) -> Result<PlatformCanvas, String> {
-    let spec = get_platform(platform).ok_or_else(|| format!("Unknown platform: {platform}"))?;
+    let spec = get_platform(platform).ok_or_else(|| {
+        let valid: Vec<String> = all_platforms().iter().map(|p| p.name.clone()).collect();
+        format!(
+            "Unknown platform '{}'. Valid platforms: {}",
+            platform,
+            valid.join(", ")
+        )
+    })?;
     let ratio = aspect_ratio
         .filter(|s| !s.trim().is_empty())
         .unwrap_or(&spec.default_aspect_ratio);
