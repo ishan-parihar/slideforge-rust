@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -408,7 +411,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5C68B815 0px, transparent 50%), radial-gradient(at 80% 0%, #876E0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9CACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; pointer-events: none; opacity: 0.04; background: var(--texture-grain); position: absolute"></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -420,7 +423,7 @@ body {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:rgba(255,255,255,0.92);border:1px solid #C7CAD5;border-radius:0;padding:var(--space-2) 16px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:0;background:#5C68B8;color:white;display:flex;align-items:center;justify-content:center;font-family:Bricolage Grotesque;font-size:11px;font-weight:900;flex-shrink:0;">C</div><div style="font-family:Bricolage Grotesque;font-size:11px;font-weight:800;color:#5C68B8;text-transform:uppercase;">01</div></div>
                     <div style="font-family:Bricolage Grotesque;font-size:15px;font-weight:800;color:#0A0B0F;line-height:1.2;margin-bottom:5px;">Context</div>
-                    <div style="font-family:Bricolage Grotesque;font-size:12px;color:#40424B;line-height:1.35;">The slide should help teams challenge a common assumption.</div>
+                    <div style="font-family:Bricolage Grotesque;font-size:12px;color:#40424B;line-height:1.45;">The slide should help teams challenge a common assumption.</div>
                 </div></div>
         </div>
             </div>

@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -409,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00804D15 0px, transparent 50%), radial-gradient(at 80% 0%, #974B8510 0px, transparent 50%), radial-gradient(at 0% 50%, #67CC9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Skill Assessment</h2><div style="width:100%;max-width:320px;height:280px;margin:0 auto;"><svg width="100%" height="280px" viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">

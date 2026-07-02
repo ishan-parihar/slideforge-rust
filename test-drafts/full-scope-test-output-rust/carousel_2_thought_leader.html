@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -409,8 +412,8 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C8400015 0px, transparent 50%), radial-gradient(at 80% 0%, #0089BB10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9C6D12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; inset: 0"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 300px; left: -70px; border-radius: 50%; pointer-events: none; width: 300px; background: #C84000; position: absolute; top: -70px; opacity: 0.06"></div><div style="position: absolute; background: #0089BB; left: auto; top: 65%; height: 160px; border-radius: 9999px; right: -40px; opacity: 0.04; width: 160px; pointer-events: none"></div></div>
+            <div style="opacity: 0.04; pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute; z-index: 1"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="top: -70px; left: -70px; width: 300px; background: #C84000; height: 300px; opacity: 0.06; position: absolute; border-radius: 50%; pointer-events: none"></div><div style="border-radius: 9999px; left: auto; opacity: 0.04; pointer-events: none; background: #0089BB; width: 160px; height: 160px; top: 65%; right: -40px; position: absolute"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;"><span style="background: linear-gradient(135deg, #0F0A08 0%, #4A403D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Fraunces; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Ready to Get Started?</span><p style="font-family: Outfit; font-size: 16px; font-weight: 400; line-height: 1.55; color: #4A403D; margin: 0 0 20px; text-align: center">No credit card required</p><a href="#" style="display: inline-block; padding: 16px 40px; background: #940000; color: #FFF2ED; font-family: Outfit; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #94000040; letter-spacing: 0.02em; margin: 0;">Start Free Trial</a></div>
             </div>

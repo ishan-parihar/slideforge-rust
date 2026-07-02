@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -416,7 +419,7 @@ body {
 <div class="slide slide--dark has-bg-image"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D11E6715 0px, transparent 50%), radial-gradient(at 80% 0%, #00998410 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA2D512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
 <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.36;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
-            <div style="opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
+            <div style="position: absolute; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -428,11 +431,11 @@ body {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:var(--space-2) 16px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:11px;font-weight:900;flex-shrink:0;">F</div><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#FF538D;text-transform:uppercase;">01</div></div>
                     <div style="font-family:Space Grotesk;font-size:15px;font-weight:800;color:#F5ECEE;line-height:1.2;margin-bottom:5px;">Faster handoff</div>
-                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.35;">Decisions move directly into owners and timelines.</div>
+                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.45;">Decisions move directly into owners and timelines.</div>
                 </div><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:var(--space-2) 16px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:11px;font-weight:900;flex-shrink:0;">C</div><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#FF538D;text-transform:uppercase;">02</div></div>
                     <div style="font-family:Space Grotesk;font-size:15px;font-weight:800;color:#F5ECEE;line-height:1.2;margin-bottom:5px;">Clearer focus</div>
-                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.35;">Only the highest-leverage work enters the plan.</div>
+                    <div style="font-family:Space Grotesk;font-size:12px;color:#D7CACC;line-height:1.45;">Only the highest-leverage work enters the plan.</div>
                 </div></div>
         </div>
             </div>

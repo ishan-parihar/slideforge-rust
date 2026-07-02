@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -409,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #2A7F2615 0px, transparent 50%), radial-gradient(at 80% 0%, #92489C10 0px, transparent 50%), radial-gradient(at 0% 50%, #74C76E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:var(--space-10) var(--space-6) var(--space-10);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:0"><div style="width: var(--space-7); height: var(--space-7); background: #2A7F2612; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: var(--space-3); margin: 0 0 16px;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2A7F26" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#2A7F26;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #090C08; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word"><span style="color:#2A7F26;font-weight:800;margin-right:12px;font-family:Plus Jakarta Sans;">10x</span>Lightning Fast</h2><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #3E453D; margin: 0; text-align: left">10x faster processing</p></div>

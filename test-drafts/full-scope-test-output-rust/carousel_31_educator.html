@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -409,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007B9715 0px, transparent 50%), radial-gradient(at 80% 0%, #9F593F10 0px, transparent 50%), radial-gradient(at 0% 50%, #67C6E412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); pointer-events: none; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -417,17 +420,17 @@ body {
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
                 <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.92);border:1px solid #C0CDD1;box-sizing:border-box;">
                     <div style="font-family:DM Sans;font-size:11px;font-weight:900;color:#EF4444;margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
-                    <p style="font-family:DM Sans;font-size:var(--text-sm);color:#3A4448;line-height:1.38;margin:0;">Scattered updates across docs, chats, and dashboards.</p>
+                    <p style="font-family:DM Sans;font-size:var(--text-sm);color:#3A4448;line-height:1.45;margin:0;">Scattered updates across docs, chats, and dashboards.</p>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;color:#007B97;font-family:Playfair Display;font-size:22px;font-weight:900;">→</div>
                 <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.92);border:1px solid #C0CDD1;box-sizing:border-box;">
                     <div style="font-family:DM Sans;font-size:11px;font-weight:900;color:#007B97;margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
-                    <p style="font-family:DM Sans;font-size:var(--text-sm);color:#3A4448;line-height:1.38;margin:0;">One narrative that connects signal, decision, owner, and result.</p>
+                    <p style="font-family:DM Sans;font-size:var(--text-sm);color:#3A4448;line-height:1.45;margin:0;">One narrative that connects signal, decision, owner, and result.</p>
                 </div>
             </div>
             <div style="margin-top:14px;border-radius:0;background:rgba(255,255,255,0.92);border:1px solid #C0CDD1;padding:var(--space-2) 16px;display:flex;align-items:center;gap:var(--space-1);">
                 <div style="width:34px;height:34px;border-radius:0;background:#007B97;color:white;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:16px;font-weight:900;flex-shrink:0;">↗</div>
-                <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:800;color:#070C0E;line-height:1.32;">37% fewer status meetings after rollout.</div>
+                <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:800;color:#070C0E;line-height:1.45;">37% fewer status meetings after rollout.</div>
             </div>
         </div>
             </div>

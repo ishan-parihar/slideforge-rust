@@ -143,12 +143,15 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition bounds
-   while the root div stretches to fill the slide canvas. */
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: 0 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -408,10 +411,10 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D0228515 0px, transparent 50%), radial-gradient(at 80% 0%, #009D6B10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA0F412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); inset: 0"></div>
+            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 44px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="backdrop-filter: blur(12px); background: #FEF1F6CC; border: 1px solid #D0C3C840; border-radius: 0; -webkit-backdrop-filter: blur(12px);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Bricolage Grotesque;font-size:25px;font-weight:600;line-height:1.2;color:#0F090C;margin:0;text-align:center;text-wrap:balance;">This tool transformed how we work. The results are incredible.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="border-radius: 0; border: 1px solid #D0C3C840; backdrop-filter: blur(12px); background: #FEF1F6CC; -webkit-backdrop-filter: blur(12px);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Bricolage Grotesque;font-size:25px;font-weight:600;line-height:1.2;color:#0F090C;margin:0;text-align:center;text-wrap:balance;">This tool transformed how we work. The results are incredible.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #0F090C20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #0F090C; flex-shrink: 0;">S</div>
             <div>
                 <div style="font-family:Bricolage Grotesque;font-size:13px;font-weight:600;color:#0F090C;">Sarah Chen</div>

@@ -2253,7 +2253,7 @@ pub fn timeline_slide(
                     r#"<div style="flex:1;text-align:center;">
                         <div style="width:32px;height:32px;border-radius:50%;background:{}12;border:2px solid {};display:inline-flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:{};margin-bottom:8px;">{}</div>
                         <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;overflow-wrap:break-word;">{}</h3>
-                        <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.3;">{}</p>
+                        <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;">{}</p>
                     </div>"#,
                     tokens.primary, tokens.primary, tokens.primary, i + 1,
                     tokens.body_font, body_fs, colors.text_primary, escape_html(step_title),
@@ -2530,20 +2530,14 @@ pub fn split_features_slide(
         {
             treatment.image_frame = "rounded".to_string();
         }
-        // Image height adapts to feature count so the composition never
-        // overflows the 525px canvas. 1 feature → 240px, 2 → 180px, 3+ → 140px.
-        let feature_count = features.len().max(1);
-        let img_height = match feature_count {
-            1 => "240px",
-            2 => "180px",
-            _ => "140px",
-        };
+        // Image fills the entire left column height (true 50/50 split).
+        // The parent grid cell controls the height; the image uses 100%.
         render_themed_image(
             &effective_img,
             tokens,
             &treatment,
             "100%",
-            img_height,
+            "100%",
             title,
             is_dark,
         )
@@ -2644,7 +2638,7 @@ pub fn split_features_slide(
                 {}
                 <div style="min-width:0;">
                     <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
-                    <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.38;">{}</p>
+                    <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;">{}</p>
                 </div>
             </div>"#,
             feature_card_bg,
@@ -2662,15 +2656,21 @@ pub fn split_features_slide(
     let features_html = feature_cards.join("");
 
     let content = if image_feature_layout {
+        // True 50/50 split: image fills the left column full-height, while
+        // the heading + feature cards stack in the right column. This fixes
+        // the "ugly asymmetric layout" where the heading floated on top and
+        // the two cards carried all the weight. Now image and text share
+        // equal compositional weight (50/50), and the heading is anchored
+        // inside the text column — not floating above everything.
         format!(
-            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;gap:14px;overflow:hidden;">
-                {}
-                <div style="display:grid;grid-template-columns:minmax(0, 0.92fr) minmax(0, 1.08fr);gap:16px;width:100%;flex:1;min-height:0;overflow:hidden;align-items:stretch;">
-                    <div style="min-width:0;min-height:0;max-height:100%;overflow:hidden;">{}</div>
-                    <div style="min-width:0;min-height:0;max-height:100%;display:grid;grid-template-columns:1fr;gap:12px;overflow:hidden;">{}</div>
+            r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;">{}</div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                    {}
+                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;">{}</div>
                 </div>
             </div>"#,
-            heading, left_visual, features_html
+            left_visual, heading, features_html
         )
     } else if effective_variant == "reversed" {
         format!(
@@ -2701,7 +2701,7 @@ pub fn split_features_slide(
 
     let padding_val = if padding.is_empty() {
         if image_feature_layout {
-            "44px 32px 52px"
+            "48px 36px 56px"
         } else {
             "80px var(--space-6) 80px"
         }
@@ -4511,7 +4511,7 @@ fn render_compact_items(
                 r#"<div style="background:{};border:1px solid {};border-radius:{};padding:var(--space-2) 16px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">{}<div style="font-family:{};font-size:11px;font-weight:800;color:{};text-transform:uppercase;">{:02}</div></div>
                     <div style="font-family:{};font-size:15px;font-weight:800;color:{};line-height:1.2;margin-bottom:5px;">{}</div>
-                    <div style="font-family:{};font-size:12px;color:{};line-height:1.35;">{}</div>
+                    <div style="font-family:{};font-size:12px;color:{};line-height:1.45;">{}</div>
                 </div>"#,
                 card_bg,
                 colors.border,
@@ -4679,7 +4679,7 @@ pub fn checklist_action_plan_slide(
             format!(
                 r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:var(--space-1) 14px;">
                     <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;flex-shrink:0;">{}</div>
-                    <div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:{};line-height:1.3;">{}</div>
+                    <div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:{};line-height:1.45;">{}</div>
                 </div>"#,
                 card_bg,
                 colors.border,
@@ -4701,7 +4701,7 @@ pub fn checklist_action_plan_slide(
         escape_html(title),
         rows
     );
-    let html = slide_base(&content, tokens, bg_style, false, "70px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "checklist_action_plan", "theme": theme})
 }
@@ -4761,12 +4761,12 @@ pub fn pricing_plan_slide(
             let desc = simple_text(plan, &["description", "caption"]);
             let visual = visual_badge_html(tokens, &colors, plan, &name, if idx == 0 { 36 } else { 30 });
             let price_size = if idx == 0 { 30 } else { 22 };
-            let padding = if idx == 0 { "16px 18px" } else { "13px 14px" };
+            let padding = if idx == 0 { "16px 18px" } else { "12px 14px" };
             format!(
                 r#"<div style="min-width:0;background:{};border:1px solid {};border-radius:{};padding:{};box-sizing:border-box;height:100%;">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;min-width:0;">{}<div style="font-family:{};font-size:var(--text-sm);font-weight:900;color:{};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div></div>
                     <div style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:var(--space-1) 0 6px;line-height:1;">{}</div>
-                    <p style="font-family:{};font-size:11px;color:{};line-height:1.32;margin:0;">{}</p>
+                    <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
                 </div>"#,
                 card_bg,
                 colors.border,
@@ -4920,7 +4920,7 @@ pub fn logo_cloud_slide(
         escape_html(title),
         cells
     );
-    let html = slide_base(&content, tokens, bg_style, false, "76px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "logo_cloud", "theme": theme})
 }
@@ -4995,7 +4995,7 @@ pub fn before_after_story_slide(
         format!(
             r#"<div style="margin-top:14px;border-radius:{};background:{};border:1px solid {};padding:var(--space-2) 16px;display:flex;align-items:center;gap:var(--space-1);">
                 <div style="width:34px;height:34px;border-radius:{};background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:16px;font-weight:900;flex-shrink:0;">↗</div>
-                <div style="font-family:{};font-size:var(--text-sm);font-weight:800;color:{};line-height:1.32;">{}</div>
+                <div style="font-family:{};font-size:var(--text-sm);font-weight:800;color:{};line-height:1.45;">{}</div>
             </div>"#,
             radius,
             card_bg,
@@ -5014,12 +5014,12 @@ pub fn before_after_story_slide(
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
                 <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:#EF4444;margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
-                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.38;margin:0;">{}</p>
+                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;color:{};font-family:{};font-size:22px;font-weight:900;">→</div>
                 <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
-                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.38;margin:0;">{}</p>
+                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
             </div>
             {}
@@ -6427,7 +6427,7 @@ pub fn image_quote_slide(
     let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, true);
 
     let quote_style = format!(
-        "font-family:{};font-size:{}px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
+        "font-family:{};font-size:{}px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
         tokens.heading_font,
         tokens
             .type_scale
@@ -6557,7 +6557,7 @@ pub fn image_callout_slide(
                 colors.primary, tokens.body_font, idx + 1,
                 tokens.body_font, colors.text_primary, escape_html(lbl),
                 if !d.is_empty() {
-                    format!(r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.35;">{}</p>"#, tokens.body_font, colors.text_secondary, escape_html(d))
+                    format!(r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.45;">{}</p>"#, tokens.body_font, colors.text_secondary, escape_html(d))
                 } else {
                     String::new()
                 }
@@ -7647,8 +7647,22 @@ mod tests {
             "",
         );
         let html = res["html"].as_str().unwrap();
-        assert!(html.contains("grid-template-columns:minmax(0, 0.92fr) minmax(0, 1.08fr)"));
-        assert!(html.contains("max-height:100%"));
+        // True 50/50 split: image fills left column full-height, heading +
+        // cards stack in right column. No asymmetric column ratios.
+        assert!(
+            html.contains("grid-template-columns:1fr 1fr"),
+            "split_features image layout should use a 50/50 column split"
+        );
+        // Image should fill its column (height:100%), not be fixed-height.
+        assert!(
+            html.contains("height:100%"),
+            "image should fill its grid cell at 100% height"
+        );
+        // Heading should be inside the text column, not floating above.
+        assert!(
+            html.contains("flex-direction:column;justify-content:center"),
+            "right column should be a centered flex column with heading + cards"
+        );
     }
 
     #[test]
