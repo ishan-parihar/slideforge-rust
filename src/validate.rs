@@ -550,8 +550,13 @@ mod tests {
             </div>
         "#;
         let report = validate_design(html);
-        assert!(!report.issues.iter().any(|issue| issue.r#type == "aspect_bleed_overflow"),
-            "Should not flag overflow:visible when slide has overflow:hidden");
+        assert!(
+            !report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "aspect_bleed_overflow"),
+            "Should not flag overflow:visible when slide has overflow:hidden"
+        );
     }
 
     #[test]
@@ -685,10 +690,20 @@ mod tests {
             </div>
         "#;
         let report = validate_design(html);
-        assert!(!report.issues.iter().any(|i| i.r#type == "tiny_progress_indicator"),
-            "2px should not be flagged as too thin");
-        assert!(!report.issues.iter().any(|i| i.r#type == "progress_indicator_too_thick"),
-            "3px should not be flagged as too thick");
+        assert!(
+            !report
+                .issues
+                .iter()
+                .any(|i| i.r#type == "tiny_progress_indicator"),
+            "2px should not be flagged as too thin"
+        );
+        assert!(
+            !report
+                .issues
+                .iter()
+                .any(|i| i.r#type == "progress_indicator_too_thick"),
+            "3px should not be flagged as too thick"
+        );
     }
 
     #[test]
@@ -1106,8 +1121,8 @@ fn slide_has_slide_level_clip(slide_html: &str) -> bool {
     // In the actual slide HTML, the class attribute contains 'slide--full-bleed'
     // and the slide element clips via CSS. We check if the slide HTML has both
     // overflow:hidden patterns that would indicate slide-level clipping.
-    let has_overflow_hidden_css = slide_html.contains("overflow: hidden")
-        || slide_html.contains("overflow:hidden");
+    let has_overflow_hidden_css =
+        slide_html.contains("overflow: hidden") || slide_html.contains("overflow:hidden");
     // Also check for the .slide--full-bleed class which implies .slide has overflow:hidden
     let has_full_bleed = slide_html.contains("slide--full-bleed");
     // The base .slide CSS always has overflow:hidden; full-bleed compositions rely on this.
@@ -1224,7 +1239,8 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 detail: format!("Progress chip CSS uses {:.1}px height.", height),
                 message: "Progress indicators are too thin to remain visible after export scaling."
                     .to_string(),
-                suggestion: "Use at least 1.5px base height, with a larger active state.".to_string(),
+                suggestion: "Use at least 1.5px base height, with a larger active state."
+                    .to_string(),
             });
         }
         if height > 4.0 {
@@ -1238,6 +1254,158 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 suggestion: "Use 2px default height and 3px active height for optimal visual weight."
                     .to_string(),
             });
+        }
+    }
+
+    // ─── New build-time checks: progress-overlay spacing, full-bleed
+    //     stretch rule, image-trapped-in-content, and canvas-size
+    //     awareness for overlay/breadcrumb anchoring. ───────────────
+
+    // Parse canvas dimensions from :root CSS variables.
+    let canvas_width_re = Regex::new(r#"(?s)--slide-width:\s*([0-9.]+)px"#).unwrap();
+    let canvas_height_re = Regex::new(r#"(?s)--slide-height:\s*([0-9.]+)px"#).unwrap();
+    let comp_width_re = Regex::new(r#"(?s)--composition-width:\s*([0-9.]+)px"#).unwrap();
+    let comp_height_re = Regex::new(r#"(?s)--composition-height:\s*([0-9.]+)px"#).unwrap();
+    let canvas_w = canvas_width_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()))
+        .unwrap_or(420.0);
+    let canvas_h = canvas_height_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()))
+        .unwrap_or(525.0);
+    let comp_w = comp_width_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()))
+        .unwrap_or(420.0);
+    let comp_h = comp_height_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()))
+        .unwrap_or(525.0);
+    let is_full_bleed_canvas = (canvas_w - comp_w).abs() > 1.0 || (canvas_h - comp_h).abs() > 1.0;
+
+    // Check 1: progress-overlay spacing. Parse .breadcrumb-progress { bottom: Npx }
+    // and .slide__overlay { padding: Apx Bpx } to ensure the breadcrumb sits
+    // at least 12px below the overlay-bottom text.
+    let progress_bottom_re = Regex::new(
+        r#"(?s)\.breadcrumb-progress\s*\{[^}]*bottom\s*:\s*(?:var\(--space-\d+,\s*)?([0-9.]+)px"#,
+    )
+    .unwrap();
+    let overlay_padding_re = Regex::new(
+        r#"(?s)\.slide__overlay\s*\{[^}]*padding\s*:\s*(?:var\(--space-\d+,\s*)?([0-9.]+)px"#,
+    )
+    .unwrap();
+    let progress_bottom = progress_bottom_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()));
+    let overlay_padding_bottom = overlay_padding_re
+        .captures(html)
+        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()));
+    if let (Some(pb), Some(op)) = (progress_bottom, overlay_padding_bottom) {
+        // Overlay-bottom text height ≈ 15px (11.5px font × 1.3 line-height).
+        let overlay_text_top_from_bottom = op + 15.0;
+        // Breadcrumb chip top from bottom = pb + chip_height (2-3px).
+        let chip_top_from_bottom = pb + 3.0;
+        let gap = chip_top_from_bottom - overlay_text_top_from_bottom;
+        // If breadcrumb is ABOVE overlay text (positive gap) and gap < 12px,
+        // OR if breadcrumb is BELOW overlay text (negative gap) and overlap > 0,
+        // flag it.
+        if gap.abs() < 12.0 && gap > -20.0 {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "progress_overlay_collision".to_string(),
+                severity: "warning".to_string(),
+                detail: format!(
+                    "breadcrumb-progress bottom {:.0}px is only {:.0}px from overlay-bottom text (padding {:.0}px + ~15px text).",
+                    pb, gap.abs(), op
+                ),
+                message: "Progress indicator sits too close to the bottom overlay text, hurting visual separation.".to_string(),
+                suggestion: "Move breadcrumb-progress to bottom:8px (below the overlay text) or increase to bottom:60px+ (above the overlay text with clear breathing room).".to_string(),
+            });
+        }
+    }
+
+    // Check 2: full-bleed stretch rule presence. If any slide has
+    // slide--full-bleed class, the CSS must contain the first-of-type
+    // stretch rule with !important on width/height.
+    let has_full_bleed_slide = html.contains("slide--full-bleed");
+    if has_full_bleed_slide {
+        let stretch_rule_re = Regex::new(
+            r#"(?s)\.slide--full-bleed\s+\.slide-composition\s*>\s*div:first-of-type\s*\{[^}]*width:\s*var\(--slide-width\)\s*!important[^}]*height:\s*var\(--slide-height\)\s*!important"#,
+        )
+        .unwrap();
+        if !stretch_rule_re.is_match(html) {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "missing_full_bleed_stretch_rule".to_string(),
+                severity: "error".to_string(),
+                detail: "Full-bleed slides are present but the CSS lacks the .slide--full-bleed .slide-composition > div:first-of-type stretch rule with !important.".to_string(),
+                message: "Background layers on full-bleed slides will be clipped to the 420x525 composition instead of filling the canvas.".to_string(),
+                suggestion: "Add: .slide--full-bleed .slide-composition > div:first-of-type { position:absolute!important; width:var(--slide-width)!important; height:var(--slide-height)!important; }".to_string(),
+            });
+        }
+    }
+
+    // Check 3: content images trapped in slide-content for full-bleed slides.
+    // Image-primary slides (image_headline, image_quote) use padding:0 on
+    // slide-content because the image fills the entire slide. If such a slide
+    // uses plain .slide-content (not --bleed) on a full-bleed canvas, the img
+    // will be clipped to 420x525. We detect this by looking for:
+    //   class="slide-content" with padding:0  →  image-primary pattern
+    //   AND a full-size img (width:100%;height:100%) inside a height:100% div chain
+    //   AND no slide-content--bleed usage
+    // Content slides (image_gallery, split_features, etc.) use non-zero padding
+    // so they won't match.
+    if is_full_bleed_canvas && has_full_bleed_slide {
+        let uses_bleed_variant = html.contains("slide-content--bleed");
+        if !uses_bleed_variant {
+            // Check for image-primary pattern: slide-content with padding:0
+            // containing a height:100% div chain with a full-size img.
+            let image_primary_re = Regex::new(
+                r#"(?s)class="slide-content"[^>]*padding:\s*0[^>]*>.*?<div\s+style="[^"]*height:\s*100%[^"]*"[^>]*>\s*<div\s+style="[^"]*height:\s*100%[^"]*"[^>]*>\s*<img\s+[^>]*style="[^"]*width:\s*100%[^"]*height:\s*100%"#,
+            )
+            .unwrap();
+            if image_primary_re.is_match(html) {
+                issues.push(DesignIssue {
+                    slide: 1,
+                    r#type: "full_bleed_image_trapped_in_content".to_string(),
+                    severity: "error".to_string(),
+                    detail: format!(
+                        "Full-bleed slide (canvas {:.0}x{:.0}) has an image-primary layout (slide-content padding:0) with a full-size <img> inside .slide-content (constrained to {:.0}x{:.0}).",
+                        canvas_w, canvas_h, comp_w, comp_h
+                    ),
+                    message: "Content image is trapped in the 420x525 composition and will not fill the canvas, leaving visible bands.".to_string(),
+                    suggestion: "Use slide_base_bleed() (which emits .slide-content--bleed) for image-primary slides so the image fills the canvas.".to_string(),
+                });
+            }
+        }
+    }
+
+    // Check 4: bg-image mask creating visible bands on full-bleed slides.
+    // A mask like linear-gradient(to bottom, black 70%, transparent 100%)
+    // fades 30% of the canvas to transparent, creating bands on full-bleed.
+    if is_full_bleed_canvas {
+        let mask_re =
+            Regex::new(r#"(?s)mask-image:\s*linear-gradient\([^)]*black\s+(\d+)%,\s*transparent"#)
+                .unwrap();
+        for cap in mask_re.captures_iter(html) {
+            let pct = cap
+                .get(1)
+                .and_then(|m| m.as_str().parse::<f32>().ok())
+                .unwrap_or(100.0);
+            if pct < 85.0 {
+                issues.push(DesignIssue {
+                    slide: 1,
+                    r#type: "bg_image_mask_band".to_string(),
+                    severity: "warning".to_string(),
+                    detail: format!(
+                        "Background image mask fades to transparent at {}%, creating visible bands on the {:.0}x{:.0} canvas.",
+                        pct, canvas_w, canvas_h
+                    ),
+                    message: "Aggressive bg-image masks create empty bands on full-bleed canvases.".to_string(),
+                    suggestion: "Use black 90%+ in the mask gradient, or remove the mask for full-bleed slides.".to_string(),
+                });
+            }
         }
     }
 

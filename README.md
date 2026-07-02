@@ -134,6 +134,14 @@ glab release create v0.1.0 dist/slideforge-x86_64-unknown-linux-musl --name "sli
 
 ## Recent Layout Fixes
 
-- `carousel_10_brand_storyteller`: split-feature image slides now use a balanced vertical image-first layout instead of a cramped left-column image.
-- `carousel_44_thought_leader`: image-gallery labels are top chips instead of bottom overlays, so they no longer collide visually with the section caption.
-- `validate_design`: now flags common layout failures before manual review, including component overlap, invalid CSS dimensions, constricted images, bottom caption overlays, and bad text wrapping constraints.
+- `carousel_10_brand_storyteller` (split_features): image height is now adaptive based on feature count (240px for 1, 180px for 2, 140px for 3+) so the composition never overflows the 525px canvas. Default padding reduced from `52px 36px 60px` to `44px 32px 52px` for better vertical budget.
+- `carousel_40_brand_storyteller` (image_headline) and `carousel_41_data_analyst` (image_quote): now use `slide_base_bleed()` which emits `.slide-content--bleed` instead of `.slide-content`, allowing the primary image to fill the entire slide canvas (525×525 for 1:1, 420×747 for 9:16) instead of being clipped to the 420×525 composition.
+- `breadcrumb-progress`: moved from `bottom:42px` to `bottom:8px` so it sits cleanly below the overlay-bottom text with a ~13px gap, eliminating the previous 3px collision.
+- `slide__overlay` and `breadcrumb-progress`: re-parented from `.slide-composition` to `.slide` so they anchor to the full canvas for full-bleed aspect ratios (1:1, 9:16, 3:4), not the 420×525 composition.
+- `inject_background_image`: fade masks reduced from 30% to 10% of canvas height to minimize visible bands on full-bleed slides.
+- `validate_design`: now flags common layout failures before manual review, including:
+  - `progress_overlay_collision`: breadcrumb-progress too close to overlay-bottom text (<12px gap)
+  - `missing_full_bleed_stretch_rule`: full-bleed slides missing the first-of-type stretch CSS rule
+  - `full_bleed_image_trapped_in_content`: image-primary slides using `.slide-content` instead of `.slide-content--bleed` on full-bleed canvases
+  - `bg_image_mask_band`: aggressive bg-image masks (<85% black) creating visible bands on full-bleed canvases
+  - Plus existing checks: component overlap, invalid CSS dimensions, constricted images, bottom caption overlays, bad text wrapping, progress indicator thickness, image aspect distortion, edge effect bleed, and slide body overflow.

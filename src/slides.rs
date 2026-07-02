@@ -266,7 +266,7 @@ body {
 }
 
 .breadcrumb-progress {
-  position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
+  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
   display: flex; align-items: center; gap: 6px;
   z-index: 50;
 }
@@ -508,13 +508,16 @@ body {
             ""
         };
 
+        // Overlay, progress, and arrow are placed as direct children of .slide
+        // (not .slide-composition) so they anchor to the full canvas for
+        // full-bleed aspect ratios. For 4:5 (canvas == composition), this is
+        // a no-op since .slide and .slide-composition share the same bounds.
         slides_html.push_str(&format!(
             r#"<div class="slide {}{}"{}><div class="slide-composition">
 {}
+</div>{}
 {}
-{}
-{}
-</div></div>
+{}</div>
 "#,
             bg_class,
             full_bleed_class,
