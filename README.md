@@ -1,53 +1,68 @@
+<div align="center">
+
 # SlideForge Rust
 
-SlideForge Rust is a Rust-native carousel slide generator, CLI, and MCP server for AI agents. It produces HTML carousels, validates layout quality, and can export rendered slides through a headless browser pipeline.
+**A Rust-native carousel slide generator, CLI, and MCP server for AI agents.**
 
-## Current Status
+Generate production-quality HTML carousels across 47 slide types, 6 archetypes, 6 themes, and 4 aspect ratios — with a build-time validator that catches layout, contrast, and composition issues before export.
 
-- CLI binary: `slideforge`
-- MCP transport: stdio
-- Full-scope generator coverage: 46 slide types
-- Release target: `x86_64-unknown-linux-musl`
-- Main quality gate: `validate_design`, which now checks image visibility, contrast, absolute frame overlap, bottom-caption image overlays, unitless CSS dimensions, constricted image frames, and narrow text containers that can cause one-word-per-line wrapping.
+[![Release](https://img.shields.io/github/v/release/ishan-parihar/slideforge-rust?color=blue)](https://github.com/ishan-parihar/slideforge-rust/releases)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Slide Types](https://img.shields.io/badge/slide%20types-47-blue)](#slide-types)
+[![MCP](https://img.shields.io/badge/MCP-18%20tools-purple)](#mcp-tools)
 
-## Install
+</div>
 
-From a local release artifact:
+---
 
-```bash
-./scripts/install-slideforge-rust.sh --local ./dist/slideforge-x86_64-unknown-linux-musl --bin-dir "$HOME/.local/bin"
-```
+## Quick Start
 
-From a release URL:
+### Install
 
 ```bash
-curl -fsSL https://example.com/slideforge-x86_64-unknown-linux-musl -o /tmp/slideforge
-./scripts/install-slideforge-rust.sh --local /tmp/slideforge
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
 ```
 
-The installer copies the binary to `~/.local/bin/slideforge` by default, makes it executable, verifies CLI startup, and prints MCP configuration JSON.
+This downloads the pre-built binary to `~/.local/bin/slideforge` and verifies it works.
 
-## CLI Usage
+<details>
+<summary>Other install options</summary>
 
 ```bash
-slideforge list-slides
-slideforge list-platforms
-slideforge list-archetypes
-slideforge configure-design '#4F46E5' --style modern --preset tonal_spot --output design_tokens.json
-slideforge test-full-scope --output-dir ./test-drafts/full-scope-test-output-rust
-```
+# Install to a specific directory
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
 
-Start the MCP server:
+# Install a specific version
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
+
+# Install from a local binary
+./scripts/install-slideforge-rust.sh --local ./dist/slideforge-x86_64-linux-gnu
+```
+</details>
+
+### Generate Your First Carousel
 
 ```bash
-slideforge mcp
+# 1. Configure design tokens
+slideforge configure-design "#6366F1" --style modern --preset tonal_spot --output tokens.json
+
+# 2. Generate a hero slide
+slideforge generate-slide hero \
+  --primary-color "#6366F1" \
+  --theme editorial \
+  --params '{"headline":"Introducing SlideForge","subheadline":"Carousel slides for AI agents"}' \
+  --output slide1.json
+
+# 3. Render the carousel
+slideforge render-carousel slide1.json --tokens-file tokens.json --output carousel.html
+
+# 4. Export to PNGs
+slideforge export carousel.html --output-dir ./exports --slides 1
 ```
 
-Without a subcommand, `slideforge` also starts the MCP server over stdio.
+### Use as MCP Server
 
-## MCP Configuration
-
-For Codex-style MCP clients:
+Add to your MCP client config (Claude Desktop, Cursor, etc.):
 
 ```json
 {
@@ -60,88 +75,213 @@ For Codex-style MCP clients:
 }
 ```
 
-Available MCP tools include:
+Then ask your AI agent: *"Create a 5-slide carousel about AI productivity tools using SlideForge."*
 
-- `configure_design`
-- `design_system`
-- `generate_slide`
-- `render_carousel`
-- `export_carousel_slides`
-- `list_slide_types`
-- `get_slide_type_info`
-- `get_slide_types_for_context`
-- `list_platforms`
-- `list_archetypes`
-- `validate_layout`
-- `validate_and_fix`
-- `validate_design`
-- `list_themes`
-- `recommend_color_scheme`
+---
 
-## Agent Workflow
+## Features
 
-1. Call `list_platforms` and choose `platform` plus `aspect_ratio`.
-2. Call `configure_design` with `platform`, `aspect_ratio`, brand, topic, URL, and hashtags.
-3. Call `get_slide_types_for_context` for each narrative job.
-4. Use `qr_destination` for off-platform actions such as blog posts, donations, digital products, newsletters, or link hubs.
-5. Call `validate_layout` before generation and `validate_design` after rendering.
-6. Export with the same `platform` and `aspect_ratio` used during render.
+### 47 Slide Types
+
+| Category | Slide Types |
+|----------|------------|
+| **Text & Layout** | `hero`, `feature`, `list`, `quote`, `cta`, `comparison`, `stat_row`, `timeline`, `callout`, `split_features`, `grid_cards`, `headline_subheadline`, `definition`, `text_block`, `section_divider`, `text_columns` |
+| **Data Viz** | `chart`, `scatter_plot`, `gauge`, `radar_chart`, `column_chart`, `table`, `metric_sparkline`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings` |
+| **Metrics** | `metric_card`, `stat_row` |
+| **Story** | `problem_solution`, `myth_fact`, `case_study_result`, `testimonial_avatar`, `before_after_story`, `logo_cloud`, `pricing_plan`, `checklist_action_plan`, `faq`, `process_map` |
+| **Image** | `image_caption`, `image_headline`, `image_quote`, `image_callout`, `image_stat`, `image_gallery`, `image_collage`, `image_comparison` |
+| **Conversion** | `qr_destination` |
+
+### 18 MCP Tools ( matched 1:1 by 18 CLI commands)
+
+| MCP Tool | CLI Command | Description |
+|----------|-------------|-------------|
+| `configure_design` | `configure-design` | Generate design tokens from a brand color |
+| `design_system` | `configure-design` | Stateless token derivation |
+| `generate_slide` | `generate-slide` | Generate HTML for a single slide |
+| `render_carousel` | `render-carousel` | Assemble slides into a carousel HTML doc |
+| `export_carousel_slides` | `export` | Export carousel HTML to PNG images |
+| `list_slide_types` | `list-slides` | List all 47 slide types with schemas |
+| `get_slide_type_info` | `slide-info` | Get detailed schema for a slide type |
+| `get_slide_types_for_context` | `slide-types-for-context` | Get recommended types for a context |
+| `list_platforms` | `list-platforms` | List export platforms (Instagram, TikTok, etc.) |
+| `list_archetypes` | `list-archetypes` | List brand archetypes |
+| `list_themes` | `list-themes` | List visual themes |
+| `validate_layout` | `validate-layout` | Validate slide params before rendering |
+| `validate_and_fix` | `validate-layout` | Validate and auto-fix missing params |
+| `validate_design` | `validate-design` | Validate carousel HTML for design issues |
+| `recommend_color_scheme` | `recommend-colors` | Recommend color schemes from a brand color |
+| `embed_local_image` | `embed-image` | Convert local image to base64 data URI |
+| `preview_slide` | `preview-slide` | Render single slide to PNG preview |
+| `load_carousel_skill` | `skill-guide` | Load the design guide documentation |
+
+### Build-Time Validator
+
+The validator is the primary quality gate — it catches layout, contrast, and composition issues at build time so every slide is production-ready:
+
+- **Layout**: component overlap, frame overflow, grid orphan cells, full-bleed centering
+- **Contrast**: WCAG AA 4.5:1 text contrast, image-background text legibility
+- **Images**: opacity, aspect distortion, caption overlay collisions, full-bleed fill
+- **Typography**: tiny text, one-word-per-line risk, descender clipping, text constriction
+- **Aspect ratios**: progress-slider spacing, overlay collision, bg-image mask bands
+
+### Multi-Platform Export
+
+| Platform | Aspect Ratios |
+|----------|--------------|
+| `instagram_portrait` | 4:5, 3:4, 1:1 |
+| `instagram_square` | 1:1, 4:5 |
+| `instagram_story` | 9:16, 3:4 |
+| `tiktok_vertical` | 9:16 |
+| `linkedin_landscape` | 4:5, 1:1 |
+| `twitter_card` | 1:1, 16:9 |
+| `facebook_post` | 4:5, 1:1 |
+| `presentation_16_9` | 16:9 |
+| `presentation_4_3` | 4:3 |
+
+---
+
+## CLI Usage
+
+```bash
+slideforge --help                    # See all 18 commands
+slideforge list-slides               # List 47 slide types
+slideforge list-themes               # List 6 visual themes
+slideforge slide-info hero           # Get hero slide schema
+slideforge generate-slide hero --primary-color "#6366F1" --params '{"headline":"Hello"}'
+slideforge render-carousel slides.json --tokens-file tokens.json --output carousel.html
+slideforge validate-design carousel.html  # Validate for design issues
+slideforge embed-image photo.png     # Convert local image to data URI
+slideforge preview-slide slide.html  # Quick PNG preview of one slide
+slideforge export carousel.html --slides 5 --output-dir ./exports
+```
+
+## MCP Usage
+
+Start the MCP server:
+
+```bash
+slideforge mcp
+```
+
+Without a subcommand, `slideforge` also starts the MCP server over stdio.
+
+### MCP Tools
+
+All 18 CLI commands have matching MCP tools with identical parameter schemas. AI agents can:
+- Discover slide types via `list_slide_types` and `get_slide_type_info`
+- Generate slides via `generate_slide` (with pre-flight validation in the response)
+- Validate via `validate_layout` (params) and `validate_design` (HTML)
+- Embed local images via `embed_local_image` (PNG/JPEG/GIF/WebP/SVG → data URI)
+- Preview single slides via `preview_slide` (quick PNG without full export)
+- Load the design guide via `load_carousel_skill`
+
+---
+
+## Build from Source
+
+### Prerequisites
+
+- Rust 1.75+ (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`)
+- Chrome/Chromium (for PNG export via headless browser)
+
+### Build
+
+```bash
+git clone https://github.com/ishan-parihar/slideforge-rust.git
+cd slideforge-rust
+cargo build --release
+```
+
+The binary will be at `target/release/slideforge-rust`.
+
+### Build Static Binary (musl)
+
+For a statically-linked binary (portable across Linux distros):
+
+```bash
+rustup target add x86_64-unknown-linux-musl
+# Requires musl-tools: sudo apt install musl-tools
+cargo build --release --target x86_64-unknown-linux-musl
+```
+
+### Run Tests
+
+```bash
+cargo test                    # 60 unit tests
+cargo fmt --check             # Format check
+python3 test_full_scope_rust.py  # Generate 47 test carousels
+```
+
+---
+
+## Architecture
+
+```
+src/
+├── main.rs            — CLI entry point (18 subcommands)
+├── mcp_server.rs      — MCP server (18 tools, stdio transport)
+├── components.rs      — 47 slide type generators (7,700+ lines)
+├── slides.rs          — Carousel assembly + CSS + overlay chrome
+├── layouts.rs         — Layout primitives (slide_base, hero, split, grid, etc.)
+├── validate.rs        — Build-time validator (20+ checks)
+├── design_system.rs   — OKLCH color science + typography + tokens
+├── slide_registry.rs  — 47 slide type schemas
+├── platforms.rs       — 9 export platforms + aspect ratio resolution
+├── archetypes.rs      — 6 brand archetypes with per-slide-type presets
+├── blocks.rs          — Reusable HTML blocks (badges, buttons, cards)
+├── dataviz.rs         — Chart rendering (bar, line, radar, gauge, etc.)
+├── effects.rs         — Glassmorphism, noise, gradient effects
+└── export.rs          — Headless Chrome PNG export
+```
+
+---
 
 ## Quality Gates
 
-Run the local verification suite before release:
+Run before release:
 
 ```bash
 cargo fmt --check
 cargo test
 cargo build --release
-cargo build --release --target x86_64-unknown-linux-musl
 python3 test_full_scope_rust.py
 ```
 
-The full-scope HTML fixtures are written to:
+The full-scope HTML fixtures are written to `test-drafts/full-scope-test-output-rust/`.
 
-```text
-test-drafts/full-scope-test-output-rust/
+### Validator Results
+
+All 47 generated slides pass `validate_design` with **0 errors and 0 warnings**:
+
+```bash
+slideforge validate-design test-drafts/full-scope-test-output-rust/carousel_*.html
 ```
+
+---
 
 ## Release
 
-Build the musl binary:
+Create a GitHub release:
 
 ```bash
-cargo build --release --target x86_64-unknown-linux-musl
-mkdir -p dist
-cp target/x86_64-unknown-linux-musl/release/slideforge-rust dist/slideforge-x86_64-unknown-linux-musl
-chmod +x dist/slideforge-x86_64-unknown-linux-musl
+cargo build --release
+strip target/release/slideforge-rust
+cp target/release/slideforge-rust dist/slideforge-x86_64-linux-gnu
+
+git tag v0.2.0
+git push origin feat/vectoric-scaling --tags
+# Upload dist/slideforge-x86_64-linux-gnu to the GitHub release
 ```
 
-Create a GitHub release when a remote is configured:
+---
 
-```bash
-git tag v0.1.0
-git push origin master --tags
-gh release create v0.1.0 dist/slideforge-x86_64-unknown-linux-musl --title "slideforge-rust v0.1.0" --notes "Static Linux musl build of SlideForge Rust."
-```
+## License
 
-Create a GitLab release when using GitLab:
+MIT
 
-```bash
-git tag v0.1.0
-git push origin master --tags
-glab release create v0.1.0 dist/slideforge-x86_64-unknown-linux-musl --name "slideforge-rust v0.1.0" --notes "Static Linux musl build of SlideForge Rust."
-```
+## Links
 
-## Recent Layout Fixes
-
-- `carousel_10_brand_storyteller` (split_features): image height is now adaptive based on feature count (240px for 1, 180px for 2, 140px for 3+) so the composition never overflows the 525px canvas. Default padding reduced from `52px 36px 60px` to `44px 32px 52px` for better vertical budget.
-- `carousel_40_brand_storyteller` (image_headline) and `carousel_41_data_analyst` (image_quote): now use `slide_base_bleed()` which emits `.slide-content--bleed` instead of `.slide-content`, allowing the primary image to fill the entire slide canvas (525×525 for 1:1, 420×747 for 9:16) instead of being clipped to the 420×525 composition.
-- `breadcrumb-progress`: moved from `bottom:42px` to `bottom:8px` so it sits cleanly below the overlay-bottom text with a ~13px gap, eliminating the previous 3px collision.
-- `slide__overlay` and `breadcrumb-progress`: re-parented from `.slide-composition` to `.slide` so they anchor to the full canvas for full-bleed aspect ratios (1:1, 9:16, 3:4), not the 420×525 composition.
-- `inject_background_image`: fade masks reduced from 30% to 10% of canvas height to minimize visible bands on full-bleed slides.
-- `validate_design`: now flags common layout failures before manual review, including:
-  - `progress_overlay_collision`: breadcrumb-progress too close to overlay-bottom text (<12px gap)
-  - `missing_full_bleed_stretch_rule`: full-bleed slides missing the first-of-type stretch CSS rule
-  - `full_bleed_image_trapped_in_content`: image-primary slides using `.slide-content` instead of `.slide-content--bleed` on full-bleed canvases
-  - `bg_image_mask_band`: aggressive bg-image masks (<85% black) creating visible bands on full-bleed canvases
-  - Plus existing checks: component overlap, invalid CSS dimensions, constricted images, bottom caption overlays, bad text wrapping, progress indicator thickness, image aspect distortion, edge effect bleed, and slide body overflow.
+- [Releases](https://github.com/ishan-parihar/slideforge-rust/releases)
+- [Design Guide](DESIGN-GUIDE.md)
+- [Install Script](scripts/install-slideforge-rust.sh)

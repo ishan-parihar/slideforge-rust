@@ -1,48 +1,58 @@
 #!/usr/bin/env bash
+#
+# SlideForge Rust — Installer
+#
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
+#
+# Or with options:
+#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
+#
 set -euo pipefail
 
+REPO="ishan-parihar/slideforge-rust"
+VERSION="v0.2.0"
 BIN_DIR="${HOME}/.local/bin"
-LOCAL_BINARY=""
 INSTALL_NAME="slideforge"
+LOCAL_BINARY=""
 
 usage() {
   cat <<'USAGE'
-Install SlideForge Rust CLI/MCP.
+Install SlideForge Rust CLI/MCP server.
 
 Usage:
-  install-slideforge-rust.sh --local <path-to-binary> [--bin-dir <dir>]
-  install-slideforge-rust.sh --url <release-binary-url> [--bin-dir <dir>]
+  install-slideforge-rust.sh [OPTIONS]
 
 Options:
-  --local PATH    Install from an existing local binary.
-  --url URL       Download and install a release binary.
-  --bin-dir DIR   Install directory. Defaults to ~/.local/bin.
-  --help          Show this help.
+  --bin-dir DIR     Install directory (default: ~/.local/bin)
+  --version VER     Release version to download (default: v0.2.0)
+  --local PATH      Install from a local binary instead of downloading
+  --help            Show this help
+
+Examples:
+  # One-liner install
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
+
+  # Install to /usr/local/bin (needs sudo)
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | sudo bash -s -- --bin-dir /usr/local/bin
+
+  # Install a specific version
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
 USAGE
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --local)
-      LOCAL_BINARY="${2:-}"
-      shift 2
-      ;;
-    --url)
-      url="${2:-}"
-      tmp="$(mktemp)"
-      if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$url" -o "$tmp"
-      elif command -v wget >/dev/null 2>&1; then
-        wget -qO "$tmp" "$url"
-      else
-        echo "error: curl or wget is required for --url" >&2
-        exit 1
-      fi
-      LOCAL_BINARY="$tmp"
-      shift 2
-      ;;
     --bin-dir)
       BIN_DIR="${2:-}"
+      shift 2
+      ;;
+    --version)
+      VERSION="${2:-}"
+      shift 2
+      ;;
+    --local)
+      LOCAL_BINARY="${2:-}"
       shift 2
       ;;
     --help|-h)
@@ -57,32 +67,95 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# If no local binary, download from GitHub releases
 if [[ -z "$LOCAL_BINARY" ]]; then
-  echo "error: provide --local PATH or --url URL" >&2
-  usage >&2
-  exit 1
+  # Detect OS and architecture
+  OS="$(uname -s)"
+  ARCH="$(uname -m)"
+
+  # Map to release asset name
+  case "$OS" in
+    Linux|linux)
+      case "$ARCH" in
+        x86_64|amd64)
+          ASSET="slideforge-x86_64-linux-gnu"
+          ;;
+        *)
+          echo "error: unsupported architecture: $ARCH" >&2
+          echo "  Only x86_64 Linux is currently available." >&2
+          echo "  Build from source: https://github.com/$REPO#build-from-source" >&2
+          exit 1
+          ;;
+      esac
+      ;;
+    Darwin|macos)
+      echo "error: macOS builds are not yet available." >&2
+      echo "  Build from source: https://github.com/$REPO#build-from-source" >&2
+      exit 1
+      ;;
+    *)
+      echo "error: unsupported OS: $OS" >&2
+      exit 1
+      ;;
+  esac
+
+  DOWNLOAD_URL="https://github.com/$REPO/releases/download/$VERSION/$ASSET"
+  echo "Downloading SlideForge $VERSION for $OS/$ARCH..."
+  tmp="$(mktemp)"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$DOWNLOAD_URL" -o "$tmp"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO "$tmp" "$DOWNLOAD_URL"
+  else
+    echo "error: curl or wget is required" >&2
+    exit 1
+  fi
+  LOCAL_BINARY="$tmp"
 fi
 
+# Verify the binary exists
 if [[ ! -f "$LOCAL_BINARY" ]]; then
   echo "error: binary not found: $LOCAL_BINARY" >&2
   exit 1
 fi
 
+# Install
 mkdir -p "$BIN_DIR"
 install_path="${BIN_DIR}/${INSTALL_NAME}"
 cp "$LOCAL_BINARY" "$install_path"
 chmod +x "$install_path"
 
-"$install_path" list-slides >/dev/null
+# Clean up temp file
+if [[ -n "${tmp:-}" ]] && [[ -f "$tmp" ]]; then
+  rm -f "$tmp"
+fi
 
+# Verify the binary works
+if ! "$install_path" --version >/dev/null 2>&1; then
+  echo "error: binary verification failed" >&2
+  exit 1
+fi
+
+echo ""
+echo "✓ SlideForge installed to: $install_path"
+echo ""
+
+# Check if BIN_DIR is in PATH
+if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
+  echo "⚠ $BIN_DIR is not in your PATH. Add it:"
+  echo "  echo 'export PATH=\"$BIN_DIR:\$PATH\"' >> ~/.bashrc"
+  echo "  source ~/.bashrc"
+  echo ""
+fi
+
+echo "Quick start:"
+echo "  slideforge --help              # See all CLI commands"
+echo "  slideforge list-slides         # List 47 slide types"
+echo "  slideforge mcp                 # Start MCP server"
+echo ""
+
+echo "MCP configuration (for Claude, Cursor, etc.):"
 cat <<EOF
-Installed SlideForge Rust:
-  $install_path
-
-Add this directory to PATH if needed:
-  export PATH="$BIN_DIR:\$PATH"
-
-MCP configuration:
 {
   "mcpServers": {
     "slideforge": {
