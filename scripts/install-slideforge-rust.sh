@@ -3,10 +3,10 @@
 # SlideForge Rust — Installer
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash
 #
 # Or with options:
-#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
+#   curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
 #
 set -euo pipefail
 
@@ -31,13 +31,13 @@ Options:
 
 Examples:
   # One-liner install
-  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash
 
   # Install to /usr/local/bin (needs sudo)
-  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | sudo bash -s -- --bin-dir /usr/local/bin
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | sudo bash -s -- --bin-dir /usr/local/bin
 
   # Install a specific version
-  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
+  curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
 USAGE
 }
 

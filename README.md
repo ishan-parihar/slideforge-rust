@@ -20,7 +20,7 @@ Generate production-quality HTML carousels across 47 slide types, 6 archetypes, 
 ### Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash
 ```
 
 This downloads the pre-built binary to `~/.local/bin/slideforge` and verifies it works.
@@ -30,10 +30,10 @@ This downloads the pre-built binary to `~/.local/bin/slideforge` and verifies it
 
 ```bash
 # Install to a specific directory
-curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash -s -- --bin-dir /usr/local/bin
 
 # Install a specific version
-curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/main/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/scripts/install-slideforge-rust.sh | bash -s -- --version v0.1.0
 
 # Install from a local binary
 ./scripts/install-slideforge-rust.sh --local ./dist/slideforge-x86_64-linux-gnu
