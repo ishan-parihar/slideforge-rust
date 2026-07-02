@@ -53,7 +53,12 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
     let info = match get_slide_type_info(slide_type) {
         Some(v) => v,
         None => {
-            result.add_error(format!("Unknown slide type: '{slide_type}'"));
+            let valid_types = crate::slide_registry::list_slide_types();
+            result.add_error(format!(
+                "Unknown slide type: '{}'. Valid types: {}",
+                slide_type,
+                valid_types.join(", ")
+            ));
             return result;
         }
     };

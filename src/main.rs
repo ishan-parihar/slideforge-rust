@@ -72,6 +72,123 @@ enum Commands {
     ListPlatforms,
     /// List all available brand archetypes
     ListArchetypes,
+    /// List all available visual themes
+    ListThemes,
+    /// Get detailed info for a specific slide type
+    SlideInfo { slide_type: String },
+    /// Get slide types recommended for a specific context
+    SlideTypesForContext { context: String },
+    /// Generate a single slide as HTML JSON
+    GenerateSlide {
+        /// Slide type (e.g. hero, feature, image_headline, qr_destination)
+        slide_type: String,
+        /// Primary brand color in hex (required if no --tokens-file)
+        #[arg(long)]
+        primary_color: Option<String>,
+        /// Visual theme (editorial, bold, minimal, dark, vibrant, natural)
+        #[arg(long)]
+        theme: Option<String>,
+        /// Color preset (tonal_spot, vibrant, neutral, monochrome, expressive, fidelity)
+        #[arg(long)]
+        preset: Option<String>,
+        /// Background style (light, dark, gradient, mesh, hero)
+        #[arg(long)]
+        bg_style: Option<String>,
+        /// Brand archetype (educator, thought_leader, startup_pitch, brand_storyteller, data_analyst, creator)
+        #[arg(long)]
+        archetype: Option<String>,
+        /// Platform (instagram_portrait, tiktok_vertical, etc.)
+        #[arg(long)]
+        platform: Option<String>,
+        /// Aspect ratio (4:5, 9:16, 3:4, 1:1)
+        #[arg(long)]
+        aspect_ratio: Option<String>,
+        /// Path to design tokens JSON (from configure-design) for session state
+        #[arg(long)]
+        tokens_file: Option<String>,
+        /// Slide params as JSON string (e.g. '{"headline":"Hello","subheadline":"World"}')
+        #[arg(long)]
+        params: Option<String>,
+        /// Read slide params from a JSON file
+        #[arg(long)]
+        params_file: Option<String>,
+        /// Output file (defaults to stdout)
+        #[arg(long)]
+        output: Option<String>,
+    },
+    /// Assemble slide HTML objects into a full carousel HTML document
+    RenderCarousel {
+        /// Path to JSON file containing slides array (from generate-slide output)
+        slides_file: String,
+        /// Path to design tokens JSON (from configure-design) for CSS variables
+        #[arg(long)]
+        tokens_file: Option<String>,
+        /// Brand name for overlay
+        #[arg(long)]
+        brand_name: Option<String>,
+        /// Brand handle (e.g. @mybrand)
+        #[arg(long)]
+        brand_handle: Option<String>,
+        /// Topic text for overlay
+        #[arg(long)]
+        topic: Option<String>,
+        /// URL for overlay
+        #[arg(long)]
+        url: Option<String>,
+        /// Comma-separated hashtags
+        #[arg(long)]
+        hashtags: Option<String>,
+        /// Platform
+        #[arg(long)]
+        platform: Option<String>,
+        /// Aspect ratio
+        #[arg(long)]
+        aspect_ratio: Option<String>,
+        /// Include IG frame chrome
+        #[arg(long, default_value = "true")]
+        include_ig_frame: bool,
+        /// Show progress indicator
+        #[arg(long, default_value = "true")]
+        show_progress: bool,
+        /// Output file path (defaults to stdout)
+        #[arg(long)]
+        output: Option<String>,
+    },
+    /// Validate slide params before rendering
+    ValidateLayout {
+        slide_type: String,
+        /// Slide params as JSON string
+        #[arg(long)]
+        params: Option<String>,
+        /// Read params from JSON file
+        #[arg(long)]
+        params_file: Option<String>,
+    },
+    /// Validate carousel HTML for design issues
+    ValidateDesign {
+        /// Path to HTML file
+        html_file: String,
+    },
+    /// Recommend color schemes from a primary color
+    RecommendColors {
+        primary: String,
+        #[arg(long, default_value = "modern")]
+        style: String,
+        #[arg(long, default_value = "4")]
+        num_schemes: u8,
+    },
+    /// Convert a local image file to a base64 data URI
+    EmbedImage { file_path: String },
+    /// Render a single slide HTML to a PNG preview
+    PreviewSlide {
+        /// Path to HTML file (or - for stdin)
+        html_file: String,
+        /// Output PNG path
+        #[arg(long, default_value = "/tmp/slideforge-preview.png")]
+        output: String,
+    },
+    /// Load the design guide and skill documentation
+    SkillGuide,
     /// Run an exhaustive full-scope test generating 24 carousels covering all archetypes, themes, and slide types
     TestFullScope {
         /// Output directory for test HTML files
@@ -157,6 +274,211 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("  {:<20} {}", a.name, a.description);
             }
         }
+        Some(Commands::ListThemes) => {
+            let themes = vec![
+                (
+                    "editorial",
+                    "Clean, magazine-inspired layout with sharp edges and textured surfaces",
+                ),
+                (
+                    "bold",
+                    "High-contrast, dynamic layout with strong shadows and gradient surfaces",
+                ),
+                (
+                    "minimal",
+                    "Restrained layout with generous whitespace and subtle accents",
+                ),
+                (
+                    "dark",
+                    "Dark-mode-first with glassmorphism and neon-adjacent accents",
+                ),
+                (
+                    "vibrant",
+                    "Saturated colors with playful radii and energetic compositions",
+                ),
+                (
+                    "natural",
+                    "Organic shapes, earthy palette, and hand-crafted feel",
+                ),
+            ];
+            println!("Available visual themes ({}):", themes.len());
+            for (name, desc) in &themes {
+                println!("  {:<15} {}", name, desc);
+            }
+        }
+        Some(Commands::SlideInfo { slide_type }) => {
+            match slide_registry::get_slide_type_info(slide_type) {
+                Some(info) => {
+                    let json = serde_json::to_string_pretty(&info)?;
+                    println!("{}", json);
+                }
+                None => {
+                    let valid = slide_registry::list_slide_types();
+                    eprintln!(
+                        "Unknown slide type: '{}'. Valid types: {}",
+                        slide_type,
+                        valid.join(", ")
+                    );
+                    std::process::exit(1);
+                }
+            }
+        }
+        Some(Commands::SlideTypesForContext { context }) => {
+            let types = slide_registry::get_slide_types_for_context(context);
+            println!("{}", serde_json::to_string_pretty(&types)?);
+        }
+        Some(Commands::GenerateSlide {
+            slide_type,
+            primary_color,
+            theme,
+            preset,
+            bg_style,
+            archetype,
+            platform,
+            aspect_ratio,
+            tokens_file,
+            params,
+            params_file,
+            output,
+        }) => {
+            cli_generate_slide(
+                slide_type,
+                primary_color,
+                theme,
+                preset,
+                bg_style,
+                archetype,
+                platform,
+                aspect_ratio,
+                tokens_file,
+                params,
+                params_file,
+                output,
+            )?;
+        }
+        Some(Commands::RenderCarousel {
+            slides_file,
+            tokens_file,
+            brand_name,
+            brand_handle,
+            topic,
+            url,
+            hashtags,
+            platform,
+            aspect_ratio,
+            include_ig_frame,
+            show_progress,
+            output,
+        }) => {
+            cli_render_carousel(
+                slides_file,
+                tokens_file,
+                brand_name,
+                brand_handle,
+                topic,
+                url,
+                hashtags,
+                platform,
+                aspect_ratio,
+                *include_ig_frame,
+                *show_progress,
+                output,
+            )?;
+        }
+        Some(Commands::ValidateLayout {
+            slide_type,
+            params,
+            params_file,
+        }) => {
+            let params_json = cli_read_params(params, params_file)?;
+            let result = validate::validate_slide_spec(slide_type, &params_json);
+            let response = serde_json::json!({
+                "valid": result.valid,
+                "errors": result.errors,
+                "warnings": result.warnings,
+            });
+            println!("{}", serde_json::to_string_pretty(&response)?);
+        }
+        Some(Commands::ValidateDesign { html_file }) => {
+            let html = fs::read_to_string(html_file)?;
+            let report = validate::validate_design(&html);
+            println!("{}", serde_json::to_string_pretty(&report)?);
+        }
+        Some(Commands::RecommendColors {
+            primary,
+            style,
+            num_schemes,
+        }) => {
+            let presets = [
+                "tonal_spot",
+                "vibrant",
+                "neutral",
+                "monochrome",
+                "expressive",
+                "fidelity",
+            ];
+            let num = (*num_schemes).min(6) as usize;
+            let mut schemes = Vec::new();
+            for &p in presets.iter().take(num) {
+                if let Ok(tokens) =
+                    design_system::derive_palette(primary, style, 16, 1.25, p, "", None, None, None)
+                {
+                    schemes.push(serde_json::json!({
+                        "preset": p,
+                        "primary": tokens.primary,
+                        "primary_light": tokens.primary_light,
+                        "primary_dark": tokens.primary_dark,
+                        "accent": tokens.accent,
+                    }));
+                }
+            }
+            let response = serde_json::json!({
+                "primary_color": primary,
+                "schemes": schemes,
+            });
+            println!("{}", serde_json::to_string_pretty(&response)?);
+        }
+        Some(Commands::EmbedImage { file_path }) => {
+            cli_embed_image(file_path)?;
+        }
+        Some(Commands::PreviewSlide { html_file, output }) => {
+            let html = if html_file == "-" {
+                use std::io::Read;
+                let mut buf = String::new();
+                std::io::stdin().read_to_string(&mut buf)?;
+                buf
+            } else {
+                fs::read_to_string(html_file)?
+            };
+            let temp_html = "/tmp/slideforge-preview.html";
+            let full_html = format!(
+                r#"<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:center; align-items:center; min-height:100vh; }}
+</style></head><body>{}</body></html>"#,
+                html
+            );
+            fs::write(temp_html, full_html)?;
+            match export::render_html_to_png(temp_html, output, 1.0) {
+                Ok(_) => {
+                    let response = serde_json::json!({
+                        "png_path": output,
+                        "message": format!("Preview saved to {}", output),
+                    });
+                    println!("{}", serde_json::to_string_pretty(&response)?);
+                }
+                Err(e) => {
+                    eprintln!(
+                        "Chrome render failed: {}. Ensure Chrome/Chromium is installed.",
+                        e
+                    );
+                    std::process::exit(1);
+                }
+            }
+        }
+        Some(Commands::SkillGuide) => {
+            let content = include_str!("../DESIGN-GUIDE.md");
+            println!("{}", content);
+        }
         Some(Commands::TestFullScope { output_dir }) => {
             run_full_scope_test(output_dir)?;
         }
@@ -166,6 +488,320 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    Ok(())
+}
+
+// ── CLI helper functions (stateless equivalents of MCP tools) ────────────────
+
+/// Read slide params from --params (JSON string) or --params-file (JSON file)
+fn cli_read_params(
+    params: &Option<String>,
+    params_file: &Option<String>,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    match params {
+        Some(p) => Ok(serde_json::from_str(p)?),
+        None => match params_file {
+            Some(f) => {
+                let content = fs::read_to_string(f)?;
+                Ok(serde_json::from_str(&content)?)
+            }
+            None => Ok(serde_json::json!({})),
+        },
+    }
+}
+
+/// Load design tokens from a JSON file (produced by configure-design)
+fn cli_load_tokens(
+    tokens_file: &str,
+) -> Result<design_system::DesignTokens, Box<dyn std::error::Error>> {
+    let content = fs::read_to_string(tokens_file)?;
+    let tokens: design_system::DesignTokens = serde_json::from_str(&content)?;
+    Ok(tokens)
+}
+
+/// Generate a single slide — CLI equivalent of MCP generate_slide
+#[allow(clippy::too_many_arguments)]
+fn cli_generate_slide(
+    slide_type: &str,
+    primary_color: &Option<String>,
+    theme: &Option<String>,
+    preset: &Option<String>,
+    bg_style: &Option<String>,
+    archetype: &Option<String>,
+    platform: &Option<String>,
+    aspect_ratio: &Option<String>,
+    tokens_file: &Option<String>,
+    params: &Option<String>,
+    params_file: &Option<String>,
+    output: &Option<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let slide_type = slide_type.to_lowercase().replace('-', "_");
+
+    // Resolve tokens: either from --tokens-file or derive from --primary-color
+    let (tokens, resolved_theme) = if let Some(tf) = tokens_file {
+        let t = cli_load_tokens(tf)?;
+        (t, theme.clone().unwrap_or_else(|| "editorial".to_string()))
+    } else {
+        let primary = primary_color
+            .as_deref()
+            .ok_or("Either --primary-color or --tokens-file is required")?;
+        let t = theme.as_deref().unwrap_or("editorial");
+        let style = match t {
+            "editorial" => "editorial",
+            "bold" => "bold",
+            "minimal" => "modern",
+            "dark" => "technical",
+            "vibrant" => "rounded",
+            "natural" => "warm",
+            _ => "modern",
+        };
+        let p = preset.as_deref().unwrap_or("tonal_spot");
+        let plt = platform.as_deref().unwrap_or("instagram_portrait");
+        let canvas = platforms::resolve_canvas(plt, aspect_ratio.as_deref())?;
+        let tokens = design_system::derive_palette_with_canvas(
+            primary,
+            style,
+            16,
+            1.25,
+            p,
+            t,
+            None,
+            None,
+            None,
+            canvas.width,
+            canvas.height,
+        )?;
+        (tokens, t.to_string())
+    };
+
+    let bg = bg_style.as_deref().unwrap_or("light");
+    let arch = archetype.as_deref().unwrap_or("educator");
+
+    let params_json = cli_read_params(params, params_file)?;
+
+    // Pre-flight validation
+    let validation = validate::validate_slide_spec(&slide_type, &params_json);
+
+    let result = components::dispatch_slide(
+        &slide_type,
+        &tokens,
+        &params_json,
+        bg,
+        &resolved_theme,
+        arch,
+    )?;
+
+    // Enrich with slide_type + validation (matching MCP behavior)
+    let mut enriched = result;
+    if let Some(obj) = enriched.as_object_mut() {
+        obj.insert("slide_type".to_string(), serde_json::json!(slide_type));
+        if !validation.errors.is_empty() || !validation.warnings.is_empty() {
+            obj.insert(
+                "validation".to_string(),
+                serde_json::json!({
+                    "errors": validation.errors,
+                    "warnings": validation.warnings,
+                }),
+            );
+        }
+    }
+
+    let json = serde_json::to_string_pretty(&enriched)?;
+    match output {
+        Some(path) => {
+            fs::write(path, &json)?;
+            eprintln!("Slide saved to {}", path);
+        }
+        None => println!("{}", json),
+    }
+    Ok(())
+}
+
+/// Render a carousel — CLI equivalent of MCP render_carousel
+#[allow(clippy::too_many_arguments)]
+fn cli_render_carousel(
+    slides_file: &str,
+    tokens_file: &Option<String>,
+    brand_name: &Option<String>,
+    brand_handle: &Option<String>,
+    topic: &Option<String>,
+    url: &Option<String>,
+    hashtags: &Option<String>,
+    platform: &Option<String>,
+    aspect_ratio: &Option<String>,
+    include_ig_frame: bool,
+    show_progress: bool,
+    output: &Option<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    // Load slides array from file
+    let slides_content = fs::read_to_string(slides_file)?;
+    let slides_json: serde_json::Value = serde_json::from_str(&slides_content)?;
+
+    // Accept either an array of slide specs or a single slide spec
+    let slides_arr: Vec<slides::SlideSpec> = match &slides_json {
+        serde_json::Value::Array(_) => serde_json::from_value(slides_json.clone())?,
+        serde_json::Value::Object(obj) => {
+            if obj.contains_key("slides") {
+                let arr = obj.get("slides").cloned().unwrap_or(serde_json::json!([]));
+                serde_json::from_value(arr)?
+            } else {
+                // Single slide spec — wrap in array
+                let single: slides::SlideSpec = serde_json::from_value(slides_json.clone())?;
+                vec![single]
+            }
+        }
+        _ => return Err("slides_file must contain a JSON array or object".into()),
+    };
+
+    // Load tokens for CSS variables
+    let (css_vars, google_fonts, heading_font, body_font) = if let Some(tf) = tokens_file {
+        let tokens = cli_load_tokens(tf)?;
+        (
+            tokens.to_css_variables(),
+            tokens.google_fonts_url.clone(),
+            tokens.heading_font.clone(),
+            tokens.body_font.clone(),
+        )
+    } else {
+        // Minimal defaults
+        (
+            r#"--primary: #6366F1; --primary-light: #A5B4FC; --primary-dark: #4338CA; --accent: #EC4899; --secondary: #10B981; --tertiary: #F59E0B; --surface-light: #F8FAFC; --surface-dark: #0F172A; --text-primary: #0F172A; --text-secondary: #475569; --text-on-dark: #F1F5F9; --text-on-dark-secondary: #94A3B8; --border-light: #CBD5E1; --border-dark: #334155;"#.to_string(),
+            "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap".to_string(),
+            "Plus Jakarta Sans".to_string(),
+            "Plus Jakarta Sans".to_string(),
+        )
+    };
+
+    let plt = platform.as_deref().unwrap_or("instagram_portrait");
+    let ar = aspect_ratio.as_deref();
+    let canvas = platforms::resolve_canvas(plt, ar)?;
+
+    let spec = slides::CarouselSpec {
+        slides: slides_arr,
+        css_variables: css_vars,
+        google_fonts_url: google_fonts,
+        heading_font,
+        body_font,
+        brand_name: brand_name.clone().unwrap_or_else(|| "Brand".to_string()),
+        brand_handle: brand_handle.clone().unwrap_or_else(|| "@brand".to_string()),
+        topic: topic.clone().unwrap_or_default(),
+        url: url.clone().unwrap_or_default(),
+        hashtags: hashtags
+            .as_deref()
+            .map(|s| s.split(',').map(|t| t.trim().to_string()).collect())
+            .unwrap_or_default(),
+        show_progress,
+        visual_theme: "editorial".to_string(),
+        include_ig_frame,
+        platform: canvas.platform.clone(),
+        aspect_ratio: canvas.aspect_ratio.clone(),
+        canvas_width: canvas.width,
+        canvas_height: canvas.height,
+    };
+
+    let html = slides::render_carousel_html(&spec);
+
+    match output {
+        Some(path) => {
+            fs::write(path, &html)?;
+            eprintln!("Carousel HTML saved to {}", path);
+        }
+        None => println!("{}", html),
+    }
+    Ok(())
+}
+
+/// Convert a local image file to a base64 data URI — CLI equivalent of MCP embed_local_image
+fn cli_embed_image(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    use std::path::Path;
+
+    let p = Path::new(file_path);
+    if !p.exists() {
+        eprintln!("File not found: {}", file_path);
+        std::process::exit(1);
+    }
+
+    let ext = p
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|e| e.to_lowercase())
+        .unwrap_or_default();
+    let mime = match ext.as_str() {
+        "png" => "image/png",
+        "jpg" | "jpeg" => "image/jpeg",
+        "gif" => "image/gif",
+        "webp" => "image/webp",
+        "svg" => "image/svg+xml",
+        _ => {
+            eprintln!(
+                "Unsupported image extension '{}'. Supported: png, jpg/jpeg, gif, webp, svg.",
+                ext
+            );
+            std::process::exit(1);
+        }
+    };
+
+    let bytes = fs::read(p)?;
+    let size_kb = bytes.len() / 1024;
+
+    // Base64 encode
+    const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut b64 = String::with_capacity((bytes.len() + 2) / 3 * 4);
+    for chunk in bytes.chunks(3) {
+        let b = match chunk.len() {
+            3 => ((chunk[0] as u32) << 16) | ((chunk[1] as u32) << 8) | (chunk[2] as u32),
+            2 => ((chunk[0] as u32) << 16) | ((chunk[1] as u32) << 8),
+            1 => (chunk[0] as u32) << 16,
+            _ => 0,
+        };
+        b64.push(CHARS[((b >> 18) & 0x3F) as usize] as char);
+        b64.push(CHARS[((b >> 12) & 0x3F) as usize] as char);
+        if chunk.len() > 1 {
+            b64.push(CHARS[((b >> 6) & 0x3F) as usize] as char);
+        } else {
+            b64.push('=');
+        }
+        if chunk.len() > 2 {
+            b64.push(CHARS[(b & 0x3F) as usize] as char);
+        } else {
+            b64.push('=');
+        }
+    }
+
+    let data_uri = if mime == "image/svg+xml" {
+        let svg_text = String::from_utf8_lossy(&bytes);
+        let encoded = svg_text
+            .replace('#', "%23")
+            .replace('<', "%3C")
+            .replace('>', "%3E")
+            .replace('"', "'");
+        format!("data:image/svg+xml;utf8,{}", encoded)
+    } else {
+        format!("data:{};base64,{}", mime, b64)
+    };
+
+    let warning = if size_kb > 2048 {
+        Some(format!(
+            "Image is {}KB — consider resizing to <500KB.",
+            size_kb
+        ))
+    } else if size_kb > 500 {
+        Some(format!(
+            "Image is {}KB — consider resizing for optimal export.",
+            size_kb
+        ))
+    } else {
+        None
+    };
+
+    let response = serde_json::json!({
+        "data_uri": data_uri,
+        "mime_type": mime,
+        "size_bytes": bytes.len(),
+        "size_kb": size_kb,
+        "warning": warning,
+    });
+    println!("{}", serde_json::to_string_pretty(&response)?);
     Ok(())
 }
 

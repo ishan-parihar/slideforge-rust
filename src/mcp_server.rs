@@ -364,6 +364,13 @@ impl Server {
 
 #[tool_router(router = tool_router)]
 impl Server {
+    /// Load the SlideForge design guide and skill documentation. Returns the
+    /// full DESIGN-GUIDE.md content which includes slide type catalogs, design
+    /// principles, example workflows, and best practices for AI agents.
+    #[tool(
+        name = "load_carousel_skill",
+        description = "Load the SlideForge design guide and skill documentation. Returns the full DESIGN-GUIDE.md content which includes slide type catalogs, design principles, example workflows, and best practices for AI agents creating carousels."
+    )]
     pub async fn load_carousel_skill(&self) -> Result<Json<SkillGuideResponse>, ErrorData> {
         Ok(Json(SkillGuideResponse {
             content: include_str!("../DESIGN-GUIDE.md").to_string(),
@@ -385,6 +392,16 @@ impl Server {
             .visual_theme
             .clone()
             .unwrap_or_else(|| "editorial".to_string());
+        // Validate visual_theme against allowed values
+        let valid_themes = ["editorial", "bold", "minimal", "dark", "vibrant", "natural"];
+        if !valid_themes.contains(&visual_theme.as_str()) {
+            let msg = format!(
+                "Invalid visual_theme '{}'. Valid values: {}",
+                visual_theme,
+                valid_themes.join(", ")
+            );
+            return Err(ErrorData::invalid_request(msg, None));
+        }
         let style = match visual_theme.as_str() {
             "editorial" => "editorial",
             "bold" => "bold",
@@ -399,6 +416,26 @@ impl Server {
             .preset
             .clone()
             .unwrap_or_else(|| "tonal_spot".to_string());
+        // Validate preset against allowed values
+        let valid_presets = [
+            "tonal_spot",
+            "vibrant",
+            "neutral",
+            "monochrome",
+            "expressive",
+            "fidelity",
+            "rainbow",
+            "fruit_salad",
+            "content",
+        ];
+        if !valid_presets.contains(&preset.as_str()) {
+            let msg = format!(
+                "Invalid preset '{}'. Valid values: {}",
+                preset,
+                valid_presets.join(", ")
+            );
+            return Err(ErrorData::invalid_request(msg, None));
+        }
         let type_scale_base = req.type_scale_base.unwrap_or(16);
         let type_scale_ratio = req.type_scale_ratio.unwrap_or(1.25);
 
@@ -602,6 +639,16 @@ impl Server {
         } else {
             bg_style
         };
+        // Validate bg_style against allowed values
+        let valid_bg_styles = ["light", "dark", "gradient", "mesh", "hero"];
+        if !valid_bg_styles.contains(&bg_style.as_str()) {
+            let msg = format!(
+                "Invalid bg_style '{}'. Valid values: {}",
+                bg_style,
+                valid_bg_styles.join(", ")
+            );
+            return Err(ErrorData::invalid_request(msg, None));
+        }
 
         let archetype = req
             .archetype
@@ -649,8 +696,19 @@ impl Server {
         )
         .map_err(|e| ErrorData::internal_error(e, None))?;
 
-        let params = req.params.unwrap_or(serde_json::json!({}));
+        let params = req.params.clone().unwrap_or(serde_json::json!({}));
         let slide_type = req.slide_type.to_lowercase().replace('-', "_");
+
+        // Pre-flight validation: check required params and collect warnings
+        let validation = validate::validate_slide_spec(&slide_type, &params);
+        let warnings = if !validation.warnings.is_empty() || !validation.errors.is_empty() {
+            Some(serde_json::json!({
+                "errors": validation.errors,
+                "warnings": validation.warnings,
+            }))
+        } else {
+            None
+        };
 
         let result = components::dispatch_slide(
             &slide_type,
@@ -662,7 +720,16 @@ impl Server {
         )
         .map_err(|e| ErrorData::invalid_request(e, None))?;
 
-        Ok(Json(RawJson(result)))
+        // Enrich the response with slide_type echo + validation warnings
+        let mut enriched = result;
+        if let Some(obj) = enriched.as_object_mut() {
+            obj.insert("slide_type".to_string(), serde_json::json!(slide_type));
+            if let Some(w) = &warnings {
+                obj.insert("validation".to_string(), w.clone());
+            }
+        }
+
+        Ok(Json(RawJson(enriched)))
     }
 
     // ── render_carousel ───────────────────────────────────────────────────────
