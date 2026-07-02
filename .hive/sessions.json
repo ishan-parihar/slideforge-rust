@@ -17,7 +17,7 @@
     {
       "sessionId": "ses_0dca2db42ffeF6Wy70sNY7TM7t",
       "startedAt": "2026-07-02T15:05:37.912Z",
-      "lastActiveAt": "2026-07-02T15:18:35.139Z",
+      "lastActiveAt": "2026-07-02T16:17:16.147Z",
       "agent": "​Sisyphus - Ultraworker",
       "sessionKind": "unknown"
     },
@@ -109,6 +109,181 @@
       "sessionId": "ses_0dc999c84ffejMgd8D6VpngX13",
       "startedAt": "2026-07-02T15:15:40.557Z",
       "lastActiveAt": "2026-07-02T15:15:40.557Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dc5da9a0ffeAtUMZILFaNgnF5",
+      "startedAt": "2026-07-02T16:21:09.381Z",
+      "lastActiveAt": "2026-07-02T16:21:09.381Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbffce67fferGzK3dwWdWNT7s",
+      "startedAt": "2026-07-02T18:03:43.398Z",
+      "lastActiveAt": "2026-07-02T18:31:44.311Z",
+      "agent": "​Sisyphus - Ultraworker",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbfed61fffe7lsDPQUkHQKYfX",
+      "startedAt": "2026-07-02T18:04:43.942Z",
+      "lastActiveAt": "2026-07-02T18:04:43.942Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbfb1b88ffewmvM81IZx5r4m8",
+      "startedAt": "2026-07-02T18:08:48.275Z",
+      "lastActiveAt": "2026-07-02T18:08:48.275Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf9e4d1ffeb3jXbiaGvMDJ6k",
+      "startedAt": "2026-07-02T18:10:07.806Z",
+      "lastActiveAt": "2026-07-02T18:10:07.806Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf81751ffeg5EKbgCb2irMqg",
+      "startedAt": "2026-07-02T18:12:06.023Z",
+      "lastActiveAt": "2026-07-02T18:12:06.023Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf60c6bffemK3aYkhVCGQDLV",
+      "startedAt": "2026-07-02T18:14:21.151Z",
+      "lastActiveAt": "2026-07-02T18:14:21.151Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf4f0dfffeG2ioOFPM8nHHtB",
+      "startedAt": "2026-07-02T18:15:32.410Z",
+      "lastActiveAt": "2026-07-02T18:15:32.410Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf30c38ffelrORYGJ10MfJsd",
+      "startedAt": "2026-07-02T18:17:36.489Z",
+      "lastActiveAt": "2026-07-02T18:17:36.489Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf20331ffenPpWerou2hTvCT",
+      "startedAt": "2026-07-02T18:18:44.372Z",
+      "lastActiveAt": "2026-07-02T18:18:44.372Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf195a3ffeDI6ziP4psBUfW7",
+      "startedAt": "2026-07-02T18:19:12.381Z",
+      "lastActiveAt": "2026-07-02T18:19:12.381Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf0b76fffehV1VB6qDjwK942",
+      "startedAt": "2026-07-02T18:20:09.282Z",
+      "lastActiveAt": "2026-07-02T18:20:09.282Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbf01ed4ffeWpTYjZtixoO8zz",
+      "startedAt": "2026-07-02T18:20:48.435Z",
+      "lastActiveAt": "2026-07-02T18:20:48.435Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbef8a24ffe1i8EJ14EW6oNL4",
+      "startedAt": "2026-07-02T18:21:26.394Z",
+      "lastActiveAt": "2026-07-02T18:21:26.394Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbef7cb1ffeOD7PeAJ8aKGjvF",
+      "startedAt": "2026-07-02T18:21:29.842Z",
+      "lastActiveAt": "2026-07-02T18:21:29.842Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbed0af0ffe3wFJ3Cn0qI3ps7",
+      "startedAt": "2026-07-02T18:24:10.015Z",
+      "lastActiveAt": "2026-07-02T18:24:10.015Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbec3d3cffetupEFsvG3RJzhO",
+      "startedAt": "2026-07-02T18:25:02.671Z",
+      "lastActiveAt": "2026-07-02T18:25:02.671Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbeb7950ffeZi9jXNXH7iBPlj",
+      "startedAt": "2026-07-02T18:25:52.865Z",
+      "lastActiveAt": "2026-07-02T18:25:52.865Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbeb488affeEZL2LTUDGfiEU6",
+      "startedAt": "2026-07-02T18:26:05.326Z",
+      "lastActiveAt": "2026-07-02T18:26:05.326Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbeaae31ffeMGWpDQh8X76RnG",
+      "startedAt": "2026-07-02T18:26:44.831Z",
+      "lastActiveAt": "2026-07-02T18:26:44.831Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbea0f3cffeGsGaBQ0z8BAbN5",
+      "startedAt": "2026-07-02T18:27:25.523Z",
+      "lastActiveAt": "2026-07-02T18:27:25.523Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbe95ed7ffeKj9iYib6lsspZu",
+      "startedAt": "2026-07-02T18:28:10.679Z",
+      "lastActiveAt": "2026-07-02T18:28:10.679Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbe84848ffe3DGvpW9rB7axbS",
+      "startedAt": "2026-07-02T18:29:21.995Z",
+      "lastActiveAt": "2026-07-02T18:29:21.995Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbe79b23ffeQFYJGsJXE3hd4Z",
+      "startedAt": "2026-07-02T18:30:06.322Z",
+      "lastActiveAt": "2026-07-02T18:30:06.322Z",
+      "agent": "historian",
+      "sessionKind": "unknown"
+    },
+    {
+      "sessionId": "ses_0dbe6c07fffeT4FbHe7kKJsuYg",
+      "startedAt": "2026-07-02T18:31:02.301Z",
+      "lastActiveAt": "2026-07-02T18:31:02.301Z",
       "agent": "historian",
       "sessionKind": "unknown"
     }

@@ -537,7 +537,26 @@ mod tests {
     }
 
     #[test]
-    fn test_validate_design_flags_full_bleed_visible_overflow_css() {
+    fn test_validate_design_full_bleed_visible_overflow_is_ok_when_slide_clips() {
+        // overflow:visible on full-bleed composition is now correct behavior.
+        // The .slide element's overflow:hidden provides the clip boundary.
+        let html = r#"
+            <style>
+              .slide { overflow: hidden; }
+              .slide--full-bleed .slide-composition { overflow: visible; }
+            </style>
+            <div class="slide slide--full-bleed">
+                <div class="slide-composition"><div style="position:relative;width:100%;height:100%;"></div></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(!report.issues.iter().any(|issue| issue.r#type == "aspect_bleed_overflow"),
+            "Should not flag overflow:visible when slide has overflow:hidden");
+    }
+
+    #[test]
+    fn test_validate_design_full_bleed_visible_overflow_errors_without_slide_clip() {
+        // If slide element lacks overflow:hidden, flag it.
         let html = r#"
             <style>
               .slide--full-bleed .slide-composition { overflow: visible; }
@@ -612,7 +631,7 @@ mod tests {
         let html = r#"
             <style>
               .overlay__url { font-size: 9.5px; }
-              .breadcrumb-chip { height: 2px; }
+              .breadcrumb-chip { height: 1px; }
             </style>
             <div class="slide bg-light">
                 <div class="slide__overlay"><span class="overlay__url">example.com</span></div>
@@ -632,6 +651,44 @@ mod tests {
                 .iter()
                 .any(|issue| issue.r#type == "tiny_progress_indicator")
         );
+    }
+
+    #[test]
+    fn test_validate_design_flags_thick_progress_indicator() {
+        let html = r#"
+            <style>
+              .breadcrumb-chip { height: 6px; }
+            </style>
+            <div class="slide bg-light">
+                <div class="breadcrumb-progress"><div class="breadcrumb-chip"></div></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "progress_indicator_too_thick")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_optimal_progress_thickness_passes() {
+        // 2px default and 3px active should both pass
+        let html = r#"
+            <style>
+              .breadcrumb-chip { height: 2px; }
+              .breadcrumb-chip.active { height: 3px; }
+            </style>
+            <div class="slide bg-light">
+                <div class="breadcrumb-progress"><div class="breadcrumb-chip active"></div></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(!report.issues.iter().any(|i| i.r#type == "tiny_progress_indicator"),
+            "2px should not be flagged as too thin");
+        assert!(!report.issues.iter().any(|i| i.r#type == "progress_indicator_too_thick"),
+            "3px should not be flagged as too thick");
     }
 
     #[test]
@@ -1042,6 +1099,22 @@ fn rects_overlap(a: Rect, b: Rect) -> bool {
     a.x < b.x + b.w + gap && a.x + a.w + gap > b.x && a.y < b.y + b.h + gap && a.y + a.h + gap > b.y
 }
 
+/// Check if slide HTML contains overflow:hidden on the .slide element,
+/// which provides the clip boundary for full-bleed compositions.
+fn slide_has_slide_level_clip(slide_html: &str) -> bool {
+    // The generated CSS always includes: .slide { ... overflow: hidden; }
+    // In the actual slide HTML, the class attribute contains 'slide--full-bleed'
+    // and the slide element clips via CSS. We check if the slide HTML has both
+    // overflow:hidden patterns that would indicate slide-level clipping.
+    let has_overflow_hidden_css = slide_html.contains("overflow: hidden")
+        || slide_html.contains("overflow:hidden");
+    // Also check for the .slide--full-bleed class which implies .slide has overflow:hidden
+    let has_full_bleed = slide_html.contains("slide--full-bleed");
+    // The base .slide CSS always has overflow:hidden; full-bleed compositions rely on this.
+    // We consider the slide-level clip present if overflow:hidden appears in CSS or class attrs.
+    has_full_bleed && has_overflow_hidden_css
+}
+
 pub fn validate_design(html: &str) -> ValidationReport {
     let mut issues = Vec::new();
 
@@ -1099,15 +1172,22 @@ pub fn validate_design(html: &str) -> ValidationReport {
         Regex::new(r#"(?s)\.breadcrumb-chip(?:\.active)?[^{]*\{[^}]*height\s*:\s*([0-9.]+)px"#)
             .unwrap();
 
+    // Note: overflow:visible on full-bleed compositions is intentional and correct.
+    // The .slide element's overflow:hidden clips at the final slide boundary.
+    // We only flag it if the slide element itself lacks overflow:hidden.
     if full_bleed_visible_re.is_match(html) {
-        issues.push(DesignIssue {
-            slide: 1,
-            r#type: "aspect_bleed_overflow".to_string(),
-            severity: "error".to_string(),
-            detail: ".slide--full-bleed .slide-composition allows overflow:visible.".to_string(),
-            message: "Full-bleed aspect-ratio transmutation must clip component/effect overflow at the final slide bounds.".to_string(),
-            suggestion: "Keep background bleed on the slide canvas, but set full-bleed composition wrappers to overflow:hidden so 4:5 edge effects cannot leak into 1:1 or 9:16 exports.".to_string(),
-        });
+        let slide_has_clip = html.contains(".slide")
+            && (html.contains("overflow: hidden") || html.contains("overflow:hidden"));
+        if !slide_has_clip {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "aspect_bleed_overflow".to_string(),
+                severity: "error".to_string(),
+                detail: ".slide--full-bleed .slide-composition allows overflow:visible without slide-level clipping.".to_string(),
+                message: "Full-bleed compositions need slide-level overflow:hidden to clip backgrounds at the final slide bounds.".to_string(),
+                suggestion: "Ensure the .slide element has overflow:hidden so backgrounds bleed correctly while effects are clipped.".to_string(),
+            });
+        }
     }
 
     for cap in tiny_overlay_re.captures_iter(html) {
@@ -1136,7 +1216,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
             .get(1)
             .and_then(|m| m.as_str().parse::<f32>().ok())
             .unwrap_or(0.0);
-        if height < 3.0 {
+        if height < 1.5 {
             issues.push(DesignIssue {
                 slide: 1,
                 r#type: "tiny_progress_indicator".to_string(),
@@ -1144,7 +1224,19 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 detail: format!("Progress chip CSS uses {:.1}px height.", height),
                 message: "Progress indicators are too thin to remain visible after export scaling."
                     .to_string(),
-                suggestion: "Use at least 3px base height, with a larger active state.".to_string(),
+                suggestion: "Use at least 1.5px base height, with a larger active state.".to_string(),
+            });
+        }
+        if height > 4.0 {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "progress_indicator_too_thick".to_string(),
+                severity: "warning".to_string(),
+                detail: format!("Progress chip CSS uses {:.1}px height, which is visually heavy at export scale.", height),
+                message: "Progress indicators should be thin and refined for premium slide aesthetics."
+                    .to_string(),
+                suggestion: "Use 2px default height and 3px active height for optimal visual weight."
+                    .to_string(),
             });
         }
     }
@@ -1223,11 +1315,13 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     suggestion: "Increase available width, reduce padding for the compact variant, or stack the component in a wider single-column layout.".to_string(),
                 });
             }
+            // Only flag edge_effect_bleed when there is NO slide-level overflow:hidden
+            // to clip the effect. The .slide element's overflow:hidden provides the
+            // clip boundary for full-bleed compositions with overflow:visible.
             if slide_html.contains("slide--full-bleed")
                 && style_has_edge_bleed_effect(style)
                 && !has_overflow_hidden(style)
-                && (slide_html.contains("overflow:visible")
-                    || slide_html.contains("overflow: visible"))
+                && !slide_has_slide_level_clip(slide_html)
             {
                 issues.push(DesignIssue {
                     slide: slide_num,

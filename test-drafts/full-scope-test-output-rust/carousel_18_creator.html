@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400,600&family=Nunito Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,8 +56,8 @@
   --glass-light-bg: #ECF9F3CC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #BFCAC440;
-  --font-heading: 'Lora', serif;
-  --font-body: 'Nunito Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -128,11 +128,12 @@ body {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
-/* Full-bleed: extend composition background to cover entire slide canvas.
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
-   while content stays at designed 420×525 composition dimensions. */
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
 .slide--full-bleed .slide-composition {
-  overflow: hidden;
+  overflow: visible;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -142,10 +143,12 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+/* Content constrainer: reposition content wrapper to original composition bounds
+   while the root div stretches to fill the slide canvas. */
+.slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: 0 !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -297,7 +300,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 6px; flex: 1; border-radius: 999px;
+  height: 2px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -305,7 +308,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 8px; flex: 2.2;
+  height: 3px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -402,23 +405,14 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00815915 0px, transparent 50%), radial-gradient(at 80% 0%, #9A4F7E10 0px, transparent 50%), radial-gradient(at 0% 50%, #68CCA012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
+<div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; pointer-events: none"></div>
             
-            <div style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Lora; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">System Load</h2><div style="width:100%;max-width:300px;height:130px;margin:0 auto;"><svg width="100%" height="110px" viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background Arc -->
-            <path d="M 30.0 75.0 A 50.0 50.0 0 0 1 130.0 75.0" fill="none" stroke="#BFCAC455" stroke-width="12" stroke-linecap="round" />
-            
-            <!-- Foreground Filled Arc -->
-            <path d="M 30.0 75.0 A 50.0 50.0 0 0 1 130.0 75.0" fill="none" stroke="#008159" stroke-width="12" stroke-linecap="round"
-                  stroke-dasharray="157.08" stroke-dashoffset="42.41" />
-                  
-            <!-- Text details -->
-            <text x="80.0" y="65.0" font-size="18px" fill="#080D0A" font-weight="800" text-anchor="middle">73CPU</text>
-            <text x="80.0" y="85.0" font-size="8px" fill="#3B4540" text-anchor="middle">target: 100CPU</text>
-        </svg></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 90px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;text-align:left;max-width:320px;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;">
+            <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#008159;display:block;margin-bottom:12px;">Software Porting Architecture</span><h2 style="font-family:Plus Jakarta Sans;font-size:31px;font-weight:700;color:#080D0A;margin:0 0 16px;line-height:1.15;">Design System Parity</h2><div style="width:100%;height:1px;background:#BFCAC4;opacity:0.3;margin-bottom:20px;"></div><p style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:400;color:#3B4540;margin:0 0 24px;line-height:1.5;">The systematic convergence of visual styling variables, layout dimensions, templates, and theme configuration sets between two distinct compiler runtimes.</p>
+        </div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -432,14 +426,133 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00815915 0px, transparent 50%), radial-gradient(at 80% 0%, #9A4F7E10 0px, transparent 50%), radial-gradient(at 0% 50%, #68CCA012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-5);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;"><div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;min-width:0;"><h2 style="font-family:Plus Jakarta Sans;font-size:var(--text-lg);font-weight:700;color:#080D0A;margin:0 0 8px;line-height:1.25;letter-spacing:-0.015em;overflow-wrap:break-word;word-break:break-word;">Read the full workflow</h2>
+<p style="font-family:Plus Jakarta Sans;font-size:var(--text-base);line-height:1.55;color:#3B4540;margin:0;overflow-wrap:break-word;word-break:break-word;">A practical guide to turning carousel attention into owned traffic.</p>
+<div style="display:inline-flex;align-items:center;gap:var(--space-1);background:rgba(0,0,0,0.03);border:1px solid #BFCAC4;border-radius:9999px;padding:var(--space-1) var(--space-2);font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:700;color:#080D0A;align-self:flex-start;">
+                    <span style="color:#008159;">🎁</span>
+                    <span>Includes templates and examples.</span>
+                </div></div></div><div style="min-width:0;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-width:0;">
+                
+                <div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-lg);padding:var(--space-2);display:flex;flex-direction:column;align-items:center;gap:var(--space-1);box-shadow:0 14px 34px rgba(0,0,0,0.14);width:100%;max-width:188px;">
+            <img src="data:image/svg+xml;utf8,%3C?xml version='1.0' standalone='yes'?%3E%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='287' height='287' viewBox='0 0 287 287' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='287' height='287' fill='%23FFFFFF'/%3E%3Cpath fill='%230B0A0F' d='M28 28h7v7H28V28M35 28h7v7H35V28M42 28h7v7H42V28M49 28h7v7H49V28M56 28h7v7H56V28M63 28h7v7H63V28M70 28h7v7H70V28M84 28h7v7H84V28M91 28h7v7H91V28M140 28h7v7H140V28M154 28h7v7H154V28M161 28h7v7H161V28M168 28h7v7H168V28M189 28h7v7H189V28M210 28h7v7H210V28M217 28h7v7H217V28M224 28h7v7H224V28M231 28h7v7H231V28M238 28h7v7H238V28M245 28h7v7H245V28M252 28h7v7H252V28M28 35h7v7H28V35M70 35h7v7H70V35M84 35h7v7H84V35M91 35h7v7H91V35M126 35h7v7H126V35M147 35h7v7H147V35M168 35h7v7H168V35M175 35h7v7H175V35M182 35h7v7H182V35M189 35h7v7H189V35M196 35h7v7H196V35M210 35h7v7H210V35M252 35h7v7H252V35M28 42h7v7H28V42M42 42h7v7H42V42M49 42h7v7H49V42M56 42h7v7H56V42M70 42h7v7H70V42M105 42h7v7H105V42M119 42h7v7H119V42M126 42h7v7H126V42M154 42h7v7H154V42M161 42h7v7H161V42M168 42h7v7H168V42M189 42h7v7H189V42M210 42h7v7H210V42M224 42h7v7H224V42M231 42h7v7H231V42M238 42h7v7H238V42M252 42h7v7H252V42M28 49h7v7H28V49M42 49h7v7H42V49M49 49h7v7H49V49M56 49h7v7H56V49M70 49h7v7H70V49M84 49h7v7H84V49M98 49h7v7H98V49M105 49h7v7H105V49M112 49h7v7H112V49M133 49h7v7H133V49M154 49h7v7H154V49M161 49h7v7H161V49M182 49h7v7H182V49M196 49h7v7H196V49M210 49h7v7H210V49M224 49h7v7H224V49M231 49h7v7H231V49M238 49h7v7H238V49M252 49h7v7H252V49M28 56h7v7H28V56M42 56h7v7H42V56M49 56h7v7H49V56M56 56h7v7H56V56M70 56h7v7H70V56M91 56h7v7H91V56M119 56h7v7H119V56M140 56h7v7H140V56M154 56h7v7H154V56M182 56h7v7H182V56M196 56h7v7H196V56M210 56h7v7H210V56M224 56h7v7H224V56M231 56h7v7H231V56M238 56h7v7H238V56M252 56h7v7H252V56M28 63h7v7H28V63M70 63h7v7H70V63M91 63h7v7H91V63M98 63h7v7H98V63M112 63h7v7H112V63M119 63h7v7H119V63M133 63h7v7H133V63M140 63h7v7H140V63M147 63h7v7H147V63M154 63h7v7H154V63M182 63h7v7H182V63M210 63h7v7H210V63M252 63h7v7H252V63M28 70h7v7H28V70M35 70h7v7H35V70M42 70h7v7H42V70M49 70h7v7H49V70M56 70h7v7H56V70M63 70h7v7H63V70M70 70h7v7H70V70M84 70h7v7H84V70M98 70h7v7H98V70M112 70h7v7H112V70M126 70h7v7H126V70M140 70h7v7H140V70M154 70h7v7H154V70M168 70h7v7H168V70M182 70h7v7H182V70M196 70h7v7H196V70M210 70h7v7H210V70M217 70h7v7H217V70M224 70h7v7H224V70M231 70h7v7H231V70M238 70h7v7H238V70M245 70h7v7H245V70M252 70h7v7H252V70M84 77h7v7H84V77M98 77h7v7H98V77M112 77h7v7H112V77M133 77h7v7H133V77M140 77h7v7H140V77M147 77h7v7H147V77M154 77h7v7H154V77M161 77h7v7H161V77M182 77h7v7H182V77M189 77h7v7H189V77M196 77h7v7H196V77M28 84h7v7H28V84M42 84h7v7H42V84M49 84h7v7H49V84M63 84h7v7H63V84M70 84h7v7H70V84M77 84h7v7H77V84M91 84h7v7H91V84M105 84h7v7H105V84M126 84h7v7H126V84M133 84h7v7H133V84M147 84h7v7H147V84M154 84h7v7H154V84M175 84h7v7H175V84M189 84h7v7H189V84M196 84h7v7H196V84M210 84h7v7H210V84M231 84h7v7H231V84M245 84h7v7H245V84M252 84h7v7H252V84M28 91h7v7H28V91M49 91h7v7H49V91M63 91h7v7H63V91M77 91h7v7H77V91M84 91h7v7H84V91M119 91h7v7H119V91M140 91h7v7H140V91M147 91h7v7H147V91M154 91h7v7H154V91M161 91h7v7H161V91M168 91h7v7H168V91M175 91h7v7H175V91M189 91h7v7H189V91M210 91h7v7H210V91M217 91h7v7H217V91M231 91h7v7H231V91M238 91h7v7H238V91M252 91h7v7H252V91M70 98h7v7H70V98M77 98h7v7H77V98M84 98h7v7H84V98M91 98h7v7H91V98M98 98h7v7H98V98M105 98h7v7H105V98M119 98h7v7H119V98M154 98h7v7H154V98M168 98h7v7H168V98M175 98h7v7H175V98M182 98h7v7H182V98M189 98h7v7H189V98M196 98h7v7H196V98M203 98h7v7H203V98M210 98h7v7H210V98M217 98h7v7H217V98M224 98h7v7H224V98M231 98h7v7H231V98M245 98h7v7H245V98M252 98h7v7H252V98M28 105h7v7H28V105M35 105h7v7H35V105M42 105h7v7H42V105M56 105h7v7H56V105M63 105h7v7H63V105M84 105h7v7H84V105M105 105h7v7H105V105M133 105h7v7H133V105M147 105h7v7H147V105M196 105h7v7H196V105M210 105h7v7H210V105M217 105h7v7H217V105M231 105h7v7H231V105M252 105h7v7H252V105M28 112h7v7H28V112M56 112h7v7H56V112M70 112h7v7H70V112M77 112h7v7H77V112M98 112h7v7H98V112M112 112h7v7H112V112M126 112h7v7H126V112M140 112h7v7H140V112M168 112h7v7H168V112M182 112h7v7H182V112M196 112h7v7H196V112M203 112h7v7H203V112M224 112h7v7H224V112M231 112h7v7H231V112M56 119h7v7H56V119M63 119h7v7H63V119M84 119h7v7H84V119M98 119h7v7H98V119M105 119h7v7H105V119M126 119h7v7H126V119M147 119h7v7H147V119M168 119h7v7H168V119M175 119h7v7H175V119M182 119h7v7H182V119M196 119h7v7H196V119M217 119h7v7H217V119M238 119h7v7H238V119M245 119h7v7H245V119M35 126h7v7H35V126M42 126h7v7H42V126M49 126h7v7H49V126M56 126h7v7H56V126M70 126h7v7H70V126M91 126h7v7H91V126M126 126h7v7H126V126M147 126h7v7H147V126M154 126h7v7H154V126M161 126h7v7H161V126M168 126h7v7H168V126M182 126h7v7H182V126M210 126h7v7H210V126M217 126h7v7H217V126M224 126h7v7H224V126M49 133h7v7H49V133M91 133h7v7H91V133M105 133h7v7H105V133M112 133h7v7H112V133M119 133h7v7H119V133M126 133h7v7H126V133M133 133h7v7H133V133M175 133h7v7H175V133M182 133h7v7H182V133M189 133h7v7H189V133M203 133h7v7H203V133M210 133h7v7H210V133M224 133h7v7H224V133M231 133h7v7H231V133M238 133h7v7H238V133M28 140h7v7H28V140M35 140h7v7H35V140M49 140h7v7H49V140M56 140h7v7H56V140M63 140h7v7H63V140M70 140h7v7H70V140M77 140h7v7H77V140M91 140h7v7H91V140M105 140h7v7H105V140M168 140h7v7H168V140M175 140h7v7H175V140M189 140h7v7H189V140M196 140h7v7H196V140M203 140h7v7H203V140M210 140h7v7H210V140M224 140h7v7H224V140M231 140h7v7H231V140M238 140h7v7H238V140M28 147h7v7H28V147M35 147h7v7H35V147M56 147h7v7H56V147M77 147h7v7H77V147M84 147h7v7H84V147M98 147h7v7H98V147M105 147h7v7H105V147M112 147h7v7H112V147M119 147h7v7H119V147M133 147h7v7H133V147M168 147h7v7H168V147M182 147h7v7H182V147M189 147h7v7H189V147M196 147h7v7H196V147M203 147h7v7H203V147M210 147h7v7H210V147M224 147h7v7H224V147M231 147h7v7H231V147M252 147h7v7H252V147M56 154h7v7H56V154M63 154h7v7H63V154M70 154h7v7H70V154M77 154h7v7H77V154M91 154h7v7H91V154M98 154h7v7H98V154M119 154h7v7H119V154M126 154h7v7H126V154M133 154h7v7H133V154M140 154h7v7H140V154M154 154h7v7H154V154M168 154h7v7H168V154M196 154h7v7H196V154M203 154h7v7H203V154M210 154h7v7H210V154M217 154h7v7H217V154M224 154h7v7H224V154M238 154h7v7H238V154M245 154h7v7H245V154M35 161h7v7H35V161M49 161h7v7H49V161M91 161h7v7H91V161M112 161h7v7H112V161M126 161h7v7H126V161M140 161h7v7H140V161M147 161h7v7H147V161M154 161h7v7H154V161M161 161h7v7H161V161M182 161h7v7H182V161M189 161h7v7H189V161M203 161h7v7H203V161M224 161h7v7H224V161M245 161h7v7H245V161M252 161h7v7H252V161M35 168h7v7H35V168M42 168h7v7H42V168M49 168h7v7H49V168M70 168h7v7H70V168M105 168h7v7H105V168M112 168h7v7H112V168M119 168h7v7H119V168M140 168h7v7H140V168M182 168h7v7H182V168M189 168h7v7H189V168M231 168h7v7H231V168M238 168h7v7H238V168M252 168h7v7H252V168M28 175h7v7H28V175M35 175h7v7H35V175M63 175h7v7H63V175M84 175h7v7H84V175M105 175h7v7H105V175M112 175h7v7H112V175M133 175h7v7H133V175M140 175h7v7H140V175M147 175h7v7H147V175M168 175h7v7H168V175M189 175h7v7H189V175M203 175h7v7H203V175M210 175h7v7H210V175M217 175h7v7H217V175M252 175h7v7H252V175M42 182h7v7H42V182M49 182h7v7H49V182M63 182h7v7H63V182M70 182h7v7H70V182M77 182h7v7H77V182M84 182h7v7H84V182M105 182h7v7H105V182M112 182h7v7H112V182M133 182h7v7H133V182M154 182h7v7H154V182M161 182h7v7H161V182M168 182h7v7H168V182M175 182h7v7H175V182M182 182h7v7H182V182M189 182h7v7H189V182M196 182h7v7H196V182M203 182h7v7H203V182M217 182h7v7H217V182M245 182h7v7H245V182M252 182h7v7H252V182M35 189h7v7H35V189M42 189h7v7H42V189M49 189h7v7H49V189M56 189h7v7H56V189M63 189h7v7H63V189M84 189h7v7H84V189M91 189h7v7H91V189M98 189h7v7H98V189M126 189h7v7H126V189M133 189h7v7H133V189M154 189h7v7H154V189M168 189h7v7H168V189M182 189h7v7H182V189M189 189h7v7H189V189M203 189h7v7H203V189M210 189h7v7H210V189M217 189h7v7H217V189M224 189h7v7H224V189M231 189h7v7H231V189M252 189h7v7H252V189M28 196h7v7H28V196M49 196h7v7H49V196M63 196h7v7H63V196M70 196h7v7H70V196M77 196h7v7H77V196M91 196h7v7H91V196M98 196h7v7H98V196M105 196h7v7H105V196M119 196h7v7H119V196M126 196h7v7H126V196M147 196h7v7H147V196M161 196h7v7H161V196M182 196h7v7H182V196M189 196h7v7H189V196M196 196h7v7H196V196M203 196h7v7H203V196M210 196h7v7H210V196M217 196h7v7H217V196M224 196h7v7H224V196M245 196h7v7H245V196M252 196h7v7H252V196M84 203h7v7H84V203M98 203h7v7H98V203M105 203h7v7H105V203M112 203h7v7H112V203M133 203h7v7H133V203M140 203h7v7H140V203M161 203h7v7H161V203M168 203h7v7H168V203M175 203h7v7H175V203M196 203h7v7H196V203M224 203h7v7H224V203M231 203h7v7H231V203M28 210h7v7H28V210M35 210h7v7H35V210M42 210h7v7H42V210M49 210h7v7H49V210M56 210h7v7H56V210M63 210h7v7H63V210M70 210h7v7H70V210M84 210h7v7H84V210M91 210h7v7H91V210M112 210h7v7H112V210M126 210h7v7H126V210M147 210h7v7H147V210M154 210h7v7H154V210M161 210h7v7H161V210M168 210h7v7H168V210M175 210h7v7H175V210M189 210h7v7H189V210M196 210h7v7H196V210M210 210h7v7H210V210M224 210h7v7H224V210M245 210h7v7H245V210M28 217h7v7H28V217M70 217h7v7H70V217M84 217h7v7H84V217M91 217h7v7H91V217M105 217h7v7H105V217M112 217h7v7H112V217M140 217h7v7H140V217M147 217h7v7H147V217M154 217h7v7H154V217M161 217h7v7H161V217M168 217h7v7H168V217M189 217h7v7H189V217M196 217h7v7H196V217M224 217h7v7H224V217M231 217h7v7H231V217M238 217h7v7H238V217M245 217h7v7H245V217M252 217h7v7H252V217M28 224h7v7H28V224M42 224h7v7H42V224M49 224h7v7H49V224M56 224h7v7H56V224M70 224h7v7H70V224M98 224h7v7H98V224M112 224h7v7H112V224M119 224h7v7H119V224M140 224h7v7H140V224M147 224h7v7H147V224M154 224h7v7H154V224M161 224h7v7H161V224M182 224h7v7H182V224M189 224h7v7H189V224M196 224h7v7H196V224M203 224h7v7H203V224M210 224h7v7H210V224M217 224h7v7H217V224M224 224h7v7H224V224M238 224h7v7H238V224M252 224h7v7H252V224M28 231h7v7H28V231M42 231h7v7H42V231M49 231h7v7H49V231M56 231h7v7H56V231M70 231h7v7H70V231M84 231h7v7H84V231M112 231h7v7H112V231M119 231h7v7H119V231M140 231h7v7H140V231M161 231h7v7H161V231M175 231h7v7H175V231M182 231h7v7H182V231M189 231h7v7H189V231M217 231h7v7H217V231M231 231h7v7H231V231M245 231h7v7H245V231M252 231h7v7H252V231M28 238h7v7H28V238M42 238h7v7H42V238M49 238h7v7H49V238M56 238h7v7H56V238M70 238h7v7H70V238M84 238h7v7H84V238M91 238h7v7H91V238M98 238h7v7H98V238M105 238h7v7H105V238M112 238h7v7H112V238M133 238h7v7H133V238M140 238h7v7H140V238M154 238h7v7H154V238M168 238h7v7H168V238M175 238h7v7H175V238M189 238h7v7H189V238M196 238h7v7H196V238M210 238h7v7H210V238M217 238h7v7H217V238M238 238h7v7H238V238M28 245h7v7H28V245M70 245h7v7H70V245M112 245h7v7H112V245M126 245h7v7H126V245M147 245h7v7H147V245M154 245h7v7H154V245M168 245h7v7H168V245M182 245h7v7H182V245M189 245h7v7H189V245M196 245h7v7H196V245M210 245h7v7H210V245M217 245h7v7H217V245M224 245h7v7H224V245M252 245h7v7H252V245M28 252h7v7H28V252M35 252h7v7H35V252M42 252h7v7H42V252M49 252h7v7H49V252M56 252h7v7H56V252M63 252h7v7H63V252M70 252h7v7H70V252M84 252h7v7H84V252M105 252h7v7H105V252M112 252h7v7H112V252M140 252h7v7H140V252M147 252h7v7H147V252M154 252h7v7H154V252M161 252h7v7H161V252M175 252h7v7H175V252M189 252h7v7H189V252M203 252h7v7H203V252M210 252h7v7H210V252M224 252h7v7H224V252M238 252h7v7H238V252'/%3E%3C/svg%3E" alt="Scan to read" style="max-width:100%;height:auto;width:188px;display:block;" />
+        </div>
+                <div style="margin-top:var(--space-2);background:#008159;color:#ECF9F3;font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:800;padding:var(--space-2) var(--space-2);border-radius:9999px;box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;overflow-wrap:break-word;">Scan to read</div>
+            </div></div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 18</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #creator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--gradient slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Performance Indicators</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);margin-top:16px;width:100%;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#C5D1CB;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Slides Generated</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#E9F1EC;">12.8M</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+24%</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#C5D1CB;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">API Uptime</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#E9F1EC;">99.99%</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.01%</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#C5D1CB;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">User Rating</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#E9F1EC;">4.8/5</span>
+                    <span style="font-size:9px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.3</span>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#C5D1CB;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Avg Render Time</span>
+                <div style="display:flex;align-items:baseline;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#E9F1EC;">180ms</span>
+                    <span style="font-size:9px;font-weight:700;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:6px;">-15ms</span>
+                </div>
+            </div></div>
+        </div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 18</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #creator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div>
+</div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; position: absolute; height: 320px; width: 320px; top: -80px; border-radius: 50%; opacity: 0.07; left: -80px; background: #008159"></div><div style="top: 60%; height: 120px; transform: rotate(60deg); position: absolute; left: auto; pointer-events: none; right: -40px; border-radius: 4px; opacity: 0.05; width: 120px; background: #9A4F7E"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><span style="background: linear-gradient(135deg, #FFFFFF 0%, #E9F1EC 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Ready to Scale your B2B SaaS Growth?</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C5D1CB; margin: 0 0 20px; text-align: center">No credit card required • Instant setup</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #68CCA0; color: #000301; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00553140; letter-spacing: 0.02em; margin: 0;">Launch Free Trial</a></div></div>
+            </div>
+        </div>
+  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 18</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai #creator</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 
 </div></div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -462,7 +575,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 1;
+  const total = 4;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

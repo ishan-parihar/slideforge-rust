@@ -2516,7 +2516,7 @@ pub fn split_features_slide(
             tokens,
             &treatment,
             "100%",
-            "200px",
+            "260px",
             title,
             is_dark,
         )
@@ -2536,7 +2536,7 @@ pub fn split_features_slide(
                 format!("1px solid {}30", colors.border)
             };
             visual = format!(
-                r#"<div style="background:{};border:{};border-radius:{};height:180px;display:flex;align-items:center;justify-content:center;box-shadow:{};box-sizing:border-box;position:relative;overflow:hidden;">
+                r#"<div style="background:{};border:{};border-radius:{};height:260px;display:flex;align-items:center;justify-content:center;box-shadow:{};box-sizing:border-box;position:relative;overflow:hidden;">
                     <div style="position:absolute;width:120px;height:120px;border-radius:50%;background:{};opacity:0.08;filter:blur(30px);-webkit-filter:blur(30px);"></div>
                     <div style="position:relative;z-index:2;transform:scale(1.2);">{}</div>
                 </div>"#,
@@ -2588,12 +2588,12 @@ pub fn split_features_slide(
         let badge_size = if image_feature_layout { 26 } else { 30 };
         let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, badge_size);
         let card_padding = if image_feature_layout {
-            "11px"
+            "14px"
         } else {
             "var(--space-1)"
         };
         let card_gap = if image_feature_layout {
-            "9px"
+            "12px"
         } else {
             "var(--space-1)"
         };
@@ -2636,11 +2636,11 @@ pub fn split_features_slide(
 
     let content = if image_feature_layout {
         format!(
-            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;gap:12px;overflow:hidden;">
+            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;gap:14px;overflow:hidden;">
                 {}
-                <div style="display:grid;grid-template-columns:minmax(0, 0.96fr) minmax(0, 1.04fr);gap:14px;width:100%;flex:1;min-height:0;overflow:hidden;align-items:stretch;">
+                <div style="display:grid;grid-template-columns:minmax(0, 0.92fr) minmax(0, 1.08fr);gap:16px;width:100%;flex:1;min-height:0;overflow:hidden;align-items:stretch;">
                     <div style="min-width:0;min-height:0;max-height:100%;overflow:hidden;">{}</div>
-                    <div style="min-width:0;min-height:0;max-height:100%;display:grid;grid-template-columns:1fr;gap:10px;overflow:hidden;">{}</div>
+                    <div style="min-width:0;min-height:0;max-height:100%;display:grid;grid-template-columns:1fr;gap:12px;overflow:hidden;">{}</div>
                 </div>
             </div>"#,
             heading, left_visual, features_html
@@ -7620,7 +7620,7 @@ mod tests {
             "",
         );
         let html = res["html"].as_str().unwrap();
-        assert!(html.contains("grid-template-columns:minmax(0, 0.96fr) minmax(0, 1.04fr)"));
+        assert!(html.contains("grid-template-columns:minmax(0, 0.92fr) minmax(0, 1.08fr)"));
         assert!(html.contains("max-height:100%"));
     }
 

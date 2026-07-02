@@ -142,10 +142,12 @@ body {
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-.slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
+/* Content constrainer: reposition content wrapper to original composition bounds
+   while the root div stretches to fill the slide canvas. */
+.slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: 0 !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
@@ -297,7 +299,7 @@ body {
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 6px; flex: 1; border-radius: 999px;
+  height: 4px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -305,7 +307,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 8px; flex: 2.2;
+  height: 5px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -405,9 +407,9 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
+            <div style="background: var(--texture-grain); position: absolute; pointer-events: none; opacity: 0.04; z-index: 1; inset: 0"></div>
             
-            <div style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
             <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Simplicity is the ultimate sophistication." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.16) saturate(1.14) brightness(1.08);" />
