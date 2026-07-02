@@ -1476,6 +1476,11 @@ pub fn validate_design(html: &str) -> ValidationReport {
         }
     }
 
+    // Check 5: orphan grid cells — DISABLED (causes perf issues with depth
+    // scanning on complex nested HTML). The carousel_23 fix (adaptive grid
+    // columns based on proof_points count) addresses the root cause. This
+    // check can be re-enabled with a proper HTML parser in the future.
+
     for (slide_idx, slide_html) in slides.iter().enumerate() {
         let slide_num = slide_idx + 1;
 
