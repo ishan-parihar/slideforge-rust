@@ -199,25 +199,34 @@ fi
 
 # Install the AI agent skill
 if [[ "$SKIP_SKILL" != "true" ]]; then
-  echo "Installing SlideForge AI agent skill to ~/.agents/skills/slideforge/..."
+  # Resolve HOME if not set (can happen in some CI/sudo environments)
+  if [[ -z "${HOME:-}" ]]; then
+    HOME="$(eval echo ~$(whoami))"
+  fi
+  SKILL_DIR="${HOME}/.agents/skills"
+
+  echo "Installing SlideForge AI agent skill to ${SKILL_DIR}/slideforge/..."
 
   # Download the SKILL.md from the repo
   SKILL_URL="https://raw.githubusercontent.com/$REPO/master/skill/slideforge/SKILL.md"
-  mkdir -p "$SKILL_DIR/slideforge"
+  mkdir -p "${SKILL_DIR}/slideforge"
 
+  skill_ok="false"
   if command -v curl >/dev/null 2>&1; then
-    if curl -fsSL "$SKILL_URL" -o "$SKILL_DIR/slideforge/SKILL.md" 2>/dev/null; then
-      echo "✓ Skill installed to: $SKILL_DIR/slideforge/SKILL.md"
-    else
-      echo "⚠ Could not download skill file (non-fatal) — the CLI/MCP tool still works"
-      echo "  You can manually download from: $SKILL_URL"
+    if curl -fsSL "$SKILL_URL" -o "${SKILL_DIR}/slideforge/SKILL.md"; then
+      skill_ok="true"
     fi
   elif command -v wget >/dev/null 2>&1; then
-    if wget -qO "$SKILL_DIR/slideforge/SKILL.md" "$SKILL_URL" 2>/dev/null; then
-      echo "✓ Skill installed to: $SKILL_DIR/slideforge/SKILL.md"
-    else
-      echo "⚠ Could not download skill file (non-fatal) — the CLI/MCP tool still works"
+    if wget -qO "${SKILL_DIR}/slideforge/SKILL.md" "$SKILL_URL"; then
+      skill_ok="true"
     fi
+  fi
+
+  if [[ "$skill_ok" == "true" ]]; then
+    echo "✓ Skill installed to: ${SKILL_DIR}/slideforge/SKILL.md"
+  else
+    echo "⚠ Could not download skill file (non-fatal) — the CLI/MCP tool still works"
+    echo "  Manual download: curl -fsSL $SKILL_URL -o ~/.agents/skills/slideforge/SKILL.md"
   fi
   echo ""
 fi
