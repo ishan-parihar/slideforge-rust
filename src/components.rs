@@ -428,13 +428,13 @@ pub fn render_themed_image(
             mask_css = "clip-path: circle(50% at 50% 50%);".to_string();
         }
         "fade-bottom" => {
-            mask_css = "-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);".to_string();
+            mask_css = "-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);".to_string();
         }
         "fade-top" => {
-            mask_css = "-webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%); mask-image: linear-gradient(to top, black 70%, transparent 100%);".to_string();
+            mask_css = "-webkit-mask-image: linear-gradient(to top, black 90%, transparent 100%); mask-image: linear-gradient(to top, black 90%, transparent 100%);".to_string();
         }
         "fade-sides" => {
-            mask_css = "-webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, black 20%, black 80%, transparent 100%);".to_string();
+            mask_css = "-webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);".to_string();
         }
         "diagonal" => {
             mask_css = "clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);".to_string();
@@ -893,6 +893,25 @@ pub fn hero_slide(
     };
 
     let (gc, gx) = get_glass_container(tokens, is_dark);
+
+    // For light hero slides with a background image, use a light glass
+    // container so text has a backing and passes contrast validation.
+    let (gc, gx) = if !is_dark && !background_image.is_empty() && gc.is_empty() {
+        let radius = tokens
+            .radii
+            .get("md")
+            .cloned()
+            .unwrap_or_else(|| "var(--radius-md)".to_string());
+        (
+            format!(
+                r#"<div style="background:rgba(255,255,255,0.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.06);border-radius:{};padding:var(--space-6);box-shadow:var(--shadow-lg);">"#,
+                radius
+            ),
+            "</div>".to_string(),
+        )
+    } else {
+        (gc, gx)
+    };
 
     let effective_variant = variant;
 
@@ -4014,7 +4033,7 @@ fn metric_grid_slide(
 
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
-            format!(r#"<span style="font-size:9px;font-weight:700;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:6px;">{}</span>"#, trend_color, trend_color, escape_html(trend))
+            format!(r#"<span style="font-size:10px;font-weight:700;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:6px;">{}</span>"#, trend_color, trend_color, escape_html(trend))
         } else {
             String::new()
         };
@@ -4330,7 +4349,7 @@ fn column_chart_slide(
                 <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
                     <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
                 </div>
-                <span style="font-family:{};font-size:9px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
+                <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
             </div>"#,
             tokens.body_font,
             colors.text_primary,
@@ -6744,7 +6763,7 @@ pub fn image_gallery_slide(
             render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
         let caption_html = if !cap.is_empty() {
             format!(
-                r#"<div style="padding:5px 8px;background:rgba(0,0,0,0.62);position:absolute;top:8px;left:8px;max-width:calc(100% - 16px);z-index:3;color:white;font-family:{};font-size:9px;font-weight:800;text-align:left;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                r#"<div style="padding:5px 8px;background:rgba(0,0,0,0.62);position:absolute;top:8px;left:8px;max-width:calc(100% - 16px);z-index:3;color:white;font-family:{};font-size:10px;font-weight:800;text-align:left;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                     {}
                 </div>"#,
                 tokens.body_font,
@@ -6794,7 +6813,7 @@ pub fn image_gallery_slide(
                 render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
             let inner_cap = if !cap.is_empty() {
                 format!(
-                    r#"<div style="padding:5px 0 0;font-family:{};font-size:9px;font-weight:700;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
+                    r#"<div style="padding:5px 0 0;font-family:{};font-size:10px;font-weight:700;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
                     tokens.body_font,
                     colors.text_secondary,
                     escape_html(cap)

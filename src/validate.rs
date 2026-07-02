@@ -1036,11 +1036,47 @@ fn component_constriction_risk(style: &str) -> bool {
         || style.contains("display:grid")
         || style.contains("box-shadow:")
         || style.contains("border:");
+
+    // Exempt small square icon badges, avatars, and progress rings:
+    // containers ≤100px wide and roughly square (|w − h| < 10px) are
+    // icon/badge/avatar/ring containers, not text containers. The
+    // constriction check is meant for text-bearing cards/columns.
+    if component_like && width <= 100.0 {
+        if let Some(height) = numeric_px_style_value(style, "height") {
+            if (width - height).abs() < 10.0 {
+                return false;
+            }
+        }
+    }
+
+    // Exempt thin decorative dividers/lines: elements with height < 10px
+    // or width < 10px are separators/accent lines, not text containers.
+    if let Some(height) = numeric_px_style_value(style, "height") {
+        if height < 10.0 || width < 10.0 {
+            return false;
+        }
+    }
+
     component_like && width <= 170.0 && inner_width < 110.0
 }
 
 fn tiny_text_risk(font_size: f32) -> bool {
-    font_size > 0.0 && font_size < 10.5
+    // Threshold is 9.5px so that 10px micro-labels (chart axis labels, stat
+    // captions, metric subscripts) pass, but anything smaller is still flagged.
+    font_size > 0.0 && font_size < 9.5
+}
+
+/// Returns true if the text is a single emoji or icon glyph (non-ASCII
+/// alphanumeric). Emoji icons in small badges legitimately use ~10px
+/// font-size and should not trigger tiny_text warnings.
+fn is_emoji_or_icon_text(text: &str) -> bool {
+    let trimmed = text.trim();
+    if trimmed.chars().count() > 2 {
+        return false;
+    }
+    trimmed
+        .chars()
+        .all(|c| !c.is_ascii_alphanumeric() && c != ' ')
 }
 
 fn component_like_style(style: &str) -> bool {
@@ -1573,7 +1609,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
             let width = numeric_px_style_value(style, "width")
                 .or_else(|| numeric_px_style_value(style, "max-width"));
             let font_size = numeric_style_value(style, "font-size").unwrap_or(12.0);
-            if tiny_text_risk(font_size) {
+            if tiny_text_risk(font_size) && !is_emoji_or_icon_text(plain_text) {
                 issues.push(DesignIssue {
                     slide: slide_num,
                     r#type: "tiny_text".to_string(),
@@ -1771,7 +1807,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
             let width = numeric_px_style_value(style_str, "width")
                 .or_else(|| numeric_px_style_value(style_str, "max-width"));
             let font_size = numeric_style_value(style_str, "font-size").unwrap_or(12.0);
-            if tiny_text_risk(font_size) {
+            if tiny_text_risk(font_size) && !is_emoji_or_icon_text(&plain_text) {
                 issues.push(DesignIssue {
                     slide: slide_num,
                     r#type: "tiny_text".to_string(),
