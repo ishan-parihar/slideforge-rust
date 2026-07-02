@@ -232,6 +232,40 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
     result
 }
 
+pub fn validate_layout(
+    slide_type: &str,
+    params: &Value,
+    rendered_html: Option<&str>,
+    aspect_ratio: Option<&str>,
+) -> ValidationResult {
+    let mut result = validate_slide_spec(slide_type, params);
+
+    if let Some(html) = rendered_html.filter(|html| !html.trim().is_empty()) {
+        let report = validate_design(html);
+        for issue in report.issues {
+            let msg = format!(
+                "{}: {} Suggestion: {}",
+                issue.r#type, issue.message, issue.suggestion
+            );
+            if issue.severity == "error" {
+                result.add_error(msg);
+            } else {
+                result.add_warning(msg);
+            }
+        }
+    }
+
+    if let Some(ratio) = aspect_ratio.filter(|ratio| !ratio.trim().is_empty()) {
+        if !matches!(ratio, "4:5" | "3:4" | "1:1" | "9:16" | "16:9" | "4:3") {
+            result.add_warning(format!(
+                "Unknown aspect ratio '{ratio}' may not preserve SlideForge composition constraints."
+            ));
+        }
+    }
+
+    result
+}
+
 /// Validate a slide spec and attempt to apply safe automatic fixes.
 ///
 /// Fixes applied:
@@ -487,6 +521,204 @@ mod tests {
     }
 
     #[test]
+    fn test_validate_design_flags_descender_clipping_risk() {
+        let html = r#"
+            <div class="slide bg-light">
+                <h2 style="font-size:42px;line-height:0.86;overflow:hidden;">Scalability</h2>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "text_vertical_clipping")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_full_bleed_visible_overflow_css() {
+        let html = r#"
+            <style>
+              .slide--full-bleed .slide-composition { overflow: visible; }
+            </style>
+            <div class="slide slide--full-bleed">
+                <div class="slide-composition"><div style="position:relative;width:100%;height:100%;"></div></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "aspect_bleed_overflow")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_edge_blur_without_clipping() {
+        let html = r#"
+            <div class="slide slide--full-bleed">
+                <div class="slide-composition" style="overflow:visible;">
+                    <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;filter:blur(50px);"></div>
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "edge_effect_bleed")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_one_word_per_line_risk() {
+        let html = r#"
+            <div class="slide bg-light">
+                <p style="width:86px;font-size:18px;line-height:1.2;">Validate the funnel event map</p>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "one_word_line_risk")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_squished_component_box() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="width:132px;padding:24px;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                    <h3 style="font-size:18px;">Operational Scale</h3>
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "component_constriction")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_tiny_overlay_and_progress_css() {
+        let html = r#"
+            <style>
+              .overlay__url { font-size: 9.5px; }
+              .breadcrumb-chip { height: 4px; }
+            </style>
+            <div class="slide bg-light">
+                <div class="slide__overlay"><span class="overlay__url">example.com</span></div>
+                <div class="breadcrumb-progress"><div class="breadcrumb-chip"></div></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "tiny_overlay_text")
+        );
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "tiny_progress_indicator")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_tiny_inline_component_text() {
+        let html = r#"
+            <div class="slide bg-light">
+                <span style="font-size:9px;font-weight:700;">Q1</span>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "tiny_text")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_slide_body_overflow() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="position:absolute;left:360px;top:120px;width:120px;height:180px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "slide_body_overflow")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_distorted_component_aspect_ratio() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="width:360px;height:44px;display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid #ddd;"></div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "component_aspect_distortion")
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_distorted_image_frame_aspect_ratio() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="position:relative;width:320px;height:48px;overflow:hidden;">
+                    <img src="test.jpg" style="display:block;width:100%;height:100%;object-fit:cover;" />
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "image_aspect_distortion")
+        );
+    }
+
+    #[test]
+    fn test_validate_layout_routes_rendered_html_issues() {
+        let params = json!({ "headline": "Hello" });
+        let html = r#"
+            <div class="slide bg-light">
+                <div style="position:absolute;left:390px;top:20px;width:80px;height:80px;background:#fff;border:1px solid #ddd;"></div>
+            </div>
+        "#;
+        let result = validate_layout("hero", &params, Some(html), Some("9:16"));
+        assert!(!result.valid);
+        assert!(
+            result
+                .errors
+                .iter()
+                .any(|error| error.contains("slide_body_overflow"))
+        );
+    }
+
+    #[test]
     fn test_qr_destination_requires_url_and_cta() {
         let params = json!({"heading": "Read the full guide"});
         let r = validate_slide_spec("qr_destination", &params);
@@ -691,6 +923,86 @@ fn style_has_unitless_dimension(style: &str) -> Option<String> {
     None
 }
 
+fn text_has_descender_risk(text: &str) -> bool {
+    text.chars()
+        .any(|ch| matches!(ch, 'g' | 'j' | 'p' | 'q' | 'y' | 'Q' | 'J'))
+}
+
+fn has_overflow_hidden(style: &str) -> bool {
+    style_value(style, "overflow")
+        .map(|value| value.eq_ignore_ascii_case("hidden"))
+        .unwrap_or(false)
+        || style_value(style, "overflow-y")
+            .map(|value| value.eq_ignore_ascii_case("hidden"))
+            .unwrap_or(false)
+}
+
+fn style_has_edge_bleed_effect(style: &str) -> bool {
+    let has_effect = style.contains("filter:blur")
+        || style.contains("-webkit-filter:blur")
+        || style.contains("box-shadow:");
+    let has_negative_edge = ["left", "top", "right", "bottom"]
+        .iter()
+        .filter_map(|property| style_value(style, property))
+        .any(|value| value.trim_start().starts_with('-'));
+    has_effect && has_negative_edge
+}
+
+fn one_word_line_risk(width: f32, font_size: f32, word_count: usize) -> bool {
+    word_count >= 4 && font_size >= 12.0 && width / font_size < 7.0
+}
+
+fn component_constriction_risk(style: &str) -> bool {
+    let Some(width) = numeric_px_style_value(style, "width")
+        .or_else(|| numeric_px_style_value(style, "max-width"))
+    else {
+        return false;
+    };
+    let padding = numeric_px_style_value(style, "padding").unwrap_or(0.0);
+    let inner_width = width - (padding * 2.0);
+    let component_like = style.contains("display:flex")
+        || style.contains("display:grid")
+        || style.contains("box-shadow:")
+        || style.contains("border:");
+    component_like && width <= 170.0 && inner_width < 110.0
+}
+
+fn tiny_text_risk(font_size: f32) -> bool {
+    font_size > 0.0 && font_size < 10.5
+}
+
+fn component_like_style(style: &str) -> bool {
+    style.contains("display:flex")
+        || style.contains("display:grid")
+        || style.contains("box-shadow:")
+        || style.contains("border:")
+        || style.contains("background:#")
+        || style.contains("background:rgba")
+        || style.contains("background-color:")
+}
+
+fn distorted_component_ratio(width: f32, height: f32) -> bool {
+    if width < 80.0 || height < 32.0 {
+        return false;
+    }
+    let ratio = width / height.max(1.0);
+    !(0.28..=4.2).contains(&ratio)
+}
+
+fn distorted_image_ratio(width: f32, height: f32) -> bool {
+    if width < 80.0 || height < 40.0 {
+        return false;
+    }
+    let ratio = width / height.max(1.0);
+    !(0.45..=2.8).contains(&ratio)
+}
+
+fn rect_overflows_slide_body(x: f32, y: f32, w: f32, h: f32) -> bool {
+    const BODY_W: f32 = 420.0;
+    const BODY_H: f32 = 525.0;
+    x < 0.0 || y < 0.0 || x + w > BODY_W || y + h > BODY_H
+}
+
 fn has_recent_backing_container(slide_html: &str, element_start: usize) -> bool {
     let lookback_start = element_start.saturating_sub(900);
     let context = &slide_html[lookback_start..element_start];
@@ -734,9 +1046,17 @@ pub fn validate_design(html: &str) -> ValidationReport {
     let mut issues = Vec::new();
 
     // Split the HTML into slides. Each slide starts with <div class="slide
-    let slide_starts: Vec<_> = html
-        .match_indices("<div class=\"slide")
-        .map(|(idx, _)| idx)
+    let slide_start_re = Regex::new(r#"<div\s+class="([^"]*)""#).unwrap();
+    let slide_starts: Vec<_> = slide_start_re
+        .captures_iter(html)
+        .filter_map(|cap| {
+            let class_attr = cap.get(1)?.as_str();
+            if class_attr.split_whitespace().any(|class| class == "slide") {
+                cap.get(0).map(|m| m.start())
+            } else {
+                None
+            }
+        })
         .collect();
     let mut slides = Vec::new();
     for i in 0..slide_starts.len() {
@@ -755,7 +1075,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
     let text_tag_re =
         Regex::new(r#"(?s)<(p|h[1-6]|span|div)\s*([^>]*?)>(.*?)</(p|h[1-6]|span|div)>"#).unwrap();
     let styled_text_re =
-        Regex::new(r#"(?s)<(?:p|h[1-6]|span|div)\s+[^>]*style="([^"]*)"[^>]*>([^<]{3,})</"#)
+        Regex::new(r#"(?s)<(?:p|h[1-6]|span|div)\s+[^>]*style="([^"]*)"[^>]*>([^<]{1,})</"#)
             .unwrap();
     let style_re = Regex::new(r#"style="([^"]*?)""#).unwrap();
     let img_re = Regex::new(r#"<img\s+[^>]*style="([^"]*)""#).unwrap();
@@ -767,6 +1087,67 @@ pub fn validate_design(html: &str) -> ValidationReport {
     )
     .unwrap();
     let frame_re = Regex::new(r#"<div\s+style="([^"]*position:absolute;[^"]*left:[^"]*top:[^"]*width:[^"]*height:[^"]*)"[^>]*>\s*<div[^>]*>\s*<img"#).unwrap();
+    let full_bleed_visible_re = Regex::new(
+        r#"(?s)\.slide--full-bleed\s+\.slide-composition\s*\{[^}]*overflow\s*:\s*visible"#,
+    )
+    .unwrap();
+    let tiny_overlay_re = Regex::new(
+        r#"(?s)\.overlay__(?:brand|topic|url|hashtags)[^{]*\{[^}]*font-size\s*:\s*([0-9.]+)px"#,
+    )
+    .unwrap();
+    let tiny_progress_re =
+        Regex::new(r#"(?s)\.breadcrumb-chip(?:\.active)?[^{]*\{[^}]*height\s*:\s*([0-9.]+)px"#)
+            .unwrap();
+
+    if full_bleed_visible_re.is_match(html) {
+        issues.push(DesignIssue {
+            slide: 1,
+            r#type: "aspect_bleed_overflow".to_string(),
+            severity: "error".to_string(),
+            detail: ".slide--full-bleed .slide-composition allows overflow:visible.".to_string(),
+            message: "Full-bleed aspect-ratio transmutation must clip component/effect overflow at the final slide bounds.".to_string(),
+            suggestion: "Keep background bleed on the slide canvas, but set full-bleed composition wrappers to overflow:hidden so 4:5 edge effects cannot leak into 1:1 or 9:16 exports.".to_string(),
+        });
+    }
+
+    for cap in tiny_overlay_re.captures_iter(html) {
+        let font_size = cap
+            .get(1)
+            .and_then(|m| m.as_str().parse::<f32>().ok())
+            .unwrap_or(0.0);
+        if font_size < 11.5 {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "tiny_overlay_text".to_string(),
+                severity: "warning".to_string(),
+                detail: format!("Overlay text CSS uses {:.1}px font size.", font_size),
+                message:
+                    "Corner overlay text is too small for reliable exported-slide readability."
+                        .to_string(),
+                suggestion:
+                    "Use at least 11.5px for overlay metadata in the 420x525 base composition."
+                        .to_string(),
+            });
+        }
+    }
+
+    for cap in tiny_progress_re.captures_iter(html) {
+        let height = cap
+            .get(1)
+            .and_then(|m| m.as_str().parse::<f32>().ok())
+            .unwrap_or(0.0);
+        if height < 6.0 {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "tiny_progress_indicator".to_string(),
+                severity: "warning".to_string(),
+                detail: format!("Progress chip CSS uses {:.1}px height.", height),
+                message: "Progress indicators are too thin to remain visible after export scaling."
+                    .to_string(),
+                suggestion: "Use at least 6px base height, with a larger active state.".to_string(),
+            });
+        }
+    }
 
     for (slide_idx, slide_html) in slides.iter().enumerate() {
         let slide_num = slide_idx + 1;
@@ -788,6 +1169,73 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     suggestion:
                         "Use px, %, rem, or another explicit CSS unit for positional dimensions."
                             .to_string(),
+                });
+            }
+            let width = numeric_px_style_value(style, "width");
+            let height = numeric_px_style_value(style, "height");
+            if let (Some(w), Some(h)) = (width, height) {
+                if component_like_style(style) && distorted_component_ratio(w, h) {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "component_aspect_distortion".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Component-like box has {:.1}:1 aspect ratio ({}x{}px).",
+                            w / h.max(1.0),
+                            w,
+                            h
+                        ),
+                        message: "Component geometry is extremely horizontal or vertical and can distort the composition across aspect-ratio exports.".to_string(),
+                        suggestion: "Keep cards/components within a moderate aspect ratio, or switch to a stacked layout for narrow/tall cases.".to_string(),
+                    });
+                }
+                if let (Some(x), Some(y)) = (
+                    numeric_px_style_value(style, "left")
+                        .or_else(|| numeric_style_value(style, "left")),
+                    numeric_px_style_value(style, "top")
+                        .or_else(|| numeric_style_value(style, "top")),
+                ) {
+                    if component_like_style(style)
+                        && !style_has_edge_bleed_effect(style)
+                        && rect_overflows_slide_body(x, y, w, h)
+                    {
+                        issues.push(DesignIssue {
+                            slide: slide_num,
+                            r#type: "slide_body_overflow".to_string(),
+                            severity: "error".to_string(),
+                            detail: format!(
+                                "Component bounds left {:.0}, top {:.0}, width {:.0}, height {:.0} exceed the 420x525 slide body.",
+                                x, y, w, h
+                            ),
+                            message: "Component layout overflows the SlideForge base slide body.".to_string(),
+                            suggestion: "Keep body components within the 420x525 composition bounds; reserve only backgrounds for aspect-ratio bleed.".to_string(),
+                        });
+                    }
+                }
+            }
+            if component_constriction_risk(style) {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "component_constriction".to_string(),
+                    severity: "warning".to_string(),
+                    detail: format!("Component-like box is constrained by style '{style}'."),
+                    message: "A card/component has too little inner width after padding and can collapse its content.".to_string(),
+                    suggestion: "Increase available width, reduce padding for the compact variant, or stack the component in a wider single-column layout.".to_string(),
+                });
+            }
+            if slide_html.contains("slide--full-bleed")
+                && style_has_edge_bleed_effect(style)
+                && !has_overflow_hidden(style)
+                && (slide_html.contains("overflow:visible")
+                    || slide_html.contains("overflow: visible"))
+            {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "edge_effect_bleed".to_string(),
+                    severity: "error".to_string(),
+                    detail: format!("Edge effect can bleed from full-bleed slide: '{style}'."),
+                    message: "Blurred shadows/glows near negative edges can leak during aspect-ratio transmutation.".to_string(),
+                    suggestion: "Clip the full-bleed wrapper at the final slide bounds or move the effect inside a clipped background layer.".to_string(),
                 });
             }
         }
@@ -822,6 +1270,26 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     });
                 }
             }
+            if let (Some(width), Some(height)) = (
+                numeric_px_style_value(style, "width"),
+                numeric_px_style_value(style, "height"),
+            ) {
+                if distorted_image_ratio(width, height) {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "image_aspect_distortion".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Image frame has {:.1}:1 aspect ratio ({}x{}px).",
+                            width / height.max(1.0),
+                            width,
+                            height
+                        ),
+                        message: "Image frame aspect ratio is distorted enough to damage visual composition.".to_string(),
+                        suggestion: "Use a less extreme image frame ratio or crop inside a stable frame with object-fit:cover.".to_string(),
+                    });
+                }
+            }
         }
 
         for cap in bottom_caption_re.captures_iter(slide_html) {
@@ -843,7 +1311,56 @@ pub fn validate_design(html: &str) -> ValidationReport {
             let width = numeric_px_style_value(style, "width")
                 .or_else(|| numeric_px_style_value(style, "max-width"));
             let font_size = numeric_style_value(style, "font-size").unwrap_or(12.0);
+            if tiny_text_risk(font_size) {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "tiny_text".to_string(),
+                    severity: "warning".to_string(),
+                    detail: format!("Text '{}' uses {:.1}px font size.", plain_text, font_size),
+                    message: "Inline text is too small for reliable exported-slide readability."
+                        .to_string(),
+                    suggestion:
+                        "Use at least 10.5px for micro-labels, and 11.5px or larger for metadata."
+                            .to_string(),
+                });
+            }
+            if text_has_descender_risk(plain_text) && has_overflow_hidden(style) {
+                let line_height = numeric_style_value(style, "line-height").unwrap_or(1.2);
+                let line_height_px = if line_height <= 4.0 {
+                    line_height * font_size
+                } else {
+                    line_height
+                };
+                if line_height_px < font_size * 1.08 {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "text_vertical_clipping".to_string(),
+                        severity: "error".to_string(),
+                        detail: format!(
+                            "Text '{}' has descenders with overflow hidden and tight line-height.",
+                            plain_text
+                        ),
+                        message: "Text descenders may be clipped at the bottom of their container."
+                            .to_string(),
+                        suggestion: "Increase line-height to at least 1.1, add vertical padding, or remove overflow hidden on the text element.".to_string(),
+                    });
+                }
+            }
             if let Some(width) = width {
+                if one_word_line_risk(width, font_size, word_count) {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "one_word_line_risk".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Text '{}' has only {:.1} font-size units of line width.",
+                            plain_text,
+                            width / font_size
+                        ),
+                        message: "Text width is likely to create one-word-per-line wrapping.".to_string(),
+                        suggestion: "Give the text a wider column, reduce type size, or switch to a stacked layout.".to_string(),
+                    });
+                }
                 if width > 0.0 && width < 120.0 && font_size >= 12.0 && word_count >= 3 {
                     issues.push(DesignIssue {
                         slide: slide_num,
@@ -913,7 +1430,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 .replace_all(text_content, "")
                 .trim()
                 .to_string();
-            if plain_text.is_empty() || plain_text.len() < 3 {
+            if plain_text.is_empty() {
                 continue;
             }
 
@@ -926,6 +1443,29 @@ pub fn validate_design(html: &str) -> ValidationReport {
             let has_bg =
                 style_str.contains("background:") || style_str.contains("background-color:");
             let has_shadow = style_str.contains("text-shadow:");
+            if text_has_descender_risk(&plain_text) && has_overflow_hidden(style_str) {
+                let line_height = numeric_style_value(style_str, "line-height").unwrap_or(1.2);
+                let font_size = numeric_style_value(style_str, "font-size").unwrap_or(16.0);
+                let line_height_px = if line_height <= 4.0 {
+                    line_height * font_size
+                } else {
+                    line_height
+                };
+                if line_height_px < font_size * 1.08 {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "text_vertical_clipping".to_string(),
+                        severity: "error".to_string(),
+                        detail: format!(
+                            "Text '{}' has descenders with overflow hidden and tight line-height.",
+                            plain_text
+                        ),
+                        message: "Text descenders may be clipped at the bottom of their container."
+                            .to_string(),
+                        suggestion: "Increase line-height to at least 1.1, add vertical padding, or remove overflow hidden on the text element.".to_string(),
+                    });
+                }
+            }
             if let Some(ratio) = inline_contrast(style_str) {
                 if ratio < 4.5 {
                     let display_text = if plain_text.len() > 20 {
@@ -969,7 +1509,34 @@ pub fn validate_design(html: &str) -> ValidationReport {
             let width = numeric_px_style_value(style_str, "width")
                 .or_else(|| numeric_px_style_value(style_str, "max-width"));
             let font_size = numeric_style_value(style_str, "font-size").unwrap_or(12.0);
+            if tiny_text_risk(font_size) {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "tiny_text".to_string(),
+                    severity: "warning".to_string(),
+                    detail: format!("Text '{}' uses {:.1}px font size.", plain_text, font_size),
+                    message: "Inline text is too small for reliable exported-slide readability."
+                        .to_string(),
+                    suggestion:
+                        "Use at least 10.5px for micro-labels, and 11.5px or larger for metadata."
+                            .to_string(),
+                });
+            }
             if let Some(width) = width {
+                if one_word_line_risk(width, font_size, word_count) {
+                    issues.push(DesignIssue {
+                        slide: slide_num,
+                        r#type: "one_word_line_risk".to_string(),
+                        severity: "warning".to_string(),
+                        detail: format!(
+                            "Text '{}' has only {:.1} font-size units of line width.",
+                            plain_text,
+                            width / font_size
+                        ),
+                        message: "Text width is likely to create one-word-per-line wrapping.".to_string(),
+                        suggestion: "Give the text a wider column, reduce type size, or switch to a stacked layout.".to_string(),
+                    });
+                }
                 if width > 0.0 && width < 120.0 && font_size >= 12.0 && word_count >= 3 {
                     issues.push(DesignIssue {
                         slide: slide_num,

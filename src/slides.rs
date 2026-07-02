@@ -46,10 +46,16 @@ pub fn render_carousel_html(spec: &CarouselSpec) -> String {
 
     let (base_w, base_h) = if target_ratio <= native_ratio {
         // Taller target: composition fills canvas width, canvas extends vertically
-        (COMP_WIDTH, (COMP_WIDTH as f32 / target_w as f32 * target_h as f32).round() as u32)
+        (
+            COMP_WIDTH,
+            (COMP_WIDTH as f32 / target_w as f32 * target_h as f32).round() as u32,
+        )
     } else {
         // Wider target: composition fills canvas height, canvas extends horizontally
-        ((COMP_HEIGHT as f32 / target_h as f32 * target_w as f32).round() as u32, COMP_HEIGHT)
+        (
+            (COMP_HEIGHT as f32 / target_h as f32 * target_w as f32).round() as u32,
+            COMP_HEIGHT,
+        )
     };
 
     let scale_factor = target_w as f32 / base_w as f32;
@@ -88,6 +94,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
+.slide--full-bleed { overflow: hidden; }
 .slide-composition {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
@@ -96,7 +103,7 @@ body {
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
    while content stays at designed 420×525 composition dimensions. */
 .slide--full-bleed .slide-composition {
-  overflow: visible;
+  overflow: hidden;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -104,6 +111,7 @@ body {
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
+  overflow: hidden !important;
 }
 .slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
   position: absolute !important;
@@ -126,10 +134,11 @@ body {
 .slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
 
 .slide--dark, .slide--gradient, .slide--hero {
-  --text-primary: var(--text-on-dark, #ECEEF5);
-  --text-secondary: var(--text-on-dark-secondary, #B9BDC9);
-  --border-light: var(--border-dark, #2A2D3D);
-  --surface-light: var(--surface-dark, #010105);
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
 }
 
 .slide-layout {
@@ -255,11 +264,11 @@ body {
 
 .breadcrumb-progress {
   position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: 6px;
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 4px; flex: 1; border-radius: 2px;
+  height: 6px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -267,7 +276,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 5px; flex: 2.2;
+  height: 8px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -286,16 +295,16 @@ body {
 .slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
 .slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-.overlay__brand { font-family: var(--heading); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 10.5px; font-weight: 500; text-align: right; max-width: 40%; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
-.overlay__url { font-family: var(--body); font-size: 9.5px; letter-spacing: 0.02em; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
 .slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
 .slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-.overlay__hashtags { font-family: var(--body); font-size: 9.5px; text-align: right; max-width: 40%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 "#.replace("[CSS_VARS]", &spec.css_variables)
@@ -342,14 +351,16 @@ body {
         let show_arrow = !is_last;
 
         // Detect if theme "dark" forces a visually dark surface
-        // When theme="dark" with bg_style="light", the effective surface is visually dark
-        // but CSS would apply light theme vars. Fix by using dark CSS class instead.
+        // When theme="dark", ALL slides must use dark CSS class regardless of bg_style
+        // to ensure correct text-on-dark colors via CSS variable overrides.
         let theme_is_dark = spec.visual_theme == "dark";
-        let bg_is_light = slide.background == "light";
 
-        let mut bg_class = if theme_is_dark && bg_is_light {
-            // Dark theme with light bg → use dark CSS class for correct theme vars
-            "slide--dark".to_string()
+        let mut bg_class = if theme_is_dark {
+            // Dark theme forces dark CSS class on ALL slides for correct theme vars
+            match slide.background.as_str() {
+                "dark" | "gradient" | "hero" => format!("slide--{}", slide.background),
+                _ => "slide--dark".to_string(),
+            }
         } else if valid_bg_types.contains(&slide.background.as_str()) {
             format!("slide--{}", slide.background)
         } else {
@@ -488,7 +499,11 @@ body {
         // expands via CSS to fill the entire slide, so slide_base() backgrounds,
         // noise, and shapes naturally extend to the full canvas.
         let is_full_bleed = base_w != COMP_WIDTH || base_h != COMP_HEIGHT;
-        let full_bleed_class = if is_full_bleed { " slide--full-bleed" } else { "" };
+        let full_bleed_class = if is_full_bleed {
+            " slide--full-bleed"
+        } else {
+            ""
+        };
 
         slides_html.push_str(&format!(
             r#"<div class="slide {}{}"{}><div class="slide-composition">
@@ -498,8 +513,13 @@ body {
 {}
 </div></div>
 "#,
-            bg_class, full_bleed_class, bg_style,
-            slide.html, overlay_html, progress_html, arrow_html
+            bg_class,
+            full_bleed_class,
+            bg_style,
+            slide.html,
+            overlay_html,
+            progress_html,
+            arrow_html
         ));
     }
 
@@ -631,7 +651,7 @@ body {
 </head>
 <body>
 
-<div style="width:{target_w}px;height:{target_h_ig}px;overflow:hidden;position:relative;margin:0 auto;">
+<div style="width:{target_w}px;height:{target_h_ig}px;overflow:visible;position:relative;margin:0 auto;">
   <div style="transform:scale({sf});transform-origin:top left;width:{base_w}px;height:{total_base_h}px;">
     {carousel}
   </div>
@@ -668,7 +688,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
                 font-family: var(--font-heading), Georgia, serif !important;
                 font-style: normal !important;
                 text-transform: none !important;
-                font-size: 11.5px !important;
+                font-size: 12.5px !important;
                 font-weight: 700 !important;
                 letter-spacing: 0.02em !important;
                 opacity: 0.9 !important;
@@ -677,7 +697,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
                 font-family: var(--font-body), sans-serif !important;
                 font-style: normal !important;
                 text-transform: uppercase !important;
-                font-size: 9px !important;
+                font-size: 11.5px !important;
                 font-weight: 600 !important;
                 letter-spacing: 0.12em !important;
                 opacity: 0.75 !important;
@@ -700,7 +720,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 900 !important;
                 text-transform: uppercase !important;
-                font-size: 11px !important;
+                font-size: 12px !important;
                 letter-spacing: 0.15em !important;
                 opacity: 0.95 !important;
             }
@@ -708,7 +728,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 700 !important;
                 text-transform: uppercase !important;
-                font-size: 9.5px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.12em !important;
                 opacity: 0.8 !important;
             }
@@ -729,7 +749,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__brand {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 600 !important;
-                font-size: 10px !important;
+                font-size: 12px !important;
                 letter-spacing: 0.1em !important;
                 text-transform: uppercase !important;
                 opacity: 0.85 !important;
@@ -737,7 +757,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__topic, .overlay__url, .overlay__hashtags {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 500 !important;
-                font-size: 9.5px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.08em !important;
                 text-transform: lowercase !important;
                 opacity: 0.75 !important;
@@ -765,7 +785,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__brand {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 800 !important;
-                font-size: 10.5px !important;
+                font-size: 12px !important;
                 letter-spacing: 0.12em !important;
                 text-transform: uppercase !important;
                 opacity: 0.9 !important;
@@ -773,7 +793,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__topic, .overlay__url, .overlay__hashtags {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 600 !important;
-                font-size: 9px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.1em !important;
                 text-transform: uppercase !important;
                 opacity: 0.8 !important;
@@ -793,7 +813,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__brand {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 800 !important;
-                font-size: 11px !important;
+                font-size: 12px !important;
                 color: var(--primary) !important;
                 letter-spacing: 0.08em !important;
                 text-transform: uppercase !important;
@@ -802,7 +822,7 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
             .overlay__topic, .overlay__url, .overlay__hashtags {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 600 !important;
-                font-size: 9.5px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.08em !important;
                 text-transform: uppercase !important;
                 opacity: 0.85 !important;
@@ -823,14 +843,14 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
                 font-family: var(--font-heading), Georgia, serif !important;
                 font-style: italic !important;
                 font-weight: 600 !important;
-                font-size: 11.5px !important;
+                font-size: 12.5px !important;
                 letter-spacing: 0.03em !important;
                 opacity: 0.9 !important;
             }
             .overlay__topic, .overlay__url, .overlay__hashtags {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 600 !important;
-                font-size: 9px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.1em !important;
                 text-transform: uppercase !important;
                 opacity: 0.75 !important;
@@ -890,14 +910,14 @@ mod tests {
 
         let html = render_carousel_html(&spec);
         assert!(html.contains("--slide-width: 420px"));
-        assert!(html.contains("--slide-height: 560px"));  // 3:4 → taller, canvas extends vertically
+        assert!(html.contains("--slide-height: 560px")); // 3:4 → taller, canvas extends vertically
         assert!(html.contains("--composition-width: 420px"));
         assert!(html.contains("--composition-height: 525px"));
         assert!(html.contains("slide-composition"));
         assert!(html.contains("width: var(--slide-width)"));
         assert!(html.contains("height: var(--slide-height)"));
         assert!(html.contains("transform:scale(0.857143)"));
-        assert!(html.contains("width:360px;height:480px"));  // outer container
+        assert!(html.contains("width:360px;height:480px")); // outer container
         // Full-bleed: 3:4 differs from 4:5, so full-bleed class present
         assert!(html.contains("slide--full-bleed"));
     }
@@ -933,7 +953,7 @@ mod tests {
 
         let html = render_carousel_html(&spec);
         assert!(html.contains("--slide-width: 420px"));
-        assert!(html.contains("--slide-height: 525px"));  // 4:5 → exact native fit
+        assert!(html.contains("--slide-height: 525px")); // 4:5 → exact native fit
         assert!(html.contains("--composition-width: 420px"));
         assert!(html.contains("--composition-height: 525px"));
         // No slide-level noise div for 4:5 (noise only appears as class on .slide elements)
@@ -973,10 +993,10 @@ mod tests {
 
         let html = render_carousel_html(&spec);
         assert!(html.contains("--slide-width: 420px"));
-        assert!(html.contains("--slide-height: 747px"));  // 9:16 → canvas extends vertically
+        assert!(html.contains("--slide-height: 747px")); // 9:16 → canvas extends vertically
         assert!(html.contains("--composition-width: 420px"));
         assert!(html.contains("--composition-height: 525px"));
-        assert!(html.contains("slide--full-bleed"));  // full-bleed for 9:16
+        assert!(html.contains("slide--full-bleed")); // full-bleed for 9:16
     }
 
     #[test]
@@ -1009,10 +1029,50 @@ mod tests {
         };
 
         let html = render_carousel_html(&spec);
-        assert!(html.contains("--slide-width: 525px"));  // 1:1 → wider canvas
+        assert!(html.contains("--slide-width: 525px")); // 1:1 → wider canvas
         assert!(html.contains("--slide-height: 525px"));
         assert!(html.contains("--composition-width: 420px"));
         assert!(html.contains("--composition-height: 525px"));
-        assert!(html.contains("slide--full-bleed"));  // full-bleed for 1:1
+        assert!(html.contains("slide--full-bleed")); // full-bleed for 1:1
+        assert!(html.contains(".slide--full-bleed { overflow: hidden; }"));
+        assert!(html.contains("overflow: hidden !important;"));
+        assert!(!html.contains("Allow glow/shadow effects to extend beyond composition bounds"));
+    }
+
+    #[test]
+    fn test_render_carousel_overlay_and_progress_are_readable_base_size() {
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "light".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec!["slideforge".to_string()],
+            show_progress: true,
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "4:5".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1350,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert!(html.contains(".overlay__brand { font-family: var(--heading); font-size: 12px;"));
+        assert!(html.contains(".overlay__url { font-family: var(--body); font-size: 11.5px;"));
+        assert!(html.contains(".breadcrumb-chip {\n  height: 6px;"));
+        assert!(html.contains(".breadcrumb-chip.active {\n  height: 8px;"));
+        assert!(!html.contains("font-size: 9px !important"));
+        assert!(!html.contains("font-size: 9.5px !important"));
     }
 }

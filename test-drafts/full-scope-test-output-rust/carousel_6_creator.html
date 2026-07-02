@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400,600&family=Nunito Sans:wght@400,500,600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,8 +56,8 @@
   --glass-light-bg: #EFF8EFCC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #C2CAC140;
-  --font-heading: 'Plus Jakarta Sans', serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Lora', serif;
+  --font-body: 'Nunito Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -123,6 +123,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
+.slide--full-bleed { overflow: hidden; }
 .slide-composition {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
@@ -131,7 +132,7 @@ body {
    The inner div (gradient + noise + shapes) is stretched to fill the slide,
    while content stays at designed 420×525 composition dimensions. */
 .slide--full-bleed .slide-composition {
-  overflow: visible;
+  overflow: hidden;
 }
 .slide--full-bleed .slide-composition > div:first-of-type {
   position: absolute !important;
@@ -139,6 +140,7 @@ body {
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
+  overflow: hidden !important;
 }
 .slide--full-bleed .slide-composition > div:first-of-type > div:last-of-type {
   position: absolute !important;
@@ -161,10 +163,11 @@ body {
 .slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
 
 .slide--dark, .slide--gradient, .slide--hero {
-  --text-primary: var(--text-on-dark, #ECEEF5);
-  --text-secondary: var(--text-on-dark-secondary, #B9BDC9);
-  --border-light: var(--border-dark, #2A2D3D);
-  --surface-light: var(--surface-dark, #010105);
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
 }
 
 .slide-layout {
@@ -290,11 +293,11 @@ body {
 
 .breadcrumb-progress {
   position: absolute; bottom: var(--space-5, 42px); left: var(--space-3, 28px); right: var(--space-3, 28px);
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: 6px;
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 4px; flex: 1; border-radius: 2px;
+  height: 6px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
@@ -302,7 +305,7 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 5px; flex: 2.2;
+  height: 8px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
@@ -321,16 +324,16 @@ body {
 .slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
 .slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-.overlay__brand { font-family: var(--heading); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 10.5px; font-weight: 500; text-align: right; max-width: 40%; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
-.overlay__url { font-family: var(--body); font-size: 9.5px; letter-spacing: 0.02em; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
 .slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
 .slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-.overlay__hashtags { font-family: var(--body); font-size: 9.5px; text-align: right; max-width: 40%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 
@@ -346,14 +349,14 @@ body {
                 font-family: var(--font-heading), Georgia, serif !important;
                 font-style: italic !important;
                 font-weight: 600 !important;
-                font-size: 11.5px !important;
+                font-size: 12.5px !important;
                 letter-spacing: 0.03em !important;
                 opacity: 0.9 !important;
             }
             .overlay__topic, .overlay__url, .overlay__hashtags {
                 font-family: var(--font-body), sans-serif !important;
                 font-weight: 600 !important;
-                font-size: 9px !important;
+                font-size: 11.5px !important;
                 letter-spacing: 0.1em !important;
                 text-transform: uppercase !important;
                 opacity: 0.75 !important;
@@ -387,7 +390,7 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1389px;overflow:hidden;position:relative;margin:0 auto;">
+<div style="width:1080px;height:1389px;overflow:visible;position:relative;margin:0 auto;">
   <div style="transform:scale(2.057143);transform-origin:top left;width:525px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
@@ -399,52 +402,19 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--gradient has-bg-image slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');background-size: cover; background-position: center;opacity:0.36;z-index:0;filter: sepia(20%) saturate(1.10) contrast(1.06) brightness(1.10);-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);"></div><div style="position:absolute;inset:0;background:#00800044;z-index:1;"></div>
-            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0; z-index: 1; pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; border-radius: 50%; height: 320px; width: 320px; top: -80px; background: #008000; pointer-events: none; position: absolute; left: -80px"></div><div style="border-radius: 4px; opacity: 0.05; position: absolute; transform: rotate(60deg); height: 120px; background: #963BA3; left: auto; width: 120px; pointer-events: none; top: 60%; right: -40px"></div></div>
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EBF0EA 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Ready to Scale your Cross-Platform Compilers?</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C8D0C7; margin: 0 0 20px; text-align: center">No credit card required • Instant setup</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #65CC5F; color: #000200; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00530040; letter-spacing: 0.02em; margin: 0;">Launch Free Trial</a></div></div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 6</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #creator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #00800015 0px, transparent 50%), radial-gradient(at 80% 0%, #963BA310 0px, transparent 50%), radial-gradient(at 0% 50%, #65CC5F12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
             
-            <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EBF0EA; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em">Advanced Capabilities</h2><div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;margin-top:16px;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:10px;display:flex;align-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#359F30" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#359F30;"><rect x="4" y="4" width="16" height="16" rx="2" stroke-width="2"/><rect x="9" y="9" width="6" height="6" stroke-width="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3" stroke-width="2"/></svg></div>
-                <h3 style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#EBF0EA;margin:0 0 6px;line-height:1.2;">Generative Agents</h3>
-                <p style="font-family:Plus Jakarta Sans;font-size:10px;color:#C8D0C7;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Autonomous subagents executing complex layout implementations.</p>
-            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:10px;display:flex;align-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#359F30" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#359F30;"><line x1="18" y1="20" x2="18" y2="10" stroke-width="2"/><line x1="12" y1="20" x2="12" y2="4" stroke-width="2"/><line x1="6" y1="20" x2="6" y2="14" stroke-width="2"/><path d="M3 20h18" stroke-width="2"/></svg></div>
-                <h3 style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#EBF0EA;margin:0 0 6px;line-height:1.2;">Real-time Metrics</h3>
-                <p style="font-family:Plus Jakarta Sans;font-size:10px;color:#C8D0C7;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Live reporting pipelines directly fed from Excel sheets.</p>
-            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:10px;display:flex;align-items:center;">🎨</div>
-                <h3 style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#EBF0EA;margin:0 0 6px;line-height:1.2;">Aesthetic Presets</h3>
-                <p style="font-family:Plus Jakarta Sans;font-size:10px;color:#C8D0C7;margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">Polished responsive cards mapped dynamically to typography scale.</p>
-            </div></div></div>
+            <div style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Lora; font-size: 25px; font-weight: 600; line-height: 1.12; color: #090C08; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Why Choose Us?</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px;margin-top:16px;width:100%;box-sizing:border-box;align-items:stretch;place-items:start;">
+                    <div style="font-family:Lora;font-size:20px;font-weight:700;color:#008000;padding-bottom:10px;border-bottom:2px solid #008000;">Traditional</div>
+                    <div style="font-family:Lora;font-size:20px;font-weight:700;color:#3E453D;padding-bottom:10px;border-bottom:2px solid #C2CAC1;">AI-Powered</div>
+                    <div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Manual processing</div>
+                       <div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Automated</div><div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Hours of work</div>
+                       <div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Instant results</div><div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Human error</div>
+                       <div style="font-family:Nunito Sans;font-size:16px;color:#090C08;padding:var(--space-1) 0;border-bottom:1px solid #C2CAC120;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">Error-free</div>
+                </div>
             </div>
         </div>
   <div class="slide__overlay">
@@ -458,78 +428,14 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
-            <span style="background: linear-gradient(135deg, #090C08 0%, #3E453D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 16px; display: block; letter-spacing: -0.02em">Announcing the Next Generation of Cross-Platform Compilers</span>
-            <div style="width: 60px; height: 3.5px; background: #008000; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px #00800040;"></div>
-            <p style="font-family:Plus Jakarta Sans;font-size:15px;color:#3E453D;margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">Unifying design system definitions across Rust and Python engines.</p>
-        </div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 6</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #creator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div>
-</div></div>
-<div class="slide slide--mesh slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); position: absolute; pointer-events: none; opacity: 0.04"></div>
-            
-            <div style="position:relative;z-index:10;padding:80px 52px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #C2CAC133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
-            <span style="font-family:Plus Jakarta Sans;font-size:52px;font-weight:900;color:#008000;margin:0;line-height:1;">89.2%</span>
-            <h3 style="font-family:Plus Jakarta Sans;font-size:15px;font-weight:600;color:#090C08;margin:var(--space-1) 0 6px;line-height:1.2;">System Health</h3>
-            <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#10B981;display:block;margin-bottom:8px;">↑ Stable</span>
-            <div style="margin:var(--space-2) auto;display:flex;justify-content:center;"><svg width="280" height="40" viewBox="0 0 280 40"><polyline points="0.0,17.2 40.0,14.8 80.0,12.7 120.0,10.2 160.0,11.3 200.0,9.2 240.0,8.1 280.0,8.8" fill="none" stroke="#008000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#3E453D;margin:0;line-height:1.4;">Last 8 measurements</p>
-        </div></div>
-            </div>
-        </div>
-  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 6</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #creator</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip active"></div>
   </div>
 
 </div></div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -552,7 +458,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 4;
+  const total = 1;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

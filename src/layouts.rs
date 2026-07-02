@@ -250,7 +250,7 @@ pub fn hero_layout(
         tokens,
         bg_style,
         decorations,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         justify_val,
     )
 }
@@ -281,7 +281,7 @@ pub fn split_layout(
     decorations: bool,
 ) -> String {
     let content = format!(
-        r#"<div style="display:grid;grid-template-columns:{};gap:{};overflow:hidden;"><div style="min-width:0;">{}</div><div style="min-width:0;">{}</div></div>"#,
+        r#"<div style="display:grid;grid-template-columns:{};gap:{};overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;">{}</div><div style="min-width:0;overflow:hidden;">{}</div></div>"#,
         ratio, gap, left_html, right_html
     );
     slide_base(
@@ -289,7 +289,7 @@ pub fn split_layout(
         tokens,
         bg_style,
         decorations,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     )
 }
@@ -311,7 +311,7 @@ pub fn grid_layout(
         tokens,
         bg_style,
         decorations,
-        "80px 52px 80px",
+        "80px var(--space-6) 80px",
         "center",
     )
 }
@@ -333,7 +333,14 @@ pub fn timeline_layout(
             content_html
         )
     };
-    slide_base(&content, tokens, bg_style, true, "80px 52px 80px", "center")
+    slide_base(
+        &content,
+        tokens,
+        bg_style,
+        true,
+        "80px var(--space-6) 80px",
+        "center",
+    )
 }
 
 pub fn cta_layout(
@@ -360,5 +367,12 @@ pub fn bento_layout(
         r#"<div style="display:grid;grid-template-columns:{};gap:{};overflow:hidden;">{}</div>"#,
         columns, gap, content_html
     );
-    slide_base(&content, tokens, bg_style, true, "80px 52px 80px", "center")
+    slide_base(
+        &content,
+        tokens,
+        bg_style,
+        true,
+        "80px var(--space-6) 80px",
+        "center",
+    )
 }

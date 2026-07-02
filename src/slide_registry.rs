@@ -331,7 +331,7 @@ pub fn get_registry() -> Value {
             "description": "Conversion slide with scannable QR code, heading, caption, CTA, and optional short URL fallback",
             "required_params": ["destination_url", "cta_text"],
             "optional_params": ["heading", "caption", "short_url", "brand_name", "brand_logo", "incentive_text", "qr_alt_text", "variant", "background_image", "image_opacity", "padding"],
-            "variants": ["theme-bg", "image-bg", "minimal", "with-heading", "without-heading", "with-caption", "with-cta", "full-conversion"],
+            "variants": ["theme-bg", "image-bg", "minimal", "with-heading", "without-heading", "with-caption", "with-cta", "full-conversion", "split-card", "poster", "stacked-badge", "compact"],
             "default_variant": "full-conversion",
             "layout_family": "conversion",
             "best_for": ["conversion", "closing", "off-platform", "blog", "donation", "digital-product", "newsletter", "link-hub"]
@@ -518,5 +518,17 @@ mod tests {
     fn test_get_slide_types_for_context_off_platform_prefers_qr() {
         let types = get_slide_types_for_context("off-platform");
         assert_eq!(types.first().map(|s| s.as_str()), Some("qr_destination"));
+    }
+
+    #[test]
+    fn test_qr_destination_exposes_varied_styles() {
+        let info = get_slide_type_info("qr_destination").expect("qr destination should exist");
+        let variants = info["variants"].as_array().expect("variants array");
+        for variant in ["split-card", "poster", "stacked-badge", "compact"] {
+            assert!(
+                variants.iter().any(|v| v.as_str() == Some(variant)),
+                "missing QR variant {variant}"
+            );
+        }
     }
 }
