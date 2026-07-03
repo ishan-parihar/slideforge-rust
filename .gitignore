@@ -1,2 +1,10 @@
 /target
 .contexty/
+
+# Tool state files (never commit)
+.cortexkit/
+.hive/
+.memsearch/
+graphify-out/
+__pycache__/
+*.pyc
