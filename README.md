@@ -270,7 +270,7 @@ strip target/release/slideforge-rust
 cp target/release/slideforge-rust dist/slideforge-x86_64-linux-gnu
 
 git tag v0.2.0
-git push origin feat/vectoric-scaling --tags
+git push origin master --tags
 # Upload dist/slideforge-x86_64-linux-gnu to the GitHub release
 ```
 
