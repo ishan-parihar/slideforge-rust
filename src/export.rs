@@ -1,4 +1,5 @@
 use headless_chrome::protocol::cdp::Page::CaptureScreenshotFormatOption;
+use headless_chrome::protocol::cdp::Page::Viewport;
 use headless_chrome::{Browser, LaunchOptions};
 use std::fs;
 use std::path::Path;
@@ -63,8 +64,17 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
     let _ = tab.evaluate(font_wait_js, true);
     std::thread::sleep(std::time::Duration::from_millis(500));
 
+    // Use clip to capture exactly the viewport bounds
+    let clip = Viewport {
+        x: 0.0,
+        y: 0.0,
+        width: 800.0,
+        height: 1000.0,
+        scale: 1.0,
+    };
+
     let screenshot_png = tab
-        .capture_screenshot(CaptureScreenshotFormatOption::Png, None, None, true)
+        .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), true)
         .map_err(|e| e.to_string())?;
 
     fs::write(output_path, screenshot_png).map_err(|e| e.to_string())?;
@@ -154,8 +164,17 @@ pub async fn export_slides(
         // Reflow wait
         tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
+        // Use clip to capture exactly the requested dimensions
+        let clip = Viewport {
+            x: 0.0,
+            y: 0.0,
+            width: width as f64,
+            height: height as f64,
+            scale: 1.0,
+        };
+
         let screenshot_png = tab
-            .capture_screenshot(CaptureScreenshotFormatOption::Png, None, None, true)
+            .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), true)
             .map_err(|e| e.to_string())?;
 
         let slide_name = format!("slide_{}.png", i + 1);
