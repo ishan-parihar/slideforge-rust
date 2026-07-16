@@ -104,6 +104,27 @@ fn load_persisted_state() -> Option<ServerState> {
     serde_json::from_str(&content).ok()
 }
 
+/// Convert a Rust error into a human-readable MCP error message.
+///
+/// `e.to_string()` typically emits qualified type paths like
+/// `serde_json::error::Error: expected value at line 1 column 1`. Strip the
+/// leading `<type path>:` prefix so the agent sees just the actionable bit.
+fn humanize_error(e: impl std::fmt::Display) -> String {
+    let raw = e.to_string();
+    // Strip the common "type_path:" prefix (e.g. "serde_json::error::Error: ").
+    if let Some(idx) = raw.find(": ") {
+        // Only strip if the left-hand side looks like an identifier path
+        // (contains '::' or starts uppercase with no spaces).
+        let prefix = &raw[..idx];
+        if prefix.contains("::") || (prefix.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '<')
+            && !prefix.is_empty())
+        {
+            return raw[idx + 2..].to_string();
+        }
+    }
+    raw
+}
+
 fn platform_context_json(platform: &str, aspect_ratio: &str) -> serde_json::Value {
     match platforms::resolve_canvas(platform, Some(aspect_ratio)) {
         Ok(canvas) => serde_json::json!({
@@ -418,7 +439,7 @@ impl Server {
             render.base_width,
             render.base_height,
         )
-        .map_err(|e| ErrorData::internal_error(e, None))
+        .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))
     }
 }
 
@@ -505,7 +526,7 @@ impl Server {
             .clone()
             .unwrap_or_else(|| "instagram_portrait".to_string());
         let canvas = platforms::resolve_canvas(&platform, req.aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
         // Token generation always uses 4:5 composition (420×525)
         let base_width = 420;
         let base_height = 525;
@@ -523,7 +544,7 @@ impl Server {
             base_width,
             base_height,
         )
-        .map_err(|e| ErrorData::internal_error(e, None))?;
+        .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))?;
 
         let mut state = self.state.lock().unwrap();
         state.primary_color = req.primary_color.clone();
@@ -625,7 +646,7 @@ impl Server {
             canvas_width,
             canvas_height,
         )
-        .map_err(|e| ErrorData::internal_error(e, None))?;
+        .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))?;
 
         Ok(Json(tokens))
     }
@@ -745,7 +766,7 @@ impl Server {
             .or_else(|| Some(state.aspect_ratio.clone()))
             .filter(|s| !s.is_empty());
         let render = platforms::resolve_render_canvas(&platform, aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         drop(state);
 
@@ -762,7 +783,7 @@ impl Server {
             render.base_width,
             render.base_height,
         )
-        .map_err(|e| ErrorData::internal_error(e, None))?;
+        .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))?;
 
         let params = req.params.clone().unwrap_or(serde_json::json!({}));
         let slide_type = req.slide_type.to_lowercase().replace('-', "_");
@@ -797,7 +818,7 @@ impl Server {
             &theme,
             &archetype,
         )
-        .map_err(|e| ErrorData::invalid_request(e, None))?;
+        .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         // Enrich the response with slide_type echo + validation warnings
         let mut enriched = result;
@@ -855,7 +876,7 @@ impl Server {
             .or_else(|| Some(state.aspect_ratio.clone()))
             .filter(|s| !s.is_empty());
         let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         let spec = CarouselSpec {
             slides: req.slides,
@@ -927,7 +948,7 @@ impl Server {
     ) -> Result<Json<ExportResponse>, ErrorData> {
         // Pre-flight: verify Chrome is available before doing any work
         export::ensure_chrome_available()
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         let (state_platform, state_aspect_ratio) = {
             let state = self.state.lock().unwrap();
@@ -952,7 +973,7 @@ impl Server {
             .or_else(|| Some(state_aspect_ratio))
             .filter(|s| !s.is_empty());
         let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         let paths = export::export_slides(
             &req.html_path,
@@ -962,7 +983,7 @@ impl Server {
             canvas.height,
         )
         .await
-        .map_err(|e| ErrorData::internal_error(e, None))?;
+        .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))?;
 
         let total = paths.len();
         let dimensions = format!("{}×{}", canvas.width, canvas.height);
@@ -1351,7 +1372,7 @@ impl Server {
 
         // Pre-flight: verify Chrome is available before doing any work
         export::ensure_chrome_available()
-            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         if req.html.is_empty() {
             return Err(ErrorData::invalid_request(
@@ -1612,5 +1633,21 @@ mod tests {
 
         // Clean up so this test does not affect other tests / real runs.
         let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_humanize_error_strips_type_path_prefix() {
+        // Simulate a typical Rust error display: type_path: human message.
+        let raw = "serde_json::error::Error: expected value at line 1 column 1";
+        let cleaned = humanize_error(raw);
+        assert_eq!(cleaned, "expected value at line 1 column 1");
+
+        // Generic Display without type path returns unchanged.
+        let simple = "connection refused";
+        assert_eq!(humanize_error(simple), "connection refused");
+
+        // Multi-segment type paths are stripped.
+        let nested = "std::io::Error: file not found (os error 2)";
+        assert_eq!(humanize_error(nested), "file not found (os error 2)");
     }
 }
