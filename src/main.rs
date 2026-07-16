@@ -1,6 +1,7 @@
 #![recursion_limit = "512"]
 
 use clap::{Parser, Subcommand};
+use indexmap::IndexMap;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng, rngs::StdRng};
 use serde_json::json;
@@ -115,6 +116,9 @@ enum Commands {
         /// Output file (defaults to stdout)
         #[arg(long)]
         output: Option<String>,
+        /// Override token values (e.g. --override accent=#FF5500 --override secondary=#222222)
+        #[arg(long = "override", value_name = "KEY=VALUE")]
+        override_tokens: Vec<String>,
     },
     /// Assemble slide HTML objects into a full carousel HTML document
     RenderCarousel {
@@ -341,6 +345,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             params,
             params_file,
             output,
+            override_tokens,
         }) => {
             cli_generate_slide(
                 slide_type,
@@ -355,6 +360,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 params,
                 params_file,
                 output,
+                override_tokens,
             )?;
         }
         Some(Commands::RenderCarousel {
@@ -521,6 +527,140 @@ fn cli_load_tokens(
     Ok(tokens)
 }
 
+/// Apply --override key=value pairs to a tokens struct.
+///
+/// Accepts the public color/font tokens on DesignTokens. Unknown keys are
+/// surfaced as warnings rather than errors — palette experiments should not
+/// block a render. Returns (applied, warnings) for the caller to echo back.
+fn cli_apply_token_overrides(
+    tokens: &mut design_system::DesignTokens,
+    overrides: &[String],
+) -> (Vec<String>, Vec<String>) {
+    use serde_json::Value;
+    // Serialise tokens into a JSON value so we can look up and patch any field
+    // by name without a giant per-field match arm.
+    let mut as_json = match serde_json::to_value(tokens.clone()) {
+        Ok(v) => v,
+        Err(_) => return (Vec::new(), vec!["Token override skipped: serialise failed".to_string()]),
+    };
+
+    let obj = match as_json.as_object_mut() {
+        Some(o) => o,
+        None => return (Vec::new(), vec!["Token override skipped: tokens is not an object".to_string()]),
+    };
+
+    let mut applied = Vec::new();
+    let mut warnings = Vec::new();
+
+    for spec in overrides {
+        let Some((key, value)) = spec.split_once('=') else {
+            warnings.push(format!(
+                "Override '{spec}' is not 'KEY=VALUE' format — skipped"
+            ));
+            continue;
+        };
+        let key = key.trim();
+        let value = value.trim();
+
+        if !obj.contains_key(key) {
+            // Suggest close matches for typo-tolerance. We try three cheap
+            // heuristics in order: exact case-insensitive match, substring
+            // match (either direction), then a one-edit Levenshtein
+            // approximation that catches single inserts / single typos.
+            let suggestion = obj
+                .keys()
+                .find(|k| k.eq_ignore_ascii_case(key))
+                .cloned()
+                .or_else(|| {
+                    let k_lc = key.to_lowercase();
+                    obj.keys()
+                        .find(|k| k.to_lowercase().contains(&k_lc) || k_lc.contains(&k.to_lowercase()))
+                        .cloned()
+                })
+                .or_else(|| {
+                    obj.keys()
+                        .find(|k| one_edit_apart(&k.to_lowercase(), &key.to_lowercase()))
+                        .cloned()
+                });
+            match suggestion {
+                Some(s) => warnings.push(format!(
+                    "Override '{key}' is not a token field — did you mean '{s}'?"
+                )),
+                None => warnings.push(format!("Override '{key}' is not a token field — skipped")),
+            }
+            continue;
+        }
+
+        // Strings always overwrite as strings. Numbers/bools/types of the
+        // target field could be parsed — but a CLI override should keep the
+        // same intent as the existing field, so we accept stringly-typed
+        // overrides (matches the natural CLI ergonomics).
+        obj.insert(key.to_string(), Value::String(value.to_string()));
+        applied.push(format!("{key}={value}"));
+    }
+
+    if let Ok(restored) = serde_json::from_value::<design_system::DesignTokens>(as_json) {
+        *tokens = restored;
+    } else {
+        warnings.push("Token override could not be re-deserialised into DesignTokens — skipped".to_string());
+    }
+
+    (applied, warnings)
+}
+
+/// Cheap one-edit Levenshtein approximation: true if `a` and `b` differ by
+/// exactly one insertion, deletion, or substitution. Used to power
+/// typo-tolerant suggestions from `cli_apply_token_overrides`.
+fn one_edit_apart(a: &str, b: &str) -> bool {
+    let la = a.chars().count();
+    let lb = b.chars().count();
+    if (la as i32 - lb as i32).abs() > 1 {
+        return false;
+    }
+    let av: Vec<char> = a.chars().collect();
+    let bv: Vec<char> = b.chars().collect();
+
+    if la == lb {
+        let mut mismatches = 0;
+        for (i, (&x, &y)) in av.iter().zip(bv.iter()).enumerate() {
+            if x != y {
+                mismatches += 1;
+                if mismatches > 1 {
+                    return false;
+                }
+                // One mismatched pair still allows matching tails.
+                let _ = i;
+            }
+        }
+        return mismatches == 1;
+    } else if la + 1 == lb {
+        // b is longer by one (single insertion in b)
+        return insertion_in_longer(&av, &bv);
+    } else if lb + 1 == la {
+        // a is longer by one (single deletion from a = insertion in b)
+        return insertion_in_longer(&bv, &av);
+    }
+    false
+}
+
+fn insertion_in_longer(shorter: &[char], longer: &[char]) -> bool {
+    let mut i = 0;
+    let mut j = 0;
+    let mut skipped = false;
+    while i < shorter.len() && j < longer.len() {
+        if shorter[i] == longer[j] {
+            i += 1;
+            j += 1;
+        } else if !skipped {
+            skipped = true;
+            j += 1; // skip the extra char in the longer string
+        } else {
+            return false;
+        }
+    }
+    true
+}
+
 /// Generate a single slide — CLI equivalent of MCP generate_slide
 #[allow(clippy::too_many_arguments)]
 fn cli_generate_slide(
@@ -536,11 +676,12 @@ fn cli_generate_slide(
     params: &Option<String>,
     params_file: &Option<String>,
     output: &Option<String>,
+    override_tokens: &[String],
 ) -> Result<(), Box<dyn std::error::Error>> {
     let slide_type = slide_type.to_lowercase().replace('-', "_");
 
     // Resolve tokens: either from --tokens-file or derive from --primary-color
-    let (tokens, resolved_theme) = if let Some(tf) = tokens_file {
+    let (mut tokens, resolved_theme) = if let Some(tf) = tokens_file {
         let t = cli_load_tokens(tf)?;
         (t, theme.clone().unwrap_or_else(|| "editorial".to_string()))
     } else {
@@ -575,6 +716,12 @@ fn cli_generate_slide(
         )?;
         (tokens, t.to_string())
     };
+
+    // Apply --override KEY=VALUE patches to the resolved tokens (single-value
+    // patches without rerunning palette derivation). Unknown keys are
+    // collected and reported as warnings after the render.
+    let (overrides_applied, overrides_warnings) =
+        cli_apply_token_overrides(&mut tokens, override_tokens);
 
     let bg = bg_style.as_deref().unwrap_or("light");
     let arch = archetype.as_deref().unwrap_or("educator");
@@ -616,6 +763,15 @@ fn cli_generate_slide(
                 "validation".to_string(),
                 serde_json::json!({
                     "warnings": validation.warnings,
+                }),
+            );
+        }
+        if !overrides_applied.is_empty() || !overrides_warnings.is_empty() {
+            obj.insert(
+                "token_overrides".to_string(),
+                serde_json::json!({
+                    "applied": overrides_applied,
+                    "warnings": overrides_warnings,
                 }),
             );
         }
@@ -1269,4 +1425,105 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
     println!("All generated HTML test outputs saved in: {:?}", output_dir);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::design_system::DesignTokens;
+
+    fn minimal_tokens() -> DesignTokens {
+        DesignTokens {
+            primary: "#4f46e5".to_string(),
+            primary_light: "#a5b4fc".to_string(),
+            primary_dark: "#3730a3".to_string(),
+            surface_light: "#ffffff".to_string(),
+            surface_dark: "#101014".to_string(),
+            text_primary: "#18181b".to_string(),
+            text_secondary: "#52525b".to_string(),
+            text_on_dark: "#f8fafc".to_string(),
+            text_on_dark_secondary: "#cbd5e1".to_string(),
+            border_light: "#e4e4e7".to_string(),
+            border_dark: "#27272a".to_string(),
+            accent: "#ec4899".to_string(),
+            secondary: "#f59e0b".to_string(),
+            tertiary: "#10b981".to_string(),
+            gradient: "linear-gradient(135deg,#4f46e5,#ec4899)".to_string(),
+            temperature: "cool".to_string(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            google_fonts_url: "https://fonts.googleapis.com/css2?family=Inter".to_string(),
+            type_scale: IndexMap::new(),
+            spacing: IndexMap::new(),
+            contrast_report: IndexMap::new(),
+            shadows: IndexMap::new(),
+            radii: IndexMap::new(),
+            gradients: IndexMap::new(),
+            textures: IndexMap::new(),
+            glass: serde_json::json!({}),
+        }
+    }
+
+    #[test]
+    fn test_cli_token_override_applies_known_fields() {
+        let mut tokens = minimal_tokens();
+        let (applied, warnings) =
+            cli_apply_token_overrides(&mut tokens, &["primary=#FF5500".to_string()]);
+
+        assert_eq!(applied, vec!["primary=#FF5500".to_string()]);
+        assert!(warnings.is_empty(), "no warnings expected, got {warnings:?}");
+        assert_eq!(tokens.primary, "#FF5500");
+    }
+
+    #[test]
+    fn test_cli_token_override_warns_on_unknown_key_with_suggestion() {
+        let mut tokens = minimal_tokens();
+        let (applied, warnings) = cli_apply_token_overrides(
+            &mut tokens,
+            &["acccent=#123456".to_string()], // typo: acccent
+        );
+
+        assert!(applied.is_empty(), "typo key should NOT be applied");
+        assert_eq!(warnings.len(), 1);
+        assert!(
+            warnings[0].contains("accent"),
+            "suggestion should mention 'accent', got: {warnings:?}"
+        );
+    }
+
+    #[test]
+    fn test_cli_token_override_ignores_malformed_spec() {
+        let mut tokens = minimal_tokens();
+        let (applied, warnings) =
+            cli_apply_token_overrides(&mut tokens, &["notakeyvalue".to_string()]);
+
+        assert!(applied.is_empty());
+        assert!(
+            warnings[0].contains("KEY=VALUE"),
+            "warning names the expected format"
+        );
+    }
+
+    #[test]
+    fn test_cli_token_override_preserves_other_fields() {
+        let mut tokens = minimal_tokens();
+        let _ = cli_apply_token_overrides(&mut tokens, &["accent=#000000".to_string()]);
+
+        assert_eq!(tokens.primary, "#4f46e5");
+        assert_eq!(tokens.accent, "#000000");
+        assert_eq!(tokens.heading_font, "Inter");
+    }
+
+    #[test]
+    fn test_one_edit_apart_detects_typos() {
+        // ponytail: single-insertion, single-deletion, single-substitution.
+        // True Levenshtein (with transposition) not implemented — Damerau is
+        // not worth the complexity for a CLI typo hint; substring / case-
+        // insensitive match catches the rest in practice.
+        assert!(one_edit_apart("accent", "acccent"), "extra insertion");
+        assert!(one_edit_apart("accent", "accen"), "single deletion");
+        assert!(one_edit_apart("accent", "accint"), "single substitution");
+        assert!(!one_edit_apart("accent", "primary"), "unrelated keys");
+        assert!(!one_edit_apart("accent", "verydifferentkey"), "far apart");
+    }
 }
