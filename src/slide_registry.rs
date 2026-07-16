@@ -10,7 +10,13 @@ pub fn get_registry() -> Value {
             "variants": ["centered", "left-aligned", "split", "dark", "gradient"],
             "default_variant": "centered",
             "layout_family": "hero",
-            "best_for": ["opening", "section-intro"]
+            "best_for": ["opening", "section-intro"],
+            "example": {
+                "headline": "Ship slides in minutes, not days",
+                "subheadline": "AI-driven carousel composition",
+                "badge": "NEW",
+                "variant": "gradient"
+            }
         },
         "feature": {
             "description": "Single-feature highlight with icon, title, and description",
@@ -19,7 +25,14 @@ pub fn get_registry() -> Value {
             "variants": ["icon-top", "icon-left", "icon-right", "image-split", "minimal"],
             "default_variant": "icon-top",
             "layout_family": "feature",
-            "best_for": ["features", "benefits", "product-details"]
+            "best_for": ["features", "benefits", "product-details"],
+            "example": {
+                "title": "Lightning fast",
+                "description": "Generate a 10-slide carousel in under 12 seconds.",
+                "icon": "⚡",
+                "icon_color": "#FFB400",
+                "variant": "icon-top"
+            }
         },
         "list": {
             "description": "Bulleted or numbered list of items",
@@ -28,7 +41,18 @@ pub fn get_registry() -> Value {
             "variants": ["bullet", "numbered", "checklist", "icon-list", "two-column"],
             "default_variant": "bullet",
             "layout_family": "list",
-            "best_for": ["features", "steps", "requirements", "comparison"]
+            "best_for": ["features", "steps", "requirements", "comparison"],
+            "example": {
+                "title": "Why teams switch",
+                "items": [
+                    "Native Rust rendering pipeline",
+                    "MCP-native agent ergonomics",
+                    "Pixel-perfect typography control",
+                    "Validator-catch design regressions"
+                ],
+                "icon": "✓",
+                "variant": "checklist"
+            }
         },
         "quote": {
             "description": "Testimonial or pull-quote with optional attribution",
@@ -37,7 +61,15 @@ pub fn get_registry() -> Value {
             "variants": ["centered", "card", "large-quote", "with-avatar", "minimal"],
             "default_variant": "centered",
             "layout_family": "social-proof",
-            "best_for": ["social-proof", "testimonials", "credibility"]
+            "best_for": ["social-proof", "testimonials", "credibility"],
+            "example": {
+                "quote": "We shipped our deck in an afternoon — usually it takes a week.",
+                "author": "Maya Chen",
+                "role": "Head of Growth",
+                "company": "Northwind Labs",
+                "rating": 5,
+                "variant": "with-avatar"
+            }
         },
         "cta": {
             "description": "Call-to-action slide with button and supporting copy",
@@ -46,7 +78,14 @@ pub fn get_registry() -> Value {
             "variants": ["centered", "split", "banner", "minimal", "dark"],
             "default_variant": "centered",
             "layout_family": "cta",
-            "best_for": ["closing", "conversion", "next-step"]
+            "best_for": ["closing", "conversion", "next-step"],
+            "example": {
+                "headline": "Ready to ship your first deck?",
+                "subheadline": "Free for the first 100 creators.",
+                "button_text": "Start building",
+                "button_url": "https://example.com/signup",
+                "variant": "centered"
+            }
         },
         "comparison": {
             "description": "Side-by-side comparison grid (e.g. Before/After, Plan A vs Plan B)",
@@ -55,7 +94,18 @@ pub fn get_registry() -> Value {
             "variants": ["table", "cards", "vs-split", "feature-matrix"],
             "default_variant": "table",
             "layout_family": "data",
-            "best_for": ["comparison", "pricing", "features"]
+            "best_for": ["comparison", "pricing", "features"],
+            "example": {
+                "title": "Free vs Pro",
+                "columns": ["Free", "Pro"],
+                "rows": [
+                    ["Slides per month", "5", "Unlimited"],
+                    ["Custom typography", "—", "✓"],
+                    ["Brand presets", "1", "Unlimited"]
+                ],
+                "highlight_column": 1,
+                "variant": "table"
+            }
         },
         "stat_row": {
             "description": "Grid of key statistics or metrics",
@@ -64,7 +114,17 @@ pub fn get_registry() -> Value {
             "variants": ["grid", "row", "cards", "minimal", "dark"],
             "default_variant": "grid",
             "layout_family": "data",
-            "best_for": ["data", "proof-points", "results"]
+            "best_for": ["data", "proof-points", "results"],
+            "example": {
+                "title": "By the numbers",
+                "stats": [
+                    {"label": "Active decks", "value": "12k+"},
+                    {"label": "Avg render time", "value": "11s"},
+                    {"label": "Failure rate", "value": "0.4%"}
+                ],
+                "columns": 3,
+                "variant": "grid"
+            }
         },
         "timeline": {
             "description": "Process or chronological timeline",
@@ -334,7 +394,15 @@ pub fn get_registry() -> Value {
             "variants": ["theme-bg", "image-bg", "minimal", "with-heading", "without-heading", "with-caption", "with-cta", "full-conversion", "split-card", "poster", "stacked-badge", "compact"],
             "default_variant": "full-conversion",
             "layout_family": "conversion",
-            "best_for": ["conversion", "closing", "off-platform", "blog", "donation", "digital-product", "newsletter", "link-hub"]
+            "best_for": ["conversion", "closing", "off-platform", "blog", "donation", "digital-product", "newsletter", "link-hub"],
+            "example": {
+                "heading": "Scan to subscribe",
+                "caption": "Or visit the link in our bio.",
+                "destination_url": "https://example.com/newsletter",
+                "cta_text": "Scan to sign up",
+                "short_url": "example.com/news",
+                "variant": "full-conversion"
+            }
         },
         "scatter_plot": {
             "description": "Scatter plot showing correlation between two variables with data points",
@@ -441,12 +509,142 @@ pub fn list_slide_types() -> Vec<String> {
 }
 
 /// Returns the metadata for a single slide type, or None if not found.
+///
+/// The returned JSON always exposes a `usage_hint` string that summarizes
+/// expected param types — e.g. "required: headline (string), subheadline (string)".
+/// This makes the schema discoverable from a single call without requiring the
+/// caller to read the validator source.
 pub fn get_slide_type_info(slide_type: &str) -> Option<Value> {
     let registry = get_registry();
-    registry
+    let mut entry = registry
         .as_object()
         .and_then(|m: &serde_json::Map<String, Value>| m.get(slide_type))
-        .cloned()
+        .cloned()?;
+
+    let required = entry
+        .get("required_params")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(|s| s.to_string())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    let optional = entry
+        .get("optional_params")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(|s| s.to_string())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+
+    let hint = build_usage_hint(slide_type, &required, &optional);
+
+    if let Some(obj) = entry.as_object_mut() {
+        obj.entry("usage_hint".to_string())
+            .or_insert(Value::String(hint.clone()));
+    }
+
+    Some(entry)
+}
+
+/// Heuristic mapping from param name to inferred JSON type, for usage hints
+/// only. The hard validator (`validate::validate_slide_spec`) remains the
+/// source of truth — this is purely for LLM discoverability.
+fn param_type_hint(slide_type: &str, name: &str) -> &'static str {
+    // qr_destination aliases
+    if slide_type == "qr_destination" {
+        if name == "destination_url" {
+            return "string (URL) — alias: url";
+        }
+        if name == "cta_text" {
+            return "string — alias: button_text";
+        }
+    }
+
+    let array_like = [
+        "items", "features", "cards", "rows", "columns", "stats", "steps",
+        "tags", "data", "values", "labels", "metrics", "options", "entries",
+        "questions", "answers", "rows_data",
+    ];
+    let object_like = ["qr_payload"];
+    let bool_like = [
+        "show_progress", "show_numbers", "show_dates", "show_icons",
+        "show_checkmarks", "show_divider", "show_cta", "ordered",
+        "is_myth", "is_fact", "show_caption",
+    ];
+    let color_like = [
+        "background_color", "text_color", "border_color", "icon_color",
+        "color", "primary_color", "accent_color",
+    ];
+    let url_like = [
+        "image_url", "avatar_url", "logo_url", "background_image",
+        "button_url", "url", "destination_url",
+    ];
+    let number_like = [
+        "rating", "count", "index", "max_width", "max_height",
+    ];
+
+    if array_like.contains(&name) {
+        "array"
+    } else if object_like.contains(&name) {
+        "object"
+    } else if bool_like.contains(&name) {
+        "bool"
+    } else if color_like.contains(&name) {
+        "string (hex color, e.g. \"#FF5500\")"
+    } else if url_like.contains(&name) {
+        "string (URL)"
+    } else if number_like.contains(&name) {
+        "number"
+    } else {
+        "string"
+    }
+}
+
+fn build_usage_hint(slide_type: &str, required: &[String], optional: &[String]) -> String {
+    let req_strs: Vec<String> = required
+        .iter()
+        .map(|p| format!("{} ({})", p, param_type_hint(slide_type, p)))
+        .collect();
+    let opt_strs: Vec<String> = optional
+        .iter()
+        .map(|p| format!("{} ({})", p, param_type_hint(slide_type, p)))
+        .collect();
+
+    let mut hint = format!(
+        "Call generate_slide with slide_type=\"{}\". Required: {}. Optional: {}.",
+        slide_type,
+        if req_strs.is_empty() {
+            "none".to_string()
+        } else {
+            req_strs.join(", ")
+        },
+        if opt_strs.is_empty() {
+            "none".to_string()
+        } else {
+            opt_strs.join(", ")
+        }
+    );
+
+    // Append a concrete parameter example if the registry defines one.
+    let registry = get_registry();
+    if let Some(entry) = registry
+        .as_object()
+        .and_then(|m: &serde_json::Map<String, Value>| m.get(slide_type))
+    {
+        if let Some(example) = entry.get("example").and_then(|v| v.as_object()) {
+            let example_json = serde_json::to_string(example).unwrap_or_default();
+            hint.push_str(&format!(" Example params: {}.", example_json));
+        }
+    }
+
+    hint
 }
 
 /// Returns slide types appropriate for the given context.
@@ -620,5 +818,54 @@ mod tests {
                 "missing QR variant {variant}"
             );
         }
+    }
+
+    #[test]
+    fn test_get_slide_type_info_includes_usage_hint() {
+        // Every well-defined slide type must return a usage_hint string that
+        // names its required and optional params. This is what makes the
+        // schema discoverable in a single tool call.
+        for slide_type in ["hero", "feature", "list", "quote", "cta", "qr_destination"] {
+            let info = get_slide_type_info(slide_type)
+                .unwrap_or_else(|| panic!("type {slide_type} missing"));
+            let hint = info["usage_hint"]
+                .as_str()
+                .unwrap_or_else(|| panic!("type {slide_type} missing usage_hint"));
+            assert!(
+                hint.contains("generate_slide"),
+                "hint for {slide_type} lacks tool call: {hint}"
+            );
+            assert!(
+                hint.to_lowercase().contains("required"),
+                "hint for {slide_type} lacks required section: {hint}"
+            );
+            assert!(
+                hint.to_lowercase().contains("optional"),
+                "hint for {slide_type} lacks optional section: {hint}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_qr_destination_hint_includes_aliases_and_example() {
+        // The QR aliases (destination_url/url, cta_text/button_text) were a
+        // frequent agent mistake; the hint must surface them explicitly.
+        let info = get_slide_type_info("qr_destination").expect("present");
+        let hint = info["usage_hint"].as_str().expect("str");
+        assert!(hint.contains("alias: url"), "destination_url alias missing: {hint}");
+        assert!(hint.contains("alias: button_text"), "cta_text alias missing: {hint}");
+        // And the example field must be exposed too.
+        let example = info["example"].as_object().expect("example object");
+        assert!(example.contains_key("destination_url"));
+        assert!(example.contains_key("cta_text"));
+    }
+
+    #[test]
+    fn test_qr_destination_usage_hint_contains_array_param_hint() {
+        // stat_row's `stats` is an array — confirm the hint calls that out
+        // so agents pass an array, not a string.
+        let info = get_slide_type_info("stat_row").expect("present");
+        let hint = info["usage_hint"].as_str().expect("str");
+        assert!(hint.contains("(array)"), "stats param should be hinted as array: {hint}");
     }
 }
