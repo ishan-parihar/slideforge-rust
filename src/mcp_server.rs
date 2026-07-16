@@ -857,6 +857,10 @@ impl Server {
         &self,
         Parameters(req): Parameters<ExportCarouselSlidesRequest>,
     ) -> Result<Json<ExportResponse>, ErrorData> {
+        // Pre-flight: verify Chrome is available before doing any work
+        export::ensure_chrome_available()
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+
         let (state_platform, state_aspect_ratio) = {
             let state = self.state.lock().unwrap();
             (state.platform.clone(), state.aspect_ratio.clone())
@@ -1276,6 +1280,10 @@ impl Server {
         Parameters(req): Parameters<PreviewSlideRequest>,
     ) -> Result<Json<RawJson>, ErrorData> {
         use std::fs;
+
+        // Pre-flight: verify Chrome is available before doing any work
+        export::ensure_chrome_available()
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
 
         if req.html.is_empty() {
             return Err(ErrorData::invalid_request(

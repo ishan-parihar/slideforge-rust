@@ -3,6 +3,24 @@ use headless_chrome::{Browser, LaunchOptions};
 use std::fs;
 use std::path::Path;
 
+const CHROME_INSTALL_HINT: &str = "Chromium/Chrome is not installed or not on PATH.\n\
+    Install options:\n\
+      - Ubuntu/Debian: sudo apt install chromium-browser\n\
+      - macOS:         brew install --cask chromium\n\
+      - Windows:       https://www.chromium.org/getting-involved/download-chromium/\n\
+    Or set CHROME_PATH env var to your Chrome/Chromium binary.";
+
+/// Verify that a headless Chrome instance can be launched.
+/// Returns Ok(()) if Chrome is available, or Err with install instructions.
+pub fn ensure_chrome_available() -> Result<(), String> {
+    let ops = LaunchOptions::default_builder()
+        .headless(true)
+        .build()
+        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
+    Browser::new(ops).map_err(|_| CHROME_INSTALL_HINT.to_string())?;
+    Ok(())
+}
+
 /// Render a single HTML file to a PNG. Used by the `preview_slide` MCP tool
 /// for quick single-slide previews without the full carousel export dance.
 pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Result<(), String> {
@@ -13,9 +31,9 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
     let ops = LaunchOptions::default_builder()
         .headless(true)
         .build()
-        .map_err(|e| e.to_string())?;
-    let browser = Browser::new(ops).map_err(|e| e.to_string())?;
-    let tab = browser.new_tab().map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
+    let browser = Browser::new(ops).map_err(|e| format!("{} ({})", CHROME_INSTALL_HINT, e))?;
+    let tab = browser.new_tab().map_err(|e| format!("Failed to open browser tab: {}", e))?;
 
     use headless_chrome::types::Bounds;
     // Use a generous viewport; the slide centers itself via body flexbox
@@ -70,10 +88,10 @@ pub async fn export_slides(
     let ops = LaunchOptions::default_builder()
         .headless(true)
         .build()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
 
-    let browser = Browser::new(ops).map_err(|e| e.to_string())?;
-    let tab = browser.new_tab().map_err(|e| e.to_string())?;
+    let browser = Browser::new(ops).map_err(|e| format!("{} ({})", CHROME_INSTALL_HINT, e))?;
+    let tab = browser.new_tab().map_err(|e| format!("Failed to open browser tab: {}", e))?;
 
     use headless_chrome::types::Bounds;
     tab.set_bounds(Bounds::Normal {

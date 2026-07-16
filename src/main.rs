@@ -223,6 +223,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             preset,
             aspect_ratio,
         }) => {
+            export::ensure_chrome_available()?;
             let canvas = platforms::resolve_canvas(preset, aspect_ratio.as_deref())?;
             println!(
                 "Exporting {} slides from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
@@ -442,6 +443,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             cli_embed_image(file_path)?;
         }
         Some(Commands::PreviewSlide { html_file, output }) => {
+            export::ensure_chrome_available()?;
             let html = if html_file == "-" {
                 use std::io::Read;
                 let mut buf = String::new();
