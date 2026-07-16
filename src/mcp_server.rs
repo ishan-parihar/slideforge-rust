@@ -20,7 +20,7 @@ use std::sync::{Arc, Mutex};
 
 // ── Session state ─────────────────────────────────────────────────────────────
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerState {
     pub primary_color: String,
     pub font_style: String,
@@ -45,6 +45,63 @@ pub struct ServerState {
     pub aspect_ratio: String,
     pub bg_style: String,
     pub validated: bool,
+}
+
+impl Default for ServerState {
+    fn default() -> Self {
+        Self {
+            primary_color: String::new(),
+            font_style: String::new(),
+            type_scale_base: 16,
+            type_scale_ratio: 1.25,
+            preset: String::new(),
+            css_variables: String::new(),
+            google_fonts_url: String::new(),
+            heading_font: String::new(),
+            body_font: String::new(),
+            brand_name: String::new(),
+            brand_handle: String::new(),
+            visual_theme: String::new(),
+            layout_theme: String::new(),
+            effect_theme: String::new(),
+            topic: String::new(),
+            url: String::new(),
+            hashtags: Vec::new(),
+            show_progress: true,
+            archetype: String::new(),
+            platform: String::new(),
+            aspect_ratio: String::new(),
+            bg_style: String::new(),
+            validated: false,
+        }
+    }
+}
+
+/// Path to the persistent session state file. Stored under $HOME so it survives
+/// new MCP connection spawns (each `Server::new()` reloads from this path).
+fn session_state_path() -> Option<std::path::PathBuf> {
+    let home = std::env::var_os("HOME")?;
+    Some(
+        std::path::PathBuf::from(home)
+            .join(".slideforge")
+            .join("session_state.json"),
+    )
+}
+
+fn persist_state(state: &ServerState) {
+    let Some(path) = session_state_path() else { return };
+    if let Some(parent) = path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    if let Ok(json) = serde_json::to_string_pretty(state) {
+        let _ = std::fs::write(&path, json);
+    }
+}
+
+fn load_persisted_state() -> Option<ServerState> {
+    let path = session_state_path()?;
+    let content = std::fs::read_to_string(&path).ok()?;
+    serde_json::from_str(&content).ok()
 }
 
 fn platform_context_json(platform: &str, aspect_ratio: &str) -> serde_json::Value {
@@ -301,9 +358,12 @@ pub struct Server {
 
 impl Server {
     pub fn new() -> Self {
+        // Reload persisted state if present so configure_design survives
+        // across separate MCP connections / new Server spawns.
+        let state = load_persisted_state().unwrap_or_default();
         Self {
             tool_router: Self::tool_router(),
-            state: Arc::new(Mutex::new(ServerState::default())),
+            state: Arc::new(Mutex::new(state)),
         }
     }
 
@@ -496,12 +556,20 @@ impl Server {
         state.bg_style = req.bg_style.clone().unwrap_or_else(|| "light".to_string());
         state.validated = true;
 
-        let layout_theme = state.layout_theme.clone();
-        let effect_theme = state.effect_theme.clone();
-        let topic = state.topic.clone();
-        let archetype = state.archetype.clone();
-        let platform = state.platform.clone();
-        let aspect_ratio = state.aspect_ratio.clone();
+        // Snapshot for persistence (state is locked; clone before unlock).
+        let snapshot = state.clone();
+
+        drop(state);
+
+        let layout_theme = snapshot.layout_theme.clone();
+        let effect_theme = snapshot.effect_theme.clone();
+        let topic = snapshot.topic.clone();
+        let archetype = snapshot.archetype.clone();
+        let platform = snapshot.platform.clone();
+        let aspect_ratio = snapshot.aspect_ratio.clone();
+
+        // Persist so subsequent MCP connections inherit this config.
+        persist_state(&snapshot);
 
         Ok(Json(ConfigureDesignResponse {
             status: "configured".to_string(),
@@ -1474,7 +1542,7 @@ mod tests {
         let res = server.export_carousel_slides(Parameters(export_req)).await;
         // It should either return an error about file not found (internal error) or similar, but NOT invalid request.
         match res {
-            Err(e) => {
+             Err(e) => {
                 // If it got past platforms::resolve_canvas, it will try to export, which fails with internal error.
                 // If platforms::resolve_canvas failed, it would return invalid_request about unknown platform or aspect ratio.
                 assert!(!e.message.contains("Unknown platform preset"));
@@ -1482,5 +1550,67 @@ mod tests {
             }
             _ => {}
         }
+    }
+
+    #[test]
+    fn test_server_state_serialization_roundtrip() {
+        // ServerState must round-trip through serde to support file persistence.
+        let mut original = ServerState::default();
+        original.primary_color = "#4f46e5".to_string();
+        original.font_style = "editorial".to_string();
+        original.preset = "tonal_spot".to_string();
+        original.visual_theme = "editorial".to_string();
+        original.platform = "instagram_portrait".to_string();
+        original.aspect_ratio = "4:5".to_string();
+        original.brand_name = "TestBrand".to_string();
+        original.topic = "Design tokens".to_string();
+        original.hashtags = vec!["#design".to_string(), "#tokens".to_string()];
+        original.validated = true;
+
+        let json = serde_json::to_string(&original).expect("serialize");
+        let restored: ServerState = serde_json::from_str(&json).expect("deserialize");
+
+        assert_eq!(restored.primary_color, original.primary_color);
+        assert_eq!(restored.font_style, original.font_style);
+        assert_eq!(restored.preset, original.preset);
+        assert_eq!(restored.topic, original.topic);
+        assert_eq!(restored.hashtags, original.hashtags);
+        assert!(restored.validated);
+    }
+
+    #[test]
+    fn test_server_new_restores_persisted_state() {
+        // Simulate a prior session by writing a state file with non-default values
+        // and verifying that Server::new() loads it instead of using defaults.
+        let path = session_state_path().expect("home dir");
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).expect("create dir");
+        }
+
+        let mut prior = ServerState::default();
+        prior.primary_color = "#aabbcc".to_string();
+        prior.font_style = "modern".to_string();
+        prior.preset = "vibrant".to_string();
+        prior.visual_theme = "bold".to_string();
+        prior.brand_name = "RestoredBrand".to_string();
+        prior.validated = true;
+        prior.platform = "instagram_square".to_string();
+        prior.aspect_ratio = "1:1".to_string();
+        persist_state(&prior);
+
+        // Restore from disk via Server::new()
+        let server = Server::new();
+        let state = server.state.lock().unwrap();
+
+        assert_eq!(state.primary_color, "#aabbcc");
+        assert_eq!(state.font_style, "modern");
+        assert_eq!(state.preset, "vibrant");
+        assert_eq!(state.brand_name, "RestoredBrand");
+        assert_eq!(state.platform, "instagram_square");
+        assert_eq!(state.aspect_ratio, "1:1");
+        assert!(state.validated);
+
+        // Clean up so this test does not affect other tests / real runs.
+        let _ = std::fs::remove_file(&path);
     }
 }
