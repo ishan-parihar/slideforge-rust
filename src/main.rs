@@ -579,8 +579,22 @@ fn cli_generate_slide(
 
     let params_json = cli_read_params(params, params_file)?;
 
-    // Pre-flight validation
+    // Pre-flight validation — abort if required params are missing
     let validation = validate::validate_slide_spec(&slide_type, &params_json);
+
+    if !validation.errors.is_empty() {
+        let response = serde_json::json!({
+            "success": false,
+            "slide_type": slide_type,
+            "validation": {
+                "errors": validation.errors,
+                "warnings": validation.warnings,
+            },
+            "hint": format!("Run 'slideforge slide-info {}' to see required params.", slide_type),
+        });
+        eprintln!("{}", serde_json::to_string_pretty(&response)?);
+        std::process::exit(1);
+    }
 
     let result = components::dispatch_slide(
         &slide_type,
@@ -591,15 +605,14 @@ fn cli_generate_slide(
         arch,
     )?;
 
-    // Enrich with slide_type + validation (matching MCP behavior)
+    // Enrich with slide_type + validation warnings (errors already blocked above)
     let mut enriched = result;
     if let Some(obj) = enriched.as_object_mut() {
         obj.insert("slide_type".to_string(), serde_json::json!(slide_type));
-        if !validation.errors.is_empty() || !validation.warnings.is_empty() {
+        if !validation.warnings.is_empty() {
             obj.insert(
                 "validation".to_string(),
                 serde_json::json!({
-                    "errors": validation.errors,
                     "warnings": validation.warnings,
                 }),
             );

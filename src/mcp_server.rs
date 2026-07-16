@@ -699,11 +699,22 @@ impl Server {
         let params = req.params.clone().unwrap_or(serde_json::json!({}));
         let slide_type = req.slide_type.to_lowercase().replace('-', "_");
 
-        // Pre-flight validation: check required params and collect warnings
+        // Pre-flight validation — block if required params are missing
         let validation = validate::validate_slide_spec(&slide_type, &params);
-        let warnings = if !validation.warnings.is_empty() || !validation.errors.is_empty() {
+
+        if !validation.errors.is_empty() {
+            return Err(ErrorData::invalid_request(
+                format!(
+                    "Missing required params for '{}': {}. Call get_slide_type_info for schema.",
+                    slide_type,
+                    validation.errors.join("; ")
+                ),
+                None,
+            ));
+        }
+
+        let warnings = if !validation.warnings.is_empty() {
             Some(serde_json::json!({
-                "errors": validation.errors,
                 "warnings": validation.warnings,
             }))
         } else {
