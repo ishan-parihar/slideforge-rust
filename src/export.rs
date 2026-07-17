@@ -1,6 +1,7 @@
 use headless_chrome::protocol::cdp::Page::CaptureScreenshotFormatOption;
 use headless_chrome::protocol::cdp::Page::Viewport;
 use headless_chrome::{Browser, LaunchOptions};
+use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
@@ -11,13 +12,54 @@ const CHROME_INSTALL_HINT: &str = "Chromium/Chrome is not installed or not on PA
       - Windows:       https://www.chromium.org/getting-involved/download-chromium/\n\
     Or set CHROME_PATH env var to your Chrome/Chromium binary.";
 
+/// Chrome flags that reduce memory footprint by ~60-75%.
+/// - single-process: eliminates separate GPU/utility/network processes (~300 MB)
+/// - disable-gpu: no SwiftShader GPU process (~50 MB)
+/// - disable-dev-shm-usage: use /tmp not /dev/shm (container-safe)
+/// - headless=new: smaller headless mode
+const CHROME_ARGS: &[&str] = &[
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-breakpad",
+    "--disable-client-side-phishing-detection",
+    "--disable-component-extensions-with-background-pages",
+    "--disable-default-apps",
+    "--disable-hang-monitor",
+    "--disable-ipc-flooding-protection",
+    "--disable-popup-blocking",
+    "--disable-prompt-on-repost",
+    "--disable-renderer-backgrounding",
+    "--disable-sync",
+    "--disable-site-isolation-trials",
+    "--force-color-profile=srgb",
+    "--metrics-recording-only",
+    "--no-first-run",
+    "--enable-automation",
+    "--password-store=basic",
+    "--use-mock-keychain",
+    "--single-process",
+];
+
+/// Build LaunchOptions with memory-optimized Chrome flags.
+fn optimized_launch_options() -> Result<headless_chrome::LaunchOptions<'static>, String> {
+    let args: Vec<&OsStr> = CHROME_ARGS.iter().map(|s| s.as_ref()).collect();
+    LaunchOptions::default_builder()
+        .headless(true)
+        .args(args)
+        .build()
+        .map_err(|e| format!("Failed to configure headless browser: {}", e))
+}
+
 /// Verify that a headless Chrome instance can be launched.
 /// Returns Ok(()) if Chrome is available, or Err with install instructions.
 pub fn ensure_chrome_available() -> Result<(), String> {
-    let ops = LaunchOptions::default_builder()
-        .headless(true)
-        .build()
-        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
+    let ops = optimized_launch_options()?;
     Browser::new(ops).map_err(|_| CHROME_INSTALL_HINT.to_string())?;
     Ok(())
 }
@@ -29,10 +71,7 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
         .map_err(|e| format!("Could not canonicalize HTML path: {}", e))?;
     let file_url = format!("file://{}", abs_html_path.to_string_lossy());
 
-    let ops = LaunchOptions::default_builder()
-        .headless(true)
-        .build()
-        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
+    let ops = optimized_launch_options()?;
     let browser = Browser::new(ops).map_err(|e| format!("{} ({})", CHROME_INSTALL_HINT, e))?;
     let tab = browser.new_tab().map_err(|e| format!("Failed to open browser tab: {}", e))?;
 
@@ -95,10 +134,7 @@ pub async fn export_slides(
         .map_err(|e| format!("Could not canonicalize HTML path: {}", e))?;
     let file_url = format!("file://{}", abs_html_path.to_string_lossy());
 
-    let ops = LaunchOptions::default_builder()
-        .headless(true)
-        .build()
-        .map_err(|e| format!("Failed to configure headless browser: {}", e))?;
+    let ops = optimized_launch_options()?;
 
     let browser = Browser::new(ops).map_err(|e| format!("{} ({})", CHROME_INSTALL_HINT, e))?;
     let tab = browser.new_tab().map_err(|e| format!("Failed to open browser tab: {}", e))?;
