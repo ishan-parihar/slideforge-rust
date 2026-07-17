@@ -1771,10 +1771,10 @@ pub fn cta_slide(
 pub fn comparison_slide(
     tokens: &DesignTokens,
     title: &str,
-    left_label: &str,
-    left_items: Vec<String>,
-    right_label: &str,
-    right_items: Vec<String>,
+    columns: Vec<String>,
+    rows: Vec<Vec<String>>,
+    highlight_column: Option<usize>,
+    show_checkmarks: bool,
     bg_style: &str,
     variant: &str,
     theme: &str,
@@ -1806,131 +1806,185 @@ pub fn comparison_slide(
         .get("sm")
         .cloned()
         .unwrap_or_else(|| "6px".to_string());
+    let radius_md = current_component_radius(tokens, "card");
+    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
 
     let effective_variant = variant;
+    let num_cols = columns.len().max(1);
 
-    let content = match effective_variant {
-        "stacked" => {
+    let content = if columns.is_empty() {
+        // Fallback: render title + empty state
+        format!(
+            "{}{}<div style=\"font-family:{};font-size:{}px;color:{};text-align:center;padding:var(--space-6);\">No columns provided.</div>{}",
+            gc, heading, tokens.body_font, body_fs, colors.text_secondary, gx
+        )
+    } else { match effective_variant {
+        "cards" => {
+            // Each row rendered as a card with column values side-by-side
+            let mut cards_html = String::new();
+            for row in &rows {
+                let label = row.first().map(|s| s.as_str()).unwrap_or("");
+                let mut values_html = String::new();
+                for (ci, col_name) in columns.iter().enumerate() {
+                    let val = row.get(ci + 1).map(|s| s.as_str()).unwrap_or("");
+                    let is_highlighted = highlight_column == Some(ci);
+                    let val_color = if is_highlighted {
+                        tokens.primary.clone()
+                    } else {
+                        colors.text_primary.clone()
+                    };
+                    values_html.push_str(&format!(
+                        r#"<div style="flex:1;text-align:center;">
+                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};">{}</div>
+                            <div style="font-family:{};font-size:{}px;color:{};margin-top:2px;">{}</div>
+                        </div>"#,
+                        tokens.heading_font, caption_fs, colors.text_secondary, escape_html(col_name),
+                        tokens.body_font, body_fs, val_color, escape_html(val)
+                    ));
+                }
+                cards_html.push_str(&format!(
+                    r#"<div style="background:{};border:{};{}border-radius:{};padding:12px 16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};margin-bottom:8px;">{}</div>
+                        <div style="display:flex;gap:8px;">{}</div>
+                    </div>"#,
+                    card_bg, card_border, card_blur, radius_md,
+                    tokens.body_font, body_fs, colors.text_primary, escape_html(label),
+                    values_html
+                ));
+            }
+            format!("{}{}<div style=\"margin-top:12px;\">{}</div>{}", gc, heading, cards_html, gx)
+        }
+        "vs-split" => {
+            // Two-column split: left column = first data column, right column = second data column
+            let col_a = columns.get(0).map(|s| s.as_str()).unwrap_or("");
+            let col_b = columns.get(1).map(|s| s.as_str()).unwrap_or("");
             let mut left_rows = String::new();
-            for item in &left_items {
-                left_rows.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:var(--space-0) 0;">{}</div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(item)
-                ));
-            }
             let mut right_rows = String::new();
-            for item in &right_items {
+            for row in &rows {
+                let label = row.first().map(|s| s.as_str()).unwrap_or("");
+                let val_a = row.get(1).map(|s| s.as_str()).unwrap_or("");
+                let val_b = row.get(2).map(|s| s.as_str()).unwrap_or("");
+                left_rows.push_str(&format!(
+                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:8px 0;border-bottom:1px solid {}20;">{}<div style=\"font-weight:600;margin-top:2px;\">{}</div></div>"#,
+                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label), escape_html(val_a)
+                ));
                 right_rows.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:var(--space-0) 0;">{}</div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(item)
+                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:8px 0;border-bottom:1px solid {}20;">{}<div style=\"font-weight:600;margin-top:2px;\">{}</div></div>"#,
+                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label), escape_html(val_b)
                 ));
             }
-            let left_html = format!(
-                r#"<div style="margin-bottom:16px;"><div style="font-family:{};font-size:{}px;font-weight:700;color:{};margin-bottom:8px;">{}</div>{}</div>"#,
-                tokens.heading_font,
-                title_fs,
-                tokens.primary,
-                escape_html(left_label),
-                left_rows
-            );
-            let right_html = format!(
-                r#"<div style="margin-bottom:16px;"><div style="font-family:{};font-size:{}px;font-weight:700;color:{};margin-bottom:8px;">{}</div>{}</div>"#,
-                tokens.heading_font,
-                title_fs,
-                tokens.accent,
-                escape_html(right_label),
-                right_rows
-            );
-            format!("{}{}{}{}{}", gc, heading, left_html, right_html, gx)
-        }
-        "horizontal" => {
-            let left_chips: String = left_items.iter().map(|item| format!(
-                r#"<span style="font-family:{};font-size:{}px;color:{};padding:var(--space-0) 10px;background:{};border-radius:{};">{}</span>"#,
-                tokens.body_font, body_fs, colors.text_primary, tokens.surface_light, radius_sm, escape_html(item)
-            )).collect();
-            let right_chips: String = right_items.iter().map(|item| format!(
-                r#"<span style="font-family:{};font-size:{}px;color:{};padding:var(--space-0) 10px;background:{};border-radius:{};">{}</span>"#,
-                tokens.body_font, body_fs, colors.text_primary, tokens.surface_light, radius_sm, escape_html(item)
-            )).collect();
-            let left_html = format!(
-                r#"<div style="margin-bottom:12px;"><div style="font-family:{};font-size:{}px;font-weight:600;color:{};margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">{}</div><div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">{}</div></div>"#,
-                tokens.heading_font,
-                caption_fs,
-                tokens.primary,
-                escape_html(left_label),
-                left_chips
-            );
-            let right_html = format!(
-                r#"<div style="margin-bottom:12px;"><div style="font-family:{};font-size:{}px;font-weight:600;color:{};margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">{}</div><div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">{}</div></div>"#,
-                tokens.heading_font,
-                caption_fs,
-                tokens.accent,
-                escape_html(right_label),
-                right_chips
-            );
+            let left_label_color = if is_dark { "#FFFFFF".to_string() } else { tokens.primary.clone() };
+            let right_label_color = colors.text_secondary.clone();
             format!(
-                r#"{}{}<div style="margin-top:16px;">{}{}</div>{}"#,
-                gc, heading, left_html, right_html, gx
-            )
-        }
-        _ => {
-            // default — CSS grid side-by-side with row alignment
-            let max_len = left_items.len().max(right_items.len());
-            let mut grid_rows = String::new();
-            for i in 0..max_len {
-                let l_item = left_items.get(i).map(|s| s.as_str()).unwrap_or("");
-                let r_item = right_items.get(i).map(|s| s.as_str()).unwrap_or("");
-                grid_rows.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:var(--space-1) 0;border-bottom:1px solid {}20;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">{}</div>
-                       <div style="font-family:{};font-size:{}px;color:{};padding:var(--space-1) 0;border-bottom:1px solid {}20;display:flex;align-items:center;min-height:38px;box-sizing:border-box;">{}</div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(l_item),
-                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(r_item),
-                ));
-            }
-            let column_left_color = if is_dark {
-                "#FFFFFF"
-            } else {
-                colors.primary.as_str()
-            };
-            let column_right_color = if is_dark {
-                &colors.text_secondary
-            } else {
-                &colors.text_secondary
-            };
-            let column_border_left = if is_dark {
-                "rgba(255,255,255,0.4)"
-            } else {
-                colors.primary.as_str()
-            };
-            let column_border_right = if is_dark {
-                "rgba(255,255,255,0.2)"
-            } else {
-                &colors.border
-            };
-
-            format!(
-                r#"{}{}<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px;margin-top:16px;width:100%;box-sizing:border-box;align-items:stretch;place-items:start;">
-                    <div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:10px;border-bottom:2px solid {};">{}</div>
-                    <div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:10px;border-bottom:2px solid {};">{}</div>
-                    {}
+                r#"{}{}<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin-top:16px;">
+                    <div><div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:8px;border-bottom:2px solid {};margin-bottom:4px;">{}</div>{}</div>
+                    <div><div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:8px;border-bottom:2px solid {};margin-bottom:4px;">{}</div>{}</div>
                 </div>{}"#,
-                gc,
-                heading,
-                tokens.heading_font,
-                title_fs,
-                column_left_color,
-                column_border_left,
-                escape_html(left_label),
-                tokens.heading_font,
-                title_fs,
-                column_right_color,
-                column_border_right,
-                escape_html(right_label),
-                grid_rows,
+                gc, heading,
+                tokens.heading_font, title_fs, left_label_color, tokens.primary, escape_html(col_a), left_rows,
+                tokens.heading_font, title_fs, right_label_color, tokens.border_light, escape_html(col_b), right_rows,
                 gx
             )
         }
-    };
+        "feature-matrix" => {
+            // Grid with checkmarks and feature labels
+            let mut grid_rows = String::new();
+            // Header row
+            let mut header_cells = String::from(&format!(
+                r#"<div style="font-family:{};font-size:{}px;font-weight:600;color:{};padding:10px 12px;text-align:left;">Feature</div>"#,
+                tokens.heading_font, caption_fs, colors.text_secondary
+            ));
+            for (ci, col) in columns.iter().enumerate() {
+                let is_hl = highlight_column == Some(ci);
+                let hdr_color = if is_hl { tokens.primary.clone() } else { colors.text_secondary.clone() };
+                header_cells.push_str(&format!(
+                    r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding:10px 12px;text-align:center;">{}</div>"#,
+                    tokens.heading_font, caption_fs, hdr_color, escape_html(col)
+                ));
+            }
+            grid_rows.push_str(&format!(
+                r#"<div style="display:contents;">{}</div>"#, header_cells
+            ));
+            // Data rows
+            for row in &rows {
+                let label = row.first().map(|s| s.as_str()).unwrap_or("");
+                let mut cells = format!(
+                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:10px 12px;border-top:1px solid {}20;text-align:left;">{}</div>"#,
+                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label)
+                );
+                for (ci, _) in columns.iter().enumerate() {
+                    let val = row.get(ci + 1).map(|s| s.as_str()).unwrap_or("");
+                    let is_hl = highlight_column == Some(ci);
+                    let display_val = if show_checkmarks && (val == "✓" || val == "✔") {
+                        format!(r#"<span style="color:{};font-size:18px;font-weight:700;">✓</span>"#, tokens.primary)
+                    } else if show_checkmarks && (val == "—" || val == "-") {
+                        format!(r#"<span style="color:{};font-size:14px;">—</span>"#, colors.text_secondary)
+                    } else {
+                        let cell_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
+                        format!(r#"<span style="color:{};">{}</span>"#, cell_color, escape_html(val))
+                    };
+                    cells.push_str(&format!(
+                        r#"<div style="font-family:{};font-size:{}px;padding:10px 12px;border-top:1px solid {}20;text-align:center;font-weight:500;">{}</div>"#,
+                        tokens.body_font, body_fs, tokens.border_light, display_val
+                    ));
+                }
+                grid_rows.push_str(&format!(
+                    r#"<div style="display:contents;">{}</div>"#, cells
+                ));
+            }
+            format!(
+                r#"{}{}<div style="display:grid;grid-template-columns:{};margin-top:16px;width:100%;box-sizing:border-box;">
+                    {}
+                </div>{}"#,
+                gc, heading,
+                format!("auto {}", "1fr ".repeat(num_cols.saturating_sub(1).max(1))),
+                grid_rows, gx
+            )
+        }
+        _ => {
+            // table (default) — clean data table with header row
+            let mut grid_rows = String::new();
+            // Header
+            let mut header_cells = String::new();
+            for (ci, col) in columns.iter().enumerate() {
+                let is_hl = highlight_column == Some(ci);
+                let hdr_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
+                let border_bottom = if is_hl { format!("border-bottom:2px solid {}", tokens.primary) } else { "border-bottom:1px solid".to_string() };
+                header_cells.push_str(&format!(
+                    r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding:12px 16px;{} {}20;display:flex;align-items:center;min-height:42px;box-sizing:border-box;">{}</div>"#,
+                    tokens.heading_font, title_fs, hdr_color, border_bottom, tokens.border_light, escape_html(col)
+                ));
+            }
+            grid_rows.push_str(&header_cells);
+            // Data rows
+            for row in &rows {
+                for ci in 0..num_cols {
+                    let val = row.get(ci).map(|s| s.as_str()).unwrap_or("");
+                    let is_hl = highlight_column == Some(ci);
+                    let cell_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
+                    let display_val = if show_checkmarks && (val == "✓" || val == "✔") {
+                        format!(r#"<span style="color:{};font-size:16px;font-weight:700;">✓</span>"#, tokens.primary)
+                    } else if show_checkmarks && (val == "—" || val == "-") {
+                        format!(r#"<span style="color:{};">—</span>"#, colors.text_secondary)
+                    } else {
+                        escape_html(val)
+                    };
+                    grid_rows.push_str(&format!(
+                        r#"<div style="font-family:{};font-size:{}px;color:{};padding:12px 16px;border-bottom:1px solid {}20;display:flex;align-items:center;min-height:42px;box-sizing:border-box;">{}</div>"#,
+                        tokens.body_font, body_fs, cell_color, tokens.border_light, display_val
+                    ));
+                }
+            }
+            format!(
+                r#"{}{}<div style="display:grid;grid-template-columns:{};margin-top:16px;width:100%;box-sizing:border-box;align-items:stretch;">
+                    {}
+                </div>{}"#,
+                gc, heading,
+                "1fr ".repeat(num_cols.max(1)),
+                grid_rows,                gx
+            )
+        }
+    } };
 
     let html = slide_base(
         &content,
@@ -4661,21 +4715,100 @@ pub fn myth_fact_slide(
     fact: &str,
     explanation: &str,
     bg_style: &str,
+    variant: &str,
     theme: &str,
     background_image: &str,
     image_opacity: f32,
 ) -> Value {
-    problem_solution_slide(
-        tokens,
-        "Myth vs Fact",
-        myth,
-        fact,
-        vec![json!({"title":"Context","description": explanation})],
-        bg_style,
-        theme,
-        background_image,
-        image_opacity,
-    )
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let (gc, gx) = get_glass_container(tokens, is_dark);
+    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
+    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
+    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
+    let radius_md = current_component_radius(tokens, "card");
+    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
+    let shadow_lg = tokens.shadows.get("lg").cloned().unwrap_or_else(|| "none".to_string());
+
+    let effective_variant = variant;
+
+    let content = match effective_variant {
+        "debunk" => {
+            // Myth is shown crossed out, fact appears below with explanation
+            let myth_html = format!(
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) var(--space-4);margin-bottom:var(--space-3);box-shadow:{};position:relative;">
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
+                </div>"#,
+                card_bg, card_border, card_blur, radius_md, shadow_lg,
+                tokens.body_font, body_fs, colors.text_secondary, tokens.primary,
+                escape_html(myth),
+                tokens.heading_font, tokens.primary, tokens.primary,
+            );
+            let fact_html = format!(
+                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:var(--space-3) var(--space-4);box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">FACT</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;">{}</div>
+                </div>"#,
+                card_bg, tokens.primary, radius_md,
+                tokens.heading_font, tokens.primary,
+                tokens.body_font, body_fs, colors.text_primary, escape_html(fact),
+            );
+            let explanation_html = if !explanation.is_empty() {
+                format!(
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:var(--space-3);line-height:1.5;">{}</div>"#,
+                    tokens.body_font, caption_fs, colors.text_secondary, escape_html(explanation)
+                )
+            } else {
+                String::new()
+            };
+            format!("{}{}<div style=\"margin-top:16px;\">{}{}{}</div>{}", gc, heading_block("Myth vs Fact", tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+        }
+        _ => {
+            // split (default) — myth and fact side by side
+            let myth_html = format!(
+                r#"<div style="flex:1;">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
+                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};">
+                        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
+                    </div>
+                </div>"#,
+                tokens.heading_font, colors.text_secondary,
+                card_bg, card_border, card_blur, radius_md, shadow_lg,
+                tokens.body_font, body_fs, colors.text_secondary, tokens.primary,
+                escape_html(myth),
+            );
+            let fact_html = format!(
+                r#"<div style="flex:1;">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
+                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:var(--space-3);box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
+                    </div>
+                </div>"#,
+                tokens.heading_font, tokens.primary,
+                card_bg, tokens.primary, radius_md,
+                tokens.body_font, body_fs, colors.text_primary, escape_html(fact),
+            );
+            let explanation_html = if !explanation.is_empty() {
+                format!(
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:var(--space-3);line-height:1.5;text-align:center;">{}</div>"#,
+                    tokens.body_font, caption_fs, colors.text_secondary, escape_html(explanation)
+                )
+            } else {
+                String::new()
+            };
+            format!("{}{}<div style=\"display:flex;gap:var(--space-3);margin-top:16px;\">{}{}</div>{}{}", gc, heading_block("Myth vs Fact", tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+        }
+    };
+
+    let html = slide_base(&content, tokens, bg_style, false, "80px var(--space-6) 80px", "center");
+    let html = inject_background_image(html, background_image, image_opacity, is_dark);
+    json!({
+        "html": html,
+        "background": bg_style,
+        "variant": effective_variant,
+        "theme": theme
+    })
 }
 
 pub fn checklist_action_plan_slide(
@@ -5460,8 +5593,8 @@ pub fn dispatch_slide(
             img_opacity,
         )),
         "comparison" => {
-            let left_items: Vec<String> = p
-                .get("left_items")
+            let columns: Vec<String> = p
+                .get("columns")
                 .and_then(|v| v.as_array())
                 .map(|arr| {
                     arr.iter()
@@ -5469,24 +5602,31 @@ pub fn dispatch_slide(
                         .collect()
                 })
                 .unwrap_or_default();
-            let right_items: Vec<String> = p
-                .get("right_items")
+            let rows: Vec<Vec<String>> = p
+                .get("rows")
                 .and_then(|v| v.as_array())
                 .map(|arr| {
                     arr.iter()
-                        .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                        .filter_map(|v| v.as_array())
+                        .map(|inner| {
+                            inner.iter()
+                                .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                                .collect()
+                        })
                         .collect()
                 })
                 .unwrap_or_default();
+            let highlight_column = p.get("highlight_column").and_then(|v| v.as_u64()).map(|n| n as usize);
+            let show_checkmarks = p.get("show_checkmarks").and_then(|v| v.as_bool()).unwrap_or(false);
             Ok(comparison_slide(
                 tokens,
                 &s("title"),
-                &s("left_label"),
-                left_items,
-                &s("right_label"),
-                right_items,
+                columns,
+                rows,
+                highlight_column,
+                show_checkmarks,
                 bg_style,
-                &s("variant").if_empty("default"),
+                &s("variant").if_empty("table"),
                 theme,
                 &bg_img,
                 img_opacity,
@@ -5869,6 +6009,7 @@ pub fn dispatch_slide(
             &s("fact"),
             &s("explanation"),
             bg_style,
+            &s("variant").if_empty("split"),
             theme,
             &bg_img,
             img_opacity,
