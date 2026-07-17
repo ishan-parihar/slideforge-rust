@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Info-Dense Grid Cards — Raw HTML Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px; font-family: 'Inter', system-ui, sans-serif; }
+  .slide-frame {
+    width: 420px; height: 525px; border-radius: 16px; overflow: hidden;
+    position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .slide-content {
+    position: relative; width: 100%; height: 100%; padding: 72px 44px 72px;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    box-sizing: border-box; overflow: hidden;
+  }
+  .slide-light { background: #F8F6F3; color: #1a1a2e; }
+  .slide-dark { background: #0A0A0F; color: #e8e6e3; }
+  h2 { font-size: 26px; font-weight: 900; margin-bottom: 16px; line-height: 1.2; }
+  .light h2 { color: #1a1a2e; }
+  .dark h2 { color: #e8e6e3; }
+
+  /* ═══ VARIANT A: "dense" — 2x2 grid, cards expand naturally ═══ */
+  .dense-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
+    flex: 1; min-height: 0;
+  }
+  .dense-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 14px 12px; display: flex; flex-direction: column;
+    overflow: hidden; min-height: 0;
+  }
+  .slide-light .dense-card {
+    background: rgba(255,255,255,0.92); border: 1px solid rgba(0,0,0,0.08);
+  }
+  .dense-card-icon { font-size: 20px; margin-bottom: 6px; flex-shrink: 0; }
+  .dense-card-title {
+    font-size: 13px; font-weight: 700; line-height: 1.25; margin-bottom: 4px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dense-card-desc {
+    font-size: 10px; line-height: 1.4; opacity: 0.75;
+    display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+    overflow: hidden; flex: 1; min-height: 0;
+  }
+  .light .dense-card-title { color: #1a1a2e; }
+  .light .dense-card-desc { color: #555; }
+  .dark .dense-card-title { color: #e8e6e3; }
+  .dark .dense-card-desc { color: #aaa; }
+
+  /* ═══ VARIANT B: "compact" — 2-col with numbered badges, tight spacing ═══ */
+  .compact-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
+    flex: 1; min-height: 0;
+  }
+  .compact-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 10px 10px; display: flex; gap: 8px;
+    align-items: flex-start; overflow: hidden; min-height: 0;
+  }
+  .slide-light .compact-card {
+    background: rgba(255,255,255,0.92); border: 1px solid rgba(0,0,0,0.08);
+  }
+  .compact-badge {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; color: white;
+  }
+  .compact-badge-light { background: #767CFF; }
+  .compact-badge-dark { background: #767CFF; }
+  .compact-text { flex: 1; min-width: 0; }
+  .compact-title {
+    font-size: 11px; font-weight: 700; line-height: 1.25; margin-bottom: 2px;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .compact-desc {
+    font-size: 9px; line-height: 1.35; opacity: 0.7;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .light .compact-title { color: #1a1a2e; }
+  .light .compact-desc { color: #555; }
+  .dark .compact-title { color: #e8e6e3; }
+  .dark .compact-desc { color: #aaa; }
+
+  /* ═══ VARIANT C: "list-dense" — Full-width stacked cards ═══ */
+  .list-dense-grid {
+    display: flex; flex-direction: column; gap: 8px; width: 100%;
+    flex: 1; min-height: 0; overflow: hidden;
+  }
+  .list-dense-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 10px 12px; display: flex; gap: 10px;
+    align-items: flex-start; overflow: hidden; min-height: 0; flex: 1;
+  }
+  .slide-light .list-dense-card {
+    background: rgba(255,255,255,0.92); border: 1px solid rgba(0,0,0,0.08);
+  }
+  .list-dense-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .list-dense-text { flex: 1; min-width: 0; }
+  .list-dense-title {
+    font-size: 12px; font-weight: 700; line-height: 1.25; margin-bottom: 2px;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .list-dense-desc {
+    font-size: 9.5px; line-height: 1.35; opacity: 0.7;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .light .list-dense-title { color: #1a1a2e; }
+  .light .list-dense-desc { color: #555; }
+  .dark .list-dense-title { color: #e8e6e3; }
+  .dark .list-dense-desc { color: #aaa; }
+
+  label { color: #aaa; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<!-- ═══ VARIANT A: "dense" — 2x2 grid, cards expand naturally ═══ -->
+<label>Variant A: "dense" — 2×2 grid, natural expansion (max 4 cards)</label>
+<div class="slide-frame slide-dark">
+  <div class="slide-content dark">
+    <h2>Platform Capabilities</h2>
+    <div class="dense-grid">
+      <div class="dense-card">
+        <div class="dense-card-icon">📊</div>
+        <div class="dense-card-title">Advanced Analytics Engine</div>
+        <div class="dense-card-desc">Real-time data processing, predictive modeling, and interactive dashboards that help organizations make data-driven decisions with unprecedented accuracy across multiple data sources.</div>
+      </div>
+      <div class="dense-card">
+        <div class="dense-card-icon">🔒</div>
+        <div class="dense-card-title">Enterprise Security Suite</div>
+        <div class="dense-card-desc">Military-grade encryption, multi-factor authentication, role-based access control, audit logging, and compliance monitoring ensure your data remains protected against evolving threats.</div>
+      </div>
+      <div class="dense-card">
+        <div class="dense-card-icon">🤝</div>
+        <div class="dense-card-title">Collaborative Workspace</div>
+        <div class="dense-card-desc">Real-time document editing, video conferencing, project management tools, and team communication channels create a seamless environment for distributed teams.</div>
+      </div>
+      <div class="dense-card">
+        <div class="dense-card-icon">⚡</div>
+        <div class="dense-card-title">API Gateway & Integrations</div>
+        <div class="dense-card-desc">RESTful and GraphQL APIs, webhook management, third-party service connectors, and rate limiting with comprehensive developer documentation and SDKs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VARIANT B: "compact" — numbered badges, tight spacing ═══ -->
+<label>Variant B: "compact" — numbered badges, 6 items in 2-col grid</label>
+<div class="slide-frame slide-light">
+  <div class="slide-content light">
+    <h2>Key Features</h2>
+    <div class="compact-grid">
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">1</div>
+        <div class="compact-text">
+          <div class="compact-title">Real-time Analytics</div>
+          <div class="compact-desc">Process millions of events per second with sub-millisecond latency using our distributed streaming engine.</div>
+        </div>
+      </div>
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">2</div>
+        <div class="compact-text">
+          <div class="compact-title">Smart Notifications</div>
+          <div class="compact-desc">AI-powered notification routing that learns user preferences and delivers relevant alerts at optimal times.</div>
+        </div>
+      </div>
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">3</div>
+        <div class="compact-text">
+          <div class="compact-title">Custom Dashboards</div>
+          <div class="compact-desc">Drag-and-drop dashboard builder with 50+ chart types and real-time collaboration features.</div>
+        </div>
+      </div>
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">4</div>
+        <div class="compact-text">
+          <div class="compact-title">Team Management</div>
+          <div class="compact-desc">Role-based access control, SSO integration, audit trails, and granular permission management for enterprise teams.</div>
+        </div>
+      </div>
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">5</div>
+        <div class="compact-text">
+          <div class="compact-title">API & Webhooks</div>
+          <div class="compact-desc">RESTful APIs, GraphQL support, webhook management, and comprehensive SDKs for 12 programming languages.</div>
+        </div>
+      </div>
+      <div class="compact-card">
+        <div class="compact-badge compact-badge-light">6</div>
+        <div class="compact-text">
+          <div class="compact-title">24/7 Support</div>
+          <div class="compact-desc">Dedicated account managers, priority support tickets, and comprehensive documentation with video tutorials.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VARIANT C: "list-dense" — Full-width stacked, 5 items ═══ -->
+<label>Variant C: "list-dense" — Full-width stacked cards, 5 items</label>
+<div class="slide-frame slide-dark">
+  <div class="slide-content dark">
+    <h2>Research Methodology</h2>
+    <div class="list-dense-grid">
+      <div class="list-dense-card">
+        <div class="list-dense-icon">🔍</div>
+        <div class="list-dense-text">
+          <div class="list-dense-title">Literature Review & Meta-Analysis</div>
+          <div class="list-dense-desc">Comprehensive review of 200+ peer-reviewed papers spanning 2015-2025 to identify consistent patterns and effect sizes.</div>
+        </div>
+      </div>
+      <div class="list-dense-card">
+        <div class="list-dense-icon">📋</div>
+        <div class="list-dense-text">
+          <div class="list-dense-title">Mixed-Methods Survey Design</div>
+          <div class="list-dense-desc">Quantitative Likert scales combined with open-ended qualitative responses from 2,400 participants across 12 countries.</div>
+        </div>
+      </div>
+      <div class="list-dense-card">
+        <div class="list-dense-icon">🧪</div>
+        <div class="list-dense-text">
+          <div class="list-dense-title">Randomized Controlled Trials</div>
+          <div class="list-dense-desc">Double-blind experiments with control and treatment groups to establish causal relationships between variables.</div>
+        </div>
+      </div>
+      <div class="list-dense-card">
+        <div class="list-dense-icon">📈</div>
+        <div class="list-dense-text">
+          <div class="list-dense-title">Statistical Modeling & Regression</div>
+          <div class="list-dense-desc">Multi-variable regression analysis, structural equation modeling, and Bayesian inference for robust conclusions.</div>
+        </div>
+      </div>
+      <div class="list-dense-card">
+        <div class="list-dense-icon">✅</div>
+        <div class="list-dense-text">
+          <div class="list-dense-title">Peer Review & Validation</div>
+          <div class="list-dense-desc">External validation by three independent research teams with pre-registered hypotheses and open data protocols.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

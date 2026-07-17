@@ -2875,63 +2875,7 @@ pub fn grid_cards_slide(
         .cloned()
         .unwrap_or_else(|| "none".to_string());
 
-    let render_single_card = |card: &Value,
-                              card_padding: &str,
-                              icon_size: u32,
-                              font_size_title: i32,
-                              font_size_caption: i32|
-     -> String {
-        let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-        let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-        let d = card
-            .get("description")
-            .and_then(|v| v.as_str())
-            .unwrap_or("");
-        let desc_html = if !d.is_empty() {
-            // Truncate descriptions longer than 160 chars to prevent overflow
-            let display_desc = if d.len() > 160 {
-                format!("{}…", &d[..d.char_indices().take_while(|(i, _)| *i < 159).last().map(|(i, c)| i + c.len_utf8()).unwrap_or(159)])
-            } else {
-                d.to_string()
-            };
-            format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">{}</p>"#,
-                tokens.body_font,
-                font_size_caption,
-                colors.text_secondary,
-                escape_html(&display_desc)
-            )
-        } else {
-            String::new()
-        };
-
-        let icon_color = card
-            .get("icon_color")
-            .and_then(|v| v.as_str())
-            .unwrap_or(&colors.primary);
-        let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
-
-        format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;max-height:180px;overflow:hidden;">
-                <div style="margin-bottom:6px;display:flex;align-items:center;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{}</h3>
-                {}
-            </div>"#,
-            card_bg,
-            card_border,
-            card_blur,
-            radius_md,
-            card_padding,
-            shadow_sm,
-            icon_html,
-            tokens.body_font,
-            font_size_title,
-            colors.text_primary,
-            escape_html(t),
-            desc_html
-        )
-    };
-
+    // Compute content mass metrics BEFORE the closure so they are in scope
     let max_title_len = cards
         .iter()
         .map(|c| c.get("title").and_then(|v| v.as_str()).unwrap_or("").len())
@@ -2947,8 +2891,6 @@ pub fn grid_cards_slide(
         })
         .max()
         .unwrap_or(0);
-
-    // Intelligent scaling: compute multi-tier font sizes based on content mass
     let total_chars: usize = cards.iter().map(|c| {
         let t = c.get("title").and_then(|v| v.as_str()).unwrap_or("").len();
         let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("").len();
@@ -2956,6 +2898,62 @@ pub fn grid_cards_slide(
     }).sum();
     let dense = total_chars > 240;
     let very_dense = total_chars > 350;
+
+    let render_single_card = |card: &Value,
+                              card_padding: &str,
+                              icon_size: u32,
+                              font_size_title: i32,
+                              font_size_caption: i32|
+     -> String {
+        let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
+        let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
+        let d = card
+            .get("description")
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
+        let desc_html = if !d.is_empty() {
+            // Show full description — use line-clamp for visual overflow only
+            format!(
+                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:{};-webkit-box-orient:vertical;overflow:hidden;">{}</p>"#,
+                tokens.body_font,
+                font_size_caption,
+                colors.text_secondary,
+                if very_dense { 3 } else if dense { 4 } else { 6 },
+                escape_html(d)
+            )
+        } else {
+            String::new()
+        };
+
+        let icon_color = card
+            .get("icon_color")
+            .and_then(|v| v.as_str())
+            .unwrap_or(&colors.primary);
+        let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
+
+        format!(
+            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;max-height:260px;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;">{}</div>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:{};-webkit-box-orient:vertical;overflow:hidden;">{}</h3>
+                {}
+            </div>"#,
+            card_bg,
+            card_border,
+            card_blur,
+            radius_md,
+            card_padding,
+            shadow_sm,
+            icon_html,
+            tokens.body_font,
+            font_size_title,
+            colors.text_primary,
+            if very_dense { 1 } else { 2 },
+            escape_html(t),
+            desc_html
+        )
+    };
+
+    // max_title_len, max_desc_len, total_chars, dense, very_dense are computed above the closure
 
     let card_html = if effective_variant == "2-col" {
         let mut items_html = String::new();
@@ -4454,11 +4452,14 @@ fn column_chart_slide(
             .unwrap_or(1);
         // Each inner bar is proportionally narrower; min 20% so they stay visible
         let bar_inner_pct = (70.0 / num_series as f64).max(20.0);
-        let gap_px = if num_series > 2 { 2 } else { 3 };
+        // Tighter intra-group gap so bars within a category are visually clustered
+        let gap_px = if num_series > 2 { 0 } else { 2 };
 
+        let num_categories = data.len();
         let categories: String = data
             .iter()
-            .map(|item| {
+            .enumerate()
+            .map(|(ci, item)| {
                 let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
                 let series = item
                     .get("series")
@@ -4502,12 +4503,13 @@ fn column_chart_slide(
                     .collect();
 
                 format!(
-                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;{}">
                         <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">
                             {}
                         </div>
                         <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
                     </div>"#,
+                    if num_series > 1 && ci < num_categories - 1 { "border-right:1px solid rgba(128,128,128,0.15);margin-right:-0.5px;" } else { "" },
                     gap_px,
                     inner_bars,
                     tokens.body_font,
@@ -4919,32 +4921,54 @@ pub fn myth_fact_slide(
         };
 
         // Max-height for myth and fact containers to prevent overflow
-        let card_max_height = if myth_len > 200 || fact_len > 200 {
-            "140px"
-        } else if myth_len > 120 || fact_len > 120 {
-            "170px"
+        // Slide body = 525px - 80px top - 80px bottom = 365px
+        // Heading takes ~50px, so ~315px for content.
+        // Debunk stacks myth + fact + explanation vertically:
+        //   myth ~120px + fact ~140px + explanation ~40px = ~300px
+        // Split places myth | fact side-by-side: each gets full height.
+        let is_long = myth_len > 120 || fact_len > 120;
+        let is_very_long = myth_len > 200 || fact_len > 200;
+        let (myth_max, fact_max) = if effective_variant == "debunk" {
+            // Debunk stacks myth + fact + explanation vertically
+            // Slide body: 525px - 80px top - 80px bottom = 365px
+            // Heading ~50px, so ~315px for card content.
+            // Budget: myth + fact + explanation(~30px) + gaps(~16px) <= 315px
+            if is_very_long {
+                ("120px", "130px")
+            } else if is_long {
+                ("135px", "140px")
+            } else {
+                ("150px", "160px")
+            }
         } else {
-            "220px"
+            // split: side-by-side, each gets full height
+            if is_very_long {
+                ("280px", "280px")
+            } else if is_long {
+                ("300px", "300px")
+            } else {
+                ("320px", "320px")
+            }
         };
 
     let content = match effective_variant {
         "debunk" => {
             // Myth is shown crossed out, fact appears below with explanation
         let myth_html = format!(
-            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-3);box-shadow:{};position:relative;max-height:{};overflow:hidden;">
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
+            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-2);box-shadow:{};position:relative;max-height:{};overflow:hidden;flex-shrink:0;">
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
-                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, card_max_height,
+                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, myth_max,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
                 tokens.heading_font, tokens.primary, tokens.primary,
             );
             let fact_html = format!(
-                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">FACT</div>
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;">{}</div>
+                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:{};overflow:hidden;flex-shrink:0;">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
                 </div>"#,
-                card_bg, tokens.primary, radius_md, dynamic_padding,
+                card_bg, tokens.primary, radius_md, dynamic_padding, fact_max,
                 tokens.heading_font, tokens.primary,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
@@ -4967,19 +4991,19 @@ pub fn myth_fact_slide(
     </div>
 </div>"#,
                     tokens.heading_font, colors.text_secondary,
-                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, card_max_height,
+                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, myth_max,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
             );
             let fact_html = format!(
-                r#"<div style="flex:1;">
+                r#"<div style="flex:1;min-height:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
-                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
+                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:{};overflow:hidden;">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, tokens.primary,
-                card_bg, tokens.primary, radius_md, dynamic_padding,
+                card_bg, tokens.primary, radius_md, dynamic_padding, fact_max,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {
