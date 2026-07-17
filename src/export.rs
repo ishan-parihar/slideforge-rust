@@ -1,16 +1,40 @@
 use headless_chrome::protocol::cdp::Page::CaptureScreenshotFormatOption;
 use headless_chrome::protocol::cdp::Page::Viewport;
-use headless_chrome::{Browser, LaunchOptions};
+use headless_chrome::{Browser, FetcherOptions, LaunchOptions};
 use std::ffi::OsStr;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+
+/// Directory where `slideforge setup` downloads Chromium.
+pub fn slideforge_chromium_dir() -> PathBuf {
+    dirs()
+        .home_dir()
+        .join(".slideforge")
+        .join("chromium")
+}
 
 const CHROME_INSTALL_HINT: &str = "Chromium/Chrome is not installed or not on PATH.\n\
     Install options:\n\
-      - Ubuntu/Debian: sudo apt install chromium-browser\n\
-      - macOS:         brew install --cask chromium\n\
-      - Windows:       https://www.chromium.org/getting-involved/download-chromium/\n\
+      1. Auto-download:   slideforge setup\n\
+      2. Ubuntu/Debian:   sudo apt install chromium-browser\n\
+      3. macOS:           brew install --cask chromium\n\
+      4. Windows:         https://www.chromium.org/getting-involved/download-chromium/\n\
     Or set CHROME_PATH env var to your Chrome/Chromium binary.";
+
+/// Helper to get the user's home directory.
+fn dirs() -> HomeDir {
+    HomeDir
+}
+
+struct HomeDir;
+impl HomeDir {
+    fn home_dir(&self) -> PathBuf {
+        std::env::var("HOME")
+            .or_else(|_| std::env::var("USERPROFILE"))
+            .map(PathBuf::from)
+            .unwrap_or_else(|_| PathBuf::from("."))
+    }
+}
 
 /// Chrome flags that reduce memory footprint by ~60-75%.
 /// - single-process: eliminates separate GPU/utility/network processes (~300 MB)
@@ -56,12 +80,90 @@ fn optimized_launch_options() -> Result<headless_chrome::LaunchOptions<'static>,
         .map_err(|e| format!("Failed to configure headless browser: {}", e))
 }
 
+/// Check if the `slideforge setup` pre-downloaded Chrome exists.
+pub fn slideforge_chrome_path() -> Option<PathBuf> {
+    let base = slideforge_chromium_dir();
+    // headless_chrome fetcher stores downloads under `linux-{rev}/chrome-linux/chrome`
+    if base.exists() {
+        for entry in fs::read_dir(&base).ok()? {
+            let entry = entry.ok()?;
+            let path = entry.path();
+            if path.is_dir() {
+                // Check linux-{rev}/chrome-linux/chrome (extracted zip structure)
+                let chrome_bin = path.join("chrome-linux").join("chrome");
+                if chrome_bin.exists() {
+                    return Some(chrome_bin);
+                }
+                // Fallback: check linux-{rev}/chrome (flat structure)
+                let chrome_bin_flat = path.join("chrome");
+                if chrome_bin_flat.exists() {
+                    return Some(chrome_bin_flat);
+                }
+            }
+        }
+    }
+    None
+}
+
 /// Verify that a headless Chrome instance can be launched.
-/// Returns Ok(()) if Chrome is available, or Err with install instructions.
+/// Tries in order: CHROME_PATH env var → pre-downloaded ~/.slideforge/chromium/ → auto-download via fetch → error with instructions.
 pub fn ensure_chrome_available() -> Result<(), String> {
+    // 1. Try pre-downloaded path first (from `slideforge setup`)
+    if let Some(path) = slideforge_chrome_path() {
+        let ops = optimized_launch_options_with_path(&path)?;
+        if Browser::new(ops).is_ok() {
+            return Ok(());
+        }
+    }
+    // 2. Try system Chrome / auto-download (headless_chrome `fetch` feature handles this)
     let ops = optimized_launch_options()?;
     Browser::new(ops).map_err(|_| CHROME_INSTALL_HINT.to_string())?;
     Ok(())
+}
+
+/// Build LaunchOptions with a specific Chrome path and memory-optimized flags.
+fn optimized_launch_options_with_path(path: &Path) -> Result<headless_chrome::LaunchOptions<'static>, String> {
+    let args: Vec<&OsStr> = CHROME_ARGS.iter().map(|s| s.as_ref()).collect();
+    LaunchOptions::default_builder()
+        .headless(true)
+        .args(args)
+        .path(Some(path.to_path_buf()))
+        .build()
+        .map_err(|e| format!("Failed to configure headless browser: {}", e))
+}
+
+/// Download Chromium to ~/.slideforge/chromium/ for scripted/CI installs.
+/// Uses headless_chrome's built-in fetcher with a custom install directory.
+pub fn download_chromium() -> Result<PathBuf, String> {
+    let install_dir = slideforge_chromium_dir();
+    fs::create_dir_all(&install_dir).map_err(|e| format!("Failed to create directory {}: {}", install_dir.display(), e))?;
+
+    // Configure the fetcher to download ONLY to our custom directory
+    // allow_standard_dirs(false) prevents the fetcher from finding system Chrome
+    // and forces a fresh download to install_dir
+    let fetcher_options = FetcherOptions::default()
+        .with_install_dir(Some(install_dir.clone()))
+        .with_allow_download(true)
+        .with_allow_standard_dirs(false);
+
+    // Use Browser::new with custom fetcher_options to trigger download
+    let args: Vec<&OsStr> = CHROME_ARGS.iter().map(|s| s.as_ref()).collect();
+    let ops = LaunchOptions::default_builder()
+        .headless(true)
+        .args(args)
+        .fetcher_options(fetcher_options)
+        .build()
+        .map_err(|e| format!("Failed to configure download: {}", e))?;
+
+    // Browser::new triggers the fetch if chrome isn't found
+    let _browser = Browser::new(ops).map_err(|e| format!("Failed to download Chromium: {}", e))?;
+    drop(_browser);
+
+    // Find the downloaded chrome binary
+    let chrome_path = slideforge_chrome_path()
+        .ok_or_else(|| format!("Chromium downloaded but not found in {}", install_dir.display()))?;
+
+    Ok(chrome_path)
 }
 
 /// Render a single HTML file to a PNG. Used by the `preview_slide` MCP tool
