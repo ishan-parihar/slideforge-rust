@@ -64,3 +64,33 @@ Before changing layout behavior:
 6. Review generated HTML only as evidence, not as the primary fix.
 
 If a fix starts requiring a full-system scaling rewrite, stop and reassess. That is a sign the approach has drifted from the intended project direction.
+
+## R&D Protocol & Design Guidelines
+
+To maintain visual excellence and code robustness, all agents must adhere to the following core engineering rules:
+
+### 1. Visual Density & Adaptive Spacing
+- **Dynamic Layout Scaling:** Components that render grids or multiple items (e.g., `grid_cards`) must calculate the total text character mass of all items at runtime. Scale down paddings, margins, gaps, and font sizes proportionally (dense vs standard modes) to prevent body viewports from overflowing the fixed `420x525` composition constraints.
+- **Sparse Text Balancing:** Simple text layouts (e.g., `myth_fact`) must dynamically scale text up (e.g., $+5\text{px}$) and expand card paddings if the content is short ($<40$ characters) to balance free-space with fill-space.
+
+### 2. Collection Parsers & Input Robustness
+- **Fallback for Raw Strings:** Multi-item collection components (e.g., `list`) must support both structured JSON objects `[{"title": "..."}]` and raw strings `["..."]`. Always write fallbacks to detect raw string array elements and format them directly to prevent rendering blank lines.
+
+### 3. Deck-Level Marketing Constraints
+- **Single CTA Rule:** A slide deck/carousel must contain exactly one Call-To-Action (CTA) slide, positioned as the final closing slide. 
+- **Validator Checks:** Keep `validate_design` updated to audit the compiled deck HTML for:
+  - *Competing CTAs:* Flag warnings if multiple slides contain buttons (`class="btn"`) or QR codes.
+  - *Non-interactive buttons:* Flag warnings if a slide contains a styled web button without a QR code on image-export platforms (Instagram/TikTok), suggesting `qr_destination` or "Link in Bio" framing instead.
+
+### 4. Data Visualization Efficacy
+- **Multi-Series Coexistence:** High-competence visual charts (grouped column charts, line graphs) must support both 1D data arrays and nested series datasets with complete backwards compatibility.
+- **Pure-Render Implementation:** Build visualizations natively without external charting libraries:
+  - *Grouped Columns:* Render side-by-side flex divs inside X-axis category columns.
+  - *SVG Lines:* Overlay multiple `<path>` elements mapped to theme colors, paired with an SVG-rendered legend block.
+
+### 5. Testing & Verification Commands
+Always run the following commands to verify edits before committing:
+- **Run Unit Tests:** `cargo test`
+- **Recompile Release Binary:** `cargo build --release`
+- **Regenerate Test Carousels:** Run the local automation script `python3 generate_gender_studies_carousel.py` and inspect exported PNG sizes under `dist/gender_studies_exports/`.
+
