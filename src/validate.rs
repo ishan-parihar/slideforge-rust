@@ -229,9 +229,13 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         if !dest_url_val.is_empty()
             && !dest_url_val.starts_with("http://")
             && !dest_url_val.starts_with("https://")
-        {
-            result.add_warning("qr_destination destination_url should be an absolute http(s) URL.");
+            {
+                result.add_warning("qr_destination destination_url should be an absolute http(s) URL.");
+            }
         }
+
+    if slide_type == "cta" {
+        result.add_warning("A plain 'cta' slide with a web button will not be interactive on Instagram/TikTok carousels. Consider using 'qr_destination' for direct conversions, or framing as a 'Link in Bio' instruction.");
     }
 
     result
@@ -1227,6 +1231,42 @@ pub fn validate_design(html: &str) -> ValidationReport {
     let tiny_progress_re =
         Regex::new(r#"(?s)\.breadcrumb-chip(?:\.active)?[^{]*\{[^}]*height\s*:\s*([0-9.]+)px"#)
             .unwrap();
+
+    // Check for multiple competing CTAs or buttons in the slide array
+    let mut cta_slides = Vec::new();
+    for (idx, slide_html) in slides.iter().enumerate() {
+        let has_button = slide_html.contains("class=\"btn\"") || slide_html.contains("class='btn'");
+        let has_qr = slide_html.contains("data:image/svg+xml") && slide_html.contains("Scan");
+        if has_button || has_qr {
+            cta_slides.push(idx + 1);
+        }
+    }
+    if cta_slides.len() > 1 {
+        issues.push(DesignIssue {
+            slide: cta_slides[0],
+            r#type: "competing_ctas".to_string(),
+            severity: "warning".to_string(),
+            detail: format!("Multiple competing Call-To-Action (CTA) slides detected on slides: {:?}", cta_slides),
+            message: "Each carousel-set must only have a single CTA slide to ensure maximum user engagement and focus.".to_string(),
+            suggestion: "Remove the duplicate/competing CTA slides or convert them to standard content/informational layouts.".to_string(),
+        });
+    }
+
+    // Check for non-interactive buttons on social platforms
+    for (idx, slide_html) in slides.iter().enumerate() {
+        let has_button = slide_html.contains("class=\"btn\"") || slide_html.contains("class='btn'");
+        let has_qr = slide_html.contains("data:image/svg+xml") && slide_html.contains("Scan");
+        if has_button && !has_qr {
+            issues.push(DesignIssue {
+                slide: idx + 1,
+                r#type: "non_interactive_button".to_string(),
+                severity: "warning".to_string(),
+                detail: "Slide contains a web-styled button ('class=\"btn\"') without a companion QR code.".to_string(),
+                message: "Web buttons are non-interactive on image-based social media platforms (Instagram, TikTok).".to_string(),
+                suggestion: "Use a 'qr_destination' slide for scannable redirection, or frame the text as a 'Link in Bio' action.".to_string(),
+            });
+        }
+    }
 
     // Note: overflow:visible on full-bleed compositions is intentional and correct.
     // The .slide element's overflow:hidden clips at the final slide boundary.

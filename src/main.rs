@@ -32,6 +32,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Download Chromium to ~/.slideforge/chromium/ for offline/CI installs
+    Setup,
     /// Start the Model Context Protocol (MCP) server
     Mcp,
     /// Generate design system tokens from a primary color
@@ -206,6 +208,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match &cli.command {
+        Some(Commands::Setup) => {
+            println!("Downloading Chromium to ~/.slideforge/chromium/...");
+            match export::download_chromium() {
+                Ok(path) => {
+                    println!("✓ Chromium downloaded successfully!");
+                    println!("  Binary: {}", path.display());
+                    println!("  Location: ~/.slideforge/chromium/");
+                    println!();
+                    println!("Chromium will now auto-resolve on cold-start.");
+                    println!("To skip auto-download, set CHROME_PATH to your system Chrome.");
+                }
+                Err(e) => {
+                    eprintln!("✗ Failed to download Chromium: {}", e);
+                    eprintln!();
+                    eprintln!("Manual install options:");
+                    eprintln!("  Ubuntu/Debian: sudo apt install chromium-browser");
+                    eprintln!("  macOS:         brew install --cask chromium");
+                    eprintln!("  Windows:       https://www.chromium.org/getting-involved/download-chromium/");
+                    std::process::exit(1);
+                }
+            }
+        }
         Some(Commands::ConfigureDesign {
             primary,
             style,

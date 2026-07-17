@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@300,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,8 +56,8 @@
   --glass-light-bg: #FBF4EACC;
   --glass-light-blur: 12px;
   --glass-light-border: 1px solid #CEC6BD40;
-  --font-heading: 'Space Grotesk', serif;
-  --font-body: 'Space Grotesk', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -416,24 +416,44 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div class="slide slide--dark has-bg-image slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #9F5F0015 0px, transparent 50%), radial-gradient(at 80% 0%, #2475B210 0px, transparent 50%), radial-gradient(at 0% 50%, #EBA55C12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.39;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
+            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <h2 style="font-family: Space Grotesk; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F3EDE8; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Benefits</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#9F5F00;margin-right:12px;font-size:12px;line-height:1.5;">▪</span>
-                        <div>
-                            <div style="font-family:Space Grotesk;font-size:16px;font-weight:500;color:#F3EDE8;">Automated workflows</div>
-                            <div style="font-size:13px;color:#D5CCC4;margin-top:4px;">Save 5+ hours weekly</div>
-                        </div>
-                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#9F5F00;margin-right:12px;font-size:12px;line-height:1.5;">▪</span>
-                        <div>
-                            <div style="font-family:Space Grotesk;font-size:16px;font-weight:500;color:#F3EDE8;">Real-time insights</div>
-                            <div style="font-size:13px;color:#D5CCC4;margin-top:4px;">Never miss a critical event</div>
-                        </div>
-                    </div></div>
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F3EDE8; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Core Architecture Principles</h2><div style="display:flex;gap:var(--space-3);width:100%;margin-top:var(--space-2);overflow:hidden;"><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #F3EDE8; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Performance</h2><div style="font-size:var(--text-sm);color:#D5CCC4;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #F3EDE8; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Parity</h2><div style="font-size:var(--text-sm);color:#D5CCC4;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #F3EDE8; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Scalability</h2><div style="font-size:var(--text-sm);color:#D5CCC4;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">NexusAI</span>
+      <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Rust Scope Test: 4</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">https://nexusai.io</span>
+      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; height: 320px; opacity: 0.07; top: -80px; left: -80px; border-radius: 50%; pointer-events: none; width: 320px; background: #9F5F00"></div><div style="right: -40px; pointer-events: none; height: 120px; background: #2475B2; transform: rotate(60deg); position: absolute; border-radius: 4px; left: auto; width: 120px; top: 60%; opacity: 0.05"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-3);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><div style="display: inline-block; padding: 6px 16px; background: #BF7D3115; border: 1px solid #BF7D3130; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #BF7D31; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F3EDE8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; text-align: left; margin: 0 0 4px; display: block; letter-spacing: -0.01em">Introducing AI Analytics for brand_storyteller</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #D5CCC4; margin: 8px 0 0; text-align: left; max-width: 100%">Powering content workflows at scale via tiktok_vertical platform.</p></div></div><div style="min-width:0;overflow:hidden;"><div style="position:relative;width:100%;height:var(--space-28);min-height:180px;background:linear-gradient(135deg, #BF7D3112, #BF7D3108);border:1px solid #BF7D3130;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:#BF7D31;opacity:0.12;filter:blur(40px);-webkit-filter:blur(40px);left:-20px;top:-20px;"></div>
+                    <div style="position:absolute;width:140px;height:140px;border-radius:50%;background:#EBA55C;opacity:0.10;filter:blur(30px);-webkit-filter:blur(30px);right:-10px;bottom:20%;"></div>
+                    <div style="position:absolute;width:80px;height:80px;border-radius:var(--radius-md);background:#BF7D31;opacity:0.08;transform:rotate(12deg);left:30%;top:30%;"></div>
+                    <div style="position:absolute;width:60px;height:60px;border-radius:var(--radius-lg);background:#BF7D31;opacity:0.06;transform:rotate(-8deg);right:25%;bottom:25%;"></div>
+                </div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -447,13 +467,91 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Monthly Active Users</h2><div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F3EDE8;line-height:1;margin-bottom:6px;text-align:center;">1200</div>
+                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="width:70%;height:38.7%;min-height:8px;background:#C9863B;border-radius:4px 4px 0 0;"></div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D5CCC4;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Jan</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F3EDE8;line-height:1;margin-bottom:6px;text-align:center;">1850</div>
+                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="width:70%;height:59.7%;min-height:8px;background:#C9863B;border-radius:4px 4px 0 0;"></div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D5CCC4;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Feb</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F3EDE8;line-height:1;margin-bottom:6px;text-align:center;">2700</div>
+                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="width:70%;height:87.1%;min-height:8px;background:#C9863B;border-radius:4px 4px 0 0;"></div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D5CCC4;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Mar</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F3EDE8;line-height:1;margin-bottom:6px;text-align:center;">3100</div>
+                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="width:70%;height:100.0%;min-height:8px;background:#C9863B;border-radius:4px 4px 0 0;"></div>
+                </div>
+                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D5CCC4;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Apr</span>
+            </div></div><p style="font-family:Plus Jakarta Sans;font-size:10px;color:#D5CCC4;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">Growth trajectory across product launch phases</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 4</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #9F5F0015 0px, transparent 50%), radial-gradient(at 80% 0%, #2475B210 0px, transparent 50%), radial-gradient(at 0% 50%, #EBA55C12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; pointer-events: none; inset: 0; opacity: 0.04; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; pointer-events: none; position: absolute; left: -70px; background: #9F5F00; opacity: 0.06; height: 300px; top: -70px; width: 300px"></div><div style="border-radius: 9999px; left: auto; pointer-events: none; right: -40px; width: 160px; height: 160px; top: 65%; opacity: 0.04; position: absolute; background: #2475B2"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F3EDE8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Ready to Scale your B2B SaaS Growth?</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #D5CCC4; margin: 0 0 20px; text-align: center">No credit card required • Instant setup</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #EBA55C; color: #030100; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #70340040; letter-spacing: 0.02em; margin: 0;">Launch Free Trial</a></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 4</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 </div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -476,7 +574,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 1;
+  const total = 4;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

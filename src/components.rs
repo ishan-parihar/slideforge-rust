@@ -1288,16 +1288,22 @@ pub fn list_slide(
         "card" => {
             let mut rows = String::new();
             for (i, item) in items.iter().enumerate() {
-                let label = item
-                    .get("label")
-                    .or_else(|| item.get("title"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                let sub = item
-                    .get("sub")
-                    .or_else(|| item.get("description"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
+                let label = if item.is_string() {
+                    item.as_str().unwrap_or("")
+                } else {
+                    item.get("label")
+                        .or_else(|| item.get("title"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
+                let sub = if item.is_string() {
+                    ""
+                } else {
+                    item.get("sub")
+                        .or_else(|| item.get("description"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
                 let marker = if numbered {
                     format!(
                         r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:var(--text-sm);">{}</span>"#,
@@ -1335,16 +1341,22 @@ pub fn list_slide(
         "grid" => {
             let mut rows = String::new();
             for (i, item) in items.iter().enumerate() {
-                let label = item
-                    .get("label")
-                    .or_else(|| item.get("title"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                let sub = item
-                    .get("sub")
-                    .or_else(|| item.get("description"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
+                let label = if item.is_string() {
+                    item.as_str().unwrap_or("")
+                } else {
+                    item.get("label")
+                        .or_else(|| item.get("title"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
+                let sub = if item.is_string() {
+                    ""
+                } else {
+                    item.get("sub")
+                        .or_else(|| item.get("description"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
                 let marker = if numbered {
                     format!(
                         r#"<span style="color:{};font-weight:700;margin-right:6px;font-size:var(--text-sm);">{}</span>"#,
@@ -1386,16 +1398,22 @@ pub fn list_slide(
             let is_numbered = numbered || effective_variant == "numbered";
             let mut rows = String::new();
             for (i, item) in items.iter().enumerate() {
-                let label = item
-                    .get("label")
-                    .or_else(|| item.get("title"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                let sub = item
-                    .get("sub")
-                    .or_else(|| item.get("description"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
+                let label = if item.is_string() {
+                    item.as_str().unwrap_or("")
+                } else {
+                    item.get("label")
+                        .or_else(|| item.get("title"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
+                let sub = if item.is_string() {
+                    ""
+                } else {
+                    item.get("sub")
+                        .or_else(|| item.get("description"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                };
                 let marker = if is_numbered {
                     format!(
                         r#"<span style="color:{};font-weight:700;margin-right:12px;font-size:var(--text-sm);">{}</span>"#,
@@ -4732,27 +4750,42 @@ pub fn myth_fact_slide(
 
     let effective_variant = variant;
 
+    let myth_len = myth.len();
+    let fact_len = fact.len();
+    let dynamic_fs = if myth_len < 40 && fact_len < 40 {
+        body_fs + 5
+    } else if myth_len < 80 && fact_len < 80 {
+        body_fs + 2
+    } else {
+        body_fs
+    };
+    let dynamic_padding = if myth_len < 40 && fact_len < 40 {
+        "var(--space-4) var(--space-4)"
+    } else {
+        "var(--space-3) var(--space-4)"
+    };
+
     let content = match effective_variant {
         "debunk" => {
             // Myth is shown crossed out, fact appears below with explanation
             let myth_html = format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) var(--space-4);margin-bottom:var(--space-3);box-shadow:{};position:relative;">
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-3);box-shadow:{};position:relative;">
                     <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
                 </div>"#,
-                card_bg, card_border, card_blur, radius_md, shadow_lg,
-                tokens.body_font, body_fs, colors.text_secondary, tokens.primary,
+                card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
+                tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
                 tokens.heading_font, tokens.primary, tokens.primary,
             );
             let fact_html = format!(
-                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:var(--space-3) var(--space-4);box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">FACT</div>
                     <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;">{}</div>
                 </div>"#,
-                card_bg, tokens.primary, radius_md,
+                card_bg, tokens.primary, radius_md, dynamic_padding,
                 tokens.heading_font, tokens.primary,
-                tokens.body_font, body_fs, colors.text_primary, escape_html(fact),
+                tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {
                 format!(
@@ -4769,25 +4802,25 @@ pub fn myth_fact_slide(
             let myth_html = format!(
                 r#"<div style="flex:1;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
-                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};">
+                    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};">
                         <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, colors.text_secondary,
-                card_bg, card_border, card_blur, radius_md, shadow_lg,
-                tokens.body_font, body_fs, colors.text_secondary, tokens.primary,
+                card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
+                tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
             );
             let fact_html = format!(
                 r#"<div style="flex:1;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
-                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:var(--space-3);box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                         <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, tokens.primary,
-                card_bg, tokens.primary, radius_md,
-                tokens.body_font, body_fs, colors.text_primary, escape_html(fact),
+                card_bg, tokens.primary, radius_md, dynamic_padding,
+                tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {
                 format!(

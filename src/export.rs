@@ -215,7 +215,7 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
     };
 
     let screenshot_png = tab
-        .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), true)
+        .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), false)
         .map_err(|e| e.to_string())?;
 
     fs::write(output_path, screenshot_png).map_err(|e| e.to_string())?;
@@ -268,39 +268,43 @@ pub async fn export_slides(
     let _ = tab.evaluate(font_wait_js, true);
     tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
 
-    let hide_frame_js = format!(
-        r#"
+    let hide_frame_js = r#"
         document.querySelectorAll('.ig-header,.ig-dots,.ig-actions,.ig-caption')
             .forEach(el => el.style.display = 'none');
         const frame = document.querySelector('.ig-frame');
-        if (frame) {{
-            frame.style.cssText = 'width:{}px;height:{}px;max-width:none;border-radius:0;box-shadow:none;overflow:hidden;margin:0;';
-        }}
+        if (frame) {
+            frame.style.cssText = 'width:var(--slide-width);height:var(--slide-height);max-width:none;border-radius:0;box-shadow:none;overflow:hidden;margin:0;border:none;';
+        }
         const viewport = document.querySelector('.carousel-viewport');
-        if (viewport) {{
-            viewport.style.cssText = 'width:{}px;height:{}px;aspect-ratio:unset;overflow:hidden;cursor:default;';
-        }}
+        if (viewport) {
+            viewport.style.cssText = 'width:var(--slide-width);height:var(--slide-height);aspect-ratio:unset;overflow:hidden;cursor:default;';
+        }
         document.body.style.cssText = 'padding:0;margin:0;display:block;overflow:hidden;background:#fff;';
-        "#,
-        width, height, width, height
-    );
-    let _ = tab.evaluate(&hide_frame_js, false);
+    "#;
+    tab.evaluate(hide_frame_js, false).map_err(|e| format!("JS error in hide_frame_js: {}", e))?;
     tokio::time::sleep(tokio::time::Duration::from_millis(300)).await;
 
     let mut paths = Vec::new();
     for i in 0..total_slides {
         let swipe_js = format!(
             r#"
-            const track = document.querySelector('.carousel-track');
-            track.style.transition = 'none';
-            track.style.transform = 'translateX(-{}px)';
+            (() => {{
+                const track = document.querySelector('.carousel-track');
+                const slideWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--slide-width')) || 420;
+                if (track) {{
+                    track.style.transition = 'none';
+                    track.style.transform = 'translateX(-' + ({} * slideWidth) + 'px)';
+                    return track.style.transform;
+                }}
+                return 'no-track';
+            }})()
             "#,
-            i * width as usize
+            i
         );
-        let _ = tab.evaluate(&swipe_js, false);
+        tab.evaluate(&swipe_js, true).map_err(|e| format!("JS error in swipe_js (slide {}): {}", i + 1, e))?;
 
         // Reflow wait
-        tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+        tokio::time::sleep(tokio::time::Duration::from_millis(300)).await;
 
         // Use clip to capture exactly the requested dimensions
         let clip = Viewport {
@@ -312,7 +316,7 @@ pub async fn export_slides(
         };
 
         let screenshot_png = tab
-            .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), true)
+            .capture_screenshot(CaptureScreenshotFormatOption::Png, None, Some(clip), false)
             .map_err(|e| e.to_string())?;
 
         let slide_name = format!("slide_{}.png", i + 1);
