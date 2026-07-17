@@ -2888,12 +2888,18 @@ pub fn grid_cards_slide(
             .and_then(|v| v.as_str())
             .unwrap_or("");
         let desc_html = if !d.is_empty() {
+            // Truncate descriptions longer than 160 chars to prevent overflow
+            let display_desc = if d.len() > 160 {
+                format!("{}…", &d[..d.char_indices().take_while(|(i, _)| *i < 159).last().map(|(i, c)| i + c.len_utf8()).unwrap_or(159)])
+            } else {
+                d.to_string()
+            };
             format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">{}</p>"#,
                 tokens.body_font,
                 font_size_caption,
                 colors.text_secondary,
-                escape_html(d)
+                escape_html(&display_desc)
             )
         } else {
             String::new()
@@ -2906,9 +2912,9 @@ pub fn grid_cards_slide(
         let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
 
         format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:10px;display:flex;align-items:center;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 6px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
+            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;max-height:180px;overflow:hidden;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;">{}</div>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{}</h3>
                 {}
             </div>"#,
             card_bg,
@@ -2942,18 +2948,19 @@ pub fn grid_cards_slide(
         .max()
         .unwrap_or(0);
 
+    // Intelligent scaling: compute multi-tier font sizes based on content mass
+    let total_chars: usize = cards.iter().map(|c| {
+        let t = c.get("title").and_then(|v| v.as_str()).unwrap_or("").len();
+        let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("").len();
+        t + d
+    }).sum();
+    let dense = total_chars > 240;
+    let very_dense = total_chars > 350;
+
     let card_html = if effective_variant == "2-col" {
         let mut items_html = String::new();
-        let t_fs = if max_title_len > 15 {
-            title_fs - 2
-        } else {
-            title_fs
-        };
-        let c_fs = if max_desc_len > 60 {
-            caption_fs - 1
-        } else {
-            caption_fs
-        };
+        let t_fs = if very_dense { title_fs - 4 } else if dense { title_fs - 2 } else if max_title_len > 15 { title_fs - 1 } else { title_fs };
+        let c_fs = if very_dense { caption_fs - 2 } else if dense { caption_fs - 1 } else if max_desc_len > 60 { caption_fs - 1 } else { caption_fs };
         for card in cards.iter().take(2) {
             items_html.push_str(&render_single_card(card, "24px 20px", 28, t_fs, c_fs));
         }
@@ -4544,10 +4551,10 @@ fn column_chart_slide(
         };
 
         format!(
-            r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>{}"#,
-            categories,
-            legend_html
-        )
+            r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>{}"#,
+                    categories,
+                    legend_html
+                )
     } else {
         // ── Single-series flat columns (backward-compatible) ───────────
         let vals: Vec<f64> = data
@@ -4586,7 +4593,7 @@ fn column_chart_slide(
         }).collect();
 
         format!(
-            r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
+            r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
             bars
         )
     };
@@ -4891,29 +4898,43 @@ pub fn myth_fact_slide(
     let effective_variant = variant;
 
     let myth_len = myth.len();
-    let fact_len = fact.len();
-    let dynamic_fs = if myth_len < 40 && fact_len < 40 {
-        body_fs + 5
-    } else if myth_len < 80 && fact_len < 80 {
-        body_fs + 2
-    } else {
-        body_fs
-    };
-    let dynamic_padding = if myth_len < 40 && fact_len < 40 {
-        "var(--space-4) var(--space-4)"
-    } else {
-        "var(--space-3) var(--space-4)"
-    };
+    let fact_len = fact.len();        let dynamic_fs = if myth_len < 40 && fact_len < 40 {
+            body_fs + 5
+        } else if myth_len < 80 && fact_len < 80 {
+            body_fs + 2
+        } else if myth_len > 200 || fact_len > 200 {
+            body_fs - 2
+        } else if myth_len > 120 || fact_len > 120 {
+            body_fs - 1
+        } else {
+            body_fs
+        };
+
+        let dynamic_padding = if myth_len < 40 && fact_len < 40 {
+            "var(--space-4) var(--space-4)"
+        } else if myth_len > 120 || fact_len > 120 {
+            "var(--space-2) var(--space-3)"
+        } else {
+            "var(--space-3) var(--space-4)"
+        };
+
+        // Max-height for myth and fact containers to prevent overflow
+        let card_max_height = if myth_len > 200 || fact_len > 200 {
+            "140px"
+        } else if myth_len > 120 || fact_len > 120 {
+            "170px"
+        } else {
+            "220px"
+        };
 
     let content = match effective_variant {
         "debunk" => {
             // Myth is shown crossed out, fact appears below with explanation
-            let myth_html = format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-3);box-shadow:{};position:relative;">
+        let myth_html = format!(
+            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-3);box-shadow:{};position:relative;max-height:{};overflow:hidden;">
                     <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
-                </div>"#,
-                card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
+                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, card_max_height,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
                 tokens.heading_font, tokens.primary, tokens.primary,
@@ -4941,13 +4962,12 @@ pub fn myth_fact_slide(
             // split (default) — myth and fact side by side
             let myth_html = format!(
                 r#"<div style="flex:1;">
-                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
-                    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};">
-                        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
-                    </div>
-                </div>"#,
-                tokens.heading_font, colors.text_secondary,
-                card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};max-height:{};overflow:hidden;">
+        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
+    </div>
+</div>"#,
+                    tokens.heading_font, colors.text_secondary,
+                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, card_max_height,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
             );
