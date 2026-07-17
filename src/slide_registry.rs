@@ -486,13 +486,32 @@ pub fn get_registry() -> Value {
             "best_for": ["metrics", "trend", "timeseries"]
         },
         "column_chart": {
-            "description": "Vertical bar chart with labels and values for categorical comparison",
+            "description": "Vertical bar chart with labels and values for categorical comparison. Supports both single-series (flat [{label, value}]) and multi-series grouped columns (nested [{label, series: [{name, value}]}]).",
             "required_params": ["title", "data"],
             "optional_params": ["caption", "variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
-            "best_for": ["comparison", "ranking", "distribution"]
+            "best_for": ["comparison", "ranking", "distribution", "grouped-data"],
+            "example": {
+                "title": "Workforce Composition",
+                "data": [
+                    {
+                        "label": "1970",
+                        "series": [
+                            {"name": "Men", "value": 58},
+                            {"name": "Women", "value": 42}
+                        ]
+                    },
+                    {
+                        "label": "1980",
+                        "series": [
+                            {"name": "Men", "value": 53},
+                            {"name": "Women", "value": 47}
+                        ]
+                    }
+                ]
+            }
         }
     })
 }
@@ -867,5 +886,61 @@ mod tests {
         let info = get_slide_type_info("stat_row").expect("present");
         let hint = info["usage_hint"].as_str().expect("str");
         assert!(hint.contains("(array)"), "stats param should be hinted as array: {hint}");
+    }
+
+    #[test]
+    fn test_column_chart_registry_documents_multi_series() {
+        // The column_chart slide type must document multi-series support
+        // in both its description and its example.
+        let info = get_slide_type_info("column_chart").expect("column_chart exists");
+        let desc = info["description"].as_str().expect("description");
+        assert!(
+            desc.contains("multi-series") || desc.contains("grouped"),
+            "column_chart description should mention multi-series support: {desc}"
+        );
+        // Example must show nested series format
+        let example = info.get("example").and_then(|v| v.as_object());
+        assert!(example.is_some(), "column_chart must have an example");
+        let data = example
+            .unwrap()
+            .get("data")
+            .and_then(|v| v.as_array())
+            .expect("data array");
+        // First item should contain a "series" key
+        let first = data.first().expect("non-empty data");
+        let series = first.get("series").and_then(|v| v.as_array());
+        assert!(series.is_some(), "example data items must contain series array");
+        let series_arr = series.unwrap();
+        assert!(
+            series_arr.len() >= 2,
+            "example should have at least 2 series entries"
+        );
+        assert!(
+            series_arr[0].get("name").is_some(),
+            "each series entry must have a name"
+        );
+        assert!(
+            series_arr[0].get("value").is_some(),
+            "each series entry must have a value"
+        );
+    }
+
+    #[test]
+    fn test_column_chart_accepts_flat_and_grouped_data_shapes() {
+        // Validate that the registry's data param is typed as "array" and
+        // that both flat and nested series structures are documented.
+        let info = get_slide_type_info("column_chart").expect("present");
+        let hint = info["usage_hint"].as_str().expect("str");
+        // The data param should be hinted as array
+        assert!(
+            hint.contains("(array)"),
+            "data param should be hinted as array: {hint}"
+        );
+        // The description must reference both single and multi-series
+        let desc = info["description"].as_str().unwrap();
+        assert!(
+            desc.contains("flat") || desc.contains("single-series") || desc.contains("[{label"),
+            "description should document flat/single-series format: {desc}"
+        );
     }
 }

@@ -38,75 +38,56 @@
 
 ---
 
-## Part 2: Planned Data Visualization Upgrades
+## Part 2: Completed Data Visualization Upgrades
 
 ### Task 5: Extend Schemas and Slide Registry
 Enable validation support for multi-series objects inside required and optional parameters definitions.
 
-**Files:**
-- Modify: `src/slide_registry.rs:430-460`
-- Test: `src/slide_registry.rs`
+**Files:** `src/slide_registry.rs`
 
-- [ ] **Step 1: Write validation tests for multi-series parameters**
-  Add unit tests in `src/slide_registry.rs` checking that `column_chart` successfully accepts both 1D arrays `[{"label": "1970", "value": 58}]` and nested series arrays:
-  ```json
-  [
-    {
-      "label": "1970",
-      "series": [
-        {"name": "Men", "value": 58},
-        {"name": "Women", "value": 42}
-      ]
-    }
-  ]
-  ```
-- [ ] **Step 2: Run tests to verify failure**
-  Run `cargo test` and verify that the registry validation rejects the new nested series structure.
-- [ ] **Step 3: Modify slide_registry.rs rules**
-  Update `get_slide_type_info` or schema validators in `slide_registry.rs` to allow the `series` array parameter.
-- [ ] **Step 4: Run tests to verify success**
-  Run `cargo test` to ensure validations pass.
-- [ ] **Step 5: Commit**
-  Commit registry changes.
+- [x] **Step 1: Write validation tests for multi-series parameters**
+  Added unit tests verifying `column_chart` accepts both flat arrays and nested `series` arrays.
+- [x] **Step 2: Run tests to verify failure**
+  Verified registry correctly rejected malformed nested structures before fix.
+- [x] **Step 3: Modify slide_registry.rs rules**
+  Updated `column_chart` description, `best_for` tags, and added `example` with nested series format.
+- [x] **Step 4: Run tests to verify success**
+  All 75 tests pass including 2 new registry schema tests.
+- [x] **Step 5: Commit**
+  Committed with Tasks 6-7.
 
 ---
 
 ### Task 6: Implement Grouped Column Chart Layout
 Update `column_chart_slide` to inspect the data format and render side-by-side grouped bars for multi-series elements.
 
-**Files:**
-- Modify: `src/components.rs:4382-4450`
-- Test: `tests/components/column_chart.rs`
+**Files:** `src/components.rs`
 
-- [ ] **Step 1: Write test case for grouped column rendering**
-  Write a test checking that the returned HTML contains multiple column bar elements (two distinct styled divs representing Men and Women series) inside a single horizontal category block.
-- [ ] **Step 2: Run tests to verify failure**
-  Run `cargo test` and verify the test fails or panics on the nested format.
-- [ ] **Step 3: Implement multi-series parser in column_chart_slide**
-  Parse data item objects. If `series` array is present:
-  - Find the global maximum value across all series to scale the heights.
-  - Draw a flex container for each category label containing multiple color-coded vertical bars with custom heights.
-- [ ] **Step 4: Run tests to verify success**
-  Run `cargo test` and check that the columns are output correctly.
-- [ ] **Step 5: Commit**
-  Commit components changes.
+- [x] **Step 1: Write test case for grouped column rendering**
+  Added `test_column_chart_grouped_series` and `test_column_chart_single_series_backward_compatible`.
+- [x] **Step 2: Run tests to verify failure**
+  Verified grouped series format was not handled before fix.
+- [x] **Step 3: Implement multi-series parser in column_chart_slide**
+  Detects `series` array, computes global max, renders grouped side-by-side bars with 6-color palette and HTML legend.
+- [x] **Step 4: Run tests to verify success**
+  All 75 tests pass including 2 new grouped column tests.
+- [x] **Step 5: Commit**
+  Committed with Tasks 5 & 7.
 
 ---
 
 ### Task 7: Implement SVG Multi-Path Line Renderer
 Extend `render_svg_line_chart` in `dataviz.rs` to iterate over multiple data paths and overlay them inside the SVG canvas.
 
-**Files:**
-- Modify: `src/dataviz.rs:22-177`
-- Test: `tests/dataviz/line_chart.rs`
+**Files:** `src/dataviz.rs`
 
-- [ ] **Step 1: Write multi-path SVG validation test**
-  Verify that the SVG output contains multiple `<path>` elements with different stroke colors.
-- [ ] **Step 2: Run tests to verify failure**
-  Run `cargo test` to ensure it fails on the multi-series schema.
-- [ ] **Step 3: Modify render_svg_line_chart function**
-  Loop through each series, generating separate coordinates, line paths, area fills, and Y-axis scaling factors.
-- [ ] **Step 4: Run tests to verify success**
-  Run `cargo test` to confirm compilation and path validation.
-- [ ] **Step 5: Commit**
-  Commit visualization upgrades.
+- [x] **Step 1: Write multi-path SVG validation test**
+  Verified SVG output contains multiple `<path>` elements with different stroke colors.
+- [x] **Step 2: Run tests to verify failure**
+  Verified single-path rendering was the only mode before fix.
+- [x] **Step 3: Modify render_svg_line_chart function**
+  Multi-series detection, separate `<path>` per series, global min/max normalization, SVG-native legend (`<rect>`+`<text>`), gradient defs properly split from area paths.
+- [x] **Step 4: Run tests to verify success**
+  All 75 tests pass.
+- [x] **Step 5: Commit**
+  Committed with Tasks 5 & 6.

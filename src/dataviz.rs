@@ -31,50 +31,67 @@ pub fn render_svg_line_chart(
         return String::new();
     }
 
-    let mut vals = Vec::new();
-    let mut labels = Vec::new();
-    for item in data.iter().take(8) {
-        let val = item
-            .get("value")
-            .and_then(|v| {
-                v.as_f64()
-                    .or_else(|| v.as_str().and_then(|s| s.parse::<f64>().ok()))
-            })
-            .unwrap_or(0.0);
-        vals.push(val);
-        let label = item
-            .get("label")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
-        labels.push(label);
-    }
+    // Detect multi-series: each item has a "series" array [{name, value}]
+    let is_multi = data.iter().any(|item| {
+        item.get("series")
+            .and_then(|v| v.as_array())
+            .map(|arr| !arr.is_empty())
+            .unwrap_or(false)
+    });
 
-    let max_val = vals.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-    let mut min_val = vals.iter().copied().fold(f64::INFINITY, f64::min);
-    if max_val == min_val {
-        min_val -= 1.0;
-    }
-
-    let n_points = vals.len();
     let pad_left = 40;
     let pad_right = 15;
     let pad_top = 15;
     let pad_bottom = 20;
-
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
 
-    let mut points = Vec::new();
-    for (i, &val) in vals.iter().enumerate() {
-        let x = if n_points > 1 {
+    // ── Shared: extract labels from the top-level items ──
+    let labels: Vec<String> = data
+        .iter()
+        .take(8)
+        .map(|item| {
+            item.get("label")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string()
+        })
+        .collect();
+    let n_points = labels.len();
+
+    // ── Shared: x-coordinate mapping ──
+    let x_of = |i: usize| -> f64 {
+        if n_points > 1 {
             pad_left as f64 + (i as f64 / (n_points - 1) as f64) * chart_w
         } else {
             pad_left as f64 + chart_w / 2.0
-        };
-        let y =
-            height as f64 - pad_bottom as f64 - ((val - min_val) / (max_val - min_val)) * chart_h;
-        points.push((x, y));
+        }
+    };
+
+    // ── Shared: grid lines (based on global min/max across all series) ──
+    let all_vals: Vec<f64> = if is_multi {
+        data
+            .iter()
+            .take(8)
+            .filter_map(|item| item.get("series")?.as_array())
+            .flatten()
+            .filter_map(|s| s.get("value")?.as_f64())
+            .collect()
+    } else {
+        data
+            .iter()
+            .take(8)
+            .filter_map(|item| {
+                item.get("value")
+                    .and_then(|v| v.as_f64().or_else(|| v.as_str()?.parse::<f64>().ok()))
+            })
+            .collect()
+    };
+
+    let max_val = all_vals.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let mut min_val = all_vals.iter().copied().fold(f64::INFINITY, f64::min);
+    if max_val == min_val {
+        min_val -= 1.0;
     }
 
     let mut grid_lines = String::new();
@@ -92,69 +109,191 @@ pub fn render_svg_line_chart(
         ));
     }
 
-    let stroke_col = &colors.primary;
-    let mut path_d = String::new();
-    if !points.is_empty() {
-        path_d = format!("M {:.1} {:.1} ", points[0].0, points[0].1);
-        for pt in &points[1..] {
-            path_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
-        }
-    }
+    // ── Build line paths ──
+    // Each series gets its own color and SVG path element.
+    let series_palette = [
+        &colors.primary,
+        "#FF8C6B",
+        "#3ECFA0",
+        "#FFB84D",
+        "#E879A8",
+        "#5BB5F0",
+    ];
 
-    let line_path = format!(
-        r#"<path d="{}" stroke="{}" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />"#,
-        path_d, stroke_col
-    );
+    let mut all_paths = String::new();
+    let mut area_grad_defs = String::new();
+    let mut area_paths = String::new();
+    let mut all_markers = String::new();
 
-    let mut area_path = String::new();
-    if draw_area && !points.is_empty() {
-        let y_baseline = height as f64 - pad_bottom as f64;
-        let mut area_d = format!("M {:.1} {:.1} ", points[0].0, y_baseline);
-        for pt in &points {
-            area_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
-        }
-        area_d.push_str(&format!(
-            "L {:.1} {:.1} Z",
-            points[points.len() - 1].0,
-            y_baseline
-        ));
-
-        let grad_id = "chart_area_grad";
-        let grad_def = format!(
-            r#"<defs>
-                <linearGradient id="{}" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="{}" stop-opacity="0.25" />
-                    <stop offset="100%" stop-color="{}" stop-opacity="0.0" />
-                </linearGradient>
-            </defs>"#,
-            grad_id, stroke_col, stroke_col
-        );
-        area_path = format!(
-            r#"{}<path d="{}" fill="url(#{})" />"#,
-            grad_def, area_d, grad_id
-        );
-    }
-
-    let mut markers = String::new();
     let bg_color_repr = if is_dark {
         "var(--surface-dark, #010105)"
     } else {
         "var(--surface-light, #F3F5FC)"
     };
-    for pt in &points {
-        markers.push_str(&format!(
-            r#"<circle cx="{:.1}" cy="{:.1}" r="4" fill="{}" stroke="{}" stroke-width="1.5" />"#,
-            pt.0, pt.1, stroke_col, bg_color_repr
-        ));
+
+    if is_multi {
+        // ── Multi-series rendering ──
+        // Collect unique series names across all items.
+        let mut series_names: Vec<String> = Vec::new();
+        for item in data.iter().take(8) {
+            if let Some(arr) = item.get("series").and_then(|v| v.as_array()) {
+                for s in arr {
+                    let name = s.get("name").and_then(|v| v.as_str()).unwrap_or("").to_string();
+                    if !series_names.contains(&name) {
+                        series_names.push(name);
+                    }
+                }
+            }
+        }
+
+        for (si, sname) in series_names.iter().enumerate() {
+            let stroke_col = series_palette[si % series_palette.len()];
+
+            // Extract values for this series across all categories
+            let vals: Vec<f64> = data
+                .iter()
+                .take(8)
+                .map(|item| {
+                    item.get("series")
+                        .and_then(|v| v.as_array())
+                        .and_then(|arr| {
+                            arr.iter()
+                                .find(|s| s.get("name").and_then(|v| v.as_str()) == Some(sname.as_str()))
+                                .and_then(|s| s.get("value")?.as_f64())
+                        })
+                        .unwrap_or(0.0)
+                })
+                .collect();
+
+            let mut points = Vec::new();
+            for (i, &val) in vals.iter().enumerate() {
+                let x = x_of(i);
+                let y = height as f64 - pad_bottom as f64
+                    - ((val - min_val) / (max_val - min_val)) * chart_h;
+                points.push((x, y));
+            }
+
+            // Line path
+            if !points.is_empty() {
+                let mut path_d = format!("M {:.1} {:.1} ", points[0].0, points[0].1);
+                for pt in &points[1..] {
+                    path_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
+                }
+                all_paths.push_str(&format!(
+                    r#"<path d="{}" stroke="{}" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />"#,
+                    path_d, stroke_col
+                ));
+            }
+
+            // Area fill
+            if draw_area && !points.is_empty() {
+                let y_baseline = height as f64 - pad_bottom as f64;
+                let mut area_d = format!("M {:.1} {:.1} ", points[0].0, y_baseline);
+                for pt in &points {
+                    area_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
+                }
+                area_d.push_str(&format!(
+                    "L {:.1} {:.1} Z ",
+                    points[points.len() - 1].0,
+                    y_baseline
+                ));
+                let grad_id = format!("chart_area_grad_{}", si);
+                let grad_def = format!(
+                    r#"<linearGradient id="{}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="{}" stop-opacity="0.18" />
+                        <stop offset="100%" stop-color="{}" stop-opacity="0.0" />
+                    </linearGradient>"#,
+                    grad_id, stroke_col, stroke_col
+                );
+                area_grad_defs.push_str(&grad_def);
+                area_paths.push_str(&format!(
+                    r#"<path d="{}" fill="url(#{})" />"#,
+                    area_d, grad_id
+                ));
+            }
+
+            // Markers
+            for pt in &points {
+                all_markers.push_str(&format!(
+                    r#"<circle cx="{:.1}" cy="{:.1}" r="3.5" fill="{}" stroke="{}" stroke-width="1.5" />"#,
+                    pt.0, pt.1, stroke_col, bg_color_repr
+                ));
+            }
+
+
+        }
+    } else {
+        // ── Single-series rendering (backward-compatible) ──
+        let vals: Vec<f64> = data
+            .iter()
+            .take(8)
+            .map(|item| {
+                item.get("value")
+                    .and_then(|v| {
+                        v.as_f64()
+                            .or_else(|| v.as_str().and_then(|s| s.parse::<f64>().ok()))
+                    })
+                    .unwrap_or(0.0)
+            })
+            .collect();
+
+        let mut points = Vec::new();
+        for (i, &val) in vals.iter().enumerate() {
+            let x = x_of(i);
+            let y = height as f64 - pad_bottom as f64
+                - ((val - min_val) / (max_val - min_val)) * chart_h;
+            points.push((x, y));
+        }
+
+        let stroke_col = &colors.primary;
+        if !points.is_empty() {
+            let mut path_d = format!("M {:.1} {:.1} ", points[0].0, points[0].1);
+            for pt in &points[1..] {
+                path_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
+            }
+            all_paths.push_str(&format!(
+                r#"<path d="{}" stroke="{}" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />"#,
+                path_d, stroke_col
+            ));
+
+            if draw_area {
+                let y_baseline = height as f64 - pad_bottom as f64;
+                let mut area_d = format!("M {:.1} {:.1} ", points[0].0, y_baseline);
+                for pt in &points {
+                    area_d.push_str(&format!("L {:.1} {:.1} ", pt.0, pt.1));
+                }
+                area_d.push_str(&format!(
+                    "L {:.1} {:.1} Z ",
+                    points[points.len() - 1].0,
+                    y_baseline
+                ));
+                let grad_id = "chart_area_grad";
+                area_grad_defs.push_str(&format!(
+                    r#"<linearGradient id="{}" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="{}" stop-opacity="0.25" />
+                        <stop offset="100%" stop-color="{}" stop-opacity="0.0" />
+                    </linearGradient>"#,
+                    grad_id, stroke_col, stroke_col
+                ));
+                area_paths.push_str(&format!(
+                    r#"<path d="{}" fill="url(#{})" />"#,
+                    area_d, grad_id
+                ));
+            }
+
+            for pt in &points {
+                all_markers.push_str(&format!(
+                    r#"<circle cx="{:.1}" cy="{:.1}" r="4" fill="{}" stroke="{}" stroke-width="1.5" />"#,
+                    pt.0, pt.1, stroke_col, bg_color_repr
+                ));
+            }
+        }
     }
 
+    // ── X-axis labels ──
     let mut labels_svg = String::new();
     for (i, lbl) in labels.iter().enumerate() {
-        let x = if n_points > 1 {
-            pad_left as f64 + (i as f64 / (n_points - 1) as f64) * chart_w
-        } else {
-            pad_left as f64 + chart_w / 2.0
-        };
+        let x = x_of(i);
         labels_svg.push_str(&format!(
             r#"<text x="{:.1}" y="{}" font-size="9px" fill="{}" text-anchor="middle">{}</text>"#,
             x,
@@ -164,6 +303,64 @@ pub fn render_svg_line_chart(
         ));
     }
 
+    // ── Legend (multi-series only, SVG-native <text> elements) ──
+    let legend_svg = if is_multi {
+        // Build a horizontal row of colored rectangles + labels using SVG primitives
+        // for maximum renderer compatibility (no foreignObject).
+        let mut legend_svg_parts = String::new();
+        let mut x_offset = width as f64 / 2.0; // start centred
+        // Rough estimate: each entry ≈ 60px wide
+        let entry_width = 60.0;
+        let num_entries = data
+            .first()
+            .and_then(|item| item.get("series")?.as_array())
+            .map(|arr| arr.len())
+            .unwrap_or(0);
+        let total_width = num_entries as f64 * entry_width;
+        x_offset = (width as f64 - total_width) / 2.0;
+
+        if let Some(first_series) = data
+            .first()
+            .and_then(|item| item.get("series")?.as_array())
+        {
+            for (si, sv) in first_series.iter().enumerate() {
+                let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
+                let col = series_palette[si % series_palette.len()];
+                let rect_x = x_offset + si as f64 * entry_width;
+                let text_x = rect_x + 12.0;
+                legend_svg_parts.push_str(&format!(
+                    r#"<rect x="{:.1}" y="2" width="8" height="3" rx="1" fill="{}" /><text x="{:.1}" y="7" font-size="7px" fill="{}" font-family="sans-serif">{}</text>"#,
+                    rect_x, col, text_x, colors.text_secondary, escape_html(name)
+                ));
+            }
+        }
+        format!(
+            r#"<g transform="translate(0,4)">{}</g>"#,
+            legend_svg_parts
+        )
+    } else {
+        String::new()
+    };
+
+    // ── Final SVG assembly ──
+    // Only emit <defs> if there are gradient definitions
+    let defs_block = if area_grad_defs.is_empty() {
+        String::new()
+    } else {
+        format!("<defs>{}</defs>", area_grad_defs)
+    };
+
+    // Legend goes in the visible SVG tree, NOT inside <defs>.
+    // Position it above the chart area with a small vertical offset.
+    let legend_g = if !legend_svg.is_empty() {
+        format!(
+            r#"<g transform="translate(0, 4)">{}</g>"#,
+            legend_svg
+        )
+    } else {
+        String::new()
+    };
+
     format!(
         r#"<svg width="100%" height="{}px" viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg">
             {}
@@ -171,8 +368,10 @@ pub fn render_svg_line_chart(
             {}
             {}
             {}
+            {}
+            {}
         </svg>"#,
-        height, width, height, grid_lines, area_path, line_path, markers, labels_svg
+        height, width, height, defs_block, legend_g, grid_lines, area_paths, all_paths, all_markers, labels_svg
     )
 }
 
@@ -470,4 +669,106 @@ pub fn render_svg_radar_chart(
         </svg>"#,
         height, width, height, bg_rings, axis_svg, plot_shape, markers
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::layouts::SlideColors;
+    use serde_json::json;
+
+    fn make_test_colors() -> SlideColors {
+        SlideColors {
+            text_primary: "#1A1A2E".to_string(),
+            text_secondary: "#6B7280".to_string(),
+            text_tertiary: "#9CA3AF".to_string(),
+            primary: "#767CFF".to_string(),
+            button_bg: "#767CFF".to_string(),
+            button_text: "#FFFFFF".to_string(),
+            border: "#E5E7EB".to_string(),
+            is_dark: false,
+        }
+    }
+
+    #[test]
+    fn test_line_chart_single_series() {
+        let data = vec![
+            json!({"label": "Jan", "value": 30}),
+            json!({"label": "Feb", "value": 50}),
+            json!({"label": "Mar", "value": 40}),
+        ];
+        let colors = make_test_colors();
+        let svg = render_svg_line_chart(&data, 300, 150, &colors, false, false);
+        assert!(!svg.is_empty(), "single series should produce non-empty SVG");
+        assert!(svg.contains("<svg"), "should be a valid SVG");
+        assert!(svg.contains("<path"), "single series should produce at least one <path>");
+        // The path should have some visual styling (stroke or style attr)
+        assert!(svg.contains("767CFF"), "should use the primary color for the line");
+    }
+
+    #[test]
+    fn test_line_chart_multi_series_produces_multiple_paths() {
+        let data = vec![
+            json!({
+                "label": "2020",
+                "series": [
+                    {"name": "Men", "value": 58},
+                    {"name": "Women", "value": 42}
+                ]
+            }),
+            json!({
+                "label": "2021",
+                "series": [
+                    {"name": "Men", "value": 55},
+                    {"name": "Women", "value": 45}
+                ]
+            }),
+        ];
+        let colors = make_test_colors();
+        let svg = render_svg_line_chart(&data, 300, 150, &colors, false, false);
+
+        // Multi-series should produce at least 2 path elements
+        let path_count = svg.matches("<path").count();
+        assert!(
+            path_count >= 2,
+            "multi-series should produce >=2 <path> elements, got {}",
+            path_count
+        );
+
+        // Should have a legend with series names
+        assert!(svg.contains("Men"), "legend should include Men series name");
+        assert!(svg.contains("Women"), "legend should include Women series name");
+
+        // Should NOT be in <defs> (legend must be visible)
+        // The legend <g> should appear after the <defs> block
+        let defs_end = svg.find("</defs>").unwrap_or(0);
+        let men_pos = svg.find("Men").unwrap_or(0);
+        assert!(
+            men_pos > defs_end,
+            "legend (Men) should appear after </defs>, not inside it"
+        );
+    }
+
+    #[test]
+    fn test_line_chart_empty_data() {
+        let data: Vec<Value> = vec![];
+        let colors = make_test_colors();
+        let svg = render_svg_line_chart(&data, 300, 150, &colors, false, false);
+        assert!(svg.is_empty(), "empty data should produce empty string");
+    }
+
+    #[test]
+    fn test_line_chart_area_fill() {
+        let data = vec![
+            json!({"label": "A", "value": 10}),
+            json!({"label": "B", "value": 20}),
+            json!({"label": "C", "value": 15}),
+        ];
+        let colors = make_test_colors();
+        let svg = render_svg_line_chart(&data, 300, 150, &colors, false, true);
+        assert!(!svg.is_empty(), "area fill should produce non-empty SVG");
+        assert!(svg.contains("<svg"), "should be a valid SVG");
+        // Area fill should have gradient definitions
+        assert!(svg.contains("linearGradient"), "area fill should have gradient defs");
+    }
 }

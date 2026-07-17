@@ -4411,45 +4411,185 @@ fn column_chart_slide(
     let is_dark = colors.is_dark;
     let heading = heading_block(title, tokens, "title", None, true, None, "left", "0", false);
 
-    let vals: Vec<f64> = data
-        .iter()
-        .map(|item| item.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0))
-        .collect();
-    let max_val = vals.iter().copied().fold(0.0, f64::max).max(1.0);
+    // Detect multi-series: each item has a "series" array [{name, value}]
+    let is_grouped = data.iter().any(|item| {
+        item.get("series")
+            .and_then(|v| v.as_array())
+            .map(|arr| !arr.is_empty())
+            .unwrap_or(false)
+    });
 
-    let bars: String = data.iter().zip(vals.iter()).map(|(item, val)| {
-        let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-        let pct = (val / max_val) * 100.0;
-        let val_display = if *val >= 1000.0 {
-            format!("{:.0}", val)
-        } else if *val == val.floor() {
-            format!("{:.0}", val)
+    // Palette for grouped columns — warm-editorial accents that contrast well
+    let series_colors = [
+        "#767CFF", // indigo-violet
+        "#FF8C6B", // warm coral
+        "#3ECFA0", // teal mint
+        "#FFB84D", // amber gold
+        "#E879A8", // rose pink
+        "#5BB5F0", // sky blue
+    ];
+
+    let chart_html = if is_grouped {
+        // ── Multi-series grouped columns ──────────────────────────────
+        // Find global max across all series values for height normalisation.
+        let global_max: f64 = data
+            .iter()
+            .filter_map(|item| item.get("series")?.as_array())
+            .flatten()
+            .filter_map(|s| s.get("value")?.as_f64())
+            .fold(0.0f64, f64::max)
+            .max(1.0);
+
+        let num_series = data
+            .first()
+            .and_then(|item| item.get("series")?.as_array())
+            .map(|arr| arr.len())
+            .unwrap_or(1);
+        // Each inner bar is proportionally narrower; min 20% so they stay visible
+        let bar_inner_pct = (70.0 / num_series as f64).max(20.0);
+        let gap_px = if num_series > 2 { 2 } else { 3 };
+
+        let categories: String = data
+            .iter()
+            .map(|item| {
+                let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
+                let series = item
+                    .get("series")
+                    .and_then(|v| v.as_array())
+                    .cloned()
+                    .unwrap_or_default();
+
+                // Render each series value as a side-by-side bar
+                let inner_bars: String = series
+                    .iter()
+                    .enumerate()
+                    .map(|(si, sv)| {
+                        let val = sv
+                            .get("value")
+                            .and_then(|v| v.as_f64())
+                            .unwrap_or(0.0);
+                        let pct = (val / global_max) * 100.0;
+                        let col = series_colors[si % series_colors.len()];
+                        let val_display = if val >= 1000.0 {
+                            format!("{:.0}", val)
+                        } else if val == val.floor() {
+                            format!("{:.0}", val)
+                        } else {
+                            format!("{:.1}", val)
+                        };
+                        format!(
+                            r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:{};font-size:8px;font-weight:800;color:{};line-height:1;text-align:center;">{}</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:{:.0}%;height:{:.1}%;min-height:4px;background:{};border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>"#,
+                            tokens.body_font,
+                            colors.text_primary,
+                            val_display,
+                            bar_inner_pct,
+                            pct,
+                            col
+                        )
+                    })
+                    .collect();
+
+                format!(
+                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">
+                            {}
+                        </div>
+                        <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
+                    </div>"#,
+                    gap_px,
+                    inner_bars,
+                    tokens.body_font,
+                    colors.text_secondary,
+                    escape_html(lbl)
+                )
+            })
+            .collect();
+
+        // Legend row
+        let legend_items: String = data
+            .first()
+            .and_then(|item| item.get("series")?.as_array())
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .enumerate()
+            .map(|(si, sv)| {
+                let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
+                let col = series_colors[si % series_colors.len()];
+                format!(
+                    r#"<div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:{};flex-shrink:0;"></div>
+                        <span style="font-family:{};font-size:8px;color:{};">{}</span>
+                    </div>"#,
+                    col,
+                    tokens.body_font,
+                    colors.text_secondary,
+                    escape_html(name)
+                )
+            })
+            .collect();
+
+        let legend_html = if !legend_items.is_empty() {
+            format!(
+                r#"<div style="display:flex;justify-content:center;gap:12px;margin-top:6px;">{}</div>"#,
+                legend_items
+            )
         } else {
-            format!("{:.1}", val)
+            String::new()
         };
-        format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                <div style="font-family:{};font-size:10px;font-weight:800;color:{};line-height:1;margin-bottom:6px;text-align:center;">{}</div>
-                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
-            </div>"#,
-            tokens.body_font,
-            colors.text_primary,
-            val_display,
-            pct,
-            colors.primary,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(lbl)
-        )
-    }).collect();
 
-    let chart_html = format!(
-        r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
-        bars
-    );
+        format!(
+            r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>{}"#,
+            categories,
+            legend_html
+        )
+    } else {
+        // ── Single-series flat columns (backward-compatible) ───────────
+        let vals: Vec<f64> = data
+            .iter()
+            .map(|item| item.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0))
+            .collect();
+        let max_val = vals.iter().copied().fold(0.0, f64::max).max(1.0);
+
+        let bars: String = data.iter().zip(vals.iter()).map(|(item, val)| {
+            let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
+            let pct = (val / max_val) * 100.0;
+            let val_display = if *val >= 1000.0 {
+                format!("{:.0}", val)
+            } else if *val == val.floor() {
+                format!("{:.0}", val)
+            } else {
+                format!("{:.1}", val)
+            };
+            format!(
+                r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};line-height:1;margin-bottom:6px;text-align:center;">{}</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
+                </div>"#,
+                tokens.body_font,
+                colors.text_primary,
+                val_display,
+                pct,
+                colors.primary,
+                tokens.body_font,
+                colors.text_secondary,
+                escape_html(lbl)
+            )
+        }).collect();
+
+        format!(
+            r#"<div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
+            bars
+        )
+    };
 
     let caption_html = if !_caption.is_empty() {
         format!(
@@ -7938,5 +8078,113 @@ mod tests {
         assert!(html.contains(">45<"));
         assert!(html.contains("width:72.7%"));
         assert!(html.contains("width:27.3%"));
+    }
+
+    #[test]
+    fn test_column_chart_renders_grouped_series() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+
+        let res = column_chart_slide(
+            &tokens,
+            vec![
+                json!({
+                    "label": "1970",
+                    "series": [
+                        {"name": "Men", "value": 58.0},
+                        {"name": "Women", "value": 42.0}
+                    ]
+                }),
+                json!({
+                    "label": "1980",
+                    "series": [
+                        {"name": "Men", "value": 53.0},
+                        {"name": "Women", "value": 47.0}
+                    ]
+                }),
+                json!({
+                    "label": "1990",
+                    "series": [
+                        {"name": "Men", "value": 48.0},
+                        {"name": "Women", "value": 52.0}
+                    ]
+                }),
+            ],
+            "Workforce Composition",
+            "Percentage by gender",
+            "light",
+            "minimal",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // Category labels present
+        assert!(html.contains("1970"));
+        assert!(html.contains("1980"));
+        assert!(html.contains("1990"));
+        // Series legend names present
+        assert!(html.contains("Men"));
+        assert!(html.contains("Women"));
+        // Series colors used (indigo-violet for Men, warm coral for Women)
+        assert!(html.contains("#767CFF"));
+        assert!(html.contains("#FF8C6B"));
+        // Global max is 58 → Women@1970 = 42/58 = 72.4%
+        assert!(html.contains("height:72.4%"));
+        // Men@1970 = 58/58 = 100.0%
+        assert!(html.contains("height:100.0%"));
+        // Women@1980 = 47/58 = 81.0%
+        assert!(html.contains("height:81.0%"));
+    }
+
+    #[test]
+    fn test_column_chart_single_series_backward_compatible() {
+        let tokens = derive_palette(
+            "#0066FF",
+            "professional",
+            16,
+            1.25,
+            "warm-editorial",
+            "",
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+
+        // Flat data without series — must still work exactly as before
+        let res = column_chart_slide(
+            &tokens,
+            vec![
+                json!({"label": "Jan", "value": 1200.0}),
+                json!({"label": "Feb", "value": 1850.0}),
+                json!({"label": "Mar", "value": 2700.0}),
+            ],
+            "Monthly Active Users",
+            "Growth trajectory",
+            "light",
+            "minimal",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(!html.is_empty(), "single-series should produce non-empty HTML");
+        // Verify the data values appear in the rendered bars
+        assert!(html.contains(">1200<"), "should render value 1200");
+        assert!(html.contains(">1850<"), "should render value 1850");
+        assert!(html.contains(">2700<"), "should render value 2700");
+        // Verify the chart does NOT use the grouped multi-series path
+        // (no Men/Women legend entries, no grouped-series class)
+        assert!(!html.contains("Men"), "single-series should NOT contain series legend entries");
+        assert!(!html.contains("Women"), "single-series should NOT contain series legend entries");
     }
 }
