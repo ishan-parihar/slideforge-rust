@@ -2898,6 +2898,7 @@ pub fn grid_cards_slide(
     }).sum();
     let dense = total_chars > 240;
     let very_dense = total_chars > 350;
+    let ultra_dense = total_chars > 500;
 
     let render_single_card = |card: &Value,
                               card_padding: &str,
@@ -3125,14 +3126,56 @@ pub fn grid_cards_slide(
             r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;">{}</div>"#,
             items_html
         )
+    } else if effective_variant == "list-dense" {
+        // List-dense: vertical list for 4–6 cards, each card is a compact horizontal row.
+        let max_items = cards.len().min(6);
+        let t_fs = if max_title_len > 15 { 12 } else { 13 };
+        let c_fs = if max_desc_len > 60 { 10 } else { 11 };
+        let items_html: String = cards.iter().take(max_items).map(|card| {
+            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("•");
+            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
+            let d = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
+            let icon_color = card
+                .get("icon_color")
+                .and_then(|v| v.as_str())
+                .unwrap_or(&colors.primary);
+            let icon_html = crate::blocks::render_icon(ico, icon_color, 16);
+            let desc_html = if !d.is_empty() {
+                format!(
+                    r#"<span style="font-family:{};font-size:{}px;color:{};line-height:1.3;overflow-wrap:break-word;">{}</span>"#,
+                    tokens.body_font, c_fs, colors.text_secondary, escape_html(d)
+                )
+            } else {
+                String::new()
+            };
+            format!(
+                r#"<div style="display:flex;align-items:flex-start;gap:8px;background:{};border:{};{}border-radius:{};padding:8px 10px;box-shadow:{};box-sizing:border-box;">
+                    <div style="flex-shrink:0;margin-top:2px;">{}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.2;overflow-wrap:break-word;">{}</div>
+                        {}
+                    </div>
+                </div>"#,
+                card_bg, card_border, card_blur, radius_md, shadow_sm,
+                icon_html,
+                tokens.body_font, t_fs, colors.text_primary, escape_html(t),
+                desc_html
+            )
+        }).collect();
+        format!(
+            r#"<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:12px;">{}</div>"#,
+            items_html
+        )
     } else {
         if cards.len() >= 4 {
-            // Default for 4+ cards: 2x2 grid
+            // Default for 4+ cards: 2x2 grid with density-aware font scaling
             let mut items_html = String::new();
-            let t_fs4 = if max_title_len > 12 { 14 } else { 16 };
-            let c_fs4 = if max_desc_len > 50 { 11 } else { 12 };
+            let t_fs4 = if ultra_dense { title_fs - 4 } else if very_dense { title_fs - 3 } else if dense { title_fs - 2 } else if max_title_len > 12 { title_fs - 2 } else { title_fs - 1 };
+            let c_fs4 = if ultra_dense { caption_fs - 3 } else if very_dense { caption_fs - 2 } else if dense { caption_fs - 1 } else if max_desc_len > 50 { caption_fs - 1 } else { caption_fs };
+            let pad4 = if ultra_dense { "10px 10px" } else if very_dense { "12px 12px" } else { "16px 14px" };
+            let ico4 = if ultra_dense { 16 } else if very_dense { 18 } else { 22 };
             for card in cards.iter().take(4) {
-                items_html.push_str(&render_single_card(card, "16px 14px", 22, t_fs4, c_fs4));
+                items_html.push_str(&render_single_card(card, pad4, ico4, t_fs4, c_fs4));
             }
             format!(
                 r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;width:100%;margin-top:16px;">{}</div>"#,
@@ -8352,6 +8395,56 @@ mod tests {
             title_fs, headline_fs
         );
     }
+
+    #[test]
+    fn test_grid_cards_ultra_dense_uses_smallest_font_sizes() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+
+        let cards = vec![
+            json!({"icon": "📊", "title": "Advanced Analytics Engine", "description": "Real-time data processing, predictive modeling, interactive dashboards that help organizations make data-driven decisions with unprecedented accuracy."}),
+            json!({"icon": "🔒", "title": "Enterprise Security Suite", "description": "Military-grade encryption, multi-factor authentication, role-based access control, audit logging, compliance monitoring for evolving threats."}),
+            json!({"icon": "🤝", "title": "Collaborative Workspace", "description": "Real-time document editing, video conferencing, project management, team communication channels for distributed teams."}),
+            json!({"icon": "⚡", "title": "API Gateway", "description": "RESTful and GraphQL APIs, webhook management, third-party service connectors, rate limiting, comprehensive developer docs."}),
+        ];
+        let params = json!({"title": "Detailed Platform Features", "cards": cards});
+        let res = dispatch_slide("grid_cards", &tokens, &params, "dark", "bold", "data_analyst").unwrap();
+        let html = res["html"].as_str().unwrap();
+        let default_title_fs = tokens.type_scale.get("title").unwrap().font_size;
+        assert!(
+            !html.contains(&format!("font-size: {}px;font-weight: 600", default_title_fs)),
+            "ultra-dense 4-card grid should NOT use default title font-size ({}px)",
+            default_title_fs
+        );
+    }
+
+    #[test]
+    fn test_grid_cards_list_dense_variant_renders_five_cards() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+
+        let params = json!({
+            "title": "Research Methodology",
+            "variant": "list-dense",
+            "cards": [
+                {"icon": "🔍", "title": "Literature Review", "description": "200+ papers analyzed"},
+                {"icon": "📋", "title": "Survey Design", "description": "2400 participants"},
+                {"icon": "🧪", "title": "Controlled Trials", "description": "Double-blind experiments"},
+                {"icon": "📈", "title": "Statistical Modeling", "description": "Bayesian inference"},
+                {"icon": "✅", "title": "Peer Review", "description": "External validation"},
+            ]
+        });
+        let res = dispatch_slide("grid_cards", &tokens, &params, "light", "editorial", "educator").unwrap();
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains("Literature Review"), "card 1 title missing");
+        assert!(html.contains("Survey Design"), "card 2 title missing");
+        assert!(html.contains("Controlled Trials"), "card 3 title missing");
+        assert!(html.contains("Statistical Modeling"), "card 4 title missing");
+        assert!(html.contains("Peer Review"), "card 5 title missing");
+    }
 }
+
 
 
