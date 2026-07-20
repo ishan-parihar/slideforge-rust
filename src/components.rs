@@ -5038,7 +5038,7 @@ pub fn myth_fact_slide(
             } else {
                 String::new()
             };
-            format!("{}{}<div style=\"margin-top:16px;\">{}{}{}</div>{}", gc, heading_block("Myth vs Fact", tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+            format!("{}{}<div style=\"margin-top:16px;\">{}{}{}</div>{}", gc, heading_block("Myth vs Fact", tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
         }
         _ => {
             // split (default) — myth and fact side by side
@@ -5072,7 +5072,7 @@ pub fn myth_fact_slide(
             } else {
                 String::new()
             };
-            format!("{}{}<div style=\"display:flex;gap:var(--space-3);margin-top:16px;\">{}{}</div>{}{}", gc, heading_block("Myth vs Fact", tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+            format!("{}{}<div style=\"display:flex;gap:var(--space-3);margin-top:16px;\">{}{}</div>{}{}", gc, heading_block("Myth vs Fact", tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
         }
     };
 
@@ -8325,5 +8325,33 @@ mod tests {
             "outer category wrapper must not have border-right"
         );
     }
+
+    #[test]
+    fn test_myth_fact_debunk_uses_title_scale_heading() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+
+        let res = myth_fact_slide(
+            &tokens,
+            "Breakfast is the most important meal of the day.",
+            "Studies show no significant difference between breakfast eaters and skippers.",
+            "The breakfast myth was popularized by cereal companies.",
+            "light",
+            "debunk",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        let title_fs = tokens.type_scale.get("title").unwrap().font_size;
+        let headline_fs = tokens.type_scale.get("headline").unwrap().font_size;
+        assert!(
+            html.contains(&format!("font-size: {}px", title_fs)),
+            "debunk heading should use title scale ({}px), not headline scale ({}px)",
+            title_fs, headline_fs
+        );
+    }
 }
+
 
