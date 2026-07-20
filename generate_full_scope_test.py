@@ -143,6 +143,7 @@ SLIDES = [
          "metric": "Latency (ms)", "value_a": 120, "value_b": 24}}},
     {"slide_type": "radar_chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"title": "System Capabilities Assessment",
+                "description": "Security and Developer Experience (DX) achieved top-tier capability ratings in independent audits.",
                 "data": [
          {"axis": "Speed", "value": 90}, {"axis": "Security", "value": 95}, {"axis": "Flexibility", "value": 80}, {"axis": "Scale", "value": 88}, {"axis": "DX", "value": 92}]}},
     {"slide_type": "funnel_chart", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",

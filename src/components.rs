@@ -1744,7 +1744,7 @@ pub fn cta_slide(
             _ => "center",
         };
         let badge_tag = format!(
-            r#"<div style="font-family:{};font-size:10px;font-weight:800;color:{};background:{}18;border:1px solid {}40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">⚡ PRESENTATION ENGINE</div>"#,
+            r#"<div style="font-family:{};font-size:10px;font-weight:800;color:{};background:{}18;border:1px solid {}40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div>"#,
             tokens.body_font, colors.primary, colors.primary, colors.primary
         );
         let headline_html = heading_block(
@@ -1755,39 +1755,32 @@ pub fn cta_slide(
             true,
             Some((gradient_colors.0, gradient_colors.1)),
             align,
-            "0 0 16px",
+            "0 0 12px",
             true,
         );
+        let sub_html = if !subtext.is_empty() {
+            format!(
+                r#"<p style="font-family:{};font-size:12px;color:{};line-height:1.45;margin:0 0 20px;max-width:320px;text-align:{};opacity:0.85;">{}</p>"#,
+                tokens.body_font, colors.text_secondary, align, escape_html(subtext)
+            )
+        } else {
+            String::new()
+        };
         let btn = button_block(
             button_text,
             button_url,
             Some(tokens),
             Some(&colors.button_bg),
             Some(&colors.button_text),
-            "0",
+            "0 0 14px",
         );
-        let sub_html = if !subtext.is_empty() {
-            text_block(
-                subtext,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                align,
-                None,
-                "14px 0 0",
-            )
-        } else {
-            String::new()
-        };
         let url_tag = format!(
-            r#"<div style="font-family:{};font-size:11px;font-weight:600;color:{};margin-top:14px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div>"#,
+            r#"<div style="font-family:{};font-size:11px;font-weight:600;color:{};margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div>"#,
             tokens.body_font, colors.text_secondary
         );
         let content = format!(
             r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
-            align, badge_tag, headline_html, btn, sub_html, url_tag
+            align, badge_tag, headline_html, sub_html, btn, url_tag
         );
         hero_layout(&content, tokens, bg_style, true, "center")
     };
@@ -3150,16 +3143,44 @@ pub fn grid_cards_slide(
         )
     } else if effective_variant == "list-dense" || effective_variant == "list" {
         let mut items_html = String::new();
-        let t_fs = if ultra_dense { 12 } else if very_dense { 13 } else { 14 };
-        let c_fs = if ultra_dense { 10 } else if very_dense { 10 } else { 11 };
-        let pad = if ultra_dense { "6px 8px" } else if very_dense { "8px 10px" } else { "10px 12px" };
-        let ico = if ultra_dense { 14 } else if very_dense { 16 } else { 18 };
-        for card in cards.iter().take(5) {
-            items_html.push_str(&render_single_card(card, pad, ico, t_fs, c_fs));
+        let card_count = cards.len().min(6);
+        let t_fs = if card_count >= 6 || ultra_dense { 11 } else if very_dense { 12 } else { 13 };
+        let c_fs = if card_count >= 6 || ultra_dense { 9 } else if very_dense { 10 } else { 10 };
+        let pad = if card_count >= 6 || ultra_dense { "4px 8px" } else if very_dense { "6px 8px" } else { "8px 10px" };
+        let ico_size = if card_count >= 6 || ultra_dense { 14 } else if very_dense { 16 } else { 18 };
+        let row_gap = if card_count >= 6 || ultra_dense { "4px" } else { "6px" };
+
+        for card in cards.iter().take(card_count) {
+            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
+            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
+            let d = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
+            let icon_color = card.get("icon_color").and_then(|v| v.as_str()).unwrap_or(&colors.primary);
+            let icon_html = crate::blocks::render_icon(ico, icon_color, ico_size);
+            let desc_html = if !d.is_empty() {
+                format!(
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:1px;line-height:1.3;overflow-wrap:break-word;">{}</div>"#,
+                    tokens.body_font, c_fs, colors.text_secondary, escape_html(d)
+                )
+            } else {
+                String::new()
+            };
+            items_html.push_str(&format!(
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;align-items:flex-start;gap:8px;box-sizing:border-box;">
+                    <div style="flex-shrink:0;margin-top:2px;display:flex;align-items:center;">{}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
+                        {}
+                    </div>
+                </div>"#,
+                card_bg, card_border, card_blur, radius_md, pad, shadow_sm,
+                icon_html,
+                tokens.body_font, t_fs, colors.text_primary, escape_html(t),
+                desc_html
+            ));
         }
         format!(
-            r#"<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:12px;">{}</div>"#,
-            items_html
+            r#"<div style="display:flex;flex-direction:column;gap:{};width:100%;margin-top:8px;">{}</div>"#,
+            row_gap, items_html
         )
     } else {
         if cards.len() >= 4 {
@@ -4960,32 +4981,30 @@ pub fn problem_solution_slide(
     let proof_grid_html = if proof_points.is_empty() {
         String::new()
     } else {
-        let items_html: String = proof_points
+        let items_text: Vec<String> = proof_points
             .iter()
             .take(4)
             .map(|item| {
                 let t = simple_text(item, &["title", "label"]);
                 let d = simple_text(item, &["description", "body"]);
-                let icon = item.get("icon").and_then(|v| v.as_str()).unwrap_or("✦");
-                format!(
-                    r#"<div style="flex:1;min-width:0;display:flex;align-items:flex-start;gap:8px;">
-                        <span style="color:{};font-size:13px;line-height:1.2;flex-shrink:0;">{}</span>
-                        <div style="min-width:0;">
-                            <div style="font-family:{};font-size:11px;font-weight:700;color:{};line-height:1.2;">{}</div>
-                            <div style="font-family:{};font-size:10px;color:{};margin-top:2px;line-height:1.3;">{}</div>
-                        </div>
-                    </div>"#,
-                    colors.primary, icon,
-                    tokens.heading_font, colors.text_primary, escape_html(&t),
-                    tokens.body_font, colors.text_secondary, escape_html(&d)
-                )
+                if !d.is_empty() {
+                    format!("<strong>{}</strong>: {}", escape_html(&t), escape_html(&d))
+                } else {
+                    escape_html(&t)
+                }
             })
-            .collect::<Vec<_>>()
-            .join("");
+            .collect();
+
+        let combined_desc = items_text.join(" &nbsp;•&nbsp; ");
 
         format!(
-            r#"<div style="background:{};border:1px solid {};border-radius:{};padding:12px 16px;display:flex;gap:16px;width:100%;box-sizing:border-box;">{}</div>"#,
-            card_bg, colors.border, radius, items_html
+            r#"<div style="background:{};border:1px solid {};border-radius:{};padding:12px 16px;width:100%;box-sizing:border-box;">
+                <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:{};font-size:11px;color:{};line-height:1.45;">{}</div>
+            </div>"#,
+            card_bg, colors.border, radius,
+            tokens.body_font, colors.primary,
+            tokens.body_font, colors.text_secondary, combined_desc
         )
     };
     let content = format!(
