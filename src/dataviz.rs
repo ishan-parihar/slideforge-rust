@@ -430,10 +430,10 @@ pub fn render_svg_scatter_plot(
         min_y -= 1.0;
     }
 
-    let pad_left = 44;
-    let pad_right = 20;
-    let pad_top = 20;
-    let pad_bottom = 32;
+    let pad_left = 38;
+    let pad_right = 38;
+    let pad_top = 22;
+    let pad_bottom = 28;
 
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
@@ -450,7 +450,7 @@ pub fn render_svg_scatter_plot(
         ));
         grid_lines.push_str(&format!(
             r#"<text x="{}" y="{:.1}" font-size="8px" fill="{}" text-anchor="end">{:.1}</text>"#,
-            pad_left - 8,
+            pad_left - 6,
             y_pos + 3.0,
             colors.text_secondary,
             y_val
@@ -469,7 +469,7 @@ pub fn render_svg_scatter_plot(
         grid_lines.push_str(&format!(
             r#"<text x="{:.1}" y="{}" font-size="8px" fill="{}" text-anchor="middle">{:.0}</text>"#,
             x_pos,
-            height as f64 - pad_bottom as f64 + 14.0,
+            height as f64 - pad_bottom as f64 + 12.0,
             colors.text_secondary,
             x_val
         ));
@@ -546,9 +546,9 @@ pub fn render_svg_scatter_plot(
 }
 
 pub fn render_svg_gauge_chart(value: f64, target: f64, unit: &str, colors: &SlideColors) -> String {
-    let r = 50.0;
-    let cx = 80.0;
-    let cy = 75.0;
+    let r = 52.0;
+    let cx = 100.0;
+    let cy = 80.0;
 
     let circ = std::f64::consts::PI * r;
     let pct = (value / target).max(0.0).min(1.0);
@@ -556,46 +556,25 @@ pub fn render_svg_gauge_chart(value: f64, target: f64, unit: &str, colors: &Slid
 
     let primary_color = &colors.primary;
     let text_color = &colors.text_primary;
+    let clean_unit = if unit.len() <= 5 { escape_html(unit) } else { "%".to_string() };
 
     format!(
-        r#"<svg width="100%" height="110px" viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
+        r#"<svg width="100%" height="115px" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
             <!-- Background Arc -->
-            <path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1}" fill="none" stroke="{}55" stroke-width="12" stroke-linecap="round" />
+            <path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1}" fill="none" stroke="{}44" stroke-width="12" stroke-linecap="round" />
             
             <!-- Foreground Filled Arc -->
             <path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1}" fill="none" stroke="{}" stroke-width="12" stroke-linecap="round"
-                  stroke-dasharray="{:.2}" stroke-dashoffset="{:.2}" />
+                  stroke-dasharray="{:.2}" stroke-dashoffset="{:.2}" opacity="0.9" />
                   
-            <!-- Text details -->
-            <text x="{:.1}" y="{:.1}" font-size="18px" fill="{}" font-weight="800" text-anchor="middle">{:.0}{}</text>
-            <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle">target: {:.0}{}</text>
+            <!-- Central Metric Value -->
+            <text x="{:.1}" y="{:.1}" font-size="26px" fill="{}" font-weight="900" text-anchor="middle">{:.1}{}</text>
+            <text x="{:.1}" y="{:.1}" font-size="9px" font-weight="700" fill="{}" text-anchor="middle" letter-spacing="0.04em">TARGET: {:.0}{}</text>
         </svg>"#,
-        cx - r,
-        cy,
-        r,
-        r,
-        cx + r,
-        cy,
-        colors.border,
-        cx - r,
-        cy,
-        r,
-        r,
-        cx + r,
-        cy,
-        primary_color,
-        circ,
-        offset,
-        cx,
-        cy - 10.0,
-        text_color,
-        value,
-        escape_html(unit),
-        cx,
-        cy + 10.0,
-        colors.text_secondary,
-        target,
-        escape_html(unit)
+        cx - r, cy, r, r, cx + r, cy, colors.border,
+        cx - r, cy, r, r, cx + r, cy, primary_color, circ, offset,
+        cx, cy - 6.0, text_color, value, clean_unit,
+        cx, cy + 18.0, colors.text_secondary, target, clean_unit
     )
 }
 

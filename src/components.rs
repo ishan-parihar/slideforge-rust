@@ -3465,47 +3465,62 @@ pub fn definition_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
+    let radius = current_component_radius(tokens, "card");
 
-    let display_fs = tokens.type_scale.get("display").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
 
-    let category_html = if !context.is_empty() {
+    let category_html = format!(
+        r#"<span style="font-family:{};font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:{};background:{}18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>"#,
+        tokens.heading_font,
+        colors.primary,
+        colors.primary
+    );
+
+    let term_html = format!(
+        r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(term)
+    );
+
+    let phonetic_html = format!(
+        r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">/slīd kəm-pə-zi-shən/ • noun</div>"#,
+        tokens.body_font,
+        colors.text_secondary
+    );
+
+    let def_html = format!(
+        r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;">{}</p>
+        </div>"#,
+        colors.primary,
+        tokens.body_font,
+        colors.text_primary,
+        escape_html(definition)
+    );
+
+    let ctx_html = if !context.is_empty() {
         format!(
-            r#"<span style="font-family:{};font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:{};display:block;margin-bottom:12px;">{}</span>"#,
+            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
             tokens.body_font,
-            colors.primary,
+            colors.text_secondary,
             escape_html(context)
         )
     } else {
         String::new()
     };
 
-    let term_html = format!(
-        r#"<h2 style="font-family:{};font-size:{}px;font-weight:700;color:{};margin:0 0 16px;line-height:1.15;">{}</h2>"#,
-        tokens.heading_font,
-        display_fs,
-        colors.text_primary,
-        escape_html(term)
-    );
-
-    let divider_html = format!(
-        r#"<div style="width:100%;height:1px;background:{};opacity:0.3;margin-bottom:20px;"></div>"#,
-        colors.border
-    );
-
-    let def_html = format!(
-        r#"<p style="font-family:{};font-size:{}px;font-weight:400;color:{};margin:0 0 24px;line-height:1.5;">{}</p>"#,
-        tokens.body_font,
-        title_fs,
-        colors.text_secondary,
-        escape_html(definition)
-    );
-
     let content = format!(
-        r#"<div style="width:100%;text-align:left;max-width:320px;margin:0 auto;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;">
-            {}{}{}{}
+        r#"<div style="width:100%;background:{};border:{};border-radius:{};padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            {}
+            {}
+            {}
+            {}
+            {}
         </div>"#,
-        category_html, term_html, divider_html, def_html
+        card_bg, border, radius,
+        category_html, term_html, phonetic_html, def_html, ctx_html
     );
 
     let html = slide_base(
@@ -3513,7 +3528,7 @@ pub fn definition_slide(
         tokens,
         bg_style,
         false,
-        "80px 48px 90px",
+        "72px 44px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -4824,25 +4839,39 @@ fn text_columns_slide(
         true,
         None,
         "left",
-        "0 0 var(--space-1)",
+        "0 0 12px",
         false,
     );
-    let cols: Vec<String> = columns.iter().map(|c| {
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
+
+    let cols: Vec<String> = columns.iter().enumerate().map(|(idx, c)| {
         let heading = c.get("heading").and_then(|v| v.as_str()).unwrap_or("");
         let body = c.get("body").and_then(|v| v.as_str()).unwrap_or("");
-        let heading_html = if !heading.is_empty() {
-            heading_block(heading, tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 var(--space-1)", false)
-        } else {
-            String::new()
-        };
-        format!(r#"<div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);">{}<div style="font-size:var(--text-sm);color:{};line-height:1.6;overflow-wrap:break-word;word-break:break-word;">{}</div></div>"#,
-            heading_html, colors.text_secondary, body)
+        format!(
+            r#"<div style="flex:1;min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:{};font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">0{}</span>
+                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+                </div>
+                <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
+            </div>"#,
+            card_bg, border, radius,
+            tokens.heading_font, colors.primary, colors.primary, idx + 1,
+            tokens.heading_font, colors.text_primary, escape_html(heading),
+            tokens.body_font, colors.text_secondary, escape_html(body)
+        )
     }).collect();
+
     let columns_html = format!(
-        r#"<div style="display:flex;gap:var(--space-3);width:100%;margin-top:var(--space-2);overflow:hidden;">{}</div>"#,
+        r#"<div style="display:flex;gap:12px;width:100%;">{}</div>"#,
         cols.join("")
     );
-    let content = format!("{}{}", title_html, columns_html);
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">{}{}</div>"#,
+        title_html, columns_html
+    );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
