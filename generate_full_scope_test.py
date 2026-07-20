@@ -170,10 +170,6 @@ SLIDES = [
 
     # ═══ SECTION: Hero & Social Proof ═══
     {"section": "SECTION 8 — Hero & Social Proof"},
-    {"slide_type": "hero", "theme": "bold", "bg_style": "dark", "archetype": "thought_leader",
-     "params": {"headline": "Next-Gen Slide Composition System", "subheadline": "Automate high-converting carousel creation with native Rust.", "badge": "v2.0 RELEASE", "cta_text": "Explore Features", "cta_url": "https://slideforge.dev"}},
-    {"slide_type": "quote", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"quote": "SlideForge transformed our content operations. We generate 30 social carousels weekly in seconds.", "author": "Sarah Jenkins", "role": "VP of Marketing", "company": "Acme Corp"}},
     {"slide_type": "testimonial_avatar", "theme": "editorial", "bg_style": "dark", "archetype": "thought_leader",
      "params": {"quote": "The cleanest slide rendering pipeline I've ever integrated.", "author": "Alex Rivera", "role": "Lead Architect", "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"}},
     {"slide_type": "logo_cloud", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
@@ -181,8 +177,6 @@ SLIDES = [
 
     # ═══ SECTION: Comparisons & Tables ═══
     {"section": "SECTION 9 — Comparisons & Tables"},
-    {"slide_type": "comparison", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "SlideForge vs Traditional Tools", "columns": ["Feature", "Legacy Tools", "SlideForge"], "rows": [["Render Speed", "10-30 sec", "<10ms"], ["Design Consistency", "Manual", "100% Token Governed"], ["Agent API", "None", "Native MCP + CLI"]]}},
     {"slide_type": "table", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "System Performance Benchmarks", "headers": ["Metric", "v1.0", "v2.0", "Improvement"], "rows": [["Compilation", "45ms", "8ms", "5.6x"], ["Memory Usage", "120MB", "24MB", "5.0x"], ["PNG Export", "1.2s", "0.3s", "4.0x"]]}},
     {"slide_type": "pricing_plan", "theme": "bold", "bg_style": "light", "archetype": "startup_pitch",
@@ -198,8 +192,6 @@ SLIDES = [
      "params": {"title": "3-Step Carousel Creation", "steps": [{"number": "01", "title": "Define Tokens", "description": "Set brand primary color & fonts"}, {"number": "02", "title": "Compile Specs", "description": "Generate slide HTML AST"}, {"number": "03", "title": "Export Media", "description": "Render PNG/PDF assets"}]}},
     {"slide_type": "split_features", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"title": "Dual Core Pillars", "features": [{"title": "Performance Engine", "description": "Native Rust binary compiled with zero overhead."}, {"title": "Design Guard", "description": "Strict validator catches visual regressions automatically."}]}},
-    {"slide_type": "checklist_action_plan", "theme": "bold", "bg_style": "dark", "archetype": "educator",
-     "params": {"title": "Deployment Checklist", "items": [{"title": "Install Rust CLI", "description": "cargo install slideforge"}, {"title": "Configure Tokens", "description": "Run configure-design"}, {"title": "Launch MCP Server", "description": "Connect AI agent interface"}]}},
     {"slide_type": "definition", "theme": "editorial", "bg_style": "light", "archetype": "educator",
      "params": {"term": "Slide Composition Engine", "phonetic": "/slīd kəm-pə-zi-shən/", "definition": "A deterministic layout synthesizer that converts structured JSON specs into pixel-perfect presentation slides under strict aspect constraints."}},
     {"slide_type": "text_block", "theme": "editorial", "bg_style": "dark", "archetype": "thought_leader",
@@ -213,14 +205,10 @@ SLIDES = [
 
     # ═══ SECTION: Single Metrics & Advanced Data ═══
     {"section": "SECTION 11 — Single Metrics & Advanced Data"},
-    {"slide_type": "metric_card", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"metric": "<10ms", "value": "<10ms", "label": "Average Slide Compilation Time", "context": "Tested on 1,000 multi-slide carousels under peak thread load."}},
     {"slide_type": "metric_sparkline", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"value": "99.99%", "label": "Uptime Reliability", "trend": "+0.05% vs Q3", "data": [98, 99, 99, 100, 100], "context": "Continuous 90-day production telemetry monitor."}},
     {"slide_type": "metric_grid", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Key Telemetry Metrics", "metrics": [{"value": "10ms", "label": "Compile Latency"}, {"value": "85+", "label": "Unit Tests"}, {"value": "47", "label": "Slide Types"}, {"value": "100%", "label": "Token Compliance"}]}},
-    {"slide_type": "stat_row", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Platform Health Summary", "stats": [{"number": "1.2M", "label": "Slides Rendered"}, {"number": "99.9%", "label": "Success Rate"}, {"number": "4.9/5", "label": "User Rating"}]}},
     {"slide_type": "case_study_result", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"client": "TechCorp Case Study", "challenge": "Manual deck creation was taking 15+ hours weekly per designer.", "solution": "Deployed SlideForge CLI & MCP server automation across team.", "results": [{"number": "80%", "label": "Time Saved"}, {"number": "5x", "label": "Output Increase"}]}},
     {"slide_type": "scatter_plot", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",

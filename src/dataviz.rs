@@ -389,6 +389,8 @@ pub fn render_svg_scatter_plot(
     width: u32,
     height: u32,
     colors: &SlideColors,
+    x_label: &str,
+    y_label: &str,
 ) -> String {
     if data.is_empty() {
         return String::new();
@@ -428,10 +430,10 @@ pub fn render_svg_scatter_plot(
         min_y -= 1.0;
     }
 
-    let pad_left = 40;
+    let pad_left = 44;
     let pad_right = 20;
-    let pad_top = 15;
-    let pad_bottom = 25;
+    let pad_top = 20;
+    let pad_bottom = 32;
 
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
@@ -443,7 +445,7 @@ pub fn render_svg_scatter_plot(
         let y_val = min_y + frac * (max_y - min_y);
         let y_pos = height as f64 - pad_bottom as f64 - frac * chart_h;
         grid_lines.push_str(&format!(
-            r#"<line x1="{}" y1="{:.1}" x2="{}" y2="{:.1}" stroke="{}55" stroke-dasharray="3,3" stroke-width="1" />"#,
+            r#"<line x1="{}" y1="{:.1}" x2="{}" y2="{:.1}" stroke="{}44" stroke-dasharray="3,3" stroke-width="1" />"#,
             pad_left, y_pos, width - pad_right, y_pos, colors.border
         ));
         grid_lines.push_str(&format!(
@@ -461,13 +463,13 @@ pub fn render_svg_scatter_plot(
         let x_val = min_x + frac * (max_x - min_x);
         let x_pos = pad_left as f64 + frac * chart_w;
         grid_lines.push_str(&format!(
-            r#"<line x1="{:.1}" y1="{}" x2="{:.1}" y2="{}" stroke="{}55" stroke-dasharray="3,3" stroke-width="1" />"#,
-            x_pos, pad_top, x_pos, height - pad_bottom, colors.border
+            r#"<line x1="{:.1}" y1="{}" x2="{:.1}" y2="{}" stroke="{}44" stroke-dasharray="3,3" stroke-width="1" />"#,
+            x_pos, pad_top, x_pos, height as f64 - pad_bottom as f64, colors.border
         ));
         grid_lines.push_str(&format!(
-            r#"<text x="{:.1}" y="{}" font-size="8px" fill="{}" text-anchor="middle">{:.1}</text>"#,
+            r#"<text x="{:.1}" y="{}" font-size="8px" fill="{}" text-anchor="middle">{:.0}</text>"#,
             x_pos,
-            height - 12,
+            height as f64 - pad_bottom as f64 + 14.0,
             colors.text_secondary,
             x_val
         ));
@@ -475,32 +477,71 @@ pub fn render_svg_scatter_plot(
 
     let primary_color = &colors.primary;
     let mut points_svg = String::new();
+    let mut path_d = String::new();
+
     for i in 0..x_vals.len() {
         let x_pos = pad_left as f64 + ((x_vals[i] - min_x) / (max_x - min_x)) * chart_w;
         let y_pos =
             height as f64 - pad_bottom as f64 - ((y_vals[i] - min_y) / (max_y - min_y)) * chart_h;
 
-        let mut r = 4.0;
+        if i == 0 {
+            path_d.push_str(&format!("M {:.1} {:.1}", x_pos, y_pos));
+        } else {
+            path_d.push_str(&format!(" L {:.1} {:.1}", x_pos, y_pos));
+        }
+
+        let mut r = 5.0;
         if max_size > 0.0 {
-            r = 4.0 + (sizes[i] / max_size) * 12.0;
+            r = 5.0 + (sizes[i] / max_size) * 10.0;
         }
 
         points_svg.push_str(&format!(
             r#"<g>
-                <circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.6" stroke="{}" stroke-width="1" />
-                <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="600">{}</text>
+                <circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.8" stroke="white" stroke-width="1.5" />
+                <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="700">{}</text>
             </g>"#,
-            x_pos, y_pos, r, primary_color, primary_color,
-            x_pos, y_pos - r - 3.0, colors.text_primary, escape_html(&labels[i])
+            x_pos, y_pos, r, primary_color,
+            x_pos, y_pos - r - 4.0, colors.text_primary, escape_html(&labels[i])
         ));
     }
+
+    let trendline = format!(
+        r#"<path d="{}" fill="none" stroke="{}" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />"#,
+        path_d, primary_color
+    );
+
+    let x_axis_title = if !x_label.is_empty() {
+        format!(
+            r#"<text x="{}" y="{}" font-size="9px" font-weight="700" fill="{}" text-anchor="middle" letter-spacing="0.05em">{}</text>"#,
+            pad_left as f64 + chart_w / 2.0,
+            height - 2,
+            colors.text_secondary,
+            escape_html(x_label)
+        )
+    } else {
+        String::new()
+    };
+
+    let y_axis_title = if !y_label.is_empty() {
+        format!(
+            r#"<text x="{}" y="12" font-size="9px" font-weight="700" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
+            pad_left,
+            colors.text_secondary,
+            escape_html(y_label)
+        )
+    } else {
+        String::new()
+    };
 
     format!(
         r#"<svg width="100%" height="{}px" viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg">
             {}
             {}
+            {}
+            {}
+            {}
         </svg>"#,
-        height, width, height, grid_lines, points_svg
+        height, width, height, grid_lines, trendline, points_svg, x_axis_title, y_axis_title
     )
 }
 

@@ -3877,7 +3877,7 @@ pub fn chart_slide(
             chart_html
         );
     } else if chart_type == "scatter" {
-        chart_html = render_svg_scatter_plot(&data, 320, 130, &colors);
+        chart_html = render_svg_scatter_plot(&data, 320, 130, &colors, "", "");
         chart_html = format!(
             r#"<div style="width:100%;margin-top:16px;">{}</div>"#,
             chart_html
@@ -3961,8 +3961,8 @@ fn scatter_plot_slide(
     tokens: &DesignTokens,
     data: Vec<Value>,
     title: &str,
-    _x_label: &str,
-    _y_label: &str,
+    x_label: &str,
+    y_label: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -3972,7 +3972,7 @@ fn scatter_plot_slide(
     let title_html = heading_block(
         title, tokens, "heading", None, true, None, "left", "0", false,
     );
-    let svg = render_svg_scatter_plot(&data, 320, 180, &colors);
+    let svg = render_svg_scatter_plot(&data, 320, 180, &colors, x_label, y_label);
     let chart_bg = if colors.is_dark {
         "rgba(255,255,255,0.04)"
     } else {
@@ -4004,14 +4004,30 @@ fn gauge_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "heading", None, true, None, "left", "0", false,
+        title, tokens, "heading", None, true, None, "center", "0", false,
     );
     let svg = render_svg_gauge_chart(value, 100.0, label, &colors);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let subtext = if label.is_empty() { "Optimal Operating Range" } else { label };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:300px;height:130px;margin:0 auto;">{}</div></div>"#,
-        title_html, svg
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;">
+            {}
+            <div style="width:100%;background:{};border:1px solid {};border-radius:{};padding:20px 16px 14px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:100%;max-width:280px;height:140px;margin:0 auto;">{}</div>
+                <p style="font-family:{};font-size:11.5px;font-weight:600;color:{};margin:8px 0 0;text-align:center;opacity:0.85;">{}</p>
+            </div>
+        </div>"#,
+        title_html,
+        card_bg,
+        colors.border,
+        radius,
+        svg,
+        tokens.body_font,
+        colors.text_secondary,
+        escape_html(subtext)
     );
-    let html = hero_layout(&content, tokens, bg_style, false, "center");
+    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
@@ -5281,11 +5297,8 @@ pub fn pricing_plan_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let radius = current_component_radius(tokens, "card");
-    let card_bg = if colors.is_dark {
-        "rgba(255,255,255,0.06)"
-    } else {
-        "rgba(255,255,255,0.92)"
-    };
+    let plan_count = plans.len().min(3).max(1);
+
     let cards: Vec<String> = plans
         .iter()
         .take(3)
@@ -5293,52 +5306,103 @@ pub fn pricing_plan_slide(
         .map(|(idx, plan)| {
             let name = simple_text(plan, &["name", "title"]);
             let price = simple_text(plan, &["price", "value"]);
-            let desc = simple_text(plan, &["description", "caption"]);
-            let visual = visual_badge_html(tokens, &colors, plan, &name, if idx == 0 { 36 } else { 30 });
-            let price_size = if idx == 0 { 30 } else { 22 };
-            let padding = if idx == 0 { "16px 18px" } else { "12px 14px" };
+            let period = simple_text(plan, &["period", "cycle"]);
+            let is_featured = plan.get("featured").and_then(|v| v.as_bool()).unwrap_or(idx == 1 || (idx == 0 && plan_count == 1));
+
+            let features_arr = plan
+                .get("features")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            let mut features_html = String::new();
+            for f in features_arr.iter().take(4) {
+                let text = f.as_str().unwrap_or("");
+                if !text.is_empty() {
+                    features_html.push_str(&format!(
+                        r#"<li style="display:flex;align-items:center;gap:6px;font-family:{};font-size:10.5px;color:{};line-height:1.3;margin-bottom:4px;">
+                            <span style="color:{};font-weight:900;font-size:11px;">✓</span> {}
+                        </li>"#,
+                        tokens.body_font,
+                        colors.text_primary,
+                        colors.primary,
+                        escape_html(text)
+                    ));
+                }
+            }
+            if !features_html.is_empty() {
+                features_html = format!(r#"<ul style="list-style:none;padding:0;margin:10px 0 12px;">{}</ul>"#, features_html);
+            }
+
+            let (card_bg, card_border, badge_html, shadow) = if is_featured {
+                (
+                    if colors.is_dark { "rgba(99, 102, 241, 0.12)" } else { "rgba(255, 255, 255, 0.98)" },
+                    format!("2px solid {}", colors.primary),
+                    format!(
+                        r#"<div style="position:absolute;top:-10px;right:12px;background:{};color:{};font-family:{};font-size:8.5px;font-weight:900;padding:2px 8px;border-radius:999px;letter-spacing:0.06em;text-transform:uppercase;">POPULAR</div>"#,
+                        colors.primary, colors.button_text, tokens.heading_font
+                    ),
+                    "0 8px 24px rgba(0,0,0,0.15)".to_string(),
+                )
+            } else {
+                (
+                    if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.85)" },
+                    format!("1px solid {}", colors.border),
+                    String::new(),
+                    "none".to_string(),
+                )
+            };
+
+            let cta_text = if is_featured { "Upgrade Now" } else { "Get Started" };
+
             format!(
-                r#"<div style="min-width:0;background:{};border:1px solid {};border-radius:{};padding:{};box-sizing:border-box;height:100%;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;min-width:0;">{}<div style="font-family:{};font-size:var(--text-sm);font-weight:900;color:{};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div></div>
-                    <div style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:var(--space-1) 0 6px;line-height:1;">{}</div>
-                    <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
+                r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:{};">
+                    {}
+                    <div>
+                        <div style="font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">{}</div>
+                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
+                            <span style="font-family:{};font-size:24px;font-weight:900;color:{};line-height:1;">{}</span>
+                            <span style="font-family:{};font-size:10px;color:{};">{}</span>
+                        </div>
+                        {}
+                    </div>
+                    <div style="margin-top:10px;padding:6px 0;background:{};color:{};border-radius:{};text-align:center;font-family:{};font-size:10.5px;font-weight:800;">{}</div>
                 </div>"#,
                 card_bg,
-                colors.border,
+                card_border,
                 radius,
-                padding,
-                visual,
+                shadow,
+                badge_html,
                 tokens.heading_font,
-                colors.text_primary,
+                colors.text_secondary,
                 escape_html(&name),
                 tokens.heading_font,
-                price_size,
-                colors.primary,
+                colors.text_primary,
                 escape_html(&price),
                 tokens.body_font,
                 colors.text_secondary,
-                escape_html(&desc)
+                escape_html(&period),
+                features_html,
+                if is_featured { &colors.primary } else { &colors.border },
+                if is_featured { &colors.button_text } else { &colors.text_primary },
+                current_component_radius(tokens, "button"),
+                tokens.heading_font,
+                cta_text
             )
         })
         .collect();
-    let plan_grid = if cards.len() >= 3 {
-        format!(
-            r#"<div style="display:grid;grid-template-columns:1.06fr 1fr;grid-template-rows:1fr 1fr;gap:10px;width:100%;min-width:0;">
-                <div style="grid-row:1 / span 2;min-width:0;">{}</div>
-                <div style="min-width:0;">{}</div>
-                <div style="min-width:0;">{}</div>
-            </div>"#,
-            cards[0], cards[1], cards[2]
-        )
-    } else {
-        format!(
-            r#"<div style="display:grid;grid-template-columns:repeat({}, minmax(0, 1fr));gap:10px;width:100%;min-width:0;">{}</div>"#,
-            cards.len().max(1),
-            cards.join("")
-        )
-    };
+
+    let grid_cols = if plan_count == 1 { 1 } else { 2 };
+    let plan_grid = format!(
+        r#"<div style="display:grid;grid-template-columns:repeat({}, minmax(0, 1fr));gap:12px;width:100%;min-width:0;">{}</div>"#,
+        grid_cols,
+        cards.join("")
+    );
+
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;min-width:0;"><h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.05;">{}</h2>{}</div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
+            <h2 style="font-family:{};font-size:26px;font-weight:900;color:{};margin:0;line-height:1.1;">{}</h2>
+            {}
+        </div>"#,
         tokens.heading_font,
         colors.text_primary,
         escape_html(title),
@@ -5349,7 +5413,7 @@ pub fn pricing_plan_slide(
         tokens,
         bg_style,
         false,
-        "var(--space-9) var(--space-5)",
+        "72px 44px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
@@ -7214,8 +7278,13 @@ pub fn image_gallery_slide(
 
     let mut img_cards = Vec::new();
     for img in &images {
-        let url = img.get("url").and_then(|v| v.as_str()).unwrap_or("");
-        let cap = img.get("caption").and_then(|v| v.as_str()).unwrap_or("");
+        let (url, cap) = if let Some(s) = img.as_str() {
+            (s, "")
+        } else {
+            let u = img.get("url").and_then(|v| v.as_str()).unwrap_or("");
+            let c = img.get("caption").and_then(|v| v.as_str()).unwrap_or("");
+            (u, c)
+        };
         let img_html =
             render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
         let caption_html = if !cap.is_empty() {
@@ -7682,7 +7751,11 @@ pub fn image_collage_slide(
 
     let mut img_html = String::new();
     for (idx, img) in images.iter().take(4).enumerate() {
-        let url = img.get("url").and_then(|v| v.as_str()).unwrap_or("");
+        let url = if let Some(s) = img.as_str() {
+            s
+        } else {
+            img.get("url").and_then(|v| v.as_str()).unwrap_or("")
+        };
         let slot = &slots[idx % slots.len()];
         let x = slot.x;
         let y = slot.y;
