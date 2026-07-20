@@ -4990,136 +4990,119 @@ pub fn myth_fact_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-    let (gc, gx) = get_glass_container(tokens, is_dark);
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
     let radius_md = current_component_radius(tokens, "card");
-    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
-    let shadow_lg = tokens.shadows.get("lg").cloned().unwrap_or_else(|| "none".to_string());
+    let (card_bg, card_border, _) = card_styles(tokens, is_dark);
+    let shadow_sm = tokens.shadows.get("sm").cloned().unwrap_or_else(|| "none".to_string());
 
     let effective_variant = variant;
 
     let myth_len = myth.len();
-    let fact_len = fact.len();        let dynamic_fs = if myth_len < 40 && fact_len < 40 {
-            body_fs + 5
-        } else if myth_len < 80 && fact_len < 80 {
-            body_fs + 2
-        } else if myth_len > 200 || fact_len > 200 {
-            body_fs - 2
-        } else if myth_len > 120 || fact_len > 120 {
-            body_fs - 1
-        } else {
-            body_fs
-        };
+    let fact_len = fact.len();
+    let dynamic_fs = if myth_len < 40 && fact_len < 40 {
+        body_fs + 4
+    } else if myth_len > 120 || fact_len > 120 {
+        body_fs - 2
+    } else {
+        body_fs
+    };
 
-        let dynamic_padding = if myth_len < 40 && fact_len < 40 {
-            "var(--space-4) var(--space-4)"
-        } else if myth_len > 120 || fact_len > 120 {
-            "var(--space-2) var(--space-3)"
-        } else {
-            "var(--space-3) var(--space-4)"
-        };
+    let dynamic_padding = if myth_len < 40 && fact_len < 40 {
+        "16px 20px"
+    } else if myth_len > 120 || fact_len > 120 {
+        "12px 14px"
+    } else {
+        "14px 18px"
+    };
 
-        // Max-height for myth and fact containers to prevent overflow
-        // Slide body = 525px - 80px top - 80px bottom = 365px
-        // Heading takes ~50px, so ~315px for content.
-        // Debunk stacks myth + fact + explanation vertically:
-        //   myth ~120px + fact ~140px + explanation ~40px = ~300px
-        // Split places myth | fact side-by-side: each gets full height.
-        let is_long = myth_len > 120 || fact_len > 120;
-        let is_very_long = myth_len > 200 || fact_len > 200;
-        let (myth_max, fact_max) = if effective_variant == "debunk" {
-            // Debunk stacks myth + fact + explanation vertically
-            // Slide body: 525px - 80px top - 80px bottom = 365px
-            // Heading ~50px, so ~315px for card content.
-            // Budget: myth + fact + explanation(~30px) + gaps(~16px) <= 315px
-            if is_very_long {
-                ("120px", "130px")
-            } else if is_long {
-                ("135px", "140px")
-            } else {
-                ("150px", "160px")
-            }
-        } else {
-            // split: side-by-side, each gets full height
-            if is_very_long {
-                ("280px", "280px")
-            } else if is_long {
-                ("300px", "300px")
-            } else {
-                ("320px", "320px")
-            }
-        };
+    let heading = heading_block(
+        "Myth vs Fact",
+        tokens,
+        "headline",
+        Some(&colors.text_primary),
+        false,
+        None,
+        "left",
+        "0 0 16px",
+        true,
+    );
 
     let content = match effective_variant {
         "debunk" => {
-            // Myth is shown crossed out, fact appears below with explanation
-        let myth_html = format!(
-            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-2);box-shadow:{};position:relative;flex-shrink:0;">
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
-                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
-                tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
+            let myth_html = format!(
+                r#"<div style="background:{};border:{};border-radius:{};padding:{};margin-bottom:12px;box-shadow:{};position:relative;flex-shrink:0;">
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">{}</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div>"#,
+                card_bg, card_border, radius_md, dynamic_padding, shadow_sm,
+                tokens.body_font, dynamic_fs, colors.text_secondary, colors.primary,
                 escape_html(myth),
-                tokens.heading_font, tokens.primary, tokens.primary,
+                tokens.heading_font, colors.button_text, colors.primary,
             );
             let fact_html = format!(
-                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);flex-shrink:0;">
+                r#"<div style="background:{};border-left:4px solid {};border:{};border-left-width:4px;border-radius:{};padding:{};box-shadow:{};flex-shrink:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;">{}</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.35;">{}</div>
                 </div>"#,
-                card_bg, tokens.primary, radius_md, dynamic_padding,
-                tokens.heading_font, tokens.primary,
+                card_bg, colors.primary, card_border, radius_md, dynamic_padding, shadow_sm,
+                tokens.heading_font, colors.primary,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {
                 format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:var(--space-3);line-height:1.5;">{}</div>"#,
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:14px;line-height:1.45;">{}</div>"#,
                     tokens.body_font, caption_fs, colors.text_secondary, escape_html(explanation)
                 )
             } else {
                 String::new()
             };
-            format!("{}{}<div style=\"margin-top:16px;\">{}{}{}</div>{}", gc, heading_block("Myth vs Fact", tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+            format!(
+                r#"<div style="width:100%;">{}<div style="display:flex;flex-direction:column;width:100%;">{}{}{}</div></div>"#,
+                heading, myth_html, fact_html, explanation_html
+            )
         }
         _ => {
             // split (default) — myth and fact side by side
             let myth_html = format!(
-                r#"<div style="flex:1;">
-                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};">
-        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
-    </div>
-    </div>"#,
-                    tokens.heading_font, colors.text_secondary,
-                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
-                tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
+                r#"<div style="flex:1;min-width:0;">
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
+                    <div style="background:{};border:{};border-radius:{};padding:{};box-shadow:{};height:100%;box-sizing:border-box;">
+                        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
+                    </div>
+                </div>"#,
+                tokens.heading_font, colors.text_secondary,
+                card_bg, card_border, radius_md, dynamic_padding, shadow_sm,
+                tokens.body_font, dynamic_fs, colors.text_secondary, colors.primary,
                 escape_html(myth),
             );
             let fact_html = format!(
-                r#"<div style="flex:1;min-height:0;">
+                r#"<div style="flex:1;min-width:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
-                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <div style="background:{};border:{};border-left-width:4px;border-left-color:{};border-radius:{};padding:{};box-shadow:{};height:100%;box-sizing:border-box;">
                         <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
                     </div>
                 </div>"#,
-                tokens.heading_font, tokens.primary,
-                card_bg, tokens.primary, radius_md, dynamic_padding,
+                tokens.heading_font, colors.primary,
+                card_bg, card_border, colors.primary, radius_md, dynamic_padding, shadow_sm,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {
                 format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:var(--space-3);line-height:1.5;text-align:center;">{}</div>"#,
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:14px;line-height:1.45;text-align:center;">{}</div>"#,
                     tokens.body_font, caption_fs, colors.text_secondary, escape_html(explanation)
                 )
             } else {
                 String::new()
             };
-            format!("{}{}<div style=\"display:flex;gap:var(--space-3);margin-top:16px;\">{}{}</div>{}{}", gc, heading_block("Myth vs Fact", tokens, "title", Some(&colors.text_primary), false, None, "left", "0 0 12px", true), myth_html, fact_html, explanation_html, gx)
+            format!(
+                r#"<div style="width:100%;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;">{}{}</div>{}</div>"#,
+                heading, myth_html, fact_html, explanation_html
+            )
         }
     };
 
-    let html = slide_base(&content, tokens, bg_style, false, "80px var(--space-6) 80px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "80px 48px", "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({
         "html": html,
@@ -8444,7 +8427,32 @@ mod tests {
         assert!(html.contains("Statistical Modeling"), "card 4 title missing");
         assert!(html.contains("Peer Review"), "card 5 title missing");
     }
+
+    #[test]
+    fn test_myth_fact_no_glass_container_wrapper() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+
+        let res = myth_fact_slide(
+            &tokens,
+            "Skipping breakfast makes you gain weight.",
+            "Meta-analyses show no direct causal link.",
+            "Popularized by commercial cereal marketing.",
+            "light",
+            "debunk",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(
+            !html.contains("backdrop-filter:blur"),
+            "myth_fact slide should not use glass container blur wrapper"
+        );
+    }
 }
+
 
 
 
