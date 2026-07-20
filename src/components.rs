@@ -1749,7 +1749,7 @@ pub fn cta_slide(
                 None,
                 align,
                 None,
-                "0 0 20px",
+                "14px 0 0",
             )
         } else {
             String::new()
@@ -1763,8 +1763,8 @@ pub fn cta_slide(
             "0",
         );
         let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:320px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
-            align, gc, headline_html, sub_html, btn, gx
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
+            align, gc, headline_html, btn, sub_html, gx
         );
         hero_layout(&content, tokens, bg_style, true, "center")
     };
