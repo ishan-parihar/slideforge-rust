@@ -676,58 +676,11 @@ fn current_component_radius(tokens: &DesignTokens, role: &str) -> String {
     }
 }
 
-fn image_filter_css(filter: &str, is_dark: bool) -> &'static str {
-    match filter {
-        "grayscale" => {
-            if is_dark {
-                "filter: grayscale(82%) contrast(1.08) brightness(1.12) saturate(0.92);"
-            } else {
-                "filter: grayscale(78%) contrast(1.06) brightness(1.04) saturate(0.96);"
-            }
-        }
-        "sepia" => {
-            if is_dark {
-                "filter: sepia(22%) saturate(1.08) contrast(1.05) brightness(1.10);"
-            } else {
-                "filter: sepia(18%) saturate(1.06) contrast(1.03) brightness(1.03);"
-            }
-        }
-        "duotone-warm" => {
-            if is_dark {
-                "filter: sepia(24%) saturate(1.16) hue-rotate(-8deg) contrast(1.06) brightness(1.10);"
-            } else {
-                "filter: sepia(18%) saturate(1.12) hue-rotate(-6deg) contrast(1.04) brightness(1.03);"
-            }
-        }
-        "duotone-cool" => {
-            if is_dark {
-                "filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"
-            } else {
-                "filter: grayscale(32%) sepia(10%) hue-rotate(178deg) saturate(1.05) contrast(1.05) brightness(1.02);"
-            }
-        }
-        "high-contrast" => {
-            if is_dark {
-                "filter: contrast(1.16) saturate(1.14) brightness(1.08);"
-            } else {
-                "filter: contrast(1.12) saturate(1.10) brightness(1.02);"
-            }
-        }
-        "soft" => {
-            if is_dark {
-                "filter: contrast(0.98) saturate(0.94) brightness(1.12);"
-            } else {
-                "filter: contrast(0.98) saturate(0.94) brightness(1.04);"
-            }
-        }
-        "vintage" => {
-            if is_dark {
-                "filter: sepia(20%) saturate(1.10) contrast(1.06) brightness(1.10);"
-            } else {
-                "filter: sepia(16%) saturate(1.08) contrast(1.04) brightness(1.03);"
-            }
-        }
-        _ => "",
+fn image_filter_css(_filter: &str, is_dark: bool) -> &'static str {
+    if is_dark {
+        "filter: contrast(1.06) brightness(1.06);"
+    } else {
+        "filter: contrast(1.02) brightness(1.02);"
     }
 }
 
@@ -7945,7 +7898,7 @@ pub fn image_comparison_slide(
         .get("md")
         .cloned()
         .unwrap_or_else(|| "0 4px 16px rgba(0,0,0,0.15)".to_string());
-    let grid_height = if !title.is_empty() { "180px" } else { "220px" };
+    let grid_height = if !title.is_empty() { "215px" } else { "240px" };
     let grid_wrapper_style = format!(
         "position:relative;width:100%;height:{};display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:{};overflow:hidden;box-shadow:{};border: 1px solid {}30;background:{}20;",
         grid_height, radius_lg, shadow_md, colors.border, colors.border
