@@ -2915,7 +2915,7 @@ pub fn grid_cards_slide(
         // ponytail: render full description — validator owns overflow (directive #1288/#1303).
         let desc_html = if !d.is_empty() {
             format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;flex:1;min-height:0;">{}</p>"#,
                 tokens.body_font,
                 font_size_caption,
                 colors.text_secondary,
@@ -2931,11 +2931,10 @@ pub fn grid_cards_slide(
             .unwrap_or(&colors.primary);
         let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
 
-        // ponytail: card wrapper must NOT silently clip — validator owns overflow (directive #1288/#1303).
         format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:6px;display:flex;align-items:center;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
+            r#"<div style="flex:1;min-width:0;min-height:0;overflow:hidden;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;">{}</div>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 3px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;">{}</h3>
                 {}
             </div>"#,
             card_bg,
@@ -3170,15 +3169,15 @@ pub fn grid_cards_slide(
         if cards.len() >= 4 {
             // Default for 4+ cards: 2x2 grid with density-aware font scaling
             let mut items_html = String::new();
-            let t_fs4 = if ultra_dense { title_fs - 4 } else if very_dense { title_fs - 3 } else if dense { title_fs - 2 } else if max_title_len > 12 { title_fs - 2 } else { title_fs - 1 };
-            let c_fs4 = if ultra_dense { caption_fs - 3 } else if very_dense { caption_fs - 2 } else if dense { caption_fs - 1 } else if max_desc_len > 50 { caption_fs - 1 } else { caption_fs };
-            let pad4 = if ultra_dense { "10px 10px" } else if very_dense { "12px 12px" } else { "16px 14px" };
-            let ico4 = if ultra_dense { 16 } else if very_dense { 18 } else { 22 };
+            let t_fs4 = if ultra_dense { 12 } else if very_dense { 13 } else if dense { 14 } else { 15 };
+            let c_fs4 = if ultra_dense { 10 } else if very_dense { 10.5 as i32 } else if dense { 11 } else { 12 };
+            let pad4 = if ultra_dense { "10px 10px" } else if very_dense { "12px 10px" } else { "14px 12px" };
+            let ico4 = if ultra_dense { 16 } else if very_dense { 18 } else { 20 };
             for card in cards.iter().take(4) {
                 items_html.push_str(&render_single_card(card, pad4, ico4, t_fs4, c_fs4));
             }
             format!(
-                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;width:100%;margin-top:16px;">{}</div>"#,
+                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;width:100%;flex:1;min-height:0;overflow:hidden;margin-top:14px;">{}</div>"#,
                 items_html
             )
         } else if cards.len() == 3 {

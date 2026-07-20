@@ -3,7 +3,7 @@
 Full-scope SlideForge test: every slide type × complex multi-series charts × overflow stress-testing.
 
 Generates a single carousel with all slide types in light/dark themes,
-including complex multi-column charts and intentionally long text to stress-test overflow containment.
+including complex multi-column charts, multi-line charts, and intentionally long text to stress-test overflow containment.
 
 Usage:
     python3 generate_full_scope_test.py
@@ -59,7 +59,7 @@ SLIDES = [
     {"slide_type": "headline_subheadline", "theme": "editorial", "bg_style": "light", "archetype": "educator",
      "params": {"headline": "Architectural Excellence", "subheadline": "Clean layout primitives, dynamic density scaling, and strict aspect-ratio containment."}},
 
-    # ═══ SECTION: Feature & Cards ═══
+    # ═══ SECTION: Feature & Grid Cards ═══
     {"section": "SECTION 2 — Feature & Grid Cards"},
     {"slide_type": "feature", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"icon": "⚡", "title": "Sub-Second Compilation", "description": "Compiles complex multi-slide presentation carousels in milliseconds.", "number": "01"}},
@@ -100,14 +100,21 @@ SLIDES = [
      "params": {"title": "Market Disruption", "problem": "Legacy presentation tools require hours of manual layout tweaking.", "solution": "SlideForge turns structured JSON into polished carousels instantly.",
                 "proof_points": [{"title": "10x Faster", "description": "Instant generation"}, {"title": "100% Consistent", "description": "Design system governed"}]}},
 
-    # ═══ SECTION: Complex Multi-Column & Data Charts ═══
-    {"section": "SECTION 5 — Complex Multi-Column & Multi-Series Dataviz"},
+    # ═══ SECTION: Complex Multi-Column & Multi-Series Dataviz ═══
+    {"section": "SECTION 5 — Complex Multi-Column & Multi-Line Dataviz"},
     {"slide_type": "column_chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Quarterly Revenue by Industry Sector (Complex Multi-Series)", "data": [
+     "params": {"title": "Quarterly Revenue by Industry Sector (Complex Multi-Column)", "data": [
          {"label": "Q1 2024", "series": [{"name": "Tech", "value": 85}, {"name": "Health", "value": 60}, {"name": "Finance", "value": 45}, {"name": "Energy", "value": 30}]},
          {"label": "Q2 2024", "series": [{"name": "Tech", "value": 92}, {"name": "Health", "value": 68}, {"name": "Finance", "value": 50}, {"name": "Energy", "value": 35}]},
          {"label": "Q3 2024", "series": [{"name": "Tech", "value": 110}, {"name": "Health", "value": 75}, {"name": "Finance", "value": 58}, {"name": "Energy", "value": 42}]},
          {"label": "Q4 2024", "series": [{"name": "Tech", "value": 130}, {"name": "Health", "value": 88}, {"name": "Finance", "value": 70}, {"name": "Energy", "value": 52}]}]}},
+    {"slide_type": "chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
+     "variant": "line",
+     "params": {"title": "Multi-Line Performance Benchmark", "chart_type": "line", "data": [
+         {"label": "Jan", "series": [{"name": "Latency (ms)", "value": 120}, {"name": "CPU (%)", "value": 45}, {"name": "Memory (%)", "value": 60}]},
+         {"label": "Feb", "series": [{"name": "Latency (ms)", "value": 95}, {"name": "CPU (%)", "value": 40}, {"name": "Memory (%)", "value": 55}]},
+         {"label": "Mar", "series": [{"name": "Latency (ms)", "value": 60}, {"name": "CPU (%)", "value": 30}, {"name": "Memory (%)", "value": 50}]},
+         {"label": "Apr", "series": [{"name": "Latency (ms)", "value": 35}, {"name": "CPU (%)", "value": 25}, {"name": "Memory (%)", "value": 45}]}]}},
     {"slide_type": "chart", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "variant": "area",
      "params": {"title": "Market Share Trajectory (Multi-Series Area)", "chart_type": "area", "data": [

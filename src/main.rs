@@ -31,6 +31,28 @@ struct Cli {
     command: Option<Commands>,
 }
 
+// ── AXI helpers ─────────────────────────────────────────────────────────────
+
+/// Truncate a string to `max` chars and append a size hint when truncated.
+fn truncate_str(s: &str, max: usize) -> String {
+    if s.len() <= max {
+        s.to_string()
+    } else {
+        format!("{}...
+  ... (truncated, {} chars total)", &s[..max], s.len())
+    }
+}
+
+/// Print a structured error to stdout (AXI §6) and exit with code 2 for usage errors.
+fn axi_error(msg: &str, hint: Option<&str>) -> ! {
+    let mut out = serde_json::json!({ "error": msg });
+    if let Some(h) = hint {
+        out["help"] = serde_json::json!(h);
+    }
+    println!("{}", serde_json::to_string_pretty(&out).unwrap_or_default());
+    std::process::exit(2);
+}
+
 #[derive(Subcommand)]
 enum Commands {
     /// Download Chromium to ~/.slideforge/chromium/ for offline/CI installs
@@ -209,6 +231,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match &cli.command {
+        // ── AXI §8 + §10: no-args home view shows live state + tool identity ──
+        None => {
+            let bin_path = std::env::current_exe()
+                .map(|p| {
+                    let s = p.display().to_string();
+                    if let Ok(home) = std::env::var("HOME") {
+                        s.replace(&home, "~")
+                    } else {
+                        s
+                    }
+                })
+                .unwrap_or_else(|_| "slideforge".to_string());
+            println!("bin: {}", bin_path);
+            println!("description: Generate social media carousel slides with AI-grade design systems");
+            println!();
+            let types = slide_registry::list_slide_types();
+            println!("slides[{}]{{type,description}}:", types.len());
+            for t in &types {
+                if let Some(info) = slide_registry::get_slide_type_info(t) {
+                    let desc = info["description"].as_str().unwrap_or("");
+                    println!("  {},{}", t, truncate_str(desc, 60));
+                }
+            }
+            println!();
+            println!("help[4]:");
+            println!("  Run `slideforge list-slides` to see all slide types");
+            println!("  Run `slideforge list-platforms` to see export presets");
+            println!("  Run `slideforge generate-slide --slide-type <type> --primary-color <hex>` to create");
+            println!("  Run `slideforge mcp` to start the MCP server");
+        }
         Some(Commands::Setup) => {
             println!("Downloading Chromium to ~/.slideforge/chromium/...");
             match export::download_chromium() {
@@ -274,66 +326,57 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Some(Commands::ListSlides) => {
             let types = slide_registry::list_slide_types();
-            println!("Available slide types ({}):", types.len());
-            for t in &types {
-                if let Some(info) = slide_registry::get_slide_type_info(t) {
-                    let desc = info["description"].as_str().unwrap_or("");
-                    println!("  {:<25} {}", t, desc);
+            if types.is_empty() {
+                println!("slides: 0 slide types registered");
+            } else {
+                println!("slides[{}]{{type,description}}:", types.len());
+                for t in &types {
+                    if let Some(info) = slide_registry::get_slide_type_info(t) {
+                        let desc = info["description"].as_str().unwrap_or("");
+                        println!("  {},{}", t, truncate_str(desc, 80));
+                    }
                 }
             }
+            println!("help[1]: Run `slideforge slide-info <type>` for details");
         }
         Some(Commands::ListPlatforms) => {
             let all = platforms::all_platforms();
-            println!("Available export platforms ({}):", all.len());
-            for p in &all {
-                println!(
-                    "  {:<25} {}×{} (aspect ratio: {}, default aspect ratio: {}, allowed ratios: {})",
-                    p.name,
-                    p.width,
-                    p.height,
-                    p.aspect_ratio,
-                    p.default_aspect_ratio,
-                    p.allowed_aspect_ratios.join(", ")
-                );
+            if all.is_empty() {
+                println!("platforms: 0 export platforms registered");
+            } else {
+                println!("platforms[{}]{{name,dimensions,aspect_ratio,default_ratio}}:", all.len());
+                for p in &all {
+                    println!(
+                        "  {},{}×{}  {},{}",
+                        p.name, p.width, p.height, p.aspect_ratio, p.default_aspect_ratio
+                    );
+                }
             }
+            println!("help[1]: Run `slideforge export --help` to see export options");
         }
         Some(Commands::ListArchetypes) => {
             let all = archetypes::all_archetypes();
-            println!("Available archetypes ({}):", all.len());
-            for a in &all {
-                println!("  {:<20} {}", a.name, a.description);
+            if all.is_empty() {
+                println!("archetypes: 0 archetypes registered");
+            } else {
+                println!("archetypes[{}]{{name,description}}:", all.len());
+                for a in &all {
+                    println!("  {},{}", a.name, truncate_str(&a.description, 80));
+                }
             }
         }
         Some(Commands::ListThemes) => {
             let themes = vec![
-                (
-                    "editorial",
-                    "Clean, magazine-inspired layout with sharp edges and textured surfaces",
-                ),
-                (
-                    "bold",
-                    "High-contrast, dynamic layout with strong shadows and gradient surfaces",
-                ),
-                (
-                    "minimal",
-                    "Restrained layout with generous whitespace and subtle accents",
-                ),
-                (
-                    "dark",
-                    "Dark-mode-first with glassmorphism and neon-adjacent accents",
-                ),
-                (
-                    "vibrant",
-                    "Saturated colors with playful radii and energetic compositions",
-                ),
-                (
-                    "natural",
-                    "Organic shapes, earthy palette, and hand-crafted feel",
-                ),
+                ("editorial", "Clean, magazine-inspired layout with sharp edges and textured surfaces"),
+                ("bold", "High-contrast, dynamic layout with strong shadows and gradient surfaces"),
+                ("minimal", "Restrained layout with generous whitespace and subtle accents"),
+                ("dark", "Dark-mode-first with glassmorphism and neon-adjacent accents"),
+                ("vibrant", "Saturated colors with playful radii and energetic compositions"),
+                ("natural", "Organic shapes, earthy palette, and hand-crafted feel"),
             ];
-            println!("Available visual themes ({}):", themes.len());
+            println!("themes[{}]{{name,description}}:", themes.len());
             for (name, desc) in &themes {
-                println!("  {:<15} {}", name, desc);
+                println!("  {},{}", name, truncate_str(desc, 80));
             }
         }
         Some(Commands::SlideInfo { slide_type }) => {
@@ -344,12 +387,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 None => {
                     let valid = slide_registry::list_slide_types();
-                    eprintln!(
-                        "Unknown slide type: '{}'. Valid types: {}",
-                        slide_type,
-                        valid.join(", ")
+                    axi_error(
+                        &format!("Unknown slide type: '{}'", slide_type),
+                        Some(&format!("Valid types: {}", valid.join(", "))),
                     );
-                    std::process::exit(1);
                 }
             }
         }
