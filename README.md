@@ -198,3 +198,87 @@ Requires: Rust 1.75+, `clang`/`lld` for musl target.
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE).
+---
+
+## Agent Integration (AXI §7)
+
+SlideForge ships an installable AI agent skill that provides ambient context at session start — showing slide types, design tokens, and contextual help hints.
+
+### Install the Skill
+
+```bash
+# Via npx (recommended)
+npx skills add ishan-parihar/slideforge-rust --skill slideforge
+
+# Or download manually
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/SKILL.md \
+  -o ~/.agents/skills/slideforge/SKILL.md
+```
+
+### Session Hook (Claude Code)
+
+Add to `~/.claude/settings.json` or project `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "slideforge"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+At session start, SlideForge prints a compact dashboard:
+
+```
+bin: ~/.local/bin/slideforge
+description: Instagram/LinkedIn/TikTok carousel generator — 47 slide types, 8 platform presets
+
+slides[47]{type,description}:
+  hero,Opening hook with headline and subheadline
+  ...
+
+design_tokens:
+  primary_color: #4F46E5
+  theme: bold
+  archetype: startup_pitch
+
+help[4]:
+  Run `slideforge list-slides` to see all 47 slide types
+  Run `slideforge generate-slide hero --params '{...}'` to create a slide
+  Run `slideforge render-carousel slides.json --tokens-file tokens.json` to render
+  Run `slideforge export carousel.html --output-dir ./exports` to export PNGs
+```
+
+### Session Hook (Codex)
+
+Add to `~/.codex/hooks.json` or project `.codex/hooks.json`:
+
+```json
+{
+  "SessionStart": "slideforge"
+}
+```
+
+### Session Hook (OpenCode)
+
+Create `~/.config/opencode/plugins/slideforge.ts`:
+
+```typescript
+export default {
+  name: "slideforge",
+  onSessionStart: async () => {
+    const { execSync } = require("child_process");
+    return execSync("slideforge").toString();
+  },
+};
+```

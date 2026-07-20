@@ -252,3 +252,69 @@ EOF
 
 echo ""
 echo "AI agent skill location: $SKILL_DIR/slideforge/"
+
+# ── Install Session Hooks (AXI §7) ─────────────────────────────────────────
+echo ""
+echo "Installing AI agent session hooks..."
+
+# Claude Code session hook
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+if command -v jq &>/dev/null && [ -f "$CLAUDE_SETTINGS" ]; then
+    if jq -e '.hooks.SessionStart[]?.hooks[]?.command == "slideforge"' "$CLAUDE_SETTINGS" &>/dev/null; then
+        echo "  ✓ Claude Code session hook already installed"
+    else
+        cp "$CLAUDE_SETTINGS" "${CLAUDE_SETTINGS}.bak.$(date +%s)"
+        jq '.hooks.SessionStart += [{"matcher":"","hooks":[{"type":"command","command":"slideforge"}]}]' \
+            "$CLAUDE_SETTINGS" > "${CLAUDE_SETTINGS}.tmp" && mv "${CLAUDE_SETTINGS}.tmp" "$CLAUDE_SETTINGS"
+        echo "  ✓ Claude Code session hook installed to $CLAUDE_SETTINGS"
+    fi
+else
+    echo "  → Claude Code: Add to ~/.claude/settings.json:"
+    echo '    {"hooks":{"SessionStart":[{"matcher":"","hooks":[{"type":"command","command":"slideforge"}]}]}}'
+fi
+
+# Codex session hook
+CODEX_DIR="$HOME/.codex"
+if [ -d "$CODEX_DIR" ]; then
+    CODEX_HOOKS="$CODEX_DIR/hooks.json"
+    if [ -f "$CODEX_HOOKS" ] && jq -e '.SessionStart == "slideforge"' "$CODEX_HOOKS" &>/dev/null; then
+        echo "  ✓ Codex session hook already installed"
+    else
+        if [ -f "$CODEX_HOOKS" ]; then
+            cp "$CODEX_HOOKS" "${CODEX_HOOKS}.bak.$(date +%s)"
+            jq '.SessionStart = "slideforge"' "$CODEX_HOOKS" > "${CODEX_HOOKS}.tmp" && mv "${CODEX_HOOKS}.tmp" "$CODEX_HOOKS"
+        else
+            echo '{"SessionStart":"slideforge"}' > "$CODEX_HOOKS"
+        fi
+        echo "  ✓ Codex session hook installed to $CODEX_HOOKS"
+        CODEX_CONFIG="$CODEX_DIR/config.toml"
+        if [ -f "$CODEX_CONFIG" ] && ! grep -q 'hooks = true' "$CODEX_CONFIG"; then
+            echo -e '\n[features]\nhooks = true' >> "$CODEX_CONFIG"
+            echo "  ✓ Enabled hooks in $CODEX_CONFIG"
+        fi
+    fi
+else
+    echo "  → Codex: Create ~/.codex/hooks.json with {"SessionStart":"slideforge"}"
+fi
+
+# OpenCode session hook
+OPENCODE_DIR="$HOME/.config/opencode/plugins"
+if [ -d "$HOME/.config/opencode" ]; then
+    mkdir -p "$OPENCODE_DIR"
+    if [ -f "$OPENCODE_DIR/slideforge.ts" ]; then
+        echo "  ✓ OpenCode session hook already installed"
+    else
+        cat > "$OPENCODE_DIR/slideforge.ts" << 'OPENCODE_PLUGIN'
+export default {
+  name: "slideforge",
+  onSessionStart: async () => {
+    const { execSync } = require("child_process");
+    return execSync("slideforge").toString();
+  },
+};
+OPENCODE_PLUGIN
+        echo "  ✓ OpenCode session hook installed to $OPENCODE_DIR/slideforge.ts"
+    fi
+else
+    echo "  → OpenCode: Create ~/.config/opencode/plugins/slideforge.ts (see README)"
+fi
