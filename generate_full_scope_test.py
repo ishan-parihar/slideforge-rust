@@ -148,6 +148,7 @@ SLIDES = [
          {"axis": "Speed", "value": 90}, {"axis": "Security", "value": 95}, {"axis": "Flexibility", "value": 80}, {"axis": "Scale", "value": 88}, {"axis": "DX", "value": 92}]}},
     {"slide_type": "funnel_chart", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "User Conversion Funnel",
+                "description": "2.4% overall conversion rate from initial impression to paid subscriber.",
                 "steps": [
          {"label": "Impressions", "value": 100000}, {"label": "Sign-ups", "value": 15000}, {"label": "Activated", "value": 8500}, {"label": "Subscribed", "value": 2400}]}},
 

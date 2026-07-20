@@ -4299,6 +4299,7 @@ fn funnel_chart_slide(
     tokens: &DesignTokens,
     steps: Vec<Value>,
     title: &str,
+    description: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -4368,12 +4369,22 @@ fn funnel_chart_slide(
         }
     }).collect();
 
+    let desc_html = if !description.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:11px;color:{};margin:12px 0 0;line-height:1.4;text-align:center;width:100%;opacity:0.85;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
+
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
             {}
-            <div style="width:100%;margin-top:20px;box-sizing:border-box;">{}</div>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;">{}</div>
+            {}
         </div>"#,
-        heading, funnel_html
+        heading, funnel_html, desc_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -6187,6 +6198,7 @@ pub fn dispatch_slide(
                 tokens,
                 steps,
                 &s("title"),
+                &s("description").if_empty(&s("caption")),
                 bg_style,
                 theme,
                 &bg_img,
