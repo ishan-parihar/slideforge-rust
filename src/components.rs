@@ -1222,8 +1222,7 @@ pub fn feature_slide(
                 "0",
             );
             let inner = format!("{}{}{}", icon_html, title_html, desc_html);
-            let content = format!("{}{}{}", gc, inner, gx);
-            stack_layout(&content, tokens, bg_style, "0", false, padding, justify)
+            stack_layout(&inner, tokens, bg_style, "0", false, padding, justify)
         }
     };
 
@@ -1763,8 +1762,8 @@ pub fn cta_slide(
             "0",
         );
         let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
-            align, gc, headline_html, btn, sub_html, gx
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}</div>"#,
+            align, headline_html, btn, sub_html
         );
         hero_layout(&content, tokens, bg_style, true, "center")
     };
@@ -3083,91 +3082,27 @@ pub fn grid_cards_slide(
                 .and_then(|v| v.as_str())
                 .unwrap_or("");
             let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
-                    tokens.body_font,
-                    colors.text_secondary,
-                    escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            let icon_color = card
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, 18);
-            let badge_num = (i + 1).to_string();
-            items_html.push_str(&format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:10px 8px;box-shadow:{};display:flex;flex-direction:column;min-width:0;position:relative;">
-                    <div style="position:absolute;top:-6px;left:-6px;width:20px;height:20px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:10px;font-weight:800;">{}</div>
-                    <div style="margin-bottom:4px;display:flex;align-items:center;">{}</div>
-                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 3px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
-                    {}
-                </div>"#,
-                card_bg,
-                card_border,
-                card_blur,
-                radius_md,
-                shadow_sm,
-                colors.primary,
-                colors.button_text,
-                tokens.heading_font,
-                badge_num,
-                icon_html,
-                tokens.body_font,
-                colors.text_primary,
-                escape_html(t),
-                desc_html
-            ));
+            items_html.push_str(&render_single_card(card, pad, ico, t_fs, c_fs));
         }
         format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;">{}</div>"#,
+            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;width:100%;margin-top:14px;">{}</div>"#,
             items_html
         )
-    } else if effective_variant == "list-dense" {
-        // List-dense: vertical list for 4–6 cards, each card is a compact horizontal row.
-        let max_items = cards.len().min(6);
-        let t_fs = if max_title_len > 15 { 12 } else { 13 };
-        let c_fs = if max_desc_len > 60 { 10 } else { 11 };
-        let items_html: String = cards.iter().take(max_items).map(|card| {
-            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("•");
-            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
-            let icon_color = card
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, 16);
-            let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<span style="font-family:{};font-size:{}px;color:{};line-height:1.3;overflow-wrap:break-word;">{}</span>"#,
-                    tokens.body_font, c_fs, colors.text_secondary, escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            format!(
-                r#"<div style="display:flex;align-items:flex-start;gap:8px;background:{};border:{};{}border-radius:{};padding:8px 10px;box-shadow:{};box-sizing:border-box;">
-                    <div style="flex-shrink:0;margin-top:2px;">{}</div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.2;overflow-wrap:break-word;">{}</div>
-                        {}
-                    </div>
-                </div>"#,
-                card_bg, card_border, card_blur, radius_md, shadow_sm,
-                icon_html,
-                tokens.body_font, t_fs, colors.text_primary, escape_html(t),
-                desc_html
-            )
-        }).collect();
+    } else if effective_variant == "list-dense" || effective_variant == "list" {
+        let mut items_html = String::new();
+        let t_fs = if ultra_dense { 12 } else if very_dense { 13 } else { 14 };
+        let c_fs = if ultra_dense { 10 } else if very_dense { 10 } else { 11 };
+        let pad = if ultra_dense { "6px 8px" } else if very_dense { "8px 10px" } else { "10px 12px" };
+        let ico = if ultra_dense { 14 } else if very_dense { 16 } else { 18 };
+        for card in cards.iter().take(5) {
+            items_html.push_str(&render_single_card(card, pad, ico, t_fs, c_fs));
+        }
         format!(
             r#"<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin-top:12px;">{}</div>"#,
             items_html
         )
     } else {
         if cards.len() >= 4 {
-            // Default for 4+ cards: 2x2 grid with density-aware font scaling
             let mut items_html = String::new();
             let (t_fs4, c_fs4, pad4, ico4) = if max_desc_len > 120 || total_chars > 450 {
                 (10, 8, "4px 6px", 12)
@@ -3186,15 +3121,10 @@ pub fn grid_cards_slide(
                 items_html
             )
         } else if cards.len() == 3 {
-            // Default for 3 cards: 3 columns
             let t_fs3 = if max_title_len > 12 { 13 } else { 14 };
-            let c_fs3 = if max_desc_len > 40 { 10 } else { 11 };
-            let pad3 = if max_desc_len > 40 {
-                "12px 8px"
-            } else {
-                "16px 12px"
-            };
-            let ico3 = if max_desc_len > 40 { 18 } else { 20 };
+            let c_fs3 = if max_desc_len > 60 { 10 } else { 11 };
+            let pad3 = if max_desc_len > 60 { "10px 10px" } else { "12px 12px" };
+            let ico3 = if max_desc_len > 60 { 16 } else { 18 };
             let mut items_html = String::new();
             for card in cards.iter().take(3) {
                 items_html.push_str(&render_single_card(card, pad3, ico3, t_fs3, c_fs3));
@@ -3251,15 +3181,6 @@ pub fn grid_cards_slide(
                 .get("icon_color")
                 .and_then(|v| v.as_str())
                 .unwrap_or(&colors.primary);
-            let icon_html1 = crate::blocks::render_icon(ico1, icon_color1, 32);
-            let icon_html2 = crate::blocks::render_icon(ico2, icon_color2, 32);
-
-            format!(
-                r#"<div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--space-2);width:100%;margin-top:16px;">
-                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) 20px;box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;min-width:0;">
-                        <div style="margin-bottom:16px;display:flex;align-items:center;">{}</div>
-                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
-                        {}
                     </div>
                     <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) 20px;box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;min-width:0;">
                         <div style="margin-bottom:16px;display:flex;align-items:center;">{}</div>

@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 525px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+}
+
+:root {
+  --primary: #5E5FE0;
+  --primary-light: #A2ACFF;
+  --primary-dark: #3A2EAD;
+  --surface-light: #FFF2EE;
+  --surface-dark: #050100;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #EDEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C5C7D1;
+  --border-dark: #2A2C3D;
+  --accent: #937000;
+  --secondary: #C6765E;
+  --tertiary: #C667AE;
+  --gradient: linear-gradient(165deg, #050100 0%, #3A2EAD 60%, #050100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #5E5FE040;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF2EE 0%, #5E5FE008 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #050100 0%, #3A2EAD30 50%, #050100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-dark-bg: #050100CC;
+  --glass-dark-blur: 12px;
+  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-frosted-bg: #FFF2EEE6;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-border: 1px solid #C5C7D130;
+  --glass-light-bg: #FFF2EECC;
+  --glass-light-blur: 12px;
+  --glass-light-border: 1px solid #C5C7D140;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text-display-size: 31px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 25px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 20px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 13px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 10px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 10px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 25px;
+  --text-2xl: 31px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
+}
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; background: #f0f0f0;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
+
+.slide {
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slide--full-bleed { overflow: hidden; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+  overflow: hidden !important;
+}
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
+.slide--full-bleed .slide-content {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
+}
+
+.slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F115 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+
+.slide--dark, .slide--gradient, .slide--hero {
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
+}
+
+.slide-layout {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
+}
+.slide-layout--center { justify-content: center; }
+
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
+.grid-2 > * { flex: 1; min-width: 0; }
+
+.serif { font-family: var(--font-heading, serif); }
+.sans { font-family: var(--font-body, sans-serif); }
+
+.display-text {
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.heading-text {
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.body-text {
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
+  text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
+}
+.caption-text {
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
+  text-wrap: pretty; overflow-wrap: break-word;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.slide--dark .text-gradient, .slide--gradient .text-gradient, .slide--hero .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.card {
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
+  background: var(--surface-light, #F3F5FC);
+  border: 1px solid var(--border-light, #C4C7D1);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: break-word; word-break: break-word;
+}
+.slide--dark .card, .slide--gradient .card, .slide--hero .card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dark, #2A2D3D);
+  box-shadow: var(--shadow-md);
+}
+
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-lg);
+}
+.slide--light .glass, .slide--mesh .glass {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.badge {
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
+}
+.slide--light .badge, .slide--mesh .badge {
+  background: var(--primary)15; color: var(--primary);
+  border: 1px solid var(--primary)30;
+}
+.slide--dark .badge, .slide--gradient .badge, .slide--hero .badge {
+  background: var(--text-on-dark)15; color: var(--text-on-dark);
+  border: 1px solid var(--text-on-dark)30;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-decoration: none;
+  box-shadow: var(--shadow-md); transition: transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.slide--light .btn, .slide--mesh .btn {
+  background: var(--primary); color: #FFFFFF;
+}
+.slide--dark .btn, .slide--gradient .btn, .slide--hero .btn {
+  background: var(--surface-light); color: var(--primary-dark);
+}
+
+.icon-box {
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
+}
+.slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
+.slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
+.timeline-number {
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
+}
+.timeline-content { flex: 1; }
+
+.callout {
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
+  border-radius: var(--radius-md, 8px); border: 1px solid transparent;
+}
+.callout--warning {
+  background: rgba(255, 165, 0, 0.1); border-color: var(--status-warning, #FFA500);
+}
+.callout--info {
+  background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
+}
+
+.breadcrumb-progress {
+  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
+  display: flex; align-items: center; gap: 6px;
+  z-index: 50;
+}
+.breadcrumb-chip {
+  height: 2px; flex: 1; border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
+.slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
+.slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
+.breadcrumb-chip.active {
+  height: 3px; flex: 2.2;
+}
+.slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
+.slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.swipe-arrow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  z-index: 50;
+}
+.slide--light .swipe-arrow, .slide--mesh .swipe-arrow { background: linear-gradient(to right, transparent, rgba(0,0,0,0.06)); }
+.slide--dark .swipe-arrow, .slide--gradient .swipe-arrow, .slide--hero .swipe-arrow { background: linear-gradient(to right, transparent, rgba(255,255,255,0.08)); }
+.swipe-arrow svg { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
+.slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
+
+.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
+.slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
+.slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
+.slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
+.slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
+.slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
+.slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
+.slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+
+            :root {
+                --font-heading: 'Playfair Display', Georgia, serif;
+                --font-body: 'Inter', system-ui, sans-serif;
+                --radius-lg: 8px;
+                --radius-md: 6px;
+            }
+            .slide--light, .slide--mesh { --surface-light: #F8F6F3; }
+            .slide--dark, .slide--hero { --surface-dark: #0A0A0F; }
+            .overlay__brand {
+                font-family: var(--font-heading), Georgia, serif !important;
+                font-style: normal !important;
+                text-transform: none !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                opacity: 0.9 !important;
+            }
+            .overlay__topic, .overlay__url, .overlay__hashtags {
+                font-family: var(--font-body), sans-serif !important;
+                font-style: normal !important;
+                text-transform: uppercase !important;
+                font-size: 11.5px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12em !important;
+                opacity: 0.75 !important;
+            }
+        
+.ig-frame {
+  width: var(--slide-width); background: #fff; border-radius: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--primary, #0B0A0F);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+.ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-subtitle { font-size: 11px; color: #8e8e8e; }
+.ig-dots { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
+.ig-dot { width: 6px; height: 6px; border-radius: 50%; background: #d8d8d8; transition: background 0.2s; }
+.ig-dot.active { background: #262626; }
+.ig-actions { display: flex; gap: 14px; padding: 8px 14px; }
+.ig-actions svg { width: 22px; height: 22px; stroke: #262626; fill: none; stroke-width: 1.8; cursor: pointer; }
+.ig-actions svg:hover { opacity: 0.6; }
+.ig-actions svg.bookmark { margin-left: auto; }
+.ig-caption { padding: 0 14px 12px; font-size: 12px; line-height: 1.45; color: #262626; }
+.ig-caption strong { font-weight: 600; }
+.ig-caption .timestamp { color: #8e8e8e; font-size: 11px; margin-top: 4px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+    <div class="ig-frame">
+  <div class="ig-header">
+    <div class="ig-avatar">S</div>
+    <div>
+      <div class="ig-handle">@slideforge</div>
+      <div class="ig-subtitle">Carousel</div>
+    </div>
+  </div>
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; background: #5E5FE0; border-radius: 50%; pointer-events: none; top: -80px; left: -80px; position: absolute; width: 320px; opacity: 0.07"></div><div style="height: 120px; position: absolute; pointer-events: none; left: auto; right: -40px; background: #937000; border-radius: 4px; width: 120px; transform: rotate(60deg); top: 60%; opacity: 0.05"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 5-6</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">Column Chart — Single vs Grouped Series</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">Registry schema + grouped bar layout</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Graduation Rates by Decade</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">58</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:68.2%;min-height:8px;background:#5E5FE0;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1970</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">62</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:72.9%;min-height:8px;background:#5E5FE0;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1980</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">71</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:83.5%;min-height:8px;background:#5E5FE0;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1990</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">78</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:91.8%;min-height:8px;background:#5E5FE0;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2000</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">85</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:100.0%;min-height:8px;background:#5E5FE0;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2010</span>
+                </div></div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Graduation Rates by Gender</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">58</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:65.2%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">42</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:47.2%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1970</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">60</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:67.4%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">64</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:71.9%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1980</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">68</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:76.4%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">74</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:83.1%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">1990</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">75</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:84.3%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">82</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:92.1%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2000</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">81</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:91.0%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">89</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:35%;height:100.0%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2010</span>
+                    </div></div><div style="display:flex;justify-content:center;gap:12px;margin-top:6px;"><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#767CFF;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#40424B;">Men</span>
+                    </div><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#FF8C6B;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#40424B;">Women</span>
+                    </div></div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Employment by Sector (3-Series)</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">45</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:75.0%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">30</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:50.0%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">25</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:41.7%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2020</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;border-right:2px solid rgba(128,128,128,0.22);padding-right:12px;margin-right:-12px;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">52</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:86.7%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">35</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:58.3%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">28</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:46.7%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2022</span>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">60</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:100.0%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">40</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:66.7%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">30</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:50.0%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">2024</span>
+                    </div></div><div style="display:flex;justify-content:center;gap:12px;margin-top:6px;"><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#767CFF;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Tech</span>
+                    </div><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#FF8C6B;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Health</span>
+                    </div><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#3ECFA0;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Finance</span>
+                    </div></div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); z-index: 1; opacity: 0.04; pointer-events: none; position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; top: -80px; border-radius: 50%; height: 320px; background: #5E5FE0; width: 320px; left: -80px; pointer-events: none; position: absolute"></div><div style="height: 120px; position: absolute; left: auto; opacity: 0.05; background: #937000; pointer-events: none; border-radius: 4px; right: -40px; width: 120px; transform: rotate(60deg); top: 60%"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 7</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">Line Chart — Single vs Multi-Path SVG</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">Multi-series SVG rendering with legends</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Revenue Growth (Single Series)</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            
+            
+            <line x1="40" y1="110.0" x2="305" y2="110.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="114.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">120.0</text><line x1="40" y1="62.5" x2="305" y2="62.5" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="66.5" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">170.0</text><line x1="40" y1="15.0" x2="305" y2="15.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="19.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">220.0</text>
+            
+            <path d="M 40.0 110.0 L 128.3 53.0 L 216.7 81.5 L 305.0 15.0 " stroke="#5E5FE0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="110.0" r="4" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="53.0" r="4" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="81.5" r="4" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="15.0" r="4" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q1</text><text x="128.3" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q2</text><text x="216.7" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q3</text><text x="305.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q4</text>
+        </svg></div>
+            
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0; position: absolute; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Revenue by Product Line</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            
+            <g transform="translate(0, 4)"><g transform="translate(0,4)"><rect x="70.0" y="2" width="8" height="3" rx="1" fill="#767CFF" /><text x="82.0" y="7" font-size="7px" fill="#CBCDD8" font-family="sans-serif">Product A</text><rect x="130.0" y="2" width="8" height="3" rx="1" fill="#FF8C6B" /><text x="142.0" y="7" font-size="7px" fill="#CBCDD8" font-family="sans-serif">Product B</text><rect x="190.0" y="2" width="8" height="3" rx="1" fill="#3ECFA0" /><text x="202.0" y="7" font-size="7px" fill="#CBCDD8" font-family="sans-serif">Product C</text></g></g>
+            <line x1="40" y1="110.0" x2="305" y2="110.0" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="114.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">45.0</text><line x1="40" y1="62.5" x2="305" y2="62.5" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="66.5" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">132.5</text><line x1="40" y1="15.0" x2="305" y2="15.0" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="19.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">220.0</text>
+            
+            <path d="M 40.0 69.3 L 128.3 36.7 L 216.7 53.0 L 305.0 15.0 " stroke="#767CFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" /><path d="M 40.0 91.0 L 128.3 74.7 L 216.7 63.9 L 305.0 47.6 " stroke="#FF8C6B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" /><path d="M 40.0 110.0 L 128.3 101.9 L 216.7 93.7 L 305.0 85.6 " stroke="#3ECFA0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="69.3" r="3.5" fill="#767CFF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="36.7" r="3.5" fill="#767CFF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="53.0" r="3.5" fill="#767CFF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="15.0" r="3.5" fill="#767CFF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="40.0" cy="91.0" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="74.7" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="63.9" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="47.6" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="40.0" cy="110.0" r="3.5" fill="#3ECFA0" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="101.9" r="3.5" fill="#3ECFA0" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="93.7" r="3.5" fill="#3ECFA0" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="85.6" r="3.5" fill="#3ECFA0" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Q1</text><text x="128.3" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Q2</text><text x="216.7" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Q3</text><text x="305.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Q4</text>
+        </svg></div>
+            
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Market Share Trends (Area)</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="chart_area_grad_0" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#5E5FE0" stop-opacity="0.18" />
+                        <stop offset="100%" stop-color="#5E5FE0" stop-opacity="0.0" />
+                    </linearGradient><linearGradient id="chart_area_grad_1" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#FF8C6B" stop-opacity="0.18" />
+                        <stop offset="100%" stop-color="#FF8C6B" stop-opacity="0.0" />
+                    </linearGradient></defs>
+            <g transform="translate(0, 4)"><g transform="translate(0,4)"><rect x="100.0" y="2" width="8" height="3" rx="1" fill="#5E5FE0" /><text x="112.0" y="7" font-size="7px" fill="#40424B" font-family="sans-serif">Alpha Corp</text><rect x="160.0" y="2" width="8" height="3" rx="1" fill="#FF8C6B" /><text x="172.0" y="7" font-size="7px" fill="#40424B" font-family="sans-serif">Beta Inc</text></g></g>
+            <line x1="40" y1="110.0" x2="305" y2="110.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="114.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">28.0</text><line x1="40" y1="62.5" x2="305" y2="62.5" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="66.5" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">36.5</text><line x1="40" y1="15.0" x2="305" y2="15.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="19.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">45.0</text>
+            <path d="M 40.0 110.0 L 40.0 70.9 L 128.3 42.9 L 216.7 54.1 L 305.0 15.0 L 305.0 110.0 Z " fill="url(#chart_area_grad_0)" /><path d="M 40.0 110.0 L 40.0 110.0 L 128.3 87.6 L 216.7 70.9 L 305.0 98.8 L 305.0 110.0 Z " fill="url(#chart_area_grad_1)" />
+            <path d="M 40.0 70.9 L 128.3 42.9 L 216.7 54.1 L 305.0 15.0 " stroke="#5E5FE0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" /><path d="M 40.0 110.0 L 128.3 87.6 L 216.7 70.9 L 305.0 98.8 " stroke="#FF8C6B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="70.9" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="42.9" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="54.1" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="15.0" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="40.0" cy="110.0" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="87.6" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="70.9" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="98.8" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">2020</text><text x="128.3" y="126" font-size="9px" fill="#40424B" text-anchor="middle">2021</text><text x="216.7" y="126" font-size="9px" fill="#40424B" text-anchor="middle">2022</text><text x="305.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">2023</text>
+        </svg></div>
+            
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; pointer-events: none; inset: 0; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 320px; background: #5E5FE0; left: -80px; pointer-events: none; opacity: 0.07; border-radius: 50%; top: -80px; position: absolute; height: 320px"></div><div style="left: auto; height: 120px; width: 120px; top: 60%; opacity: 0.05; background: #937000; position: absolute; pointer-events: none; border-radius: 4px; right: -40px; transform: rotate(60deg)"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 1</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">Grid Cards — Overflow Scaling</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">Dynamic font/padding scaling for dense content</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04; pointer-events: none; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;justify-content:center;width:100%;box-sizing:border-box;"><div style="flex-shrink:0;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Core Values</h2></div><div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;min-height:0;overflow:hidden;margin-top:16px;"><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Innovation</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Pushing boundaries with creative solutions.</p></div>
+            </div><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Integrity</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Honest and transparent in all dealings.</p></div>
+            </div><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Impact</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Making a measurable difference.</p></div>
+            </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;justify-content:center;width:100%;box-sizing:border-box;"><div style="flex-shrink:0;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Detailed Platform Features</h2></div><div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;min-height:0;overflow:hidden;margin-top:16px;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#767CFF" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#767CFF;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#EDEEF5;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Advanced Analytics Engine</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Our comprehensive analytics platform provides real-time data processing, predictive modeling, and interactive dashboards that help organizations make data-driven decisions with unprecedented accuracy and speed across multiple data sources and business units.</p></div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#767CFF" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#767CFF;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#EDEEF5;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Enterprise Security Suite</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Military-grade encryption, multi-factor authentication, role-based access control, audit logging, and compliance monitoring ensure your data remains protected against evolving threats while meeting regulatory requirements across global jurisdictions.</p></div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#767CFF" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#767CFF;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#EDEEF5;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Collaborative Workspace</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Real-time document editing, video conferencing, project management tools, and team communication channels create a seamless environment where distributed teams can collaborate effectively regardless of geographic location and time zone differences.</p></div>
+            </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; top: -80px; pointer-events: none; position: absolute; width: 320px; left: -80px; height: 320px; opacity: 0.07; background: #5E5FE0"></div><div style="border-radius: 4px; opacity: 0.05; width: 120px; background: #937000; top: 60%; right: -40px; height: 120px; position: absolute; pointer-events: none; transform: rotate(60deg); left: auto"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 2</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">Myth vs Fact — Short Text Scaling</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">+5px font boost when both myth and fact are short</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin-top:16px;"><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:0;padding:var(--space-2) var(--space-3);margin-bottom:var(--space-2);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);position:relative;max-height:100%;overflow:hidden;flex-shrink:0;">
+                <div style="font-family:DM Sans;font-size:15px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.55;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">You need to work 80-hour weeks to succeed as a founder</div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:Playfair Display;font-size:11px;font-weight:800;color:#5E5FE0;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:3px 12px;border-radius:20px;">MYTH</div>
+            </div><div style="background:#FFF2EE;border-left:3px solid #5E5FE0;border-radius:0;padding:var(--space-2) var(--space-3);box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:100%;overflow:hidden;flex-shrink:0;">
+                <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                <div style="font-family:DM Sans;font-size:15px;font-weight:600;color:#0A0B0F;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">Research shows founders who maintain work-life balance are 33% more likely to achieve sustainable growth and avoid burnout</div>
+            </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:var(--space-3);line-height:1.5;">Studies from Stanford and Harvard Business School consistently show that sustainable work patterns correlate with better long-term outcomes.</div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;margin-top:16px;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:0;padding:var(--space-4) var(--space-4);margin-bottom:var(--space-2);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);position:relative;max-height:100%;overflow:hidden;flex-shrink:0;">
+                <div style="font-family:DM Sans;font-size:21px;font-weight:600;color:#CBCDD8;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.55;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">Zero-Sum Game</div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:Playfair Display;font-size:11px;font-weight:800;color:#5E5FE0;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:3px 12px;border-radius:20px;">MYTH</div>
+            </div><div style="background:rgba(255,255,255,0.04);border-left:3px solid #5E5FE0;border-radius:0;padding:var(--space-4) var(--space-4);box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:100%;overflow:hidden;flex-shrink:0;">
+                <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                <div style="font-family:DM Sans;font-size:21px;font-weight:600;color:#EDEEF5;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">Suffering is non-zero-sum</div>
+            </div><div style="font-family:DM Sans;font-size:13px;color:#CBCDD8;margin-top:var(--space-3);line-height:1.5;">Compassion expands rather than divides emotional resources.</div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; opacity: 0.07; background: #5E5FE0; height: 320px; pointer-events: none; border-radius: 50%; top: -80px; width: 320px; left: -80px"></div><div style="top: 60%; left: auto; position: absolute; height: 120px; background: #937000; right: -40px; pointer-events: none; border-radius: 4px; transform: rotate(60deg); opacity: 0.05; width: 120px"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 3</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">List — Raw String Fallback</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">Both raw strings and structured objects render correctly</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; z-index: 1; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Takeaways</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Multi-series charts enable side-by-side comparisons</div>
+                            
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Raw strings render as proper bullet points</div>
+                            
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Font scaling prevents text overflow on dense cards</div>
+                            
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#0A0B0F;">CTA validation ensures single-call-to-action decks</div>
+                            
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Implementation Checklist</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#EDEEF5;">Registry schema update</div>
+                            <div style="font-size:13px;color:#CBCDD8;margin-top:4px;">Document multi-series parameter format</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#EDEEF5;">Grouped column renderer</div>
+                            <div style="font-size:13px;color:#CBCDD8;margin-top:4px;">Side-by-side bars with 6-color palette</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#EDEEF5;">Multi-path SVG line chart</div>
+                            <div style="font-size:13px;color:#CBCDD8;margin-top:4px;">Separate path per series with legend</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                        <span style="color:#5E5FE0;margin-right:12px;font-size:12px;line-height:1.5;">✦</span>
+                        <div>
+                            <div style="font-family:DM Sans;font-size:16px;font-weight:500;color:#EDEEF5;">Validator rules</div>
+                            <div style="font-size:13px;color:#CBCDD8;margin-top:4px;">Single CTA enforcement and warnings</div>
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="top: -80px; opacity: 0.07; left: -80px; width: 320px; position: absolute; pointer-events: none; height: 320px; background: #5E5FE0; border-radius: 50%"></div><div style="border-radius: 4px; right: -40px; top: 60%; pointer-events: none; transform: rotate(60deg); height: 120px; opacity: 0.05; width: 120px; background: #937000; position: absolute; left: auto"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#767CFF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">TASK 4</div>
+            <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#EDEEF5;line-height:1.02;margin:0;max-width:320px;">Info-Dense Slides — Grid Card Variants</h1>
+            <div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:300px;">dense / compact / list-dense for information-rich content</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;justify-content:center;width:100%;box-sizing:border-box;"><div style="flex-shrink:0;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Capabilities</h2></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;min-height:0;overflow:hidden;margin-top:16px;"><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:14px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><line x1="18" y1="20" x2="18" y2="10" stroke-width="2"/><line x1="12" y1="20" x2="12" y2="4" stroke-width="2"/><line x1="6" y1="20" x2="6" y2="14" stroke-width="2"/><path d="M3 20h18" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Real-Time Analytics</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:9px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Live dashboards with predictive insights and custom KPI tracking across all business units.</p></div>
+            </div><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:14px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Enterprise Security</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:9px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">SOC 2 compliant with end-to-end encryption, MFA, and role-based access control.</p></div>
+            </div><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:14px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;">🤝</div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Team Collaboration</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:9px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">Shared workspaces with real-time editing, comments, and version history.</p></div>
+            </div><div style="flex:1;min-width:0;background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:14px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;min-height:0;">
+                <div style="margin-bottom:6px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5E5FE0" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#5E5FE0;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:DM Sans;font-size:13px;font-weight:600;color:#0A0B0F;margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">API Integration</h3>
+                <div style="flex:1;min-height:0;overflow:hidden;"><p style="font-family:DM Sans;font-size:9px;color:#40424B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">RESTful APIs with webhooks for seamless third-party app connectivity.</p></div>
+            </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;justify-content:center;width:100%;box-sizing:border-box;"><div style="flex-shrink:0;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Implementation Checklist</h2></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;min-height:0;overflow:hidden;margin-top:16px;"><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">1</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Schema Design</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Define data models and relationships</div>
+                    </div>
+                </div><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">2</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">API Layer</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Build REST endpoints with auth</div>
+                    </div>
+                </div><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">3</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Frontend UI</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Create responsive dashboards</div>
+                    </div>
+                </div><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">4</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Testing Suite</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Unit, integration, and E2E tests</div>
+                    </div>
+                </div><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">5</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Deploy Pipeline</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">CI/CD with staging environments</div>
+                    </div>
+                </div><div style="background:#FFF2EE;border:1px solid #C5C7D125;border-radius:10px;padding:10px;display:flex;gap:8px;align-items:flex-start;overflow:hidden;min-height:0;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:10px;font-weight:800;flex-shrink:0;">6</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#0A0B0F;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Monitoring</div>
+                        <div style="font-family:DM Sans;font-size:9px;line-height:1.35;color:#40424B;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Observability and alerting setup</div>
+                    </div>
+                </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;justify-content:center;width:100%;box-sizing:border-box;"><div style="flex-shrink:0;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Architecture Decisions</h2></div><div style="display:flex;flex-direction:column;gap:8px;width:100%;min-height:0;overflow:hidden;margin-top:16px;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;overflow:hidden;min-height:0;flex:1;">
+                    <div style="flex-shrink:0;margin-top:1px;">🔄</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:12px;font-weight:700;color:#EDEEF5;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Event-Driven Architecture</div>
+                        <div style="font-family:DM Sans;font-size:9.5px;line-height:1.35;color:#CBCDD8;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Decoupled microservices communicating through message queues for scalability.</div>
+                    </div>
+                </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;overflow:hidden;min-height:0;flex:1;">
+                    <div style="flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#767CFF" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#767CFF;"><circle cx="12" cy="12" r="10" stroke-width="2"/><line x1="2" y1="12" x2="22" y2="12" stroke-width="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="2"/></svg></div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:12px;font-weight:700;color:#EDEEF5;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Edge Computing</div>
+                        <div style="font-family:DM Sans;font-size:9.5px;line-height:1.35;color:#CBCDD8;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Processing at the edge reduces latency to under 50ms for global users.</div>
+                    </div>
+                </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;overflow:hidden;min-height:0;flex:1;">
+                    <div style="flex-shrink:0;margin-top:1px;">🔗</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:12px;font-weight:700;color:#EDEEF5;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Data Mesh Pattern</div>
+                        <div style="font-family:DM Sans;font-size:9.5px;line-height:1.35;color:#CBCDD8;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Domain-oriented data ownership with self-serve data infrastructure.</div>
+                    </div>
+                </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;overflow:hidden;min-height:0;flex:1;">
+                    <div style="flex-shrink:0;margin-top:1px;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#767CFF" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#767CFF;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg></div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:12px;font-weight:700;color:#EDEEF5;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Zero Trust Security</div>
+                        <div style="font-family:DM Sans;font-size:9.5px;line-height:1.35;color:#CBCDD8;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Never trust, always verify — every request authenticated and authorized.</div>
+                    </div>
+                </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;overflow:hidden;min-height:0;flex:1;">
+                    <div style="flex-shrink:0;margin-top:1px;">📝</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:DM Sans;font-size:12px;font-weight:700;color:#EDEEF5;line-height:1.25;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word;">Event Sourcing</div>
+                        <div style="font-family:DM Sans;font-size:9.5px;line-height:1.35;color:#CBCDD8;opacity:0.7;overflow-wrap:break-word;word-break:break-word;">Immutable event log enables complete audit trail and time-travel debugging.</div>
+                    </div>
+                </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SlideForge Audit</span>
+      <span class="overlay__topic">Layout &amp; Dataviz Upgrade</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slideforge #data-viz</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+  </div>
+</div>
+
+</div>
+</div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-actions">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="ig-caption">
+    <strong>@slideforge</strong> Swipe through for the full breakdown
+    <span class="timestamp">2 hours ago</span>
+  </div>
+</div>
+  </div>
+</div>
+
+
+<script>
+(function() {
+  const track = document.getElementById('carouselTrack');
+  const dots = document.querySelectorAll('.ig-dot');
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  const total = 21;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    track.style.transform = `translateX(${-current * 420}px)`;
+    if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; track.style.transition = 'none'; });
+  track.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; track.style.transition = 'none'; }, { passive: true });
+
+  function endDrag(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - x;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+    else goTo(current);
+  }
+
+  track.addEventListener('mouseup', (e) => endDrag(e.clientX));
+  track.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientX));
+  track.addEventListener('mouseleave', (e) => { if (isDragging) endDrag(e.clientX); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>
