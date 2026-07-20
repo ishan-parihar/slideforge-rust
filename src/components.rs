@@ -749,21 +749,17 @@ fn inject_background_image(html: String, image_url: &str, opacity: f32, is_dark:
         let ov = treatment.image_overlay.as_str();
         let overlay_html = if is_dark {
             match ov {
-                "gradient" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.60));z-index:1;"></div>"#.to_string(),
-                "solid" => r#"<div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:1;"></div>"#.to_string(),
-                "duotone" => format!(r#"<div style="position:absolute;inset:0;background:linear-gradient(135deg, {}55, {}44);z-index:1;"></div>"#, tokens.primary, tokens.accent),
-                "vignette" => r#"<div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>"#.to_string(),
-                "tint" => format!(r#"<div style="position:absolute;inset:0;background:{}44;z-index:1;"></div>"#, tokens.primary),
-                _ => r#"<div style="position:absolute;inset:0;background:rgba(0,0,0,0.30);z-index:1;"></div>"#.to_string(),
+                "gradient" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.72));z-index:1;"></div>"#.to_string(),
+                "solid" => r#"<div style="position:absolute;inset:0;background:rgba(0,0,0,0.48);z-index:1;"></div>"#.to_string(),
+                "vignette" => r#"<div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.65) 100%);z-index:1;"></div>"#.to_string(),
+                _ => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.60));z-index:1;"></div>"#.to_string(),
             }
         } else {
             match ov {
-                "gradient" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.55));z-index:1;"></div>"#.to_string(),
-                "solid" => r#"<div style="position:absolute;inset:0;background:rgba(255,255,255,0.45);z-index:1;"></div>"#.to_string(),
-                "duotone" => format!(r#"<div style="position:absolute;inset:0;background:linear-gradient(135deg, {}33, {}22);z-index:1;"></div>"#, tokens.primary, tokens.accent),
-                "vignette" => r#"<div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.30) 100%);z-index:1;"></div>"#.to_string(),
-                "tint" => format!(r#"<div style="position:absolute;inset:0;background:{}22;z-index:1;"></div>"#, tokens.primary),
-                _ => r#"<div style="position:absolute;inset:0;background:rgba(255,255,255,0.30);z-index:1;"></div>"#.to_string(),
+                "gradient" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.65));z-index:1;"></div>"#.to_string(),
+                "solid" => r#"<div style="position:absolute;inset:0;background:rgba(255,255,255,0.50);z-index:1;"></div>"#.to_string(),
+                "vignette" => r#"<div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.25) 100%);z-index:1;"></div>"#.to_string(),
+                _ => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.50));z-index:1;"></div>"#.to_string(),
             }
         };
 
@@ -6637,14 +6633,9 @@ pub fn image_caption_slide(
     padding: &str,
 ) -> Value {
     let mut treatment = resolve_current_image_treatment(theme, archetype);
-    if treatment.image_mask == "circle"
-        || treatment.image_frame == "circle"
-        || treatment.image_frame == "pill"
-    {
-        treatment.image_mask = "none".to_string();
-        if treatment.image_frame != "sharp" {
-            treatment.image_frame = "rounded".to_string();
-        }
+    treatment.image_mask = "none".to_string();
+    if treatment.image_frame != "sharp" {
+        treatment.image_frame = "rounded".to_string();
     }
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
@@ -6652,41 +6643,32 @@ pub fn image_caption_slide(
     let img_height = if layout == "image-left" || layout == "image-right" {
         "100%"
     } else {
-        "240px"
+        "225px"
     };
 
     let img_html = render_themed_image(
         image_url, tokens, &treatment, "100%", img_height, caption, is_dark,
     );
 
-    let caption_style = format!(
-        "font-family:{};font-size:{}px;font-weight:700;color:{};margin:0 0 8px;line-height:1.2;",
-        tokens.heading_font,
-        tokens
-            .type_scale
-            .get("title")
-            .map(|t| t.font_size)
-            .unwrap_or(24),
-        colors.text_primary
-    );
+    let heading_html = if !caption.is_empty() {
+        heading_block(caption, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 8px", true)
+    } else {
+        String::new()
+    };
+
     let desc_style = format!(
-        "font-family:{};font-size:var(--text-sm);color:{};margin:0;line-height:1.45;",
+        "font-family:{};font-size:12px;color:{};margin:0;line-height:1.45;opacity:0.9;",
         tokens.body_font, colors.text_secondary
     );
 
     let text_html = format!(
         r#"<div style="display:flex;flex-direction:column;justify-content:center;">
-            <h3 style="{}">{}</h3>
+            {}
             {}
         </div>"#,
-        caption_style,
-        escape_html(caption),
+        heading_html,
         if !description.is_empty() {
-            format!(
-                r#"<p style="{}">{}</p>"#,
-                desc_style,
-                escape_html(description)
-            )
+            format!(r#"<p style="{}">{}</p>"#, desc_style, escape_html(description))
         } else {
             String::new()
         }
@@ -6695,36 +6677,36 @@ pub fn image_caption_slide(
     let content = match layout {
         "image-bottom" => {
             format!(
-                r#"<div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%;height:100%;justify-content:center;">
+                r#"<div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
                     {}
-                    {}
+                    <div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
                 </div>"#,
-                text_html, img_html
+                text_html, colors.border, img_html
             )
         }
         "image-left" => {
             format!(
-                r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-2);width:100%;height:100%;align-items:center;">
-                    {}
+                r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px;width:100%;height:100%;align-items:center;">
+                    <div style="width:100%;height:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
                     {}
                 </div>"#,
-                img_html, text_html
+                colors.border, img_html, text_html
             )
         }
         "image-right" => {
             format!(
-                r#"<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:var(--space-2);width:100%;height:100%;align-items:center;">
+                r#"<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;width:100%;height:100%;align-items:center;">
                     {}
-                    {}
+                    <div style="width:100%;height:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
                 </div>"#,
-                text_html, img_html
+                text_html, colors.border, img_html
             )
         }
         "image-overlay" => {
             let mut overlay_treatment = treatment.clone();
             overlay_treatment.image_frame = "sharp".to_string();
             overlay_treatment.image_mask = "none".to_string();
-            overlay_treatment.image_overlay = "solid".to_string();
+            overlay_treatment.image_overlay = "gradient".to_string();
             let img_full = render_themed_image(
                 image_url,
                 tokens,
@@ -6737,22 +6719,17 @@ pub fn image_caption_slide(
             let overlay_content = format!(
                 r#"<div style="position:relative;width:100%;height:100%;">
                     {}
-                    <div style="position:absolute;bottom:0;left:0;right:0;padding:var(--space-3) 28px 84px 28px;z-index:3;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);">
-                        <h3 style="font-family:{};font-size:{}px;font-weight:700;color:white;margin:0 0 8px;text-shadow:0 2px 4px rgba(0,0,0,0.5);">{}</h3>
+                    <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 28px 76px 28px;z-index:3;color:white;">
+                        <h3 style="font-family:{};font-size:24px;font-weight:800;color:white;margin:0 0 8px;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.7);">{}</h3>
                         {}
                     </div>
                 </div>"#,
                 img_full,
                 tokens.heading_font,
-                tokens
-                    .type_scale
-                    .get("title")
-                    .map(|t| t.font_size)
-                    .unwrap_or(24),
                 escape_html(caption),
                 if !description.is_empty() {
                     format!(
-                        r#"<p style="font-family:{};font-size:var(--text-sm);color:rgba(255,255,255,0.8);margin:0;line-height:1.4;text-shadow:0 2px 4px rgba(0,0,0,0.5);">{}</p>"#,
+                        r#"<p style="font-family:{};font-size:12px;color:rgba(255,255,255,0.88);margin:0;line-height:1.45;text-shadow:0 2px 6px rgba(0,0,0,0.6);">{}</p>"#,
                         tokens.body_font,
                         escape_html(description)
                     )
@@ -6772,11 +6749,11 @@ pub fn image_caption_slide(
         _ => {
             // image-top
             format!(
-                r#"<div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%;height:100%;justify-content:center;">
-                    {}
+                r#"<div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
+                    <div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
                     {}
                 </div>"#,
-                img_html, text_html
+                colors.border, img_html, text_html
             )
         }
     };
@@ -6811,19 +6788,9 @@ pub fn image_headline_slide(
     padding: &str,
 ) -> Value {
     let mut treatment = resolve_current_image_treatment(theme, archetype);
-    if treatment.image_mask == "circle"
-        || treatment.image_frame == "circle"
-        || treatment.image_frame == "pill"
-    {
-        treatment.image_mask = "none".to_string();
-        if treatment.image_frame != "sharp" {
-            treatment.image_frame = "rounded".to_string();
-        }
-    }
-
     treatment.image_frame = "sharp".to_string();
     treatment.image_mask = "none".to_string();
-    treatment.image_overlay = "solid".to_string();
+    treatment.image_overlay = "gradient".to_string();
 
     let img_html = render_themed_image(
         image_url, tokens, &treatment, "100%", "100%", headline, true,
@@ -6836,23 +6803,18 @@ pub fn image_headline_slide(
     };
 
     let headline_style = format!(
-        "font-family:{};font-size:{}px;font-weight:800;color:white;margin:0;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
-        tokens.heading_font,
-        tokens
-            .type_scale
-            .get("display")
-            .map(|t| t.font_size)
-            .unwrap_or(40)
+        "font-family:{};font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);",
+        tokens.heading_font
     );
     let sub_style = format!(
-        "font-family:{};font-size:var(--text-sm);color:rgba(255,255,255,0.85);margin:var(--space-1) 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
+        "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
         tokens.body_font
     );
 
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;">
             {}
-            <div style="position:absolute;inset:0;padding:var(--space-10) var(--space-5) var(--space-10);display:flex;flex-direction:column;justify-content:{};z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:{};z-index:3;">
                 <h2 style="{}">{}</h2>
                 {}
             </div>
@@ -6898,39 +6860,54 @@ pub fn image_quote_slide(
     let mut treatment = resolve_current_image_treatment(theme, archetype);
     treatment.image_frame = "sharp".to_string();
     treatment.image_mask = "none".to_string();
-    treatment.image_overlay = "solid".to_string();
+    treatment.image_overlay = "gradient".to_string();
 
-    let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, true);
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+
+    let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, is_dark);
+
+    let glass_card_style = if is_dark {
+        format!(
+            "background:rgba(0,0,0,0.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.18);border-radius:var(--radius-lg);padding:24px 24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);max-width:360px;width:100%;box-sizing:border-box;"
+        )
+    } else {
+        format!(
+            "background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-lg);padding:24px 24px;box-shadow:0 12px 36px rgba(0,0,0,0.15);max-width:360px;width:100%;box-sizing:border-box;"
+        )
+    };
+
+    let text_color = if is_dark { "white" } else { "#111827" };
+    let sec_color = if is_dark { "rgba(255,255,255,0.75)" } else { "#4B5563" };
 
     let quote_style = format!(
-        "font-family:{};font-size:{}px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
-        tokens.heading_font,
-        tokens
-            .type_scale
-            .get("headline")
-            .map(|t| t.font_size)
-            .unwrap_or(28)
+        "font-family:{};font-size:19px;font-style:italic;font-weight:600;color:{};margin:0 0 14px;line-height:1.42;",
+        tokens.heading_font, text_color
     );
     let author_style = format!(
-        "font-family:{};font-size:var(--text-sm);font-weight:600;color:white;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
-        tokens.body_font
+        "font-family:{};font-size:12px;font-weight:800;color:{};margin:0;text-transform:uppercase;letter-spacing:0.06em;",
+        tokens.body_font, colors.primary
     );
     let role_style = format!(
-        "font-family:{};font-size:11px;color:rgba(255,255,255,0.7);margin:var(--space-0) 0 0;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
-        tokens.body_font
+        "font-family:{};font-size:11px;color:{};margin:2px 0 0;",
+        tokens.body_font, sec_color
     );
 
     let content = format!(
-        r#"<div style="position:relative;width:100%;height:100%;">
+        r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
-            <div style="position:absolute;inset:0;padding:var(--space-10) var(--space-5) var(--space-10);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <div style="font-size:var(--text-2xl);color:rgba(255,255,255,0.4);line-height:1;margin-bottom:var(--space-1);">“</div>
-                <p style="{}">{}</p>
-                {}
-                {}
+            <div style="position:absolute;inset:0;padding:60px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:3;">
+                <div style="{}">
+                    <div style="font-size:32px;color:{};line-height:1;margin-bottom:6px;font-weight:bold;">“</div>
+                    <p style="{}">{}</p>
+                    {}
+                    {}
+                </div>
             </div>
         </div>"#,
         img_html,
+        glass_card_style,
+        colors.primary,
         quote_style,
         escape_html(quote),
         if !author.is_empty() {
@@ -6945,10 +6922,10 @@ pub fn image_quote_slide(
         }
     );
 
-    let html = slide_base_bleed(&content, tokens, "dark", false, "0", "stretch");
+    let html = slide_base_bleed(&content, tokens, bg_style, false, "0", "stretch");
     json!({
         "html": html,
-        "background": "dark",
+        "background": bg_style,
         "variant": "default",
         "theme": theme,
         "archetype": archetype
@@ -6968,15 +6945,8 @@ pub fn image_callout_slide(
     padding: &str,
 ) -> Value {
     let mut treatment = resolve_current_image_treatment(theme, archetype);
-    if treatment.image_mask == "circle"
-        || treatment.image_frame == "circle"
-        || treatment.image_frame == "pill"
-    {
-        treatment.image_mask = "none".to_string();
-        if treatment.image_frame != "sharp" {
-            treatment.image_frame = "rounded".to_string();
-        }
-    }
+    treatment.image_mask = "none".to_string();
+    treatment.image_frame = "rounded".to_string();
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
 
@@ -6985,7 +6955,7 @@ pub fn image_callout_slide(
         tokens,
         &treatment,
         "100%",
-        "240px",
+        "220px",
         "Annotated Diagram",
         is_dark,
     );
@@ -6997,7 +6967,7 @@ pub fn image_callout_slide(
         let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
         markers.push_str(&format!(
             r#"<div style="position:absolute;left:{:.1}%;top:{:.1}%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:700;box-shadow:0 0 0 4px rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.3);cursor:pointer;" title="{}">
+                <div style="width:26px;height:26px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;box-shadow:0 0 0 3px rgba(255,255,255,0.4), 0 4px 14px rgba(0,0,0,0.3);backdrop-filter:blur(4px);cursor:pointer;" title="{}">
                     {}
                 </div>
             </div>"#,
@@ -7006,34 +6976,33 @@ pub fn image_callout_slide(
     }
 
     let desc_html = if !description.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};margin:var(--space-2) 0 0;line-height:1.45;text-align:left;">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(description)
-        )
+        heading_block(description, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 10px", true)
     } else {
         String::new()
     };
 
     let mut list_html = String::new();
     if !callouts.is_empty() {
+        let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+        let border = format!("1px solid {}", colors.border);
+        let radius = current_component_radius(tokens, "card");
         let mut items = String::new();
         for (idx, c) in callouts.iter().enumerate() {
             let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
             let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("");
             items.push_str(&format!(
-                r#"<div style="margin-bottom:12px;display:flex;gap:var(--space-1);align-items:flex-start;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:{};color:white;font-family:{};font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">{}</span>
-                    <div>
-                        <h4 style="font-family:{};font-size:var(--text-sm);font-weight:600;color:{};margin:0 0 2px;">{}</h4>
+                r#"<div style="background:{};border:{};border-radius:{};padding:8px 12px;display:flex;gap:10px;align-items:center;">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:{};color:white;font-family:{};font-size:10px;font-weight:800;flex-shrink:0;">{}</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-family:{};font-size:12px;font-weight:800;color:{};margin:0;">{}</div>
                         {}
                     </div>
                 </div>"#,
+                card_bg, border, radius,
                 colors.primary, tokens.body_font, idx + 1,
-                tokens.body_font, colors.text_primary, escape_html(lbl),
+                tokens.heading_font, colors.text_primary, escape_html(lbl),
                 if !d.is_empty() {
-                    format!(r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.45;">{}</p>"#, tokens.body_font, colors.text_secondary, escape_html(d))
+                    format!(r#"<p style="font-family:{};font-size:10.5px;color:{};margin:2px 0 0;line-height:1.35;">{}</p>"#, tokens.body_font, colors.text_secondary, escape_html(d))
                 } else {
                     String::new()
                 }
