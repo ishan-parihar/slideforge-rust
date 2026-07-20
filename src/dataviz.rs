@@ -430,13 +430,18 @@ pub fn render_svg_scatter_plot(
         min_y -= 1.0;
     }
 
-    let pad_left = 48;
+    let pad_left = 50;
     let pad_right = 24;
-    let pad_top = 26;
-    let pad_bottom = 36;
+    let pad_top = 28;
+    let pad_bottom = 38;
 
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
+
+    let inner_pad_x = 22.0;
+    let inner_pad_y = 18.0;
+    let plot_w = chart_w - 2.0 * inner_pad_x;
+    let plot_h = chart_h - 2.0 * inner_pad_y;
 
     let mut grid_lines = String::new();
     // Y grid
@@ -449,8 +454,8 @@ pub fn render_svg_scatter_plot(
             pad_left, y_pos, width - pad_right, y_pos, colors.border
         ));
         grid_lines.push_str(&format!(
-            r#"<text x="{}" y="{:.1}" font-size="8px" fill="{}" text-anchor="end">{:.1}</text>"#,
-            pad_left - 8,
+            r#"<text x="{}" y="{:.1}" font-size="8.5px" font-weight="600" fill="{}" text-anchor="end">{:.1}</text>"#,
+            pad_left - 6,
             y_pos + 3.0,
             colors.text_secondary,
             y_val
@@ -467,7 +472,7 @@ pub fn render_svg_scatter_plot(
             x_pos, pad_top, x_pos, height as f64 - pad_bottom as f64, colors.border
         ));
         grid_lines.push_str(&format!(
-            r#"<text x="{:.1}" y="{}" font-size="8px" fill="{}" text-anchor="middle">{:.0}</text>"#,
+            r#"<text x="{:.1}" y="{}" font-size="8.5px" font-weight="600" fill="{}" text-anchor="middle">{:.0}</text>"#,
             x_pos,
             height as f64 - pad_bottom as f64 + 14.0,
             colors.text_secondary,
@@ -480,9 +485,9 @@ pub fn render_svg_scatter_plot(
     let mut path_d = String::new();
 
     for i in 0..x_vals.len() {
-        let x_pos = pad_left as f64 + ((x_vals[i] - min_x) / (max_x - min_x)) * chart_w;
+        let x_pos = pad_left as f64 + inner_pad_x + ((x_vals[i] - min_x) / (max_x - min_x)) * plot_w;
         let y_pos =
-            height as f64 - pad_bottom as f64 - ((y_vals[i] - min_y) / (max_y - min_y)) * chart_h;
+            height as f64 - pad_bottom as f64 - inner_pad_y - ((y_vals[i] - min_y) / (max_y - min_y)) * plot_h;
 
         if i == 0 {
             path_d.push_str(&format!("M {:.1} {:.1}", x_pos, y_pos));
@@ -492,16 +497,16 @@ pub fn render_svg_scatter_plot(
 
         let mut r = 4.5;
         if max_size > 0.0 {
-            r = 4.5 + (sizes[i] / max_size) * 8.0;
+            r = 4.5 + (sizes[i] / max_size) * 7.0;
         }
 
         points_svg.push_str(&format!(
             r#"<g>
-                <circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.8" stroke="white" stroke-width="1.5" />
-                <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="700">{}</text>
+                <circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="800">{}</text>
             </g>"#,
             x_pos, y_pos, r, primary_color,
-            x_pos, y_pos - r - 3.5, colors.text_primary, escape_html(&labels[i])
+            x_pos, y_pos - r - 4.0, colors.text_primary, escape_html(&labels[i])
         ));
     }
 
@@ -512,7 +517,7 @@ pub fn render_svg_scatter_plot(
 
     let x_axis_title = if !x_label.is_empty() {
         format!(
-            r#"<text x="{}" y="{}" font-size="9px" font-weight="700" fill="{}" text-anchor="middle" letter-spacing="0.05em">{}</text>"#,
+            r#"<text x="{}" y="{}" font-size="9px" font-weight="800" fill="{}" text-anchor="middle" letter-spacing="0.05em">{}</text>"#,
             pad_left as f64 + chart_w / 2.0,
             height - 2,
             colors.text_secondary,
@@ -524,7 +529,7 @@ pub fn render_svg_scatter_plot(
 
     let y_axis_title = if !y_label.is_empty() {
         format!(
-            r#"<text x="{}" y="14" font-size="9px" font-weight="700" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
+            r#"<text x="{}" y="14" font-size="9px" font-weight="800" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
             pad_left,
             colors.text_secondary,
             escape_html(y_label)

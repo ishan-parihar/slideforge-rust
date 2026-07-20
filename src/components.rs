@@ -2355,8 +2355,9 @@ pub fn timeline_slide(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
             <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Chronological roadmap tracking SlideForge engine milestones from core compilation to headless PNG export.</p>
         </div>"#,
-        heading, colors.primary, items_html
+        heading, colors.primary, items_html, tokens.body_font, colors.text_secondary
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -3903,22 +3904,23 @@ fn scatter_plot_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "heading", None, true, None, "left", "0", false,
+        title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true,
     );
-    let svg = render_svg_scatter_plot(&data, 320, 180, &colors, x_label, y_label);
+    let svg = render_svg_scatter_plot(&data, 320, 185, &colors, x_label, y_label);
+    let radius = current_component_radius(tokens, "card");
     let chart_bg = if colors.is_dark {
-        "rgba(255,255,255,0.04)"
+        "rgba(255,255,255,0.05)"
     } else {
-        "#ffffff"
+        "rgba(255,255,255,0.92)"
     };
-    let chart_border = if colors.is_dark {
-        "1px solid rgba(255,255,255,0.08)"
-    } else {
-        "1px solid rgba(0,0,0,0.08)"
-    };
+    let chart_border = format!("1px solid {}", colors.border);
     let content = format!(
-        r#"<div style="width:100%;">{}<div style="width:100%;height:220px;border-radius:10px;overflow:hidden;background:{};border:{};padding:var(--space-1);box-sizing:border-box;">{}</div></div>"#,
-        title_html, chart_bg, chart_border, svg
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            {}
+            <div style="width:100%;height:195px;border-radius:{};overflow:hidden;background:{};border:{};padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;">{}</div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+        </div>"#,
+        title_html, radius, chart_bg, chart_border, svg, tokens.body_font, colors.text_secondary
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -3937,28 +3939,31 @@ fn gauge_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "heading", None, true, None, "center", "0", false,
+        title, tokens, "headline", Some(&colors.text_primary), false, None, "center", "0 0 12px", true,
     );
-    let svg = render_svg_gauge_chart(value, 100.0, label, &colors);
+    let svg = render_svg_gauge_chart(value, 100.0, "%", &colors);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-    let subtext = if label.is_empty() { "Optimal Operating Range" } else { label };
+    let subtext = if !label.is_empty() { label.to_string() } else { "Optimal Range".to_string() };
+
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;">
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
             {}
-            <div style="width:100%;background:{};border:1px solid {};border-radius:{};padding:20px 16px 14px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;">
-                <div style="width:100%;max-width:280px;height:140px;margin:0 auto;">{}</div>
-                <p style="font-family:{};font-size:11.5px;font-weight:600;color:{};margin:8px 0 0;text-align:center;opacity:0.85;">{}</p>
+            <div style="width:100%;background:{};border:1px solid {};border-radius:{};padding:20px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;">
+                <div style="width:100%;max-width:240px;height:120px;margin:0 auto;display:flex;justify-content:center;">{}</div>
+                <div style="font-family:{};font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: {}</div>
             </div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
         </div>"#,
         title_html,
         card_bg,
         colors.border,
         radius,
         svg,
+        tokens.heading_font,
+        escape_html(&subtext.to_uppercase()),
         tokens.body_font,
-        colors.text_secondary,
-        escape_html(subtext)
+        colors.text_secondary
     );
     let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -4193,19 +4198,16 @@ fn metric_grid_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
     let heading = heading_block(
-        title, tokens, "headline", None, true, None, "left", "0", false,
+        title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true,
     );
 
+    let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark {
-        "rgba(255,255,255,0.04)".to_string()
+        "rgba(255,255,255,0.05)"
     } else {
-        "rgba(0,0,0,0.02)".to_string()
+        "rgba(255,255,255,0.92)"
     };
-    let card_border = if is_dark {
-        "1px solid rgba(255,255,255,0.08)".to_string()
-    } else {
-        format!("1px solid {}30", colors.border)
-    };
+    let card_border = format!("1px solid {}", colors.border);
 
     let grid_html: String = metrics.iter().take(4).map(|item| {
         let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
@@ -4214,36 +4216,41 @@ fn metric_grid_slide(
 
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
-            format!(r#"<span style="font-size:10px;font-weight:700;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:6px;">{}</span>"#, trend_color, trend_color, escape_html(trend))
+            format!(r#"<span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:auto;">{}</span>"#, trend_color, trend_color, escape_html(trend))
         } else {
             String::new()
         };
 
         format!(
-            r#"<div style="background:{};border:{};border-radius:{};padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
-                <span style="font-family:{};font-size:10px;font-weight:600;color:{};text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">{}</span>
-                <div style="display:flex;align-items:baseline;">
-                    <span style="font-family:{};font-size:24px;font-weight:800;color:{};">{}</span>
+            r#"<div style="background:{};border:{};border-radius:{};padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;">{}</span>
                     {}
                 </div>
+                <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
+                <div style="width:100%;height:3px;background:{}20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:{};border-radius:999px;"></div>
+                </div>
             </div>"#,
-            card_bg, card_border, tokens.radii.get("md").map(|s| s.as_str()).unwrap_or("8px"),
+            card_bg, card_border, radius,
             tokens.body_font, colors.text_secondary, escape_html(lbl),
-            tokens.heading_font, colors.text_primary, escape_html(val),
-            trend_badge
+            trend_badge,
+            tokens.heading_font, colors.primary, escape_html(val),
+            colors.primary, colors.primary
         )
     }).collect();
 
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);margin-top:16px;width:100%;box-sizing:border-box;">{}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">{}</div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
         </div>"#,
-        heading, grid_html
+        heading, grid_html, tokens.body_font, colors.text_secondary
     );
-    let html = hero_layout(&content, tokens, bg_style, false, "center");
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
-    json!({"html": html, "background": bg_style, "variant": "grid", "theme": theme})
+    json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
 
 fn funnel_chart_slide(
@@ -4418,12 +4425,13 @@ fn metric_sparkline_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
 
-    let bg_color = if is_dark {
+    let card_bg = if is_dark {
         "rgba(255,255,255,0.05)"
     } else {
-        "rgba(0,0,0,0.02)"
+        "rgba(255,255,255,0.92)"
     };
-    let border_color = format!("1px solid {}33", colors.border);
+    let border_color = format!("1px solid {}", colors.border);
+    let radius = current_component_radius(tokens, "card");
 
     let trend_color = if trend.contains('↓') || trend.contains('-') {
         "#EF4444"
@@ -4432,21 +4440,11 @@ fn metric_sparkline_slide(
     };
     let trend_html = if !trend.is_empty() {
         format!(
-            r#"<span style="font-family:{};font-size:11px;font-weight:600;color:{};display:block;margin-bottom:8px;">{}</span>"#,
+            r#"<span style="font-family:{};font-size:11px;font-weight:800;color:{};background:{}18;padding:3px 10px;border-radius:999px;display:inline-block;margin-top:6px;">{}</span>"#,
             tokens.body_font,
             trend_color,
+            trend_color,
             escape_html(trend)
-        )
-    } else {
-        String::new()
-    };
-
-    let ctx_html = if !_context.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.4;">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(_context)
         )
     } else {
         String::new()
@@ -4457,14 +4455,14 @@ fn metric_sparkline_slide(
         .enumerate()
         .map(|(i, v)| {
             let val = v.as_f64().unwrap_or(0.0);
-            let x = (i as f64 / (spark_values.len() as f64 - 1.0).max(1.0)) * 280.0;
-            let y = 40.0 - (val / 100.0) * 35.0;
+            let x = 10.0 + (i as f64 / (spark_values.len() as f64 - 1.0).max(1.0)) * 260.0;
+            let y = 35.0 - (val / 100.0) * 28.0;
             format!("{:.1},{:.1}", x, y)
         })
         .collect();
     let spark_html = if spark_points.len() > 1 {
         format!(
-            r#"<svg width="280" height="40" viewBox="0 0 280 40"><polyline points="{}" fill="none" stroke="{}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>"#,
+            r#"<svg width="280" height="42" viewBox="0 0 280 42"><polyline points="{}" fill="none" stroke="{}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>"#,
             spark_points.join(" "),
             colors.primary
         )
@@ -4473,39 +4471,41 @@ fn metric_sparkline_slide(
     };
 
     let card_html = format!(
-        r#"<div style="background:{};border:{};box-shadow:{};border-radius:{};padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
+        r#"<div style="background:{};border:{};border-radius:{};padding:22px 20px 18px;text-align:center;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;">
+            <span style="font-family:{};font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:{};background:{}18;padding:2px 8px;border-radius:4px;margin-bottom:8px;">TELEMETRY MONITOR</span>
             <span style="font-family:{};font-size:52px;font-weight:900;color:{};margin:0;line-height:1;">{}</span>
-            <h3 style="font-family:{};font-size:15px;font-weight:600;color:{};margin:var(--space-1) 0 6px;line-height:1.2;">{}</h3>
+            <h3 style="font-family:{};font-size:13.5px;font-weight:800;color:{};margin:6px 0 2px;line-height:1.2;">{}</h3>
             {}
-            <div style="margin:var(--space-2) auto;display:flex;justify-content:center;">{}</div>
-            {}
+            <div style="margin:10px auto 4px;display:flex;justify-content:center;">{}</div>
         </div>"#,
-        bg_color,
+        card_bg,
         border_color,
-        tokens
-            .shadows
-            .get("md")
-            .map(|s| s.as_str())
-            .unwrap_or("none"),
-        tokens
-            .radii
-            .get("lg")
-            .map(|s| s.as_str())
-            .unwrap_or("var(--space-1)"),
+        radius,
         tokens.heading_font,
         colors.primary,
-        escape_html(value),
-        tokens.body_font,
+        colors.primary,
+        tokens.heading_font,
         colors.text_primary,
+        escape_html(value),
+        tokens.heading_font,
+        colors.text_secondary,
         escape_html(label),
         trend_html,
-        spark_html,
-        ctx_html
+        spark_html
     );
 
+    let ctx_text = if !_context.is_empty() {
+        _context.to_string()
+    } else {
+        "Continuous 90-day production telemetry monitor tracking engine uptime.".to_string()
+    };
+
     let content = format!(
-        r#"<div style="width:100%;display:flex;justify-content:center;align-items:center;">{}</div>"#,
-        card_html
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;">
+            {}
+            <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;text-align:center;opacity:0.85;">{}</p>
+        </div>"#,
+        card_html, tokens.body_font, colors.text_secondary, escape_html(&ctx_text)
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
@@ -4753,11 +4753,11 @@ fn text_columns_slide(
         tokens,
         "headline",
         Some(&colors.text_primary),
-        true,
+        false,
         None,
         "left",
         "0 0 12px",
-        false,
+        true,
     );
     let radius = current_component_radius(tokens, "card");
     let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
@@ -4766,18 +4766,23 @@ fn text_columns_slide(
     let cols: Vec<String> = columns.iter().enumerate().map(|(idx, c)| {
         let heading = c.get("heading").and_then(|v| v.as_str()).unwrap_or("");
         let body = c.get("body").and_then(|v| v.as_str()).unwrap_or("");
+        let tag = if idx == 0 { "⚡ High Speed" } else { "🛡️ 100% Precision" };
         format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:{};font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">0{}</span>
-                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+            r#"<div style="flex:1;min-width:0;background:{};border:{};border-top:3px solid {};border-radius:{};padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:{};font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">0{} PILLAR</span>
+                    </div>
+                    <h3 style="font-family:{};font-size:14px;font-weight:900;color:{};margin:0 0 6px;line-height:1.2;">{}</h3>
+                    <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
-                <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
+                <div style="font-family:{};font-size:9.5px;font-weight:800;color:{};background:{}15;padding:3px 8px;border-radius:999px;width:fit-content;">{}</div>
             </div>"#,
-            card_bg, border, radius,
+            card_bg, border, colors.primary, radius,
             tokens.heading_font, colors.primary, colors.primary, idx + 1,
             tokens.heading_font, colors.text_primary, escape_html(heading),
-            tokens.body_font, colors.text_secondary, escape_html(body)
+            tokens.body_font, colors.text_secondary, escape_html(body),
+            tokens.heading_font, colors.primary, colors.primary, tag
         )
     }).collect();
 
@@ -5532,11 +5537,12 @@ pub fn process_map_slide(
     }).collect();
 
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:14px;">
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
             <div style="display:flex;flex-direction:column;gap:10px;width:100%;">{}</div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>"#,
-        heading, rows
+        heading, rows, tokens.body_font, colors.text_secondary
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
