@@ -3115,10 +3115,12 @@ pub fn grid_cards_slide(
             let icon_html = crate::blocks::render_icon(ico, icon_color, 18);
             let badge_num = (i + 1).to_string();
             items_html.push_str(&format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:10px 8px;box-shadow:{};display:flex;flex-direction:column;min-width:0;position:relative;">
-                    <div style="position:absolute;top:-6px;left:-6px;width:20px;height:20px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:10px;font-weight:800;">{}</div>
-                    <div style="margin-bottom:4px;display:flex;align-items:center;">{}</div>
-                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 3px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:8px 10px;box-shadow:{};display:flex;flex-direction:column;min-width:0;box-sizing:border-box;">
+                    <div style="margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;width:100%;">
+                        <div style="display:flex;align-items:center;">{}</div>
+                        <div style="width:18px;height:18px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:9px;font-weight:800;flex-shrink:0;">{}</div>
+                    </div>
+                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 2px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                     {}
                 </div>"#,
                 card_bg,
@@ -3126,11 +3128,11 @@ pub fn grid_cards_slide(
                 card_blur,
                 radius_md,
                 shadow_sm,
+                icon_html,
                 colors.primary,
                 colors.button_text,
                 tokens.heading_font,
                 badge_num,
-                icon_html,
                 tokens.body_font,
                 colors.text_primary,
                 escape_html(t),

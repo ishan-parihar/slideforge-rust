@@ -565,7 +565,7 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
         Some(Commands::TestFullScope { output_dir }) => {
             run_full_scope_test(output_dir)?;
         }
-        Some(Commands::Mcp) | None => {
+        Some(Commands::Mcp) => {
             eprintln!("Starting SlideForge MCP server (stdio)...");
             mcp_server::run_server().await?;
         }
