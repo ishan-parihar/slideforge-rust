@@ -41,8 +41,8 @@ pub fn render_svg_line_chart(
 
     let pad_left = 40;
     let pad_right = 15;
-    let pad_top = 15;
-    let pad_bottom = 20;
+    let pad_top = 35;
+    let pad_bottom = 22;
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
 
@@ -328,13 +328,13 @@ pub fn render_svg_line_chart(
                 let rect_x = x_offset + si as f64 * entry_width;
                 let text_x = rect_x + 12.0;
                 legend_svg_parts.push_str(&format!(
-                    r#"<rect x="{:.1}" y="2" width="8" height="3" rx="1" fill="{}" /><text x="{:.1}" y="7" font-size="7px" fill="{}" font-family="sans-serif">{}</text>"#,
+                    r#"<rect x="{:.1}" y="10" width="10" height="4" rx="1" fill="{}" /><text x="{:.1}" y="15" font-size="9px" font-weight="700" fill="{}" font-family="sans-serif">{}</text>"#,
                     rect_x, col, text_x, colors.text_secondary, escape_html(name)
                 ));
             }
         }
         format!(
-            r#"<g transform="translate(0,4)">{}</g>"#,
+            r#"<g transform="translate(0,0)">{}</g>"#,
             legend_svg_parts
         )
     } else {
@@ -629,13 +629,14 @@ pub fn render_svg_radar_chart(
             lbl_x -= 2.0;
         }
 
+        let display_label = format!("{} ({:.0})", labels[i], values[i]);
         axis_svg.push_str(&format!(
-            r#"<text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="{}">{}</text>"#,
+            r#"<text x="{:.1}" y="{:.1}" font-size="10px" font-weight="700" fill="{}" text-anchor="{}">{}</text>"#,
             lbl_x,
             lbl_y + 3.0,
-            colors.text_secondary,
+            colors.text_primary,
             anchor,
-            escape_html(&labels[i])
+            escape_html(&display_label)
         ));
     }
 
@@ -648,8 +649,8 @@ pub fn render_svg_radar_chart(
         let vy = cy + val_r * angles[i].sin();
         data_pts.push(format!("{:.1},{:.1}", vx, vy));
         markers.push_str(&format!(
-            "<g><circle cx=\"{:.1}\" cy=\"{:.1}\" r=\"3\" fill=\"{}\" stroke=\"#ffffff\" stroke-width=\"1\" /><text x=\"{:.1}\" y=\"{:.1}\" font-size=\"7px\" fill=\"{}\" text-anchor=\"middle\" font-weight=\"600\">{:.0}</text></g>",
-            vx, vy, primary_color, vx, vy - 5.0, colors.text_primary, val
+            "<circle cx=\"{:.1}\" cy=\"{:.1}\" r=\"4\" fill=\"{}\" stroke=\"#ffffff\" stroke-width=\"1.5\" />",
+            vx, vy, primary_color
         ));
     }
 

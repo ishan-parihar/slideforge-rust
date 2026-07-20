@@ -1709,14 +1709,14 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 .captures_iter(slide_html)
                 .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
                 .sum();
-            if total_grid_text_len > 700 {
+            if total_grid_text_len > 650 {
                 issues.push(DesignIssue {
                     slide: slide_num,
                     r#type: "grid_cards_overflow_risk".to_string(),
-                    severity: "warning".to_string(),
+                    severity: "error".to_string(),
                     detail: format!("Grid container contains {} total characters of text.", total_grid_text_len),
-                    message: "High text mass inside card grid creates severe risk of vertical overflow.".to_string(),
-                    suggestion: "Use ultra-dense font scaling, compact/list-dense layout, or reduce text content per card.".to_string(),
+                    message: "Excessive text mass inside card grid creates unacceptable vertical overflow.".to_string(),
+                    suggestion: "Reduce card text content or use compact/list-dense layout variant to fit within card bounds.".to_string(),
                 });
             }
         }

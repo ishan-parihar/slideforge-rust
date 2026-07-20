@@ -2915,7 +2915,7 @@ pub fn grid_cards_slide(
         // ponytail: render full description — validator owns overflow (directive #1288/#1303).
         let desc_html = if !d.is_empty() {
             format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;flex:1;min-height:0;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">{}</p>"#,
                 tokens.body_font,
                 font_size_caption,
                 colors.text_secondary,
@@ -2932,9 +2932,9 @@ pub fn grid_cards_slide(
         let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
 
         format!(
-            r#"<div style="flex:1;min-width:0;min-height:0;overflow:hidden;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
+            r#"<div style="flex:1;min-width:0;min-height:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
                 <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 3px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;">{}</h3>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                 {}
             </div>"#,
             card_bg,
@@ -4094,27 +4094,30 @@ fn comparison_bars_slide(
         title, tokens, "headline", None, true, None, "left", "0", false,
     );
 
-    let left = comparison.get("left").cloned().unwrap_or(json!({}));
-    let right = comparison.get("right").cloned().unwrap_or(json!({}));
+    let (l_lbl, l_val, r_lbl, r_val) = if let (Some(ea), Some(va)) = (comparison.get("entity_a"), comparison.get("value_a")) {
+        let eb = comparison.get("entity_b").and_then(|v| v.as_str()).unwrap_or("Entity B").to_string();
+        let vb = comparison.get("value_b").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        (ea.as_str().unwrap_or("Entity A").to_string(), va.as_f64().unwrap_or(0.0), eb, vb)
+    } else {
+        let left = comparison.get("left").cloned().unwrap_or(json!({}));
+        let right = comparison.get("right").cloned().unwrap_or(json!({}));
+        let ll = left.get("label").and_then(|v| v.as_str()).unwrap_or("Entity A").to_string();
+        let lv = left.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let rl = right.get("label").and_then(|v| v.as_str()).unwrap_or("Entity B").to_string();
+        let rv = right.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        (ll, lv, rl, rv)
+    };
 
-    let l_val = left.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0);
-    let r_val = right.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0);
     let total = (l_val + r_val).max(1.0);
-
     let l_pct = (l_val / total) * 100.0;
     let r_pct = (r_val / total) * 100.0;
 
-    let l_color = left
-        .get("color")
-        .and_then(|v| v.as_str())
-        .unwrap_or(&colors.primary);
-    let r_color = right
-        .get("color")
-        .and_then(|v| v.as_str())
-        .unwrap_or(&colors.text_secondary);
+    let l_color = &colors.primary;
+    let r_color = &colors.text_secondary;
 
-    let l_unit = left.get("unit").and_then(|v| v.as_str()).unwrap_or("");
-    let r_unit = right.get("unit").and_then(|v| v.as_str()).unwrap_or("");
+    let default_unit = comparison.get("metric").and_then(|v| v.as_str()).unwrap_or("");
+    let l_unit = comparison.get("left").and_then(|l| l.get("unit")).and_then(|v| v.as_str()).unwrap_or(default_unit);
+    let r_unit = comparison.get("right").and_then(|r| r.get("unit")).and_then(|v| v.as_str()).unwrap_or(default_unit);
     let l_space = if l_unit.is_empty() || l_unit == "%" || l_unit.starts_with('°') {
         ""
     } else {
@@ -4143,8 +4146,8 @@ fn comparison_bars_slide(
         </div>"#,
         tokens.body_font,
         colors.text_primary,
-        escape_html(left.get("label").and_then(|v| v.as_str()).unwrap_or("")),
-        escape_html(right.get("label").and_then(|v| v.as_str()).unwrap_or("")),
+        escape_html(&l_lbl),
+        escape_html(&r_lbl),
         colors.border,
         l_pct,
         l_color,
@@ -4261,53 +4264,61 @@ fn funnel_chart_slide(
     let heading = heading_block(title, tokens, "title", None, true, None, "left", "0", false);
 
     let mut vals = Vec::new();
-    for item in steps.iter().take(3) {
-        let val_str = item.get("value").and_then(|v| v.as_str()).unwrap_or("0");
-        let clean = val_str
-            .replace("K", "000")
-            .replace("M", "000000")
-            .replace("$", "");
-        vals.push(clean.parse::<f64>().unwrap_or(1.0));
+    let max_items = steps.len().min(5);
+    for item in steps.iter().take(max_items) {
+        let v_num = item.get("value").and_then(|v| {
+            v.as_f64().or_else(|| {
+                v.as_str().and_then(|s| {
+                    s.replace(",", "").replace("K", "000").replace("M", "000000").replace("$", "").parse::<f64>().ok()
+                })
+            })
+        }).unwrap_or(0.0);
+        vals.push(v_num);
     }
-    let max_val = vals.iter().copied().fold(0.0, f64::max).max(1.0);
+    let top_val = vals.first().copied().unwrap_or(1.0).max(1.0);
 
-    let num_steps = steps.len().min(3);
-    let funnel_html: String = steps.iter().take(3).enumerate().map(|(i, item)| {
+    let num_steps = steps.len().min(5);
+    let funnel_html: String = steps.iter().take(5).enumerate().map(|(i, item)| {
         let lbl = item.get("label").or_else(|| item.get("title")).and_then(|v| v.as_str()).unwrap_or("");
-        let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-        let current_val = vals.get(i).copied().unwrap_or(1.0);
-        let width_pct = ((current_val / max_val) * 100.0).max(10.0) as u32;
-        let opacity_pct = 1.0 - (i as f64 * 0.20);
+        let current_val = vals.get(i).copied().unwrap_or(0.0);
+        let val_display = if let Some(s) = item.get("value").and_then(|v| v.as_str()) {
+            s.to_string()
+        } else if current_val >= 1000.0 {
+            format!("{:.0}", current_val)
+        } else {
+            format!("{:.0}", current_val)
+        };
+        let width_pct = ((current_val / top_val) * 100.0).max(22.0) as u32;
+        let opacity_pct = 1.0 - (i as f64 * 0.15);
 
         let arrow = if i < num_steps - 1 {
-            format!(r#"<div style="text-align:center;font-size:11px;color:{}99;margin-bottom:6px;font-weight:bold;">↓</div>"#, colors.primary)
+            format!(r#"<div style="text-align:center;font-size:10px;color:{}99;margin:2px 0;font-weight:bold;">↓</div>"#, colors.primary)
         } else {
             String::new()
         };
 
-        // For narrow bars (< 35%), render text outside the bar
-        if width_pct < 35 {
+        if width_pct < 40 {
             let text_color = &colors.text_primary;
             format!(
-                r#"<div style="position:relative;width:100%;margin:0 auto 6px;display:flex;align-items:center;gap:var(--space-1);">
+                r#"<div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
                     <span style="font-family:{};font-size:10px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">{}</span>
-                    <div style="width:{}%;background:{};opacity:{:.2};border-radius:4px;height:32px;min-width:8px;flex-shrink:0;"></div>
+                    <div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
                     <strong style="font-family:{};font-size:12px;color:{};flex:1;">{}</strong>
                 </div>{}"#,
                 tokens.body_font, text_color, escape_html(lbl),
                 width_pct, colors.primary, opacity_pct,
-                tokens.body_font, text_color, escape_html(val),
+                tokens.body_font, text_color, escape_html(&val_display),
                 arrow
             )
         } else {
             format!(
-                r#"<div style="width:{}%;background:{};opacity:{:.2};border-radius:4px;padding:8px 14px;box-sizing:border-box;margin:0 auto 6px;display:flex;justify-content:space-between;align-items:center;">
+                r#"<div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
                     <span style="font-family:{};font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">{}</span>
                     <strong style="font-family:{};font-size:12px;color:white;">{}</strong>
                 </div>{}"#,
                 width_pct, colors.primary, opacity_pct,
                 tokens.body_font, escape_html(lbl),
-                tokens.body_font, escape_html(val),
+                tokens.body_font, escape_html(&val_display),
                 arrow
             )
         }
@@ -4597,7 +4608,7 @@ fn column_chart_slide(
                     .collect();
 
                 let separator_html = if num_series > 1 && ci < num_categories - 1 {
-                    r#"<div style="position:absolute;right:-4px;top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.18);"></div>"#
+                    r#"<div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>"#
                 } else {
                     ""
                 };
