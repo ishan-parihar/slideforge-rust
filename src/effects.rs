@@ -78,6 +78,7 @@ pub fn mesh_gradient(variant: &str, custom_colors: Option<&[String]>) -> HashMap
     map
 }
 
+#[allow(dead_code)]
 pub fn decorative_grid(cell_size: i32, color: &str, opacity: f32) -> HashMap<String, String> {
     let mut map = HashMap::new();
     let op_hex = format!("{:02X}", (opacity * 255.0).round().clamp(0.0, 255.0) as u8);
@@ -98,6 +99,7 @@ pub fn decorative_grid(cell_size: i32, color: &str, opacity: f32) -> HashMap<Str
     map
 }
 
+#[allow(dead_code)]
 pub fn inner_shadow_card(
     tokens: &DesignTokens,
     bg_color: Option<&str>,

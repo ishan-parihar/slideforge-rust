@@ -2911,14 +2911,13 @@ pub fn grid_cards_slide(
             .get("description")
             .and_then(|v| v.as_str())
             .unwrap_or("");
+        // ponytail: render full description — validator owns overflow (directive #1288/#1303).
         let desc_html = if !d.is_empty() {
-            // Show full description — use line-clamp for visual overflow only
             format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:{};-webkit-box-orient:vertical;overflow:hidden;">{}</p>"#,
+                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
                 tokens.body_font,
                 font_size_caption,
                 colors.text_secondary,
-                if very_dense { 3 } else if dense { 4 } else { 6 },
                 escape_html(d)
             )
         } else {
@@ -2931,10 +2930,11 @@ pub fn grid_cards_slide(
             .unwrap_or(&colors.primary);
         let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
 
+        // ponytail: card wrapper must NOT silently clip — validator owns overflow (directive #1288/#1303).
         format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;max-height:260px;">
+            r#"<div style="flex:1;min-width:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
                 <div style="margin-bottom:6px;display:flex;align-items:center;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:{};-webkit-box-orient:vertical;overflow:hidden;">{}</h3>
+                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                 {}
             </div>"#,
             card_bg,
@@ -2947,7 +2947,6 @@ pub fn grid_cards_slide(
             tokens.body_font,
             font_size_title,
             colors.text_primary,
-            if very_dense { 1 } else { 2 },
             escape_html(t),
             desc_html
         )
@@ -3071,6 +3070,59 @@ pub fn grid_cards_slide(
         }
         format!(
             r#"<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:16px;width:100%;">{}</div>"#,
+            items_html
+        )
+    } else if effective_variant == "compact" {
+        // Compact variant: 6 items in 2x3 grid with numbered badges, tight spacing
+        let mut items_html = String::new();
+        for (i, card) in cards.iter().take(6).enumerate() {
+            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
+            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
+            let d = card
+                .get("description")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
+            let desc_html = if !d.is_empty() {
+                format!(
+                    r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
+                    tokens.body_font,
+                    colors.text_secondary,
+                    escape_html(d)
+                )
+            } else {
+                String::new()
+            };
+            let icon_color = card
+                .get("icon_color")
+                .and_then(|v| v.as_str())
+                .unwrap_or(&colors.primary);
+            let icon_html = crate::blocks::render_icon(ico, icon_color, 18);
+            let badge_num = (i + 1).to_string();
+            items_html.push_str(&format!(
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:10px 8px;box-shadow:{};display:flex;flex-direction:column;min-width:0;position:relative;">
+                    <div style="position:absolute;top:-6px;left:-6px;width:20px;height:20px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:10px;font-weight:800;">{}</div>
+                    <div style="margin-bottom:4px;display:flex;align-items:center;">{}</div>
+                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 3px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
+                    {}
+                </div>"#,
+                card_bg,
+                card_border,
+                card_blur,
+                radius_md,
+                shadow_sm,
+                colors.primary,
+                colors.button_text,
+                tokens.heading_font,
+                badge_num,
+                icon_html,
+                tokens.body_font,
+                colors.text_primary,
+                escape_html(t),
+                desc_html
+            ));
+        }
+        format!(
+            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;">{}</div>"#,
             items_html
         )
     } else {
@@ -4507,7 +4559,7 @@ fn column_chart_slide(
                         <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">
                             {}
                         </div>
-                        <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
+                        <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
                     </div>"#,
                     if num_series > 1 && ci < num_categories - 1 { "border-right:1px solid rgba(128,128,128,0.15);margin-right:-0.5px;" } else { "" },
                     gap_px,
@@ -4581,7 +4633,7 @@ fn column_chart_slide(
                     <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
                         <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
                     </div>
-                    <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">{}</span>
+                    <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
                 </div>"#,
                 tokens.body_font,
                 colors.text_primary,
@@ -4955,20 +5007,20 @@ pub fn myth_fact_slide(
         "debunk" => {
             // Myth is shown crossed out, fact appears below with explanation
         let myth_html = format!(
-            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-2);box-shadow:{};position:relative;max-height:{};overflow:hidden;flex-shrink:0;">
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
+            r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:var(--space-2);box-shadow:{};position:relative;flex-shrink:0;">
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.55;line-height:1.3;">{}</div>
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:3px 12px;border-radius:20px;">MYTH</div>
-                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, myth_max,
+                </div>"#,                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
                 tokens.heading_font, tokens.primary, tokens.primary,
             );
             let fact_html = format!(
-                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:{};overflow:hidden;flex-shrink:0;">
+                r#"<div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);flex-shrink:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.3;">{}</div>
                 </div>"#,
-                card_bg, tokens.primary, radius_md, dynamic_padding, fact_max,
+                card_bg, tokens.primary, radius_md, dynamic_padding,
                 tokens.heading_font, tokens.primary,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
@@ -4986,24 +5038,24 @@ pub fn myth_fact_slide(
             // split (default) — myth and fact side by side
             let myth_html = format!(
                 r#"<div style="flex:1;">
-                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};max-height:{};overflow:hidden;">
-        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
+                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>    <div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};">
+        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
     </div>
-</div>"#,
+    </div>"#,
                     tokens.heading_font, colors.text_secondary,
-                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg, myth_max,
+                    card_bg, card_border, card_blur, radius_md, dynamic_padding, shadow_lg,
                 tokens.body_font, dynamic_fs, colors.text_secondary, tokens.primary,
                 escape_html(myth),
             );
             let fact_html = format!(
                 r#"<div style="flex:1;min-height:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
-                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);max-height:{};overflow:hidden;">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden;">{}</div>
+                    <div style="background:{};border-left:3px solid {};border-radius:{};padding:{};box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, tokens.primary,
-                card_bg, tokens.primary, radius_md, dynamic_padding, fact_max,
+                card_bg, tokens.primary, radius_md, dynamic_padding,
                 tokens.body_font, dynamic_fs, colors.text_primary, escape_html(fact),
             );
             let explanation_html = if !explanation.is_empty() {

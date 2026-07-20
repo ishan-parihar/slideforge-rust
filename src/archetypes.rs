@@ -410,6 +410,7 @@ pub fn get_archetype(name: &str) -> Option<Archetype> {
 }
 
 /// Return all known archetype names.
+#[allow(dead_code)]
 pub fn list_archetypes() -> Vec<String> {
     build_archetypes().into_iter().map(|a| a.name).collect()
 }

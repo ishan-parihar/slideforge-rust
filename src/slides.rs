@@ -390,7 +390,7 @@ body {
             }
         }
 
-        let progress_class = if show_progress_slide {
+        let _progress_class = if show_progress_slide {
             " has-progress"
         } else {
             ""

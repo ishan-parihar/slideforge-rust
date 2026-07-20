@@ -45,7 +45,6 @@ pub fn is_dark_bg(bg_style: &str) -> bool {
 pub struct SlideColors {
     pub text_primary: String,
     pub text_secondary: String,
-    pub text_tertiary: String,
     pub primary: String,
     pub button_bg: String,
     pub button_text: String,
@@ -80,8 +79,7 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
         .unwrap_or_else(|_| base_primary.clone());
     let text_secondary = get_contrast_safe_color(base_secondary, &bg_stops, 5.0)
         .unwrap_or_else(|_| base_secondary.clone());
-    let text_tertiary = get_contrast_safe_color(base_secondary, &bg_stops, 4.5)
-        .unwrap_or_else(|_| base_secondary.clone());
+
     let primary =
         get_contrast_safe_color(&tokens.primary, &bg_stops, if is_dark { 5.5 } else { 4.5 })
             .unwrap_or_else(|_| tokens.primary.clone());
@@ -107,7 +105,6 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
     SlideColors {
         text_primary,
         text_secondary,
-        text_tertiary,
         primary,
         button_bg,
         button_text,
@@ -116,6 +113,7 @@ pub fn get_slide_colors(tokens: &DesignTokens, bg_style: &str, theme: &str) -> S
     }
 }
 
+#[allow(dead_code)]
 fn format_styles(map: &HashMap<String, String>) -> String {
     map.iter()
         .map(|(k, v)| format!("{}: {}", k, v))
@@ -357,6 +355,7 @@ pub fn split_layout(
     )
 }
 
+#[allow(dead_code)]
 pub fn grid_layout(
     items_html: &str,
     tokens: &DesignTokens,
@@ -379,6 +378,7 @@ pub fn grid_layout(
     )
 }
 
+#[allow(dead_code)]
 pub fn timeline_layout(
     content_html: &str,
     tokens: &DesignTokens,
@@ -406,6 +406,7 @@ pub fn timeline_layout(
     )
 }
 
+#[allow(dead_code)]
 pub fn cta_layout(
     content_html: &str,
     tokens: &DesignTokens,
@@ -419,6 +420,7 @@ pub fn cta_layout(
     slide_base(&content, tokens, bg_style, true, "80px 64px 80px", "center")
 }
 
+#[allow(dead_code)]
 pub fn bento_layout(
     content_html: &str,
     tokens: &DesignTokens,

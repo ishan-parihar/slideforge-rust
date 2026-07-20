@@ -400,6 +400,71 @@ SLIDES = [
             "variant": "checklist",
         },
     },
+    # ══════════════════════════════════════════════════════════════
+    # SECTION: Info-Dense Grid Cards (from info_dense_mockup.html)
+    # ══════════════════════════════════════════════════════════════
+    {
+        "slide_type": "section_divider",
+        "theme": "editorial",
+        "bg_style": "dark",
+        "archetype": "data_analyst",
+        "params": {
+            "kicker": "TASK 4",
+            "title": "Info-Dense Slides — Grid Card Variants",
+            "subtitle": "dense / compact / list-dense for information-rich content",
+        },
+    },
+    {
+        "slide_type": "grid_cards",
+        "theme": "editorial",
+        "bg_style": "light",
+        "archetype": "educator",
+        "params": {
+            "title": "Platform Capabilities",
+            "cards": [
+                {"title": "Real-Time Analytics", "icon": "📊", "description": "Live dashboards with predictive insights and custom KPI tracking across all business units."},
+                {"title": "Enterprise Security", "icon": "🔒", "description": "SOC 2 compliant with end-to-end encryption, MFA, and role-based access control."},
+                {"title": "Team Collaboration", "icon": "🤝", "description": "Shared workspaces with real-time editing, comments, and version history."},
+                {"title": "API Integration", "icon": "⚡", "description": "RESTful APIs with webhooks for seamless third-party app connectivity."},
+            ],
+            "variant": "dense",
+        },
+    },
+    {
+        "slide_type": "grid_cards",
+        "theme": "editorial",
+        "bg_style": "light",
+        "archetype": "educator",
+        "params": {
+            "title": "Implementation Checklist",
+            "cards": [
+                {"title": "Schema Design", "description": "Define data models and relationships"},
+                {"title": "API Layer", "description": "Build REST endpoints with auth"},
+                {"title": "Frontend UI", "description": "Create responsive dashboards"},
+                {"title": "Testing Suite", "description": "Unit, integration, and E2E tests"},
+                {"title": "Deploy Pipeline", "description": "CI/CD with staging environments"},
+                {"title": "Monitoring", "description": "Observability and alerting setup"},
+            ],
+            "variant": "compact",
+        },
+    },
+    {
+        "slide_type": "grid_cards",
+        "theme": "editorial",
+        "bg_style": "dark",
+        "archetype": "educator",
+        "params": {
+            "title": "Key Architecture Decisions",
+            "cards": [
+                {"title": "Event-Driven Architecture", "icon": "🔄", "description": "Decoupled microservices communicating through message queues for scalability."},
+                {"title": "Edge Computing", "icon": "🌐", "description": "Processing at the edge reduces latency to under 50ms for global users."},
+                {"title": "Data Mesh Pattern", "icon": "🔗", "description": "Domain-oriented data ownership with self-serve data infrastructure."},
+                {"title": "Zero Trust Security", "icon": "🛡️", "description": "Never trust, always verify — every request authenticated and authorized."},
+                {"title": 'Event Sourcing', "icon": "📝", "description": "Immutable event log enables complete audit trail and time-travel debugging."},
+            ],
+            "variant": "list-dense",
+        },
+    },
 ]
 
 

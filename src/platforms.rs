@@ -193,6 +193,7 @@ pub fn get_platform(name: &str) -> Option<PlatformSpec> {
 }
 
 /// Return all known platform names.
+#[allow(dead_code)]
 pub fn list_platforms() -> Vec<String> {
     build_platforms().into_iter().map(|p| p.name).collect()
 }

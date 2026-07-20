@@ -1,6 +1,7 @@
 #![recursion_limit = "512"]
 
 use clap::{Parser, Subcommand};
+#[allow(unused_imports)]
 use indexmap::IndexMap;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng, rngs::StdRng};

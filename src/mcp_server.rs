@@ -388,6 +388,7 @@ impl Server {
         }
     }
 
+    #[allow(dead_code)]
     fn get_tokens(&self) -> Result<design_system::DesignTokens, ErrorData> {
         let state = self.state.lock().unwrap();
         if state.primary_color.is_empty() {
@@ -809,6 +810,150 @@ impl Server {
         } else {
             None
         };
+
+        // Hardcoded char-limit validation for myth_fact was removed per #1288/#1289/#1291.
+        // Dynamic overflow validation below derives limits from layout geometry.
+
+        // Dynamic overflow validation for grid_cards: derive limits from layout geometry
+        if slide_type == "grid_cards" {
+            if let Some(cards) = params.get("cards").and_then(|v| v.as_array()) {
+                let variant = params.get("variant").and_then(|v| v.as_str()).unwrap_or("");
+                let is_dense = variant == "dense";
+
+                // Layout constants derived from components.rs grid_cards_slide:
+                // Slide body: 525px - 80px top - 80px bottom = 365px
+                // Heading takes ~50px, so ~315px for grid content.
+                // Dense grid fixed height: 290px. 2x2 → each card 145px.
+                // Default (non-dense): flexible, but cards still constrained by grid.
+                let slide_body_h: f32 = 365.0;
+                let heading_h: f32 = 50.0;
+                let grid_h = if is_dense { 290.0 } else { slide_body_h - heading_h - 20.0 }; // 20px margin-top
+                let rows = if cards.len() <= 2 { 1 } else { 2 };
+                let card_h = grid_h / rows as f32;
+
+                // Card internal geometry:
+                // Padding: 10px top + 10px bottom (dense variant)
+                let card_pad_v: f32 = if is_dense { 20.0 } else { 32.0 };
+                // Icon area: ~24px (18px icon + 4px margin-bottom)
+                let icon_h: f32 = if is_dense { 24.0 } else { 28.0 };
+                // Title: font_size * line_height + margin
+                let title_fs: f32 = if is_dense { 13.0 } else { 16.0 };
+                let title_h = title_fs * 1.2 + 6.0; // line-height:1.2 + margin-bottom
+
+                let desc_area_h = card_h - card_pad_v - icon_h - title_h;
+
+                // Font size for description text
+                let desc_fs: f32 = if is_dense { 10.0 } else { 13.0 };
+                let line_h = 1.3;
+                let line_height_px = desc_fs * line_h;
+                let max_lines = (desc_area_h / line_height_px).floor() as usize;
+
+                // Card width for chars-per-line estimation:
+                // Slide width: 420px, padding: 24px each side → 372px content
+                // 2-col grid with 14px gap → (372 - 14) / 2 = 179px
+                let card_w: f32 = 179.0;
+                // Average char width ≈ 0.5 * font_size for body text
+                let avg_char_w = desc_fs * 0.5;
+                let chars_per_line = (card_w / avg_char_w).floor() as usize;
+                let max_desc_chars = max_lines * chars_per_line;
+
+                // Title: max 1 line in dense, 2 in default
+                let title_max_lines = if is_dense { 1 } else { 2 };
+                let title_chars_per_line = (card_w / (title_fs * 0.5)).floor() as usize;
+                let max_title_chars = title_max_lines * title_chars_per_line;
+
+                let mut errors: Vec<String> = Vec::new();
+                for (i, card) in cards.iter().enumerate() {
+                    let title = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
+                    let desc = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
+                    if title.len() > max_title_chars {
+                        errors.push(format!(
+                            "card[{}].title is {} chars (max ~{}): text will overflow card boundary",
+                            i, title.len(), max_title_chars
+                        ));
+                    }
+                    if desc.len() > max_desc_chars {
+                        errors.push(format!(
+                            "card[{}].description is {} chars (max ~{}): text will overflow card boundary",
+                            i, desc.len(), max_desc_chars
+                        ));
+                    }
+                }
+                if !errors.is_empty() {
+                    let error_msg = serde_json::json!({
+                        "error": "content_overflow",
+                        "errors": errors,
+                        "limits": {
+                            "title_max_chars": max_title_chars,
+                            "description_max_chars": max_desc_chars,
+                            "card_height_px": card_h.round(),
+                            "available_desc_height_px": desc_area_h.round(),
+                            "max_lines": max_lines,
+                            "variant": if is_dense { "dense" } else { "default" }
+                        },
+                        "hint": "Card content exceeds slide capacity. Limits are derived from the slide layout geometry (525px composition, card dimensions, font sizes). Content that exceeds limits is blocked, not truncated."
+                    });
+                    return Ok(Json(RawJson(serde_json::json!({
+                        "content": [{"type": "text", "text": error_msg.to_string()}],
+                        "isError": true
+                    }))));
+                }
+            }
+        }
+
+        // Dynamic overflow validation for myth_fact: derive limits from layout geometry
+        if slide_type == "myth_fact" {
+            let myth = params.get("myth").and_then(|v| v.as_str()).unwrap_or("");
+            let fact = params.get("fact").and_then(|v| v.as_str()).unwrap_or("");
+            let explanation = params.get("explanation").and_then(|v| v.as_str()).unwrap_or("");
+
+            // Layout: 525px slide, 80px top/bottom padding → 365px body
+            // Heading: ~50px. Available: ~315px for myth + fact + explanation.
+            // Each card has: label (14px) + text + padding (~20px each card)
+            // Text font size is dynamic based on text length, but we estimate conservatively.
+            let available_h: f32 = 290.0; // ~315px - some margin
+            let card_pad: f32 = 20.0;
+            let label_h: f32 = 18.0; // 14px font + 4px margin
+            let explanation_h: f32 = if !explanation.is_empty() { 36.0 } else { 0.0 };
+
+            // Available for myth + fact text
+            let text_area = available_h - explanation_h - (2.0 * (card_pad + label_h));
+
+            // Estimate text height: assume ~14px font, 1.3 line-height, 420px - 48px padding = 372px width
+            // Avg char width at 14px ≈ 7px → chars/line ≈ 53
+            let card_w: f32 = 372.0;
+            let font_size: f32 = 14.0;
+            let line_h = 1.3;
+            let avg_char_w = font_size * 0.5;
+            let chars_per_line = (card_w / avg_char_w).floor() as usize;
+            let line_height_px = font_size * line_h;
+
+            // Max chars for myth + fact combined
+            let myth_lines = (myth.len() as f32 / chars_per_line as f32).ceil() as f32;
+            let fact_lines = (fact.len() as f32 / chars_per_line as f32).ceil() as f32;
+            let total_text_h = (myth_lines + fact_lines) * line_height_px;
+
+            if total_text_h > text_area {
+                let max_chars_total = ((text_area / line_height_px) * chars_per_line as f32) as usize;
+                let error_msg = serde_json::json!({
+                    "error": "content_overflow",
+                    "errors": [format!(
+                        "Myth ({} chars) + Fact ({} chars) combined text height ({:.0}px) exceeds available space ({:.0}px)",
+                        myth.len(), fact.len(), total_text_h, text_area
+                    )],
+                    "limits": {
+                        "max_combined_chars": max_chars_total,
+                        "available_text_height_px": text_area.round(),
+                        "estimated_text_height_px": total_text_h.round()
+                    },
+                    "hint": "Myth + Fact text exceeds slide capacity. Shorten one or both. Content that exceeds limits is blocked, not truncated."
+                });
+                return Ok(Json(RawJson(serde_json::json!({
+                    "content": [{"type": "text", "text": error_msg.to_string()}],
+                    "isError": true
+                }))));
+            }
+        }
 
         let result = components::dispatch_slide(
             &slide_type,
@@ -1455,7 +1600,6 @@ impl ServerHandler for Server {
     fn get_info(&self) -> ServerInfo {
         ServerInfo::new(
             rmcp::model::ServerCapabilities::builder()
-                .enable_logging()
                 .build(),
         )
     }

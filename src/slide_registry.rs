@@ -157,7 +157,7 @@ pub fn get_registry() -> Value {
             "description": "Grid of cards each with icon, title, and description",
             "required_params": ["title", "cards"],
             "optional_params": ["columns", "card_style", "icon_color", "show_cta", "variant"],
-            "variants": ["2-col", "3-col", "4-col", "masonry", "minimal"],
+            "variants": ["2-col", "3-col", "4-col", "masonry", "minimal", "dense", "compact", "list-dense"],
             "default_variant": "3-col",
             "layout_family": "feature",
             "best_for": ["features", "use-cases", "categories", "team"]
@@ -220,8 +220,8 @@ pub fn get_registry() -> Value {
             "description": "Myth versus fact educational contrast slide",
             "required_params": ["myth", "fact"],
             "optional_params": ["explanation", "variant"],
-            "variants": ["split", "debunk"],
-            "default_variant": "split",
+            "variants": ["debunk"],
+            "default_variant": "debunk",
             "layout_family": "educational",
             "best_for": ["education", "thought-leadership"]
         },

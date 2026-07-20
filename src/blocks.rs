@@ -298,6 +298,7 @@ pub fn icon_block(
     )
 }
 
+#[allow(dead_code)]
 pub fn stat_block(
     value: &str,
     tokens: &DesignTokens,
@@ -316,6 +317,7 @@ pub fn stat_block(
     )
 }
 
+#[allow(dead_code)]
 pub fn quote_block(
     text: &str,
     tokens: &DesignTokens,
@@ -422,6 +424,7 @@ pub fn button_block(
     )
 }
 
+#[allow(dead_code)]
 pub fn divider_block(tokens: &DesignTokens, width: &str, height: &str, margin: &str) -> String {
     format!(
         r#"<div style="width: {}; height: {}; background: {}; border-radius: 2px; margin: {};"></div>"#,
@@ -494,6 +497,7 @@ pub fn attribution_block(
 }
 
 /// Returns a bullet marker span (e.g. ✦ or a number).
+#[allow(dead_code)]
 pub fn dot_marker(index: Option<usize>, color: &str) -> String {
     match index {
         Some(n) => format!(
@@ -508,6 +512,7 @@ pub fn dot_marker(index: Option<usize>, color: &str) -> String {
     }
 }
 
+#[allow(dead_code)]
 pub fn list_item_block(
     label: &str,
     sub: &str,

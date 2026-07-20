@@ -475,7 +475,7 @@ pub fn derive_palette_with_canvas(
     secondary_hex: Option<&str>,
     tertiary_hex: Option<&str>,
     canvas_width: u32,
-    canvas_height: u32,
+    _canvas_height: u32,
 ) -> Result<DesignTokens, String> {
     let primary = parse_hex(primary_hex)?;
     let mut primary_str = to_hex(&primary);

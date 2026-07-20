@@ -308,7 +308,6 @@ pub fn render_svg_line_chart(
         // Build a horizontal row of colored rectangles + labels using SVG primitives
         // for maximum renderer compatibility (no foreignObject).
         let mut legend_svg_parts = String::new();
-        let mut x_offset = width as f64 / 2.0; // start centred
         // Rough estimate: each entry ≈ 60px wide
         let entry_width = 60.0;
         let num_entries = data
@@ -317,7 +316,7 @@ pub fn render_svg_line_chart(
             .map(|arr| arr.len())
             .unwrap_or(0);
         let total_width = num_entries as f64 * entry_width;
-        x_offset = (width as f64 - total_width) / 2.0;
+        let x_offset = (width as f64 - total_width) / 2.0;
 
         if let Some(first_series) = data
             .first()
@@ -681,7 +680,6 @@ mod tests {
         SlideColors {
             text_primary: "#1A1A2E".to_string(),
             text_secondary: "#6B7280".to_string(),
-            text_tertiary: "#9CA3AF".to_string(),
             primary: "#767CFF".to_string(),
             button_bg: "#767CFF".to_string(),
             button_text: "#FFFFFF".to_string(),
