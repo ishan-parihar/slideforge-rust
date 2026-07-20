@@ -800,6 +800,27 @@ mod tests {
     }
 
     #[test]
+    fn test_validate_design_flags_grid_cards_overflow_risk() {
+        let html = format!(
+            r#"<div class="slide bg-light">
+                <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;width:100%;margin-top:16px;">
+                    <div style="padding:24px;"><h3>Card 1</h3><p>{}</p></div>
+                    <div style="padding:24px;"><h3>Card 2</h3><p>{}</p></div>
+                    <div style="padding:24px;"><h3>Card 3</h3><p>{}</p></div>
+                    <div style="padding:24px;"><h3>Card 4</h3><p>{}</p></div>
+                </div>
+            </div>"#,
+            "a".repeat(250), "b".repeat(250), "c".repeat(250), "d".repeat(250)
+        );
+        let report = validate_design(&html);
+        assert!(
+            report.issues.iter().any(|i| i.r#type == "grid_cards_overflow_risk"),
+            "should flag grid cards overflow risk when total text mass in grid exceeds threshold"
+        );
+    }
+
+
+    #[test]
     fn test_qr_destination_requires_url_and_cta() {
         let params = json!({"heading": "Read the full guide"});
         let r = validate_slide_spec("qr_destination", &params);
@@ -1681,6 +1702,23 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 message: "Bottom image captions can visually collide with adjacent captions or obscure the image.".to_string(),
                 suggestion: "Move image labels to a top chip, outside the frame, or reserve explicit caption space below the frame.".to_string(),
             });
+        }
+
+        if slide_html.contains("grid-template-columns") || slide_html.contains("display:grid") {
+            let total_grid_text_len: usize = text_tag_re
+                .captures_iter(slide_html)
+                .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
+                .sum();
+            if total_grid_text_len > 700 {
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "grid_cards_overflow_risk".to_string(),
+                    severity: "warning".to_string(),
+                    detail: format!("Grid container contains {} total characters of text.", total_grid_text_len),
+                    message: "High text mass inside card grid creates severe risk of vertical overflow.".to_string(),
+                    suggestion: "Use ultra-dense font scaling, compact/list-dense layout, or reduce text content per card.".to_string(),
+                });
+            }
         }
 
         for cap in styled_text_re.captures_iter(slide_html) {
