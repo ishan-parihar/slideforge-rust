@@ -1281,6 +1281,21 @@ pub fn list_slide(
         .cloned()
         .unwrap_or_else(|| "none".to_string());
 
+    let total_chars: usize = items.iter().map(|item| {
+        if item.is_string() {
+            item.as_str().unwrap_or("").len()
+        } else {
+            let l = item.get("label").or_else(|| item.get("title")).and_then(|v| v.as_str()).unwrap_or("").len();
+            let s = item.get("sub").or_else(|| item.get("description")).and_then(|v| v.as_str()).unwrap_or("").len();
+            l + s
+        }
+    }).sum();
+
+    let is_dense = items.len() >= 5 || total_chars > 220;
+    let label_fs = if is_dense { 12 } else { body_fs };
+    let sub_fs = if is_dense { 10 } else { caption_fs };
+    let item_margin = if is_dense { "6px" } else { "12px" };
+
     let effective_variant = variant;
 
     let content = match effective_variant {
@@ -1305,7 +1320,7 @@ pub fn list_slide(
                 };
                 let marker = if numbered {
                     format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:var(--text-sm);">{}</span>"#,
+                        r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;">{}</span>"#,
                         tokens.primary,
                         i + 1
                     )
@@ -1314,8 +1329,8 @@ pub fn list_slide(
                 };
                 let sub_html = if !sub.is_empty() {
                     format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:4px;">{}</div>"#,
-                        caption_fs,
+                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
+                        sub_fs,
                         colors.text_secondary,
                         escape_html(sub)
                     )
@@ -1323,19 +1338,19 @@ pub fn list_slide(
                     String::new()
                 };
                 rows.push_str(&format!(
-                    r#"<div style="background:{};border:{};{}border-radius:{};padding:var(--space-2) 16px;margin-bottom:10px;box-shadow:{};">
-                        <div style="display:flex;align-items:flex-start;">{}<div>
-                            <div style="font-family:{};font-size:{}px;font-weight:500;color:{};">{}</div>
+                    r#"<div style="background:{};border:{};{}border-radius:{};padding:8px 12px;margin-bottom:{};box-shadow:{};">
+                        <div style="display:flex;align-items:flex-start;gap:8px;">{}<div style="flex:1;min-width:0;">
+                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
                             {}
                         </div></div>
                     </div>"#,
-                    card_bg, card_border, card_blur, radius_md, shadow_sm,
+                    card_bg, card_border, card_blur, radius_md, item_margin, shadow_sm,
                     marker,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(label),
+                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
                     sub_html
                 ));
             }
-            format!("{}<div style=\"margin-top:16px;\">{}</div>", heading, rows)
+            format!("{}<div style=\"margin-top:12px;\">{}</div>", heading, rows)
         }
         "grid" => {
             let mut rows = String::new();
@@ -1358,7 +1373,7 @@ pub fn list_slide(
                 };
                 let marker = if numbered {
                     format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:6px;font-size:var(--text-sm);">{}</span>"#,
+                        r#"<span style="color:{};font-weight:700;margin-right:6px;font-size:12px;flex-shrink:0;">{}</span>"#,
                         tokens.primary,
                         i + 1
                     )
@@ -1367,8 +1382,8 @@ pub fn list_slide(
                 };
                 let sub_html = if !sub.is_empty() {
                     format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:2px;">{}</div>"#,
-                        caption_fs,
+                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
+                        sub_fs,
                         colors.text_secondary,
                         escape_html(sub)
                     )
@@ -1376,19 +1391,19 @@ pub fn list_slide(
                     String::new()
                 };
                 rows.push_str(&format!(
-                    r#"<div style="width:calc(50% - 8px);margin-bottom:10px;">
-                        <div style="display:flex;align-items:flex-start;">{}<div>
-                            <div style="font-family:{};font-size:{}px;font-weight:500;color:{};">{}</div>
+                    r#"<div style="width:calc(50% - 6px);margin-bottom:8px;">
+                        <div style="display:flex;align-items:flex-start;gap:6px;">{}<div style="flex:1;min-width:0;">
+                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
                             {}
                         </div></div>
                     </div>"#,
                     marker,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(label),
+                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
                     sub_html
                 ));
             }
             format!(
-                r#"{}<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:16px;">{}</div>"#,
+                r#"{}<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">{}</div>"#,
                 heading, rows
             )
         }
@@ -1415,7 +1430,7 @@ pub fn list_slide(
                 };
                 let marker = if is_numbered {
                     format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:12px;font-size:var(--text-sm);">{}</span>"#,
+                        r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">{}</span>"#,
                         tokens.primary,
                         i + 1
                     )
@@ -1426,14 +1441,14 @@ pub fn list_slide(
                         "▪"
                     };
                     format!(
-                        r#"<span style="color:{};margin-right:12px;font-size:12px;line-height:1.5;">{}</span>"#,
+                        r#"<span style="color:{};margin-right:8px;font-size:11px;line-height:1.3;flex-shrink:0;">{}</span>"#,
                         tokens.primary, bullet_char
                     )
                 };
                 let sub_html = if !sub.is_empty() {
                     format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:4px;">{}</div>"#,
-                        caption_fs,
+                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
+                        sub_fs,
                         colors.text_secondary,
                         escape_html(sub)
                     )
@@ -1441,19 +1456,20 @@ pub fn list_slide(
                     String::new()
                 };
                 rows.push_str(&format!(
-                    r#"<div style="display:flex;align-items:flex-start;margin-bottom:12px;">
+                    r#"<div style="display:flex;align-items:flex-start;margin-bottom:{};gap:4px;">
                         {}
-                        <div>
-                            <div style="font-family:{};font-size:{}px;font-weight:500;color:{};">{}</div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
                             {}
                         </div>
                     </div>"#,
+                    item_margin,
                     marker,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(label),
+                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
                     sub_html
                 ));
             }
-            format!("{}<div style=\"margin-top:16px;\">{}</div>", heading, rows)
+            format!("{}<div style=\"margin-top:12px;\">{}</div>", heading, rows)
         }
     };
 
@@ -1727,6 +1743,10 @@ pub fn cta_slide(
             "right" => "right",
             _ => "center",
         };
+        let badge_tag = format!(
+            r#"<div style="font-family:{};font-size:10px;font-weight:800;color:{};background:{}18;border:1px solid {}40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">⚡ PRESENTATION ENGINE</div>"#,
+            tokens.body_font, colors.primary, colors.primary, colors.primary
+        );
         let headline_html = heading_block(
             headline,
             tokens,
@@ -1735,8 +1755,16 @@ pub fn cta_slide(
             true,
             Some((gradient_colors.0, gradient_colors.1)),
             align,
-            "0 0 12px",
+            "0 0 16px",
             true,
+        );
+        let btn = button_block(
+            button_text,
+            button_url,
+            Some(tokens),
+            Some(&colors.button_bg),
+            Some(&colors.button_text),
+            "0",
         );
         let sub_html = if !subtext.is_empty() {
             text_block(
@@ -1753,17 +1781,13 @@ pub fn cta_slide(
         } else {
             String::new()
         };
-        let btn = button_block(
-            button_text,
-            button_url,
-            Some(tokens),
-            Some(&colors.button_bg),
-            Some(&colors.button_text),
-            "0",
+        let url_tag = format!(
+            r#"<div style="font-family:{};font-size:11px;font-weight:600;color:{};margin-top:14px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div>"#,
+            tokens.body_font, colors.text_secondary
         );
         let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}</div>"#,
-            align, headline_html, btn, sub_html
+            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
+            align, badge_tag, headline_html, btn, sub_html, url_tag
         );
         hero_layout(&content, tokens, bg_style, true, "center")
     };
@@ -3082,10 +3106,46 @@ pub fn grid_cards_slide(
                 .and_then(|v| v.as_str())
                 .unwrap_or("");
             let desc_html = if !d.is_empty() {
-            items_html.push_str(&render_single_card(card, pad, ico, t_fs, c_fs));
+                format!(
+                    r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
+                    tokens.body_font,
+                    colors.text_secondary,
+                    escape_html(d)
+                )
+            } else {
+                String::new()
+            };
+            let icon_color = card
+                .get("icon_color")
+                .and_then(|v| v.as_str())
+                .unwrap_or(&colors.primary);
+            let icon_html = crate::blocks::render_icon(ico, icon_color, 18);
+            let badge_num = (i + 1).to_string();
+            items_html.push_str(&format!(
+                r#"<div style="background:{};border:{};{}border-radius:{};padding:10px 8px;box-shadow:{};display:flex;flex-direction:column;min-width:0;position:relative;">
+                    <div style="position:absolute;top:-6px;left:-6px;width:20px;height:20px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:10px;font-weight:800;">{}</div>
+                    <div style="margin-bottom:4px;display:flex;align-items:center;">{}</div>
+                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 3px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
+                    {}
+                </div>"#,
+                card_bg,
+                card_border,
+                card_blur,
+                radius_md,
+                shadow_sm,
+                colors.primary,
+                colors.button_text,
+                tokens.heading_font,
+                badge_num,
+                icon_html,
+                tokens.body_font,
+                colors.text_primary,
+                escape_html(t),
+                desc_html
+            ));
         }
         format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;width:100%;margin-top:14px;">{}</div>"#,
+            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;">{}</div>"#,
             items_html
         )
     } else if effective_variant == "list-dense" || effective_variant == "list" {
@@ -3181,9 +3241,19 @@ pub fn grid_cards_slide(
                 .get("icon_color")
                 .and_then(|v| v.as_str())
                 .unwrap_or(&colors.primary);
+
+            let icon_html1 = crate::blocks::render_icon(ico1, icon_color1, 32);
+            let icon_html2 = crate::blocks::render_icon(ico2, icon_color2, 32);
+
+            format!(
+                r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);width:100%;margin-top:24px;">
+                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};display:flex;flex-direction:column;align-items:flex-start;">
+                        <div style="margin-bottom:var(--space-1);">{}</div>
+                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
+                        {}
                     </div>
-                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) 20px;box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;min-width:0;">
-                        <div style="margin-bottom:16px;display:flex;align-items:center;">{}</div>
+                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};display:flex;flex-direction:column;align-items:flex-start;">
+                        <div style="margin-bottom:var(--space-1);">{}</div>
                         <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
                         {}
                     </div>
@@ -3927,6 +3997,7 @@ fn radar_chart_slide(
     tokens: &DesignTokens,
     data: Vec<Value>,
     title: &str,
+    description: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -3934,12 +4005,20 @@ fn radar_chart_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "title", None, true, None, "left", "0 0 16px", false,
+        title, tokens, "title", None, true, None, "left", "0 0 10px", false,
     );
-    let svg = render_svg_radar_chart(&data, 320, 240, &colors);
+    let svg = render_svg_radar_chart(&data, 320, 210, &colors);
+    let desc_html = if !description.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:11px;color:{};margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:240px;margin:12px auto 0;">{}</div></div>"#,
-        title_html, svg
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;">{}</div>{}</div>"#,
+        title_html, svg, desc_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -4878,23 +4957,35 @@ pub fn problem_solution_slide(
     } else {
         "rgba(255,255,255,0.92)"
     };
-    let points = render_compact_items(
-        tokens,
-        &colors,
-        &proof_points,
-        &["title", "label"],
-        &["description", "body"],
-    );
-    // Adaptive grid: 1 item → single column (avoids empty right column);
-    // 2 items → 1fr 1fr; 3-4 items → 1fr 1fr (wraps to 2 rows).
-    let proof_count = proof_points.len().min(4);
-    let proof_grid_cols = if proof_count <= 1 { "1fr" } else { "1fr 1fr" };
     let proof_grid_html = if proof_points.is_empty() {
         String::new()
     } else {
+        let items_html: String = proof_points
+            .iter()
+            .take(4)
+            .map(|item| {
+                let t = simple_text(item, &["title", "label"]);
+                let d = simple_text(item, &["description", "body"]);
+                let icon = item.get("icon").and_then(|v| v.as_str()).unwrap_or("✦");
+                format!(
+                    r#"<div style="flex:1;min-width:0;display:flex;align-items:flex-start;gap:8px;">
+                        <span style="color:{};font-size:13px;line-height:1.2;flex-shrink:0;">{}</span>
+                        <div style="min-width:0;">
+                            <div style="font-family:{};font-size:11px;font-weight:700;color:{};line-height:1.2;">{}</div>
+                            <div style="font-family:{};font-size:10px;color:{};margin-top:2px;line-height:1.3;">{}</div>
+                        </div>
+                    </div>"#,
+                    colors.primary, icon,
+                    tokens.heading_font, colors.text_primary, escape_html(&t),
+                    tokens.body_font, colors.text_secondary, escape_html(&d)
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("");
+
         format!(
-            r#"<div style="display:grid;grid-template-columns:{};gap:10px;">{}</div>"#,
-            proof_grid_cols, points
+            r#"<div style="background:{};border:1px solid {};border-radius:{};padding:12px 16px;display:flex;gap:16px;width:100%;box-sizing:border-box;">{}</div>"#,
+            card_bg, colors.border, radius, items_html
         )
     };
     let content = format!(
@@ -5979,6 +6070,7 @@ pub fn dispatch_slide(
                 tokens,
                 data,
                 &s("title"),
+                &s("description").if_empty(&s("caption")),
                 bg_style,
                 theme,
                 &bg_img,
