@@ -6867,56 +6867,26 @@ pub fn image_quote_slide(
 
     let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, is_dark);
 
-    let glass_card_style = if is_dark {
-        format!(
-            "background:rgba(0,0,0,0.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.18);border-radius:var(--radius-lg);padding:24px 24px;box-shadow:0 12px 36px rgba(0,0,0,0.35);max-width:360px;width:100%;box-sizing:border-box;"
-        )
-    } else {
-        format!(
-            "background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-lg);padding:24px 24px;box-shadow:0 12px 36px rgba(0,0,0,0.15);max-width:360px;width:100%;box-sizing:border-box;"
-        )
-    };
-
-    let text_color = if is_dark { "white" } else { "#111827" };
-    let sec_color = if is_dark { "rgba(255,255,255,0.75)" } else { "#4B5563" };
-
-    let quote_style = format!(
-        "font-family:{};font-size:19px;font-style:italic;font-weight:600;color:{};margin:0 0 14px;line-height:1.42;",
-        tokens.heading_font, text_color
-    );
-    let author_style = format!(
-        "font-family:{};font-size:12px;font-weight:800;color:{};margin:0;text-transform:uppercase;letter-spacing:0.06em;",
-        tokens.body_font, colors.primary
-    );
-    let role_style = format!(
-        "font-family:{};font-size:11px;color:{};margin:2px 0 0;",
-        tokens.body_font, sec_color
-    );
-
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
-            <div style="position:absolute;inset:0;padding:60px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:3;">
-                <div style="{}">
-                    <div style="font-size:32px;color:{};line-height:1;margin-bottom:6px;font-weight:bold;">“</div>
-                    <p style="{}">{}</p>
-                    {}
-                    {}
-                </div>
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
+                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
+                <p style="font-family:{};font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">{}</p>
+                {}
+                {}
             </div>
         </div>"#,
         img_html,
-        glass_card_style,
-        colors.primary,
-        quote_style,
+        tokens.heading_font,
         escape_html(quote),
         if !author.is_empty() {
-            format!(r#"<p style="{}">{}</p>"#, author_style, escape_html(author))
+            format!(r#"<p style="font-family:{};font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">{}</p>"#, tokens.body_font, escape_html(author))
         } else {
             String::new()
         },
         if !role.is_empty() {
-            format!(r#"<p style="{}">{}</p>"#, role_style, escape_html(role))
+            format!(r#"<p style="font-family:{};font-size:11px;color:rgba(255,255,255,0.88);margin:4px 0 0;text-shadow:0 2px 6px rgba(0,0,0,0.65);">{}</p>"#, tokens.body_font, escape_html(role))
         } else {
             String::new()
         }
@@ -6955,24 +6925,24 @@ pub fn image_callout_slide(
         tokens,
         &treatment,
         "100%",
-        "220px",
+        "240px",
         "Annotated Diagram",
         is_dark,
     );
 
     let mut markers = String::new();
     for (idx, c) in callouts.iter().enumerate() {
-        let x = c.get("x").and_then(|v| v.as_f64()).unwrap_or(50.0);
-        let y = c.get("y").and_then(|v| v.as_f64()).unwrap_or(50.0);
-        let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
-        markers.push_str(&format!(
-            r#"<div style="position:absolute;left:{:.1}%;top:{:.1}%;transform:translate(-50%,-50%);z-index:4;">
-                <div style="width:26px;height:26px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;box-shadow:0 0 0 3px rgba(255,255,255,0.4), 0 4px 14px rgba(0,0,0,0.3);backdrop-filter:blur(4px);cursor:pointer;" title="{}">
-                    {}
-                </div>
-            </div>"#,
-            x, y, colors.primary, tokens.body_font, escape_html(lbl), idx + 1
-        ));
+        if let (Some(x), Some(y)) = (c.get("x").and_then(|v| v.as_f64()), c.get("y").and_then(|v| v.as_f64())) {
+            let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
+            markers.push_str(&format!(
+                r#"<div style="position:absolute;left:{:.1}%;top:{:.1}%;transform:translate(-50%,-50%);z-index:4;">
+                    <div style="width:26px;height:26px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;box-shadow:0 0 0 3px rgba(255,255,255,0.4), 0 4px 14px rgba(0,0,0,0.3);backdrop-filter:blur(4px);cursor:pointer;" title="{}">
+                        {}
+                    </div>
+                </div>"#,
+                x, y, colors.primary, tokens.body_font, escape_html(lbl), idx + 1
+            ));
+        }
     }
 
     let desc_html = if !description.is_empty() {
@@ -6983,47 +6953,39 @@ pub fn image_callout_slide(
 
     let mut list_html = String::new();
     if !callouts.is_empty() {
-        let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-        let border = format!("1px solid {}", colors.border);
-        let radius = current_component_radius(tokens, "card");
         let mut items = String::new();
-        for (idx, c) in callouts.iter().enumerate() {
+        for c in &callouts {
             let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
             let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("");
-            items.push_str(&format!(
-                r#"<div style="background:{};border:{};border-radius:{};padding:8px 12px;display:flex;gap:10px;align-items:center;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:{};color:white;font-family:{};font-size:10px;font-weight:800;flex-shrink:0;">{}</span>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-family:{};font-size:12px;font-weight:800;color:{};margin:0;">{}</div>
-                        {}
-                    </div>
-                </div>"#,
-                card_bg, border, radius,
-                colors.primary, tokens.body_font, idx + 1,
-                tokens.heading_font, colors.text_primary, escape_html(lbl),
-                if !d.is_empty() {
-                    format!(r#"<p style="font-family:{};font-size:10.5px;color:{};margin:2px 0 0;line-height:1.35;">{}</p>"#, tokens.body_font, colors.text_secondary, escape_html(d))
-                } else {
-                    String::new()
-                }
-            ));
+            if !lbl.is_empty() {
+                items.push_str(&format!(
+                    r#"<div style="font-family:{};font-size:12px;color:{};line-height:1.45;">
+                        <strong style="color:{};font-weight:700;">{}</strong>{}
+                    </div>"#,
+                    tokens.body_font, colors.text_secondary,
+                    colors.text_primary, escape_html(lbl),
+                    if !d.is_empty() { format!(" — {}", escape_html(d)) } else { String::new() }
+                ));
+            }
         }
-        list_html = format!(
-            r#"<div style="margin-top:20px;display:flex;flex-direction:column;text-align:left;">{}</div>"#,
-            items
-        );
+        if !items.is_empty() {
+            list_html = format!(
+                r#"<div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;">{}</div>"#,
+                items
+            );
+        }
     }
 
     let content = format!(
-        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="position:relative;width:100%;height:240px;">
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
+            {}
+            <div style="position:relative;width:100%;height:240px;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid {}30;">
                 {}
                 {}
             </div>
             {}
-            {}
         </div>"#,
-        img_html, markers, desc_html, list_html
+        desc_html, colors.border, img_html, markers, list_html
     );
 
     let padding_val = if padding.is_empty() {
