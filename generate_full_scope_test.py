@@ -237,7 +237,12 @@ SLIDES = [
     {"slide_type": "image_stat", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"stat_value": "100%", "stat_label": "Native Rust Compilation", "image_url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600", "description": "High throughput slide rendering engine"}},
     {"slide_type": "image_gallery", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"title": "Multi-Image Showcase", "images": ["https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300", "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300"], "section_caption": "Architectural Benefits - High-density multi-image gallery showcasing compilation output assets."}},
+     "params": {"title": "Multi-Image Showcase", "images": [
+         {"url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300", "caption": "AST Parser"},
+         {"url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300", "caption": "Token Engine"},
+         {"url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300", "caption": "HTML Synthesizer"},
+         {"url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=300", "caption": "PNG Exporter"}
+     ], "section_caption": "Architectural Benefits - High-density multi-image gallery showcasing compilation output assets."}},
     {"slide_type": "image_comparison", "theme": "editorial", "bg_style": "dark", "archetype": "educator",
      "params": {"title": "Native Rust Renderer Core", "before_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300", "after_image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300", "before_label": "BEFORE", "after_label": "AFTER", "description": "Side-by-side photographic comparison of baseline renderer vs native Rust compilation engine."}},]
 

@@ -5460,7 +5460,7 @@ pub fn faq_slide(
         format!(
             r#"<div style="background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q0{}</span>
+                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q{}</span>
                     <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
                 </div>
                 <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.4;">{}</p>
@@ -7264,135 +7264,137 @@ pub fn image_gallery_slide(
 
     let has_header = !title.is_empty();
     let has_footer = !section_caption.is_empty();
-    let any_captions = images.iter().any(|img| {
-        img.get("caption")
-            .and_then(|v| v.as_str())
-            .map(|s| !s.is_empty())
-            .unwrap_or(false)
-    });
 
-    let grid_height = if layout == "3-grid" && any_captions {
-        if has_header || has_footer {
-            "132px"
+    let eff_layout = if layout.is_empty() || layout == "auto" || layout == "2-grid" {
+        if img_cards.len() >= 4 {
+            "4-grid"
+        } else if img_cards.len() == 3 {
+            "3-grid"
         } else {
-            "185px"
+            "2-grid"
         }
     } else {
-        if has_header || has_footer {
-            "172px"
-        } else {
-            "240px"
-        }
+        layout
     };
 
-    let grid_html = if layout == "3-grid" {
-        let mut three_cards = Vec::new();
-        for img in images.iter().take(3) {
-            let url = img.get("url").and_then(|v| v.as_str()).unwrap_or("");
-            let cap = img.get("caption").and_then(|v| v.as_str()).unwrap_or("");
-            let img_html =
-                render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
-            let inner_cap = if !cap.is_empty() {
-                format!(
-                    r#"<div style="padding:5px 0 0;font-family:{};font-size:10px;font-weight:700;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
-                    tokens.body_font,
-                    colors.text_secondary,
-                    escape_html(cap)
-                )
-            } else {
-                String::new()
-            };
-            three_cards.push(format!(
-                r#"<div style="display:flex;flex-direction:column;width:100%;">
-                    <div style="position:relative;width:100%;height:{};border-radius:{};overflow:hidden;box-shadow:{};flex-shrink:0;">
+    let grid_height = match eff_layout {
+        "4-grid" | "6-grid" => if has_header || has_footer { "190px" } else { "230px" },
+        "3-grid" => if has_header || has_footer { "175px" } else { "220px" },
+        _ => if has_header || has_footer { "210px" } else { "250px" },
+    };
+
+    let grid_html = match eff_layout {
+        "3-grid" => {
+            let mut three_cards = Vec::new();
+            for img in images.iter().take(3) {
+                let url = img.get("url").and_then(|v| v.as_str()).unwrap_or("");
+                let cap = img.get("caption").and_then(|v| v.as_str()).unwrap_or("");
+                let img_html =
+                    render_themed_image(url, tokens, &inner_treatment, "100%", "100%", cap, is_dark);
+                let inner_cap = if !cap.is_empty() {
+                    format!(
+                        r#"<div style="padding:4px 0 0;font-family:{};font-size:9.5px;font-weight:700;color:{};letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{}</div>"#,
+                        tokens.body_font,
+                        colors.text_secondary,
+                        escape_html(cap)
+                    )
+                } else {
+                    String::new()
+                };
+                three_cards.push(format!(
+                    r#"<div style="display:flex;flex-direction:column;width:100%;">
+                        <div style="position:relative;width:100%;height:{};border-radius:{};overflow:hidden;box-shadow:{};flex-shrink:0;">
+                            {}
+                        </div>
+                        {}
+                    </div>"#,
+                    grid_height, radius_md, shadow_sm, img_html, inner_cap
+                ));
+            }
+            format!(
+                r#"<div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px;width:100%;">{}</div>"#,
+                three_cards.join(" ")
+            )
+        }
+        "4-grid" => {
+            format!(
+                r#"<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px;height:{};width:100%;">
+                    {}
+                </div>"#,
+                grid_height,
+                img_cards
+                    .iter()
+                    .take(4)
+                    .cloned()
+                    .collect::<Vec<String>>()
+                    .join("")
+            )
+        }
+        "6-grid" => {
+            format!(
+                r#"<div style="display:grid;grid-template-columns:repeat(3, 1fr);grid-template-rows:1fr 1fr;gap:6px;height:{};width:100%;">
+                    {}
+                </div>"#,
+                grid_height,
+                img_cards
+                    .iter()
+                    .take(6)
+                    .cloned()
+                    .collect::<Vec<String>>()
+                    .join("")
+            )
+        }
+        "featured-1-2" if img_cards.len() >= 3 => {
+            format!(
+                r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:6px;height:{};width:100%;">
+                    {}
+                    <div style="display:grid;grid-template-rows:1fr 1fr;gap:6px;height:100%;">
+                        {}
+                        {}
+                    </div>
+                </div>"#,
+                grid_height, img_cards[0], img_cards[1], img_cards[2]
+            )
+        }
+        "featured-2-1" if img_cards.len() >= 3 => {
+            format!(
+                r#"<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:6px;height:{};width:100%;">
+                    <div style="display:grid;grid-template-rows:1fr 1fr;gap:6px;height:100%;">
+                        {}
                         {}
                     </div>
                     {}
                 </div>"#,
-                grid_height, radius_md, shadow_sm, img_html, inner_cap
-            ));
+                grid_height, img_cards[0], img_cards[1], img_cards[2]
+            )
         }
-        format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:10px;width:100%;">{}</div>"#,
-            three_cards.join(" ")
-        )
-    } else if layout == "4-grid" {
-        format!(
-            r#"<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--space-1);height:{};width:100%;">
-                {}
-            </div>"#,
-            grid_height,
-            img_cards
-                .iter()
-                .take(4)
-                .cloned()
-                .collect::<Vec<String>>()
-                .join("")
-        )
-    } else if layout == "featured-1-2" && img_cards.len() >= 3 {
-        format!(
-            r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-1);height:{};width:100%;">
-                {}
-                <div style="display:grid;grid-template-rows:1fr 1fr;gap:var(--space-1);height:100%;">
+        _ => {
+            // 2-grid
+            format!(
+                r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;height:{};width:100%;">
                     {}
-                    {}
-                </div>
-            </div>"#,
-            grid_height, img_cards[0], img_cards[1], img_cards[2]
-        )
-    } else if layout == "featured-2-1" && img_cards.len() >= 3 {
-        format!(
-            r#"<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:var(--space-1);height:{};width:100%;">
-                <div style="display:grid;grid-template-rows:1fr 1fr;gap:var(--space-1);height:100%;">
-                    {}
-                    {}
-                </div>
-                {}
-            </div>"#,
-            grid_height, img_cards[0], img_cards[1], img_cards[2]
-        )
-    } else {
-        // 2-grid
-        format!(
-            r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);height:{};width:100%;">
-                {}
-            </div>"#,
-            grid_height,
-            img_cards
-                .iter()
-                .take(2)
-                .cloned()
-                .collect::<Vec<String>>()
-                .join("")
-        )
+                </div>"#,
+                grid_height,
+                img_cards
+                    .iter()
+                    .take(2)
+                    .cloned()
+                    .collect::<Vec<String>>()
+                    .join("")
+            )
+        }
     };
 
     let title_html = if !title.is_empty() {
-        format!(
-            r#"<div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:10px;letter-spacing:-0.01em;line-height:1.1;">{}</div>"#,
-            tokens.heading_font,
-            tokens
-                .type_scale
-                .get("title")
-                .map(|t| t.font_size)
-                .unwrap_or(24)
-                .min(22),
-            colors.text_primary,
-            escape_html(title)
-        )
+        heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 10px", true)
     } else {
         String::new()
     };
 
     let caption_html = if !section_caption.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:8px;line-height:1.25;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:11.5px;color:{};margin-top:10px;line-height:1.35;width:100%;opacity:0.9;">{}</div>"#,
             tokens.body_font,
-            tokens
-                .type_scale
-                .get("caption")
-                .map(|t| t.font_size)
-                .unwrap_or(12),
             colors.text_secondary,
             escape_html(section_caption)
         )
@@ -7419,7 +7421,7 @@ pub fn image_gallery_slide(
     json!({
         "html": html,
         "background": bg_style,
-        "variant": layout,
+        "variant": eff_layout,
         "theme": theme,
         "archetype": archetype
     })
