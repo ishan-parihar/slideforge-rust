@@ -77,6 +77,15 @@ SLIDES = [
          {"icon": "🧪", "title": "Empirical Experiments", "description": "Randomized controlled trials"},
          {"icon": "📈", "title": "Bayesian Modeling", "description": "Multi-variable regression model"},
          {"icon": "✅", "title": "Peer Review Audit", "description": "Independent double-blind verification"}]}},
+    {"slide_type": "grid_cards", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
+     "variant": "compact",
+     "params": {"title": "System Architecture Modules", "cards": [
+         {"icon": "⚙️", "title": "Core Compiler", "description": "Rust-based HTML AST renderer"},
+         {"icon": "🎨", "title": "Token Engine", "description": "Dynamic palette & typography system"},
+         {"icon": "📏", "title": "Layout Guard", "description": "Strict 420x525 aspect boundary"},
+         {"icon": "📈", "title": "Dataviz Engine", "description": "Native SVG path & bar generator"},
+         {"icon": "📤", "title": "Export Pipeline", "description": "Headless PNG & PDF rasterizer"},
+         {"icon": "🔌", "title": "MCP Server", "description": "Model Context Protocol interface"}]}},
 
     # ═══ SECTION: Grid Cards Overflow Stress ═══
     {"section": "SECTION 3 — Grid Cards Overflow Stress"},
@@ -200,6 +209,11 @@ print(f"Step 3: Rendering carousel with {len(compiled_slides)} slides...")
 cmd_carousel = [
     BIN, "render-carousel", SLIDES_FILE,
     "--tokens-file", TOKENS_FILE,
+    "--brand-name", "SLIDEFORGE",
+    "--brand-handle", "@slideforge",
+    "--topic", "SYSTEM AUDIT",
+    "--url", "slideforge.dev",
+    "--hashtags", "rust,slides",
     "--output", CAROUSEL_PATH
 ]
 run_cmd(cmd_carousel, "carousel")
