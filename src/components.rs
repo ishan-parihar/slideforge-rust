@@ -4008,11 +4008,11 @@ fn radar_chart_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "heading", None, true, None, "left", "0", false,
+        title, tokens, "title", None, true, None, "left", "0 0 20px", false,
     );
-    let svg = render_svg_radar_chart(&data, 320, 280, &colors);
+    let svg = render_svg_radar_chart(&data, 320, 260, &colors);
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:280px;margin:0 auto;">{}</div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:260px;margin:16px auto 0;">{}</div></div>"#,
         title_html, svg
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
@@ -4132,16 +4132,16 @@ fn comparison_bars_slide(
     let bar_html = format!(
         r#"<div style="width:100%;margin-top:28px;">
             <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:{};font-size:11px;color:{};font-weight:600;">
-                <span>{}</span>
-                <span>{}</span>
+                <span style="text-align:left;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
+                <span style="text-align:right;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
             </div>
             <div style="width:100%;height:16px;background:{}30;border-radius:8px;overflow:hidden;display:flex;">
                 <div style="width:{:.1}%;height:100%;background:{};border-radius:8px 0 0 8px;"></div>
                 <div style="width:{:.1}%;height:100%;background:{};border-radius:0 8px 8px 0;"></div>
             </div>
             <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:{};font-size:24px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
-                <span style="color:{};">{:.0}{}{}</span>
-                <span style="color:{};">{:.0}{}{}</span>
+                <span style="color:{};text-align:left;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{:.0}{}{}</span>
+                <span style="color:{};text-align:right;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{:.0}{}{}</span>
             </div>
         </div>"#,
         tokens.body_font,
@@ -4288,7 +4288,7 @@ fn funnel_chart_slide(
         } else {
             format!("{:.0}", current_val)
         };
-        let width_pct = ((current_val / top_val) * 100.0).max(22.0) as u32;
+        let width_pct = (15.0 + (current_val / top_val) * 85.0).clamp(15.0, 100.0) as u32;
         let opacity_pct = 1.0 - (i as f64 * 0.15);
 
         let arrow = if i < num_steps - 1 {
@@ -5615,6 +5615,19 @@ pub fn qr_destination_slide(
         qr_elements.join("\n")
     );
 
+    let url_badge_html = if !short_url.is_empty() {
+        format!(
+            r#"<div style="margin-top:8px;font-family:{};font-size:10px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 {}</div>"#,
+            tokens.body_font,
+            colors.text_secondary,
+            if is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.04)" },
+            colors.border,
+            escape_html(short_url)
+        )
+    } else {
+        String::new()
+    };
+
     let cta_html = if !cta_text.is_empty() {
         format!(
             r#"<div style="margin-top:var(--space-2);background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:var(--space-2) var(--space-2);border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;overflow-wrap:break-word;">{}</div>"#,
@@ -5684,11 +5697,11 @@ pub fn qr_destination_slide(
         };
         let stack_order = if effective_variant == "stacked-badge" {
             format!(
-                r#"{heading_html}{incentive_html}<div style="display:flex;flex-direction:column;align-items:center;">{brand_html}{qr_html}{cta_html}</div>{caption_html}"#
+                r#"{heading_html}{incentive_html}<div style="display:flex;flex-direction:column;align-items:center;">{brand_html}{qr_html}{url_badge_html}{cta_html}</div>{caption_html}"#
             )
         } else {
             format!(
-                r#"{brand_html}{heading_html}{caption_html}<div style="display:flex;flex-direction:column;align-items:center;">{qr_html}{cta_html}</div>{incentive_html}"#
+                r#"{brand_html}{heading_html}{caption_html}<div style="display:flex;flex-direction:column;align-items:center;">{qr_html}{url_badge_html}{cta_html}</div>{incentive_html}"#
             )
         };
         let content = format!(
@@ -5769,8 +5782,9 @@ pub fn qr_destination_slide(
                 {}
                 {}
                 {}
+                {}
             </div>"#,
-            brand_html, qr_html, cta_html
+            brand_html, qr_html, url_badge_html, cta_html
         );
 
         let grid_cols = if effective_variant == "split-card" {

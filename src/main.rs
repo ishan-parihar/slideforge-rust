@@ -53,6 +53,16 @@ fn axi_error(msg: &str, hint: Option<&str>) -> ! {
     std::process::exit(2);
 }
 
+/// Get home directory path via stdlib, falling back to None.
+fn dirs_or_fallback() -> Option<String> {
+    std::env::var("HOME").ok().or_else(|| {
+        #[cfg(windows)]
+        { std::env::var("USERPROFILE").ok() }
+        #[cfg(not(windows))]
+        { None }
+    })
+}
+
 #[derive(Subcommand)]
 enum Commands {
     /// Download Chromium to ~/.slideforge/chromium/ for offline/CI installs
@@ -265,21 +275,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Downloading Chromium to ~/.slideforge/chromium/...");
             match export::download_chromium() {
                 Ok(path) => {
-                    println!("✓ Chromium downloaded successfully!");
-                    println!("  Binary: {}", path.display());
-                    println!("  Location: ~/.slideforge/chromium/");
-                    println!();
-                    println!("Chromium will now auto-resolve on cold-start.");
-                    println!("To skip auto-download, set CHROME_PATH to your system Chrome.");
+                    let response = serde_json::json!({
+                        "status": "success",
+                        "binary": path.display().to_string(),
+                        "message": "Chromium downloaded. Will auto-resolve on cold-start.",
+                        "hint": "Set CHROME_PATH to skip auto-download."
+                    });
+                    println!("{}", serde_json::to_string_pretty(&response).unwrap_or_default());
                 }
                 Err(e) => {
-                    eprintln!("✗ Failed to download Chromium: {}", e);
-                    eprintln!();
-                    eprintln!("Manual install options:");
-                    eprintln!("  Ubuntu/Debian: sudo apt install chromium-browser");
-                    eprintln!("  macOS:         brew install --cask chromium");
-                    eprintln!("  Windows:       https://www.chromium.org/getting-involved/download-chromium/");
-                    std::process::exit(1);
+                    axi_error(
+                        &format!("Failed to download Chromium: {}", e),
+                        Some("Manual: sudo apt install chromium-browser | brew install --cask chromium"),
+                    );
                 }
             }
         }
@@ -541,11 +549,10 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
                     println!("{}", serde_json::to_string_pretty(&response)?);
                 }
                 Err(e) => {
-                    eprintln!(
-                        "Chrome render failed: {}. Ensure Chrome/Chromium is installed.",
-                        e
+                    axi_error(
+                        &format!("Chrome render failed: {}", e),
+                        Some("Ensure Chrome/Chromium is installed. Run `slideforge setup` to download."),
                     );
-                    std::process::exit(1);
                 }
             }
         }
@@ -954,8 +961,10 @@ fn cli_embed_image(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
 
     let p = Path::new(file_path);
     if !p.exists() {
-        eprintln!("File not found: {}", file_path);
-        std::process::exit(1);
+        axi_error(
+            &format!("File not found: {}", file_path),
+            None,
+        );
     }
 
     let ext = p
@@ -970,11 +979,10 @@ fn cli_embed_image(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         "webp" => "image/webp",
         "svg" => "image/svg+xml",
         _ => {
-            eprintln!(
-                "Unsupported image extension '{}'. Supported: png, jpg/jpeg, gif, webp, svg.",
-                ext
+            axi_error(
+                &format!("Unsupported image extension '{}'", ext),
+                Some("Supported: png, jpg/jpeg, gif, webp, svg"),
             );
-            std::process::exit(1);
         }
     };
 

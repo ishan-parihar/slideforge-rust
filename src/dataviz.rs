@@ -322,15 +322,25 @@ pub fn render_svg_line_chart(
             .first()
             .and_then(|item| item.get("series")?.as_array())
         {
+            let mut widths = Vec::new();
+            for sv in first_series {
+                let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
+                let w = (name.len() as f64 * 6.2 + 22.0).max(45.0);
+                widths.push(w);
+            }
+            let total_width: f64 = widths.iter().sum();
+            let mut cur_x = (width as f64 - total_width) / 2.0;
+
             for (si, sv) in first_series.iter().enumerate() {
                 let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
                 let col = series_palette[si % series_palette.len()];
-                let rect_x = x_offset + si as f64 * entry_width;
+                let rect_x = cur_x;
                 let text_x = rect_x + 12.0;
                 legend_svg_parts.push_str(&format!(
-                    r#"<rect x="{:.1}" y="10" width="10" height="4" rx="1" fill="{}" /><text x="{:.1}" y="15" font-size="9px" font-weight="700" fill="{}" font-family="sans-serif">{}</text>"#,
+                    r#"<rect x="{:.1}" y="10" width="9" height="4" rx="1" fill="{}" /><text x="{:.1}" y="14.5" font-size="9px" font-weight="700" fill="{}" font-family="sans-serif">{}</text>"#,
                     rect_x, col, text_x, colors.text_secondary, escape_html(name)
                 ));
+                cur_x += widths[si];
             }
         }
         format!(
