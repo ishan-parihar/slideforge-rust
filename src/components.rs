@@ -3169,15 +3169,20 @@ pub fn grid_cards_slide(
         if cards.len() >= 4 {
             // Default for 4+ cards: 2x2 grid with density-aware font scaling
             let mut items_html = String::new();
-            let t_fs4 = if ultra_dense { 12 } else if very_dense { 13 } else if dense { 14 } else { 15 };
-            let c_fs4 = if ultra_dense { 10 } else if very_dense { 10.5 as i32 } else if dense { 11 } else { 12 };
-            let pad4 = if ultra_dense { "10px 10px" } else if very_dense { "12px 10px" } else { "14px 12px" };
-            let ico4 = if ultra_dense { 16 } else if very_dense { 18 } else { 20 };
+            let (t_fs4, c_fs4, pad4, ico4) = if max_desc_len > 120 || total_chars > 450 {
+                (10, 8, "4px 6px", 12)
+            } else if max_desc_len > 80 || total_chars > 300 {
+                (11, 8, "5px 7px", 14)
+            } else if max_desc_len > 50 || total_chars > 200 {
+                (11, 9, "6px 8px", 15)
+            } else {
+                (12, 10, "8px 10px", 16)
+            };
             for card in cards.iter().take(4) {
                 items_html.push_str(&render_single_card(card, pad4, ico4, t_fs4, c_fs4));
             }
             format!(
-                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;width:100%;flex:1;min-height:0;overflow:hidden;margin-top:14px;">{}</div>"#,
+                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;flex:1;min-height:0;margin-top:8px;">{}</div>"#,
                 items_html
             )
         } else if cards.len() == 3 {
@@ -4008,11 +4013,11 @@ fn radar_chart_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let title_html = heading_block(
-        title, tokens, "title", None, true, None, "left", "0 0 20px", false,
+        title, tokens, "title", None, true, None, "left", "0 0 16px", false,
     );
-    let svg = render_svg_radar_chart(&data, 320, 260, &colors);
+    let svg = render_svg_radar_chart(&data, 320, 240, &colors);
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:260px;margin:16px auto 0;">{}</div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:240px;margin:12px auto 0;">{}</div></div>"#,
         title_html, svg
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
@@ -4129,8 +4134,12 @@ fn comparison_bars_slide(
         " "
     };
 
+    let l_val_str = format!("{:.0}{}{}", l_val, l_space, escape_html(l_unit));
+    let r_val_str = format!("{:.0}{}{}", r_val, r_space, escape_html(r_unit));
+
     let lbl_fs = if l_lbl.len().max(r_lbl.len()) > 20 { 9 } else if l_lbl.len().max(r_lbl.len()) > 12 { 10 } else { 11 };
-    let val_fs = if l_val.abs() >= 1000.0 || r_val.abs() >= 1000.0 { 20 } else { 24 };
+    let max_val_len = l_val_str.len().max(r_val_str.len());
+    let val_fs = if max_val_len > 12 { 15 } else if max_val_len > 8 { 18 } else if max_val_len > 5 { 20 } else { 24 };
 
     let metric_name = comparison.get("metric").and_then(|v| v.as_str()).unwrap_or("");
     let metric_tag = if !metric_name.is_empty() {
@@ -4154,8 +4163,8 @@ fn comparison_bars_slide(
                 <div style="width:{:.1}%;height:100%;background:{};border-radius:0 8px 8px 0;"></div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:{};font-size:{}px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
-                <span style="color:{};text-align:left;">{:.0}{}{}</span>
-                <span style="color:{};text-align:right;">{:.0}{}{}</span>
+                <span style="color:{};text-align:left;white-space:nowrap;flex-shrink:0;">{}</span>
+                <span style="color:{};text-align:right;white-space:nowrap;flex-shrink:0;">{}</span>
             </div>
         </div>"#,
         metric_tag,
@@ -4172,13 +4181,9 @@ fn comparison_bars_slide(
         tokens.heading_font,
         val_fs,
         l_color,
-        l_val,
-        l_space,
-        escape_html(l_unit),
+        l_val_str,
         r_color,
-        r_val,
-        r_space,
-        escape_html(r_unit)
+        r_val_str
     );
 
 
@@ -5626,11 +5631,8 @@ pub fn qr_destination_slide(
 
     let url_badge_html = if !short_url.is_empty() {
         format!(
-            r#"<div style="margin-top:8px;font-family:{};font-size:10px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 {}</div>"#,
+            r#"<div style="margin-top:8px;font-family:{};font-size:10px;font-weight:700;color:#1F2937;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.1);border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 {}</div>"#,
             tokens.body_font,
-            colors.text_secondary,
-            if is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.04)" },
-            colors.border,
             escape_html(short_url)
         )
     } else {
@@ -5650,7 +5652,7 @@ pub fn qr_destination_slide(
     };
 
     let qr_card_html = format!(
-        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 16px 36px rgba(0,0,0,0.18);box-sizing:border-box;margin:12px auto;">
+        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 16px 36px rgba(0,0,0,0.18);box-sizing:border-box;margin:10px auto;">
             <img src="{}" alt="{}" style="width:160px;height:160px;display:block;" />
             {}
         </div>"#,
@@ -5665,7 +5667,7 @@ pub fn qr_destination_slide(
 
     let heading_html = if include_heading && !heading.is_empty() {
         format!(
-            r#"<h2 style="font-family:{};font-size:22px;font-weight:900;color:{};margin:0 0 6px;line-height:1.2;text-align:center;letter-spacing:-0.01em;">{}</h2>"#,
+            r#"<h2 style="font-family:{};font-size:22px;font-weight:900;color:{};margin:0 0 4px;line-height:1.2;text-align:center;letter-spacing:-0.01em;">{}</h2>"#,
             tokens.heading_font,
             colors.text_primary,
             escape_html(heading)
@@ -5676,7 +5678,7 @@ pub fn qr_destination_slide(
 
     let caption_html = if include_caption && !caption.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:12px;line-height:1.45;color:{};margin:0 0 12px;text-align:center;max-width:320px;">{}</p>"#,
+            r#"<p style="font-family:{};font-size:11px;line-height:1.4;color:{};margin:8px 0 0;text-align:center;max-width:320px;opacity:0.85;">{}</p>"#,
             tokens.body_font,
             colors.text_secondary,
             escape_html(caption)
@@ -5687,7 +5689,7 @@ pub fn qr_destination_slide(
 
     let incentive_html = if include_incentive && !incentive_text.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:20px;padding:4px 14px;text-align:center;margin-top:10px;">🎁 {}</div>"#,
+            r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:20px;padding:4px 14px;text-align:center;margin-top:8px;">🎁 {}</div>"#,
             tokens.body_font,
             colors.text_primary,
             if is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.035)" },
@@ -5709,9 +5711,9 @@ pub fn qr_destination_slide(
         </div>"#,
         brand_html,
         heading_html,
-        caption_html,
         qr_card_html,
         cta_html,
+        caption_html,
         incentive_html
     );
 

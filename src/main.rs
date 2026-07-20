@@ -35,11 +35,13 @@ struct Cli {
 
 /// Truncate a string to `max` chars and append a size hint when truncated.
 fn truncate_str(s: &str, max: usize) -> String {
-    if s.len() <= max {
+    let char_count = s.chars().count();
+    if char_count <= max {
         s.to_string()
     } else {
+        let truncated: String = s.chars().take(max).collect();
         format!("{}...
-  ... (truncated, {} chars total)", &s[..max], s.len())
+  ... (truncated, {} chars total)", truncated, char_count)
     }
 }
 
