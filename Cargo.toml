@@ -21,3 +21,4 @@ rand = "0.8"
 uuid = { version = "1.17", features = ["v4"] }
 qrcode = "0.14"
 
+toon-helper = { path = "../toon-helper" }
