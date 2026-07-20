@@ -1,5 +1,8 @@
 #![recursion_limit = "512"]
 
+// Re-export truncate_str from shared toon-helper crate
+use toon_helper::truncate_str;
+
 use clap::{Parser, Subcommand};
 #[allow(unused_imports)]
 use indexmap::IndexMap;
@@ -33,17 +36,7 @@ struct Cli {
 
 // ── AXI helpers ─────────────────────────────────────────────────────────────
 
-/// Truncate a string to `max` chars and append a size hint when truncated.
-fn truncate_str(s: &str, max: usize) -> String {
-    let char_count = s.chars().count();
-    if char_count <= max {
-        s.to_string()
-    } else {
-        let truncated: String = s.chars().take(max).collect();
-        format!("{}...
-  ... (truncated, {} chars total)", truncated, char_count)
-    }
-}
+
 
 /// Print a structured error to stdout (AXI §6) and exit with code 2 for usage errors.
 fn axi_error(msg: &str, hint: Option<&str>) -> ! {
@@ -1080,7 +1073,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "metric_grid",
         "funnel_chart",
         "table",
-        "metric_sparkline",
         "column_chart",
         "text_columns",
         "qr_destination",
@@ -1357,14 +1349,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                         ["Export", "PNG", "PNG + SVG", "All Formats"],
                         ["Support", "Community", "Email", "Priority"]
                     ],
-                    "bg_style": rand_bg
-                }),
-                "metric_sparkline" => json!({
-                    "value": "89.2%",
-                    "label": "System Health",
-                    "data": [65.0, 72.0, 78.0, 85.0, 82.0, 88.0, 91.0, 89.0],
-                    "context": "Last 8 measurements",
-                    "trend": "↑ Stable",
                     "bg_style": rand_bg
                 }),
                 "column_chart" => json!({

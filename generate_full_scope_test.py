@@ -173,7 +173,14 @@ SLIDES = [
     {"slide_type": "testimonial_avatar", "theme": "editorial", "bg_style": "dark", "archetype": "thought_leader",
      "params": {"quote": "The cleanest slide rendering pipeline I've ever integrated.", "author": "Alex Rivera", "role": "Lead Architect", "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"}},
     {"slide_type": "logo_cloud", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"title": "Trusted by Engineering & Marketing Leaders", "logos": ["Vercel", "Stripe", "Supabase", "Linear", "Raycast", "Resend"]}},
+     "params": {"title": "Trusted by Engineering & Marketing Leaders", "logos": [
+         {"name": "Rust Core", "logo_url": "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=120"},
+         {"name": "Tokio Async", "logo_url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=120"},
+         {"name": "Wasm Tech", "logo_url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=120"},
+         {"name": "Cargo Crates", "logo_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=120"},
+         {"name": "Serde Engine", "logo_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=120"},
+         {"name": "Raycast CLI", "logo_url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=120"}
+     ]}},
 
     # ═══ SECTION: Comparisons & Tables ═══
     {"section": "SECTION 9 — Comparisons & Tables"},
@@ -199,12 +206,17 @@ SLIDES = [
     {"slide_type": "callout", "theme": "bold", "bg_style": "dark", "archetype": "thought_leader",
      "params": {"title": "Critical Architecture Note", "text": "Always validate layout bounds before exporting production PNG assets to guarantee zero visual regressions.", "icon": "💡"}},
     {"slide_type": "faq", "theme": "editorial", "bg_style": "light", "archetype": "educator",
-     "params": {"title": "Frequently Asked Questions", "questions": [{"question": "Is SlideForge open source?", "answer": "Yes, SlideForge is built in Rust under the MIT license."}, {"question": "Can I export to PDF?", "answer": "Yes, PDF export is supported alongside PNG rasterization."}]}},
+     "params": {"title": "Frequently Asked Questions", "questions": [
+         {"question": "Is SlideForge open source?", "answer": "Yes, SlideForge is built in Rust under the MIT license."},
+         {"question": "Can I export to PDF & PNG?", "answer": "Yes, PDF and PNG rasterization are supported natively."},
+         {"question": "How fast is slide compilation?", "answer": "SlideForge compiles a 10-slide carousel in under 10ms."},
+         {"question": "Does it support custom themes?", "answer": "Yes, design tokens and color palettes are fully configurable."},
+         {"question": "Is there MCP server integration?", "answer": "Yes, built-in MCP server for AI agent workflow automation."},
+         {"question": "Does it handle text overflow?", "answer": "Yes, dynamic font scaling prevents body viewport overflows."}
+     ]}},
 
     # ═══ SECTION: Single Metrics & Advanced Data ═══
     {"section": "SECTION 11 — Single Metrics & Advanced Data"},
-    {"slide_type": "metric_sparkline", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"value": "99.99%", "label": "Uptime Reliability", "trend": "+0.05% vs Q3", "data": [98, 99, 99, 100, 100], "context": "Continuous 90-day production telemetry monitor."}},
     {"slide_type": "metric_grid", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Key Telemetry Metrics", "metrics": [{"value": "10ms", "label": "Compile Latency"}, {"value": "85+", "label": "Unit Tests"}, {"value": "47", "label": "Slide Types"}, {"value": "100%", "label": "Token Compliance"}]}},
     {"slide_type": "case_study_result", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
@@ -227,9 +239,9 @@ SLIDES = [
     {"slide_type": "image_stat", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"stat_value": "100%", "stat_label": "Native Rust Compilation", "image_url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600", "description": "High throughput slide rendering engine"}},
     {"slide_type": "image_gallery", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"title": "Multi-Image Showcase", "images": ["https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300", "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300"], "caption": "Gallery grid layout"}},
+     "params": {"title": "Multi-Image Showcase", "images": ["https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300", "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300"], "description": "Architectural Benefits - High-density multi-image layout showcasing slide assets and compilation outputs."}},
     {"slide_type": "image_comparison", "theme": "editorial", "bg_style": "dark", "archetype": "educator",
-     "params": {"before_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300", "after_image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300", "before_label": "BEFORE", "after_label": "AFTER", "description": "Side-by-side photographic comparison"}},]
+     "params": {"title": "Native Rust Renderer Core", "before_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300", "after_image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300", "before_label": "BEFORE", "after_label": "AFTER", "description": "Side-by-side photographic comparison of baseline renderer vs native Rust compilation engine."}},]
 
 # ── Step 1: Generate tokens ────────────────────────────────────────────
 print("Step 1: Generating design tokens...")

@@ -4827,13 +4827,13 @@ fn visual_badge_html(
     };
     if !source.is_empty() {
         return format!(
-            r#"<img src="{}" alt="{}" style="width:{}px;height:{}px;border-radius:{};object-fit:cover;display:block;border:1px solid {};">"#,
+            r#"<div style="width:{}px;height:{}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="{}" alt="{}" style="max-width:{}px;max-height:{}px;width:auto;height:auto;object-fit:contain;display:block;"></div>"#,
+            size,
+            size,
             source,
             escape_html(fallback),
-            size,
-            size,
-            current_component_radius(tokens, "chip"),
-            colors.border
+            (size as f32 * 1.6) as i32,
+            size
         );
     }
 
@@ -5484,21 +5484,51 @@ pub fn faq_slide(
     background_image: &str,
     image_opacity: f32,
 ) -> Value {
-    let items = questions
-        .into_iter()
-        .map(|q| {
-            json!({"label": format!("{} - {}", simple_text(&q, &["question", "q"]), simple_text(&q, &["answer", "a"]))})
-        })
-        .collect();
-    checklist_action_plan_slide(
-        tokens,
-        title,
-        items,
-        bg_style,
-        theme,
-        background_image,
-        image_opacity,
-    )
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 10px", true);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
+
+    // Hardcode MAX_FAQ_ITEMS = 4 to guarantee zero vertical overflow
+    let capped_items: Vec<&Value> = questions.iter().take(4).collect();
+    let count = capped_items.len();
+
+    let (padding_css, q_size_px, a_size_px, gap_px) = match count {
+        4 => ("8px 12px", 11.5, 10.5, 6),
+        3 => ("10px 14px", 12.5, 11.0, 8),
+        _ => ("12px 14px", 13.0, 11.5, 10),
+    };
+
+    let cards_html: String = capped_items.iter().enumerate().map(|(idx, q)| {
+        let question_text = simple_text(q, &["question", "q", "title"]);
+        let answer_text = simple_text(q, &["answer", "a", "description"]);
+        format!(
+            r#"<div style="background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q0{}</span>
+                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+                </div>
+                <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.4;">{}</p>
+            </div>"#,
+            card_bg, border, radius, padding_css,
+            tokens.heading_font, colors.primary, colors.primary, idx + 1,
+            tokens.heading_font, q_size_px, colors.text_primary, escape_html(&question_text),
+            tokens.body_font, a_size_px, colors.text_secondary, escape_html(&answer_text)
+        )
+    }).collect();
+
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:{}px;">
+            {}
+            <div style="display:flex;flex-direction:column;gap:{}px;width:100%;">{}</div>
+        </div>"#,
+        gap_px, heading, gap_px, cards_html
+    );
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
+    let html = inject_background_image(html, background_image, image_opacity, is_dark);
+    json!({"html": html, "background": bg_style, "variant": "faq", "theme": theme})
 }
 
 pub fn process_map_slide(
@@ -6273,25 +6303,17 @@ pub fn dispatch_slide(
                 img_opacity,
             ))
         }
-        "metric_sparkline" => {
-            let data = p
-                .get("data")
-                .and_then(|v| v.as_array())
-                .cloned()
-                .unwrap_or_default();
-            Ok(metric_sparkline_slide(
-                tokens,
-                &s("value").if_empty(&s("metric")),
-                &s("label"),
-                data,
-                &s("trend"),
-                &s("context"),
-                bg_style,
-                theme,
-                &bg_img,
-                img_opacity,
-            ))
-        }
+        "metric_sparkline" => Ok(metric_card_slide(
+            tokens,
+            &s("value").if_empty(&s("metric")),
+            &s("label"),
+            &s("trend"),
+            &s("context"),
+            bg_style,
+            theme,
+            &bg_img,
+            img_opacity,
+        )),
         "column_chart" => {
             let data = p
                 .get("data")
@@ -6585,6 +6607,7 @@ pub fn dispatch_slide(
         }
         "image_comparison" => Ok(image_comparison_slide(
             tokens,
+            &s("title"),
             &s("before_image"),
             &s("after_image"),
             &s("before_label").if_empty("Before"),
@@ -7843,6 +7866,7 @@ pub fn image_collage_slide(
 
 pub fn image_comparison_slide(
     tokens: &DesignTokens,
+    title: &str,
     before_image: &str,
     after_image: &str,
     before_label: &str,
@@ -7862,6 +7886,12 @@ pub fn image_comparison_slide(
 
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
+
+    let title_html = if !title.is_empty() {
+        heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "center", "0 0 8px", true)
+    } else {
+        String::new()
+    };
 
     let left_img = render_themed_image(
         before_image,
@@ -7883,13 +7913,13 @@ pub fn image_comparison_slide(
     );
 
     let lbl_style = format!(
-        "background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:5px 10px;font-family:{};font-size:10px;font-weight:700;border-radius:4px;position:absolute;top:12px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;",
+        "background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:white;padding:4px 8px;font-family:{};font-size:9.5px;font-weight:700;border-radius:4px;position:absolute;top:10px;z-index:3;text-transform:uppercase;letter-spacing:0.06em;",
         tokens.body_font
     );
 
     let divider_html = if divider_style == "arrow" {
         format!(
-            r#"<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);z-index:4;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-weight:bold;">
+            r#"<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);z-index:4;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-weight:bold;">
                 ⇄
             </div>"#,
             colors.primary
@@ -7900,7 +7930,7 @@ pub fn image_comparison_slide(
 
     let desc_html = if !description.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">{}</p>"#,
+            r#"<p style="font-family:{};font-size:11px;color:{};margin:4px 0 0;line-height:1.4;text-align:center;width:100%;opacity:0.85;">{}</p>"#,
             tokens.body_font,
             colors.text_secondary,
             escape_html(description)
@@ -7915,26 +7945,29 @@ pub fn image_comparison_slide(
         .get("md")
         .cloned()
         .unwrap_or_else(|| "0 4px 16px rgba(0,0,0,0.15)".to_string());
+    let grid_height = if !title.is_empty() { "180px" } else { "220px" };
     let grid_wrapper_style = format!(
-        "position:relative;width:100%;height:220px;display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:{};overflow:hidden;box-shadow:{};border: 1px solid {}30;background:{}20;",
-        radius_lg, shadow_md, colors.border, colors.border
+        "position:relative;width:100%;height:{};display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:{};overflow:hidden;box-shadow:{};border: 1px solid {}30;background:{}20;",
+        grid_height, radius_lg, shadow_md, colors.border, colors.border
     );
 
     let content = format!(
-        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
+            {}
             <div style="{}">
                 <div style="position:relative;width:100%;height:100%;">
                     {}
-                    <span style="{}left:12px;">{}</span>
+                    <span style="{}left:10px;">{}</span>
                 </div>
                 <div style="position:relative;width:100%;height:100%;">
                     {}
-                    <span style="{}right:12px;">{}</span>
+                    <span style="{}right:10px;">{}</span>
                 </div>
                 {}
             </div>
             {}
         </div>"#,
+        title_html,
         grid_wrapper_style,
         left_img,
         lbl_style,

@@ -476,15 +476,6 @@ pub fn get_registry() -> Value {
             "layout_family": "data-viz",
             "best_for": ["data", "comparison", "structured"]
         },
-        "metric_sparkline": {
-            "description": "Single metric with sparkline trend line and context text",
-            "required_params": ["value", "label", "data"],
-            "optional_params": ["trend", "context", "variant", "background_image", "image_opacity", "padding"],
-            "variants": ["default"],
-            "default_variant": "default",
-            "layout_family": "data-viz",
-            "best_for": ["metrics", "trend", "timeseries"]
-        },
         "column_chart": {
             "description": "Vertical bar chart with labels and values for categorical comparison. Supports both single-series (flat [{label, value}]) and multi-series grouped columns (nested [{label, series: [{name, value}]}]).",
             "required_params": ["title", "data"],
