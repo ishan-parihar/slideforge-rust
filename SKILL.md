@@ -12,6 +12,8 @@ Generate Instagram/LinkedIn/TikTok carousels as HTML → PNG with AI-grade desig
 
 <!-- Static skill — regenerate from CLI: slideforge skill-guide -->
 <!-- Install: npx skills add <owner/slideforge-rust> --skill slideforge -->
+<!-- CI check: diff <(slideforge skill-guide) SKILL.md && exit 1 -->
+<!-- Install: npx skills add <owner/slideforge-rust> --skill slideforge -->
 
 ## Quick Start
 
