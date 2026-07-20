@@ -430,10 +430,10 @@ pub fn render_svg_scatter_plot(
         min_y -= 1.0;
     }
 
-    let pad_left = 38;
-    let pad_right = 38;
-    let pad_top = 22;
-    let pad_bottom = 28;
+    let pad_left = 48;
+    let pad_right = 24;
+    let pad_top = 26;
+    let pad_bottom = 36;
 
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
@@ -450,7 +450,7 @@ pub fn render_svg_scatter_plot(
         ));
         grid_lines.push_str(&format!(
             r#"<text x="{}" y="{:.1}" font-size="8px" fill="{}" text-anchor="end">{:.1}</text>"#,
-            pad_left - 6,
+            pad_left - 8,
             y_pos + 3.0,
             colors.text_secondary,
             y_val
@@ -469,7 +469,7 @@ pub fn render_svg_scatter_plot(
         grid_lines.push_str(&format!(
             r#"<text x="{:.1}" y="{}" font-size="8px" fill="{}" text-anchor="middle">{:.0}</text>"#,
             x_pos,
-            height as f64 - pad_bottom as f64 + 12.0,
+            height as f64 - pad_bottom as f64 + 14.0,
             colors.text_secondary,
             x_val
         ));
@@ -490,9 +490,9 @@ pub fn render_svg_scatter_plot(
             path_d.push_str(&format!(" L {:.1} {:.1}", x_pos, y_pos));
         }
 
-        let mut r = 5.0;
+        let mut r = 4.5;
         if max_size > 0.0 {
-            r = 5.0 + (sizes[i] / max_size) * 10.0;
+            r = 4.5 + (sizes[i] / max_size) * 8.0;
         }
 
         points_svg.push_str(&format!(
@@ -501,7 +501,7 @@ pub fn render_svg_scatter_plot(
                 <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="700">{}</text>
             </g>"#,
             x_pos, y_pos, r, primary_color,
-            x_pos, y_pos - r - 4.0, colors.text_primary, escape_html(&labels[i])
+            x_pos, y_pos - r - 3.5, colors.text_primary, escape_html(&labels[i])
         ));
     }
 
@@ -524,7 +524,7 @@ pub fn render_svg_scatter_plot(
 
     let y_axis_title = if !y_label.is_empty() {
         format!(
-            r#"<text x="{}" y="12" font-size="9px" font-weight="700" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
+            r#"<text x="{}" y="14" font-size="9px" font-weight="700" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
             pad_left,
             colors.text_secondary,
             escape_html(y_label)

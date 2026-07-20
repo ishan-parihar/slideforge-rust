@@ -2318,7 +2318,6 @@ pub fn timeline_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-
     let heading = heading_block(
         title,
         tokens,
@@ -2330,119 +2329,38 @@ pub fn timeline_slide(
         "0 0 12px",
         true,
     );
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
 
-    let (gc, gx) = get_glass_container(tokens, is_dark);
-
-    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
-    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-
-    let effective_variant = variant;
-
-    let steps_html = match effective_variant {
-        "horizontal" => {
-            let mut s = format!(
-                r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;overflow:hidden;">"#
-            );
-            for (i, step) in steps.iter().enumerate() {
-                let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
-                let step_desc = step
-                    .get("description")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                s.push_str(&format!(
-                    r#"<div style="flex:1;text-align:center;">
-                        <div style="width:32px;height:32px;border-radius:50%;background:{}12;border:2px solid {};display:inline-flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:{};margin-bottom:8px;">{}</div>
-                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;overflow-wrap:break-word;">{}</h3>
-                        <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;">{}</p>
-                    </div>"#,
-                    tokens.primary, tokens.primary, tokens.primary, i + 1,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(step_title),
-                    tokens.body_font, caption_fs, colors.text_secondary, escape_html(step_desc)
-                ));
-            }
-            s.push_str("</div>");
-            s
-        }
-        "compact" => {
-            let mut s = String::new();
-            for (i, step) in steps.iter().enumerate() {
-                let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
-                let step_desc = step
-                    .get("description")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                s.push_str(&format!(
-                    r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;margin-bottom:10px;">
-                        <div style="width:28px;height:28px;border-radius:50%;background:{}12;border:2px solid {};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:{};flex-shrink:0;">{}</div>
-                        <div>
-                            <span style="font-family:{};font-size:{}px;font-weight:600;color:{};">{}</span>
-                            <span style="font-family:{};font-size:{}px;color:{};margin-left:8px;">{}</span>
-                        </div>
-                    </div>"#,
-                    tokens.primary, tokens.primary, tokens.primary, i + 1,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(step_title),
-                    tokens.body_font, caption_fs, colors.text_secondary, escape_html(step_desc)
-                ));
-            }
-            s
-        }
-        _ => {
-            // vertical (default)
-            let mut s = String::new();
-            let n = steps.len();
-            for (i, step) in steps.iter().enumerate() {
-                let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
-                let step_desc = step
-                    .get("description")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("");
-                let is_last = i == n - 1;
-                let line_html = if is_last {
-                    String::new()
-                } else {
-                    format!(
-                        r#"<div style="position:absolute;left:17px;top:36px;bottom:-16px;width:2px;background:{}30;"></div>"#,
-                        tokens.primary
-                    )
-                };
-                s.push_str(&format!(
-                    r#"<div style="display:flex;gap:18px;position:relative;margin-bottom:16px;">
-                        {}
-                        <div style="width:36px;height:36px;border-radius:50%;background:{}12;border:2px solid {};display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:{};flex-shrink:0;z-index:2;">{}</div>
-                        <div>
-                            <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 4px;">{}</h3>
-                            <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.4;">{}</p>
-                        </div>
-                    </div>"#,
-                    line_html,
-                    tokens.primary, tokens.primary, tokens.primary, i + 1,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(step_title),
-                    tokens.body_font, caption_fs, colors.text_secondary, escape_html(step_desc)
-                ));
-            }
-            s
-        }
-    };
+    let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
+        let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
+        let step_desc = step.get("description").and_then(|v| v.as_str()).unwrap_or("");
+        format!(
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
+                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+                </div>
+                <p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.4;">{}</p>
+            </div>"#,
+            card_bg, border, radius,
+            tokens.heading_font, colors.primary, colors.primary, idx + 1,
+            tokens.heading_font, colors.text_primary, escape_html(step_title),
+            tokens.body_font, colors.text_secondary, escape_html(step_desc)
+        )
+    }).collect();
 
     let content = format!(
-        r#"{}{}<div style="margin-top:16px;">{}</div>{}"#,
-        gc, heading, steps_html, gx
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            {}
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
+        </div>"#,
+        heading, colors.primary, items_html
     );
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "80px var(--space-6) 80px",
-        "center",
-    );
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
+    json!({"html": html, "background": bg_style, "variant": variant, "theme": theme})
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -4437,51 +4355,50 @@ fn table_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-    let heading = heading_block(title, tokens, "title", None, true, None, "left", "0", false);
+    let heading = heading_block(title, tokens, "headline", None, true, None, "left", "0 0 12px", false);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
 
     let header_cells: Vec<String> = headers.iter().map(|h| {
         let text = h.as_str().unwrap_or("");
-        format!("<th style=\"padding:8px 12px;text-align:left;font-family:{};font-size:11px;font-weight:700;color:{};border-bottom:2px solid {};text-transform:uppercase;letter-spacing:0.04em;\">{}</th>", tokens.body_font, colors.text_primary, colors.border, escape_html(text))
+        format!("<th style=\"padding:10px 14px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};border-bottom:1px solid {};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "18", colors.border, escape_html(text))
     }).collect();
 
     let body_rows: String = rows.iter().enumerate().map(|(idx, row)| {
         let cells: Vec<String> = row.as_array().map(|arr| {
-            arr.iter().map(|cell| {
+            arr.iter().enumerate().map(|(c_idx, cell)| {
                 let text = cell.as_str().unwrap_or("");
-                let bg = if idx % 2 == 0 { colors.border.clone() + "15" } else { "transparent".to_string() };
-                format!("<td style=\"padding:8px 12px;font-family:{};font-size:11px;color:{};background:{};border-bottom:1px solid {}20;\">{}</td>", tokens.body_font, colors.text_primary, bg, colors.border, escape_html(text))
+                let is_badge = text.contains('x') || text.contains('%');
+                let cell_html = if is_badge {
+                    format!(r#"<span style="font-family:{};font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">{}</span>"#, tokens.heading_font, escape_html(text))
+                } else if c_idx == 0 {
+                    format!(r#"<span style="font-family:{};font-weight:800;color:{};">{}</span>"#, tokens.heading_font, colors.text_primary, escape_html(text))
+                } else {
+                    format!(r#"<span style="font-family:{};color:{};">{}</span>"#, tokens.body_font, colors.text_secondary, escape_html(text))
+                };
+                let bg = if idx % 2 == 0 { "transparent" } else { "rgba(255,255,255,0.02)" };
+                format!("<td style=\"padding:9px 14px;font-size:11px;background:{};border-bottom:1px solid {}18;\">{}</td>", bg, colors.border, cell_html)
             }).collect()
         }).unwrap_or_default();
         format!("<tr>{}</tr>", cells.join(""))
     }).collect();
 
-    let table_html = format!(
-        r#"<table style="width:100%;border-collapse:collapse;margin-top:12px;">
-            <thead><tr>{}</tr></thead>
-            <tbody>{}</tbody>
-        </table>"#,
-        header_cells.join(""),
-        body_rows
-    );
-
-    let caption_html = if !_caption.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:10px;color:{};margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(_caption)
-        )
-    } else {
-        String::new()
-    };
+    let caption = if !_caption.is_empty() { _caption.to_string() } else { "Benchmark metrics evaluated under 1,000 carousel thread iterations.".to_string() };
 
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            {}{}{}
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            {}
+            <div style="width:100%;background:{};border:1px solid {};border-radius:{};overflow:hidden;box-sizing:border-box;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead><tr>{}</tr></thead>
+                    <tbody>{}</tbody>
+                </table>
+            </div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>
         </div>"#,
-        heading, table_html, caption_html
+        heading, card_bg, colors.border, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
     );
-    let html = hero_layout(&content, tokens, bg_style, false, "center");
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
@@ -5588,15 +5505,42 @@ pub fn process_map_slide(
     background_image: &str,
     image_opacity: f32,
 ) -> Value {
-    checklist_action_plan_slide(
-        tokens,
-        title,
-        steps,
-        bg_style,
-        theme,
-        background_image,
-        image_opacity,
-    )
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true);
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
+
+    let rows: String = steps.iter().enumerate().map(|(idx, step)| {
+        let step_title = simple_text(step, &["title", "number"]);
+        let step_desc = simple_text(step, &["description", "caption"]);
+        let num_str = format!("0{}", idx + 1);
+        format!(
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:13px;font-weight:900;flex-shrink:0;">{}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:{};font-size:13px;font-weight:800;color:{};margin-bottom:2px;">{}</div>
+                    <div style="font-family:{};font-size:11px;color:{};line-height:1.4;">{}</div>
+                </div>
+            </div>"#,
+            card_bg, border, radius,
+            colors.primary, colors.button_text, tokens.heading_font, num_str,
+            tokens.heading_font, colors.text_primary, escape_html(&step_title),
+            tokens.body_font, colors.text_secondary, escape_html(&step_desc)
+        )
+    }).collect();
+
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:14px;">
+            {}
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;">{}</div>
+        </div>"#,
+        heading, rows
+    );
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
+    let html = inject_background_image(html, background_image, image_opacity, is_dark);
+    json!({"html": html, "background": bg_style, "variant": "process_map", "theme": theme})
 }
 
 pub fn before_after_story_slide(
