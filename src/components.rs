@@ -5019,7 +5019,7 @@ pub fn myth_fact_slide(
     let heading = heading_block(
         "Myth vs Fact",
         tokens,
-        "headline",
+        "title",
         Some(&colors.text_primary),
         false,
         None,

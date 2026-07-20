@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Full-scope SlideForge test: every slide type × style variations × overflow stress-testing.
+Full-scope SlideForge test: every slide type × complex multi-series charts × overflow stress-testing.
 
-Generates a single carousel with ALL slide types in light/dark themes,
-including intentionally long text to stress-test overflow containment.
+Generates a single carousel with all slide types in light/dark themes,
+including complex multi-column charts and intentionally long text to stress-test overflow containment.
 
 Usage:
     python3 generate_full_scope_test.py
@@ -48,131 +48,96 @@ def generate_slide(slide_type, tokens_file, theme, bg_style, archetype, params, 
     stdout = run_cmd(cmd, f"gen:{slide_type}")
     return json.loads(stdout)
 
-# ── Short text (normal) ────────────────────────────────────────────────
-SHORT_MYTH = "Breakfast is the most important meal of the day."
-SHORT_FACT = "Studies show no significant difference in weight between breakfast eaters and skippers."
-SHORT_EXPL = "The breakfast myth was largely popularized by cereal companies."
-
-# ── Long text (overflow stress) ───────────────────────────────────────
-LONG_MYTH = "Breakfast is universally recognized as the single most important meal of the day, and rigorous scientific consensus has established that anyone who skips breakfast will inevitably gain significant weight, suffer from decreased cognitive function, experience dangerously low blood sugar levels, and potentially develop long-term metabolic disorders that could have been entirely prevented."
-LONG_FACT = "Despite decades of conventional wisdom suggesting otherwise, a growing body of peer-reviewed research has consistently found no significant correlation between breakfast consumption and weight management, cognitive performance, or metabolic health in adults, with some studies even suggesting that intermittent fasting including breakfast skipping may offer certain health benefits."
-LONG_EXPL = "The widespread belief in breakfast importance can be traced back to aggressive marketing campaigns by cereal manufacturers in the early twentieth century, particularly James Caleb Jackson and John Harvey Kellogg, who had both financial and ideological motivations."
-
 # ── Slide definitions ─────────────────────────────────────────────────
 SLIDES = [
-    # ═══ SECTION: Hero ═══
-    {"section": "SECTION 1 — Hero Slides"},
+    # ═══ SECTION: Hero & Dividers ═══
+    {"section": "SECTION 1 — Hero & Dividers"},
     {"slide_type": "section_divider", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"kicker": "SECTION 1", "title": "Hero Slides", "subtitle": "Full-scope layout verification"}},
+     "params": {"kicker": "COMPREHENSIVE TEST", "title": "SlideForge System Audit", "subtitle": "Full layout & dataviz stress testing"}},
     {"slide_type": "hero", "theme": "bold", "bg_style": "dark", "archetype": "thought_leader",
-     "params": {"headline": "Building the Future of Slide Design", "subheadline": "A comprehensive system for beautiful, data-driven presentations.", "badge": "SlideForge v0.3"}},
-    {"slide_type": "hero", "theme": "editorial", "bg_style": "light", "archetype": "educator",
-     "variant": "centered",
-     "params": {"headline": "Visual Storytelling at Scale", "subheadline": "From data analyst to brand storyteller — every archetype covered."}},
+     "params": {"headline": "Next-Gen Slide Composition System", "subheadline": "Automated visual layout engine built with Rust and modern HTML/CSS.", "badge": "SlideForge v0.4"}},
+    {"slide_type": "headline_subheadline", "theme": "editorial", "bg_style": "light", "archetype": "educator",
+     "params": {"headline": "Architectural Excellence", "subheadline": "Clean layout primitives, dynamic density scaling, and strict aspect-ratio containment."}},
 
-    # ═══ SECTION: Feature ═══
-    {"section": "SECTION 2 — Feature Slides"},
+    # ═══ SECTION: Feature & Cards ═══
+    {"section": "SECTION 2 — Feature & Grid Cards"},
     {"slide_type": "feature", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"icon": "📊", "title": "Data-Driven Decisions", "description": "Real-time analytics dashboards with predictive modeling.", "number": "01"}},
-    {"slide_type": "feature", "theme": "bold", "bg_style": "dark", "archetype": "startup_pitch",
-     "variant": "icon-left",
-     "params": {"icon": "🚀", "title": "Lightning Fast Rendering", "description": "Generate complete slide decks in under 2 seconds.", "number": ""}},
-
-    # ═══ SECTION: List ═══
-    {"section": "SECTION 3 — List Slides"},
-    {"slide_type": "list", "theme": "editorial", "bg_style": "light", "archetype": "educator",
-     "params": {"title": "Key Benefits", "items": [
-         {"label": "Rapid prototyping", "sub": "Go from idea to deck in minutes"},
-         {"label": "Data visualization", "sub": "Charts, graphs, and infographics built-in"},
-         {"label": "Multi-platform export", "sub": "Instagram, TikTok, LinkedIn, and more"},
-         {"label": "AI-powered content", "sub": "Generate and refine with natural language"}]}},
-    {"slide_type": "list", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "variant": "card", "numbered": True,
-     "params": {"title": "Technical Architecture", "items": [
-         {"label": "Rust core engine"}, {"label": "HTML/CSS composition"},
-         {"label": "MCP protocol integration"}, {"label": "Chromium headless export"}]}},
-
-    # ═══ SECTION: Quote ═══
-    {"section": "SECTION 4 — Quote Slides"},
-    {"slide_type": "quote", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"quote": "Design is not just what it looks like and feels like. Design is how it works.", "author": "Steve Jobs", "role": "Co-founder, Apple"}},
-
-    # ═══ SECTION: Grid Cards ═══
-    {"section": "SECTION 5 — Grid Cards"},
+     "params": {"icon": "⚡", "title": "Sub-Second Compilation", "description": "Compiles complex multi-slide presentation carousels in milliseconds.", "number": "01"}},
     {"slide_type": "grid_cards", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "variant": "dense",
-     "params": {"title": "Platform Capabilities", "cards": [
-         {"icon": "📊", "title": "Analytics", "description": "Real-time dashboards"},
-         {"icon": "🔒", "title": "Security", "description": "End-to-end encryption"},
-         {"icon": "🤝", "title": "Collaboration", "description": "Team workspaces"},
-         {"icon": "⚡", "title": "Performance", "description": "Sub-second responses"}]}},
-    {"slide_type": "grid_cards", "theme": "bold", "bg_style": "dark", "archetype": "startup_pitch",
-     "variant": "compact",
-     "params": {"title": "Feature Roadmap", "cards": [
-         {"icon": "1", "title": "Core Engine", "description": "Rust-based rendering"},
-         {"icon": "2", "title": "MCP Server", "description": "Tool protocol integration"},
-         {"icon": "3", "title": "Export Pipeline", "description": "PNG/PDF/carousel output"},
-         {"icon": "4", "title": "AI Assistant", "description": "Natural language creation"}]}},
+     "params": {"title": "Core Platform Capabilities", "cards": [
+         {"icon": "📊", "title": "Analytics Engine", "description": "Real-time streaming dashboards"},
+         {"icon": "🔒", "title": "Zero Trust Security", "description": "End-to-end encrypted storage"},
+         {"icon": "🤝", "title": "Team Workspace", "description": "Multi-user live collaboration"},
+         {"icon": "⚡", "title": "High Throughput", "description": "Sub-10ms query performance"}]}},
     {"slide_type": "grid_cards", "theme": "editorial", "bg_style": "light", "archetype": "educator",
      "variant": "list-dense",
-     "params": {"title": "Research Methodology", "cards": [
-         {"icon": "🔍", "title": "Literature Review", "description": "200+ papers analyzed"},
-         {"icon": "📋", "title": "Survey Design", "description": "2400 participants"},
-         {"icon": "🧪", "title": "Controlled Trials", "description": "Double-blind experiments"},
-         {"icon": "📈", "title": "Statistical Modeling", "description": "Bayesian inference"},
-         {"icon": "✅", "title": "Peer Review", "description": "External validation"}]}},
+     "params": {"title": "Research Methodology Breakdown", "cards": [
+         {"icon": "🔍", "title": "Literature Synthesis", "description": "250+ academic papers reviewed"},
+         {"icon": "📋", "title": "Cohort Survey", "description": "Sample size of 3,500 respondents"},
+         {"icon": "🧪", "title": "Empirical Experiments", "description": "Randomized controlled trials"},
+         {"icon": "📈", "title": "Bayesian Modeling", "description": "Multi-variable regression model"},
+         {"icon": "✅", "title": "Peer Review Audit", "description": "Independent double-blind verification"}]}},
 
-    # ═══ SECTION: Grid Cards — Overflow Stress ═══
-    {"section": "SECTION 6 — Grid Cards Overflow Stress"},
+    # ═══ SECTION: Grid Cards Overflow Stress ═══
+    {"section": "SECTION 3 — Grid Cards Overflow Stress"},
     {"slide_type": "grid_cards", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "variant": "dense",
-     "params": {"title": "Detailed Platform Features", "cards": [
-         {"icon": "📊", "title": "Advanced Analytics Engine", "description": "Real-time data processing, predictive modeling, interactive dashboards that help organizations make data-driven decisions with unprecedented accuracy."},
-         {"icon": "🔒", "title": "Enterprise Security Suite", "description": "Military-grade encryption, multi-factor authentication, role-based access control, audit logging, compliance monitoring for evolving threats."},
-         {"icon": "🤝", "title": "Collaborative Workspace", "description": "Real-time document editing, video conferencing, project management, team communication channels for distributed teams."},
-         {"icon": "⚡", "title": "API Gateway", "description": "RESTful and GraphQL APIs, webhook management, third-party service connectors, rate limiting, comprehensive developer docs."}]}},
+     "params": {"title": "Enterprise Feature Specification", "cards": [
+         {"icon": "📊", "title": "Advanced Predictive Analytics", "description": "Real-time stream processing and high-dimensional predictive modeling engine designed to convert unstructured telemetry into actionable operational intelligence."},
+         {"icon": "🔒", "title": "Military-Grade Security Suite", "description": "Multi-region key management, fine-grained role-based access control, cryptographic audit trails, and automated vulnerability scanning across all tiers."},
+         {"icon": "🤝", "title": "Real-Time Collaboration Mesh", "description": "Operational Transformation (OT) powered multi-cursor editing, presence tracking, and contextual commenting for globally distributed engineering teams."},
+         {"icon": "⚡", "title": "Unified API Gateway", "description": "High-capacity RESTful and GraphQL endpoints featuring automatic rate limiting, payload validation, token bucket throttling, and edge caching."}]}},
 
-    # ═══ SECTION: Myth-Fact (debunk only) ═══
-    {"section": "SECTION 7 — Myth vs Fact Debunk"},
+    # ═══ SECTION: Story & Myth vs Fact ═══
+    {"section": "SECTION 4 — Story & Myth-Fact"},
     {"slide_type": "myth_fact", "theme": "editorial", "bg_style": "light", "archetype": "educator",
      "variant": "debunk",
-     "params": {"myth": SHORT_MYTH, "fact": SHORT_FACT, "explanation": SHORT_EXPL}},
+     "params": {"myth": "Breakfast is the most critical meal for weight management.",
+                "fact": "Clinical trials show no statistically significant difference in weight loss between breakfast eaters and skippers.",
+                "explanation": "Meta-analyses demonstrate total daily caloric deficit and macronutrient distribution determine weight outcomes, regardless of breakfast intake timing."}},
+    {"slide_type": "problem_solution", "theme": "editorial", "bg_style": "dark", "archetype": "startup_pitch",
+     "params": {"title": "Market Disruption", "problem": "Legacy presentation tools require hours of manual layout tweaking.", "solution": "SlideForge turns structured JSON into polished carousels instantly.",
+                "proof_points": [{"title": "10x Faster", "description": "Instant generation"}, {"title": "100% Consistent", "description": "Design system governed"}]}},
 
-    # ═══ SECTION: Column Chart ═══
-    {"section": "SECTION 8 — Column Charts"},
+    # ═══ SECTION: Complex Multi-Column & Data Charts ═══
+    {"section": "SECTION 5 — Complex Multi-Column & Multi-Series Dataviz"},
     {"slide_type": "column_chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Graduation Rates by Decade", "data": [
-         {"label": "1970", "value": 58}, {"label": "1980", "value": 62},
-         {"label": "1990", "value": 71}, {"label": "2000", "value": 78}, {"label": "2010", "value": 85}]}},
-    {"slide_type": "column_chart", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Employment by Sector", "data": [
-         {"label": "2020", "series": [{"name": "Tech", "value": 45}, {"name": "Health", "value": 30}, {"name": "Finance", "value": 25}]},
-         {"label": "2022", "series": [{"name": "Tech", "value": 52}, {"name": "Health", "value": 35}, {"name": "Finance", "value": 28}]},
-         {"label": "2024", "series": [{"name": "Tech", "value": 60}, {"name": "Health", "value": 40}, {"name": "Finance", "value": 30}]}]}},
-
-    # ═══ SECTION: Line/Area Charts ═══
-    {"section": "SECTION 9 — Line & Area Charts"},
-    {"slide_type": "chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "variant": "line",
-     "params": {"title": "Revenue Growth", "chart_type": "line", "data": [
-         {"label": "Q1", "value": 120}, {"label": "Q2", "value": 190},
-         {"label": "Q3", "value": 160}, {"label": "Q4", "value": 220}]}},
+     "params": {"title": "Quarterly Revenue by Industry Sector (Complex Multi-Series)", "data": [
+         {"label": "Q1 2024", "series": [{"name": "Tech", "value": 85}, {"name": "Health", "value": 60}, {"name": "Finance", "value": 45}, {"name": "Energy", "value": 30}]},
+         {"label": "Q2 2024", "series": [{"name": "Tech", "value": 92}, {"name": "Health", "value": 68}, {"name": "Finance", "value": 50}, {"name": "Energy", "value": 35}]},
+         {"label": "Q3 2024", "series": [{"name": "Tech", "value": 110}, {"name": "Health", "value": 75}, {"name": "Finance", "value": 58}, {"name": "Energy", "value": 42}]},
+         {"label": "Q4 2024", "series": [{"name": "Tech", "value": 130}, {"name": "Health", "value": 88}, {"name": "Finance", "value": 70}, {"name": "Energy", "value": 52}]}]}},
     {"slide_type": "chart", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "variant": "area",
-     "params": {"title": "Market Share Trends", "chart_type": "area", "data": [
-         {"label": "Q1", "series": [{"name": "Alpha Corp", "value": 45}, {"name": "Beta Inc", "value": 30}]},
-         {"label": "Q2", "series": [{"name": "Alpha Corp", "value": 55}, {"name": "Beta Inc", "value": 35}]},
-         {"label": "Q3", "series": [{"name": "Alpha Corp", "value": 60}, {"name": "Beta Inc", "value": 25}]},
-         {"label": "Q4", "series": [{"name": "Alpha Corp", "value": 70}, {"name": "Beta Inc", "value": 20}]}]}},
+     "params": {"title": "Market Share Trajectory (Multi-Series Area)", "chart_type": "area", "data": [
+         {"label": "2021", "series": [{"name": "Alpha Corp", "value": 40}, {"name": "Beta Inc", "value": 25}, {"name": "Gamma Ltd", "value": 15}]},
+         {"label": "2022", "series": [{"name": "Alpha Corp", "value": 52}, {"name": "Beta Inc", "value": 30}, {"name": "Gamma Ltd", "value": 18}]},
+         {"label": "2023", "series": [{"name": "Alpha Corp", "value": 65}, {"name": "Beta Inc", "value": 22}, {"name": "Gamma Ltd", "value": 20}]},
+         {"label": "2024", "series": [{"name": "Alpha Corp", "value": 82}, {"name": "Beta Inc", "value": 18}, {"name": "Gamma Ltd", "value": 24}]}]}},
 
-    # ═══ SECTION: Overflow Stress — All Types ═══
-    {"section": "SECTION 10 — Overflow Stress All Types"},
-    {"slide_type": "feature", "theme": "editorial", "bg_style": "light", "archetype": "educator",
-     "params": {"icon": "🔥", "title": "Extremely Long Feature Title That Tests Wrapping Behavior In The Component Layout System", "description": "This is an intentionally long description designed to test whether the feature slide properly handles text overflow. The content should wrap gracefully within the available space without clipping or extending beyond the slide boundaries.", "number": "42"}},
-    {"slide_type": "quote", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
-     "params": {"quote": "This is an extremely long quote designed to test whether the quote slide properly handles text overflow. The quote should scale down gracefully and remain readable without clipping or extending beyond the slide boundaries. Good design means content always fits.", "author": "Test Author Name", "role": "QA Engineer, SlideForge"}},
-    {"slide_type": "hero", "theme": "bold", "bg_style": "dark", "archetype": "thought_leader",
-     "params": {"headline": "This Is An Extremely Long Headline That Tests Whether The Hero Slide Handles Text Overflow Gracefully Within Its Composition Bounds", "subheadline": "An equally long subheadline that pushes the boundaries of the hero layout to ensure everything stays within the 420x525 composition without any visual clipping or layout distortion."}},
+    # ═══ SECTION: Advanced Data Visualizations ═══
+    {"section": "SECTION 6 — Additional Data Visualizations"},
+    {"slide_type": "progress_rings", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
+     "params": {"title": "Product Goal Completion", "items": [
+         {"label": "Active Users", "value": 85}, {"label": "Retention Rate", "value": 72}, {"label": "CSAT Score", "value": 94}]}},
+    {"slide_type": "comparison_bars", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
+     "params": {"title": "Benchmark Comparison", "comparison": {
+         "entity_a": "System v1.0", "entity_b": "System v2.0",
+         "metric": "Latency (ms)", "value_a": 120, "value_b": 24}}},
+    {"slide_type": "radar_chart", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
+     "params": {"title": "System Capabilities Assessment", "data": [
+         {"axis": "Speed", "value": 90}, {"axis": "Security", "value": 95}, {"axis": "Flexibility", "value": 80}, {"axis": "Scale", "value": 88}, {"axis": "DX", "value": 92}]}},
+    {"slide_type": "funnel_chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
+     "params": {"title": "User Conversion Funnel", "steps": [
+         {"label": "Impressions", "value": 100000}, {"label": "Sign-ups", "value": 15000}, {"label": "Activated", "value": 8500}, {"label": "Subscribed", "value": 2400}]}},
+
+    # ═══ SECTION: Conversion & Call to Action ═══
+    {"section": "SECTION 7 — Conversion & CTAs"},
+    {"slide_type": "qr_destination", "theme": "bold", "bg_style": "dark", "archetype": "startup_pitch",
+     "params": {"title": "Scan to Try SlideForge Live", "heading": "Instant Interactive Demo", "destination_url": "https://slideforge.dev/demo", "short_url": "slideforge.dev/demo", "cta_text": "Scan QR Code for Instant Access"}},
+    {"slide_type": "cta", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",
+     "params": {"headline": "Start Building Presentations in Rust Today", "button_text": "Get Started Free", "subheadline": "Join thousands of developers automating slide creation."}},
 ]
 
 # ── Step 1: Generate tokens ────────────────────────────────────────────
