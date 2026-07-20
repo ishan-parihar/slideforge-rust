@@ -4129,22 +4129,38 @@ fn comparison_bars_slide(
         " "
     };
 
+    let lbl_fs = if l_lbl.len().max(r_lbl.len()) > 20 { 9 } else if l_lbl.len().max(r_lbl.len()) > 12 { 10 } else { 11 };
+    let val_fs = if l_val.abs() >= 1000.0 || r_val.abs() >= 1000.0 { 20 } else { 24 };
+
+    let metric_name = comparison.get("metric").and_then(|v| v.as_str()).unwrap_or("");
+    let metric_tag = if !metric_name.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">{}</div>"#,
+            tokens.body_font, colors.primary, escape_html(metric_name)
+        )
+    } else {
+        String::new()
+    };
+
     let bar_html = format!(
-        r#"<div style="width:100%;margin-top:28px;">
-            <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:{};font-size:11px;color:{};font-weight:600;">
-                <span style="text-align:left;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
-                <span style="text-align:right;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
+        r#"<div style="width:100%;margin-top:20px;">
+            {}
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:{};font-size:{}px;color:{};font-weight:700;line-height:1.2;">
+                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">{}</span>
+                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">{}</span>
             </div>
             <div style="width:100%;height:16px;background:{}30;border-radius:8px;overflow:hidden;display:flex;">
                 <div style="width:{:.1}%;height:100%;background:{};border-radius:8px 0 0 8px;"></div>
                 <div style="width:{:.1}%;height:100%;background:{};border-radius:0 8px 8px 0;"></div>
             </div>
-            <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:{};font-size:24px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
-                <span style="color:{};text-align:left;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{:.0}{}{}</span>
-                <span style="color:{};text-align:right;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{:.0}{}{}</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:{};font-size:{}px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:{};text-align:left;">{:.0}{}{}</span>
+                <span style="color:{};text-align:right;">{:.0}{}{}</span>
             </div>
         </div>"#,
+        metric_tag,
         tokens.body_font,
+        lbl_fs,
         colors.text_primary,
         escape_html(&l_lbl),
         escape_html(&r_lbl),
@@ -4154,6 +4170,7 @@ fn comparison_bars_slide(
         r_pct,
         r_color,
         tokens.heading_font,
+        val_fs,
         l_color,
         l_val,
         l_space,
@@ -4163,6 +4180,7 @@ fn comparison_bars_slide(
         r_space,
         escape_html(r_unit)
     );
+
 
     let desc_html = if !description.is_empty() {
         format!(
@@ -5606,15 +5624,6 @@ pub fn qr_destination_slide(
     // URL text removed from QR card: was causing white-on-white contrast and line-breaking
     // short_url parameter kept for API compatibility but no longer rendered in QR card
 
-    let qr_html = format!(
-        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:{};padding:var(--space-2);display:flex;flex-direction:column;align-items:center;gap:var(--space-1);box-shadow:0 14px 34px rgba(0,0,0,0.14);width:100%;max-width:{};">
-            {}
-        </div>"#,
-        radius,
-        qr_size,
-        qr_elements.join("\n")
-    );
-
     let url_badge_html = if !short_url.is_empty() {
         format!(
             r#"<div style="margin-top:8px;font-family:{};font-size:10px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 {}</div>"#,
@@ -5630,174 +5639,84 @@ pub fn qr_destination_slide(
 
     let cta_html = if !cta_text.is_empty() {
         format!(
-            r#"<div style="margin-top:var(--space-2);background:{};color:{};font-family:{};font-size:var(--text-sm);font-weight:800;padding:var(--space-2) var(--space-2);border-radius:{};box-shadow:0 4px 12px rgba(0,0,0,0.08);text-align:center;letter-spacing:-0.01em;display:inline-block;overflow-wrap:break-word;">{}</div>"#,
+            r#"<div style="margin-top:10px;background:{};color:{};font-family:{};font-size:13px;font-weight:800;padding:10px 24px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.12);text-align:center;letter-spacing:-0.01em;display:inline-block;">{}</div>"#,
             colors.primary,
             colors.button_text,
             tokens.heading_font,
-            current_component_radius(tokens, "chip"),
             escape_html(cta_text)
         )
     } else {
         String::new()
     };
 
-    let layout_padding = if !padding.is_empty() {
-        padding
-    } else if matches!(effective_variant, "minimal" | "with-cta" | "compact") {
-        "80px 64px 80px"
-    } else if matches!(effective_variant, "poster" | "stacked-badge") {
-        "64px var(--space-6) 72px"
+    let qr_card_html = format!(
+        r#"<div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 16px 36px rgba(0,0,0,0.18);box-sizing:border-box;margin:12px auto;">
+            <img src="{}" alt="{}" style="width:160px;height:160px;display:block;" />
+            {}
+        </div>"#,
+        qr_src,
+        escape_html(effective_alt),
+        url_badge_html
+    );
+
+    let include_heading = !matches!(effective_variant, "minimal" | "without-heading" | "with-caption" | "with-cta");
+    let include_caption = !matches!(effective_variant, "minimal" | "without-caption" | "with-heading" | "with-cta");
+    let include_incentive = !matches!(effective_variant, "minimal");
+
+    let heading_html = if include_heading && !heading.is_empty() {
+        format!(
+            r#"<h2 style="font-family:{};font-size:22px;font-weight:900;color:{};margin:0 0 6px;line-height:1.2;text-align:center;letter-spacing:-0.01em;">{}</h2>"#,
+            tokens.heading_font,
+            colors.text_primary,
+            escape_html(heading)
+        )
     } else {
-        "80px var(--space-6) 80px"
+        String::new()
     };
 
-    let html = if matches!(effective_variant, "minimal" | "with-cta" | "compact") {
-        let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">{} {} {}</div>"#,
-            brand_html, qr_html, cta_html
-        );
-        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
-    } else if matches!(effective_variant, "poster" | "stacked-badge") {
-        let heading_html = if !heading.is_empty() {
-            format!(
-                r#"<h2 style="font-family:{};font-size:var(--text-xl);font-weight:800;color:{};margin:0;line-height:1.12;text-align:center;overflow-wrap:break-word;word-break:break-word;">{}</h2>"#,
-                tokens.heading_font,
-                colors.text_primary,
-                escape_html(heading)
-            )
-        } else {
-            String::new()
-        };
-        let caption_html = if !caption.is_empty() {
-            format!(
-                r#"<p style="font-family:{};font-size:var(--text-sm);line-height:1.5;color:{};margin:0;text-align:center;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
-                tokens.body_font,
-                colors.text_secondary,
-                escape_html(caption)
-            )
-        } else {
-            String::new()
-        };
-        let incentive_html = if !incentive_text.is_empty() {
-            format!(
-                r#"<div style="font-family:{};font-size:var(--text-sm);font-weight:800;color:{};background:{};border:1px solid {};border-radius:{};padding:var(--space-1) var(--space-2);text-align:center;">{}</div>"#,
-                tokens.body_font,
-                colors.text_primary,
-                if colors.is_dark {
-                    "rgba(255,255,255,0.06)"
-                } else {
-                    "rgba(0,0,0,0.035)"
-                },
-                colors.border,
-                current_component_radius(tokens, "chip"),
-                escape_html(incentive_text)
-            )
-        } else {
-            String::new()
-        };
-        let stack_order = if effective_variant == "stacked-badge" {
-            format!(
-                r#"{heading_html}{incentive_html}<div style="display:flex;flex-direction:column;align-items:center;">{brand_html}{qr_html}{url_badge_html}{cta_html}</div>{caption_html}"#
-            )
-        } else {
-            format!(
-                r#"{brand_html}{heading_html}{caption_html}<div style="display:flex;flex-direction:column;align-items:center;">{qr_html}{url_badge_html}{cta_html}</div>{incentive_html}"#
-            )
-        };
-        let content = format!(
-            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-2);overflow:hidden;">{}</div>"#,
-            stack_order
-        );
-        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
+    let caption_html = if include_caption && !caption.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:12px;line-height:1.45;color:{};margin:0 0 12px;text-align:center;max-width:320px;">{}</p>"#,
+            tokens.body_font,
+            colors.text_secondary,
+            escape_html(caption)
+        )
     } else {
-        let mut left_elements = Vec::new();
-
-        let include_heading = matches!(
-            effective_variant,
-            "full-conversion" | "theme-bg" | "image-bg" | "with-heading" | "split-card"
-        );
-        let include_caption = matches!(
-            effective_variant,
-            "full-conversion"
-                | "theme-bg"
-                | "image-bg"
-                | "with-caption"
-                | "without-heading"
-                | "split-card"
-        );
-        let include_incentive = matches!(
-            effective_variant,
-            "full-conversion" | "theme-bg" | "image-bg" | "without-heading" | "split-card"
-        );
-
-        if include_heading && !heading.is_empty() {
-            let h_html = format!(
-                r#"<h2 style="font-family:{};font-size:var(--text-lg);font-weight:700;color:{};margin:0 0 8px;line-height:1.25;letter-spacing:-0.015em;overflow-wrap:break-word;word-break:break-word;">{}</h2>"#,
-                tokens.heading_font,
-                colors.text_primary,
-                escape_html(heading)
-            );
-            left_elements.push(h_html);
-        }
-
-        if include_caption && !caption.is_empty() {
-            let c_html = format!(
-                r#"<p style="font-family:{};font-size:var(--text-base);line-height:1.55;color:{};margin:0;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
-                tokens.body_font,
-                colors.text_secondary,
-                escape_html(caption)
-            );
-            left_elements.push(c_html);
-        }
-
-        if include_incentive && !incentive_text.is_empty() {
-            let badge_radius = current_component_radius(tokens, "chip");
-            let inc_html = format!(
-                r#"<div style="display:inline-flex;align-items:center;gap:var(--space-1);background:{};border:1px solid {};border-radius:{};padding:var(--space-1) var(--space-2);font-family:{};font-size:var(--text-sm);font-weight:700;color:{};align-self:flex-start;">
-                    <span style="color:{};">🎁</span>
-                    <span>{}</span>
-                </div>"#,
-                if colors.is_dark {
-                    "rgba(255,255,255,0.06)"
-                } else {
-                    "rgba(0,0,0,0.03)"
-                },
-                colors.border,
-                badge_radius,
-                tokens.body_font,
-                colors.text_primary,
-                colors.primary,
-                escape_html(incentive_text)
-            );
-            left_elements.push(inc_html);
-        }
-
-        let left_col = format!(
-            r#"<div style="display:flex;flex-direction:column;justify-content:center;gap:var(--space-2);height:100%;min-width:0;">{}</div>"#,
-            left_elements.join("\n")
-        );
-
-        let right_col = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-width:0;">
-                {}
-                {}
-                {}
-                {}
-            </div>"#,
-            brand_html, qr_html, url_badge_html, cta_html
-        );
-
-        let grid_cols = if effective_variant == "split-card" {
-            "minmax(0, 1fr) minmax(0, 0.82fr)"
-        } else {
-            "1.2fr 1fr"
-        };
-        let content = format!(
-            r#"<div style="display:grid;grid-template-columns:{};gap:var(--space-5);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;">{}</div><div style="min-width:0;overflow:hidden;">{}</div></div>"#,
-            grid_cols, left_col, right_col
-        );
-        slide_base(&content, tokens, bg_style, false, layout_padding, "center")
+        String::new()
     };
+
+    let incentive_html = if include_incentive && !incentive_text.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};background:{};border:1px solid {};border-radius:20px;padding:4px 14px;text-align:center;margin-top:10px;">🎁 {}</div>"#,
+            tokens.body_font,
+            colors.text_primary,
+            if is_dark { "rgba(255,255,255,0.06)" } else { "rgba(0,0,0,0.035)" },
+            colors.border,
+            escape_html(incentive_text)
+        )
+    } else {
+        String::new()
+    };
+
+    let content = format!(
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
+            {}
+            {}
+            {}
+            {}
+            {}
+            {}
+        </div>"#,
+        brand_html,
+        heading_html,
+        caption_html,
+        qr_card_html,
+        cta_html,
+        incentive_html
+    );
+
+    let layout_padding = if !padding.is_empty() { padding } else { "60px 36px" };
+    let html = slide_base(&content, tokens, bg_style, false, layout_padding, "center");
 
     let bg_img_to_inject = if effective_variant == "image-bg" {
         background_image
