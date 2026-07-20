@@ -4554,19 +4554,25 @@ fn column_chart_slide(
                     })
                     .collect();
 
+                let separator_html = if num_series > 1 && ci < num_categories - 1 {
+                    r#"<div style="position:absolute;right:-4px;top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.18);"></div>"#
+                } else {
+                    ""
+                };
                 format!(
-                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;{}">
+                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
                         <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">
                             {}
                         </div>
                         <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
+                        {}
                     </div>"#,
-                    if num_series > 1 && ci < num_categories - 1 { "border-right:1px solid rgba(128,128,128,0.15);margin-right:-0.5px;" } else { "" },
                     gap_px,
                     inner_bars,
                     tokens.body_font,
                     colors.text_secondary,
-                    escape_html(lbl)
+                    escape_html(lbl),
+                    separator_html
                 )
             })
             .collect();
@@ -8283,4 +8289,41 @@ mod tests {
         assert!(!html.contains("Men"), "single-series should NOT contain series legend entries");
         assert!(!html.contains("Women"), "single-series should NOT contain series legend entries");
     }
+
+    #[test]
+    fn test_column_chart_grouped_separator_is_not_on_outer_edge() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+
+        let res = column_chart_slide(
+            &tokens,
+            vec![
+                json!({
+                    "label": "2020",
+                    "series": [{"name": "Tech", "value": 45}, {"name": "Health", "value": 30}]
+                }),
+                json!({
+                    "label": "2022",
+                    "series": [{"name": "Tech", "value": 52}, {"name": "Health", "value": 35}]
+                }),
+            ],
+            "Employment by Sector",
+            "",
+            "dark",
+            "bold",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(
+            html.contains("position:relative") && html.contains("position:absolute"),
+            "grouped column separator should use absolute positioning, not outer border-right"
+        );
+        assert!(
+            !html.contains("border-right:1px solid rgba(128,128,128,0.15);margin-right:-0.5px;"),
+            "outer category wrapper must not have border-right"
+        );
+    }
 }
+
