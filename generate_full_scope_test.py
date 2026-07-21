@@ -55,8 +55,6 @@ SLIDES = [
     {"section": "SECTION 1 — Hero & Dividers"},
     {"slide_type": "section_divider", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"kicker": "COMPREHENSIVE AUDIT", "title": "SlideForge Engine Evaluation", "subtitle": "Full visual layout, typography, and dataviz stress test."}},
-    {"slide_type": "hero", "theme": "bold", "bg_style": "light", "archetype": "educator",
-     "params": {"headline": "Slide Composition Engine", "subheadline": "A 4:5-first layout engine written in Rust delivering sub-millisecond slide synthesis and clean visual hierarchy."}},
 
     # ═══ SECTION: Feature & Grid Cards ═══
     {"section": "SECTION 2 — Feature & Grid Cards"},
