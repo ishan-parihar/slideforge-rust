@@ -2524,25 +2524,20 @@ pub fn split_features_slide(
         .unwrap_or_else(|| "none".to_string());
     let image_feature_layout = !effective_img.is_empty();
     let mut feature_cards = Vec::new();
-    for (idx, feat) in features.iter().enumerate() {
+    for feat in features.iter() {
         let t = feat.get("title").and_then(|v| v.as_str()).unwrap_or("");
         let d = feat
             .get("description")
             .and_then(|v| v.as_str())
             .unwrap_or("");
-        let icon = feat
-            .get("icon")
-            .and_then(|v| v.as_str())
-            .unwrap_or(if idx == 0 { "✦" } else { "→" });
-        let badge_size = if image_feature_layout { 26 } else { 30 };
-        let badge = visual_badge_html(tokens, &colors, &json!({"icon": icon}), t, badge_size);
+        // ponytail: badge removed — 26px icon consumed ~20% of tile width, preventing 3 tiles from fitting
         let card_padding = if image_feature_layout {
             "14px"
         } else {
             "var(--space-1)"
         };
         let card_gap = if image_feature_layout {
-            "12px"
+            "0px"
         } else {
             "var(--space-1)"
         };
@@ -2563,7 +2558,6 @@ pub fn split_features_slide(
         };
         feature_cards.push(format!(
             r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:{};display:flex;gap:{};align-items:flex-start;margin:{};box-sizing:border-box;min-width:0;">
-                {}
                 <div style="min-width:0;">
                     <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
                     <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.45;">{}</p>
@@ -2576,7 +2570,6 @@ pub fn split_features_slide(
             card_padding,
             card_gap,
             card_margin,
-            badge,
             tokens.body_font, title_size, colors.text_primary, escape_html(t),
             tokens.body_font, desc_size, colors.text_secondary, escape_html(d)
         ));
