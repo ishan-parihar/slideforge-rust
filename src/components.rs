@@ -51,7 +51,7 @@ impl Default for ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "none".to_string(),
@@ -67,7 +67,7 @@ impl ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "none".to_string(),
@@ -80,7 +80,7 @@ impl ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -106,7 +106,7 @@ impl ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -119,7 +119,7 @@ impl ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "ken-burns".to_string(),
@@ -132,7 +132,7 @@ impl ImageTreatment {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
-            image_overlay: "gradient".to_string(),
+            image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "fade-in".to_string(),
@@ -7154,11 +7154,11 @@ pub fn image_gallery_slide(
             String::new()
         };
         img_cards.push(format!(
-            r#"<div style="position:relative;width:100%;height:100%;border-radius:{};overflow:hidden;box-shadow:{};">
+            r#"<div style="position:relative;width:100%;height:100%;overflow:hidden;">
                 {}
                 {}
             </div>"#,
-            radius_md, shadow_sm, img_html, caption_html
+            img_html, caption_html
         ));
     }
 
@@ -7203,12 +7203,12 @@ pub fn image_gallery_slide(
                 };
                 three_cards.push(format!(
                     r#"<div style="display:flex;flex-direction:column;width:100%;">
-                        <div style="position:relative;width:100%;height:{};border-radius:{};overflow:hidden;box-shadow:{};flex-shrink:0;">
+                        <div style="position:relative;width:100%;height:{};overflow:hidden;flex-shrink:0;">
                             {}
                         </div>
                         {}
                     </div>"#,
-                    grid_height, radius_md, shadow_sm, img_html, inner_cap
+                    grid_height, img_html, inner_cap
                 ));
             }
             format!(
