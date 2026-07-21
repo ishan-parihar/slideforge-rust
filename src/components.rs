@@ -2419,17 +2419,6 @@ pub fn split_features_slide(
     let arch_preset = resolve_archetype_preset(archetype, "split_features");
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
 
     let use_glass = arch_preset
         .as_ref()
@@ -2523,6 +2512,57 @@ pub fn split_features_slide(
         .cloned()
         .unwrap_or_else(|| "none".to_string());
     let image_feature_layout = !effective_img.is_empty();
+
+    // ponytail: dynamic scaling — learn from grid_cards dense variant (lines 2716-2738).
+    // Compute character mass to scale padding + font sizes so tiles never overflow.
+    let max_feat_title_len = features
+        .iter()
+        .map(|f| f.get("title").and_then(|v| v.as_str()).unwrap_or("").len())
+        .max()
+        .unwrap_or(0);
+    let max_feat_desc_len = features
+        .iter()
+        .map(|f| f.get("description").and_then(|v| v.as_str()).unwrap_or("").len())
+        .max()
+        .unwrap_or(0);
+    let total_feat_chars: usize = features.iter().map(|f| {
+        let t = f.get("title").and_then(|v| v.as_str()).unwrap_or("").len();
+        let d = f.get("description").and_then(|v| v.as_str()).unwrap_or("").len();
+        t + d
+    }).sum();
+
+    // ponytail: heading margin scales down for dense content
+    let heading_margin_bottom = if total_feat_chars > 240 { "6px" } else { "12px" };
+    let heading = heading_block(
+        title,
+        tokens,
+        "headline",
+        Some(&colors.text_primary),
+        false,
+        None,
+        "left",
+        &format!("0 0 {}", heading_margin_bottom),
+        true,
+    );
+
+    // Scale tiers matching grid_cards dense thresholds
+    let (card_padding, title_size, desc_size, card_gap) = if image_feature_layout {
+        if total_feat_chars > 240 || max_feat_desc_len > 60 {
+            ("6px", body_fs.saturating_sub(4), caption_fs.saturating_sub(2), "0px")
+        } else if total_feat_chars > 160 || max_feat_desc_len > 40 {
+            ("8px", body_fs.saturating_sub(3), caption_fs.saturating_sub(1), "0px")
+        } else {
+            ("10px", body_fs.saturating_sub(2), caption_fs.saturating_sub(1), "0px")
+        }
+    } else {
+        if total_feat_chars > 240 || max_feat_desc_len > 60 {
+            ("var(--space-1)", body_fs.saturating_sub(1), caption_fs.saturating_sub(1), "4px")
+        } else {
+            ("var(--space-1)", body_fs, caption_fs, "var(--space-1)")
+        }
+    };
+    let card_margin = if image_feature_layout { "0" } else { "0 0 12px" };
+
     let mut feature_cards = Vec::new();
     for feat in features.iter() {
         let t = feat.get("title").and_then(|v| v.as_str()).unwrap_or("");
@@ -2530,32 +2570,6 @@ pub fn split_features_slide(
             .get("description")
             .and_then(|v| v.as_str())
             .unwrap_or("");
-        // ponytail: badge removed — 26px icon consumed ~20% of tile width, preventing 3 tiles from fitting
-        let card_padding = if image_feature_layout {
-            "14px"
-        } else {
-            "var(--space-1)"
-        };
-        let card_gap = if image_feature_layout {
-            "0px"
-        } else {
-            "var(--space-1)"
-        };
-        let card_margin = if image_feature_layout {
-            "0"
-        } else {
-            "0 0 12px"
-        };
-        let title_size = if image_feature_layout {
-            body_fs.saturating_sub(2)
-        } else {
-            body_fs
-        };
-        let desc_size = if image_feature_layout {
-            caption_fs.saturating_sub(1)
-        } else {
-            caption_fs
-        };
         feature_cards.push(format!(
             r#"<div style="background:{};border:1px solid {};border-radius:{};box-shadow:{};padding:{};display:flex;gap:{};align-items:flex-start;margin:{};box-sizing:border-box;min-width:0;">
                 <div style="min-width:0;">
@@ -2583,15 +2597,19 @@ pub fn split_features_slide(
         // the two cards carried all the weight. Now image and text share
         // equal compositional weight (50/50), and the heading is anchored
         // inside the text column — not floating above everything.
+        // ponytail: dynamic outer gap — scale column gap for dense content
+        let outer_gap = if total_feat_chars > 240 { "12px" } else { "20px" };
+        let heading_gap = if total_feat_chars > 240 { "8px" } else { "14px" };
+        let card_stack_gap = if total_feat_chars > 240 { "6px" } else { "10px" };
         format!(
-            r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+            r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:{};width:100%;height:100%;align-items:stretch;overflow:hidden;">
                 <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;">{}</div>
-                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:{};">
                     {}
-                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;">{}</div>
+                    <div style="display:flex;flex-direction:column;gap:{};overflow:hidden;">{}</div>
                 </div>
             </div>"#,
-            left_visual, heading, features_html
+            outer_gap, left_visual, heading_gap, heading, card_stack_gap, features_html
         )
     } else if effective_variant == "reversed" {
         format!(
