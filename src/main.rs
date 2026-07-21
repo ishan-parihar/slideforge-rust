@@ -1,7 +1,7 @@
 #![recursion_limit = "512"]
 
 // Re-export truncate_str from shared toon-helper crate
-use toon_helper::truncate_str;
+use toon_helper::{truncate_str, truncate_json_strings};
 
 use clap::{Parser, Subcommand};
 #[allow(unused_imports)]
@@ -397,23 +397,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }            Some(Commands::SlideInfo { slide_type }) => {
             match slide_registry::get_slide_type_info(slide_type) {
                 Some(info) => {
-                    // AXI §3: Truncate long description fields in detail views
-                    let mut truncated = info.clone();
-                    if let Some(obj) = truncated.as_object_mut() {
-                        for key in ["description", "body", "content", "notes", "details", "examples", "layout", "css"] {
-                            if let Some(val) = obj.get(key) {
-                                if let Some(s) = val.as_str() {
-                                    let total = s.len();
-                                    if total > 500 {
-                                        let cut: String = s.chars().take(500).collect();
-                                        obj.insert(key.to_string(), serde_json::json!(
-                                            format!("{}... (truncated, {} chars total)", cut, total)
-                                        ));
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // AXI §3: Recursively truncate long string fields in detail views
+                    let truncated = truncate_json_strings(&info, 500);
                     output_toon(&truncated);
                 }
                 None => {
