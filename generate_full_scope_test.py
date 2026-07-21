@@ -233,7 +233,7 @@ SLIDES = [
     {"slide_type": "image_quote", "theme": "editorial", "bg_style": "dark", "archetype": "thought_leader",
      "params": {"quote": "Design is not just what it looks like. Design is how it works.", "author": "Steve Jobs", "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600"}},
     {"slide_type": "image_callout", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"image_url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600", "callouts": [{"label": "Core Renderer", "x": 50, "y": 40}], "description": "Native Rust Renderer Core"}},
+     "params": {"image_url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600", "callouts": [{"label": "Core Renderer Module", "description": "Sub-millisecond WebAssembly and native compilation engine", "x": 50, "y": 40}], "description": "Native Rust Renderer Core architecture delivering high-performance slide synthesis."}},
     {"slide_type": "image_stat", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"stat_value": "100%", "stat_label": "Native Rust Compilation", "image_url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600", "description": "High throughput slide rendering engine"}},
     {"slide_type": "image_gallery", "theme": "editorial", "bg_style": "light", "archetype": "thought_leader",

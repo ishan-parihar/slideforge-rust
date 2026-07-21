@@ -6668,27 +6668,27 @@ pub fn image_caption_slide(
             format!(
                 r#"<div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
                     {}
-                    <div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
+                    {}
                 </div>"#,
-                text_html, colors.border, img_html
+                text_html, img_html
             )
         }
         "image-left" => {
             format!(
                 r#"<div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px;width:100%;height:100%;align-items:center;">
-                    <div style="width:100%;height:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
+                    {}
                     {}
                 </div>"#,
-                colors.border, img_html, text_html
+                img_html, text_html
             )
         }
         "image-right" => {
             format!(
                 r#"<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;width:100%;height:100%;align-items:center;">
                     {}
-                    <div style="width:100%;height:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
+                    {}
                 </div>"#,
-                text_html, colors.border, img_html
+                text_html, img_html
             )
         }
         "image-overlay" => {
@@ -6739,10 +6739,10 @@ pub fn image_caption_slide(
             // image-top
             format!(
                 r#"<div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
-                    <div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);border:1px solid {}30;">{}</div>
+                    {}
                     {}
                 </div>"#,
-                colors.border, img_html, text_html
+                img_html, text_html
             )
         }
     };
