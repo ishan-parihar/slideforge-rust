@@ -38,13 +38,18 @@ struct Cli {
 
 
 
+/// Print structured output in TOON format (AXI §1) for agent consumption.
+fn output_toon(value: &serde_json::Value) {
+    println!("{}", toon_helper::format_text(value, "toon"));
+}
+
 /// Print a structured error to stdout (AXI §6) and exit with code 2 for usage errors.
 fn axi_error(msg: &str, hint: Option<&str>) -> ! {
     let mut out = serde_json::json!({ "error": msg });
     if let Some(h) = hint {
         out["help"] = serde_json::json!(h);
     }
-    println!("{}", serde_json::to_string_pretty(&out).unwrap_or_default());
+    output_toon(&out);
     std::process::exit(2);
 }
 
@@ -276,7 +281,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         "message": "Chromium downloaded. Will auto-resolve on cold-start.",
                         "hint": "Set CHROME_PATH to skip auto-download."
                     });
-                    println!("{}", serde_json::to_string_pretty(&response).unwrap_or_default());
+                    output_toon(&response);
                 }
                 Err(e) => {
                     axi_error(
@@ -381,12 +386,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             for (name, desc) in &themes {
                 println!("  {},{}", name, truncate_str(desc, 80));
             }
-        }
-        Some(Commands::SlideInfo { slide_type }) => {
+        }            Some(Commands::SlideInfo { slide_type }) => {
             match slide_registry::get_slide_type_info(slide_type) {
                 Some(info) => {
-                    let json = serde_json::to_string_pretty(&info)?;
-                    println!("{}", json);
+                    output_toon(&info);
                 }
                 None => {
                     let valid = slide_registry::list_slide_types();
@@ -396,10 +399,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                 }
             }
-        }
-        Some(Commands::SlideTypesForContext { context }) => {
+        }            Some(Commands::SlideTypesForContext { context }) => {
             let types = slide_registry::get_slide_types_for_context(context);
-            println!("{}", serde_json::to_string_pretty(&types)?);
+            output_toon(&serde_json::json!(types));
         }
         Some(Commands::GenerateSlide {
             slide_type,
@@ -473,7 +475,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "errors": result.errors,
                 "warnings": result.warnings,
             });
-            println!("{}", serde_json::to_string_pretty(&response)?);
+            output_toon(&response);
         }
         Some(Commands::ValidateDesign { html_file }) => {
             let html = fs::read_to_string(html_file)?;
@@ -512,7 +514,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "primary_color": primary,
                 "schemes": schemes,
             });
-            println!("{}", serde_json::to_string_pretty(&response)?);
+            output_toon(&response);
         }
         Some(Commands::EmbedImage { file_path }) => {
             cli_embed_image(file_path)?;
@@ -536,12 +538,11 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
             );
             fs::write(temp_html, full_html)?;
             match export::render_html_to_png(temp_html, output, 1.0) {
-                Ok(_) => {
-                    let response = serde_json::json!({
-                        "png_path": output,
-                        "message": format!("Preview saved to {}", output),
-                    });
-                    println!("{}", serde_json::to_string_pretty(&response)?);
+                Ok(_) => {    let response = serde_json::json!({
+        "png_path": output,
+        "message": format!("Preview saved to {}", output),
+    });
+    output_toon(&response);
                 }
                 Err(e) => {
                     axi_error(
@@ -843,15 +844,13 @@ fn cli_generate_slide(
                 }),
             );
         }
-    }
-
-    let json = serde_json::to_string_pretty(&enriched)?;
-    match output {
+    }    match output {
         Some(path) => {
+            let json = serde_json::to_string_pretty(&enriched)?;
             fs::write(path, &json)?;
             eprintln!("Slide saved to {}", path);
         }
-        None => println!("{}", json),
+        None => output_toon(&enriched),
     }
     Ok(())
 }
@@ -1041,7 +1040,7 @@ fn cli_embed_image(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         "size_kb": size_kb,
         "warning": warning,
     });
-    println!("{}", serde_json::to_string_pretty(&response)?);
+    output_toon(&response);
     Ok(())
 }
 

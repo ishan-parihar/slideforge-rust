@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 560px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+}
+
+:root {
+  --primary: #0D47A1;
+  --primary-light: #508AEB;
+  --primary-dark: #001871;
+  --surface-light: #EFF6FF;
+  --surface-dark: #000205;
+  --text-primary: #090B0F;
+  --text-secondary: #3E434B;
+  --text-on-dark: #EBEFF5;
+  --text-on-dark-secondary: #C8CED8;
+  --border-light: #C2C8D1;
+  --border-dark: #252E3D;
+  --accent: #783D00;
+  --secondary: #374E73;
+  --tertiary: #663871;
+  --gradient: linear-gradient(165deg, #000205 0%, #001871 60%, #000205 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #0D47A140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #EFF6FF 0%, #0D47A108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #0D47A115 0px, transparent 50%), radial-gradient(at 80% 0%, #783D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #508AEB12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #000205 0%, #00187130 50%, #000205 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #EFF6FFCC;
+  --glass-light-border: 1px solid #C2C8D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000205CC;
+  --glass-dark-border: 1px solid #252E3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #EFF6FFE6;
+  --glass-frosted-border: 1px solid #C2C8D130;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --text-display-size: 31px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 25px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 20px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 13px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 10px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 10px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 25px;
+  --text-2xl: 31px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
+}
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; background: #f0f0f0;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
+
+.slide {
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slide--full-bleed { overflow: hidden; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+  overflow: hidden !important;
+}
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
+.slide--full-bleed .slide-content {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
+}
+
+.slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F115 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+
+.slide--dark, .slide--gradient, .slide--hero {
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
+}
+
+.slide-layout {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
+}
+.slide-layout--center { justify-content: center; }
+
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
+.grid-2 > * { flex: 1; min-width: 0; }
+
+.serif { font-family: var(--font-heading, serif); }
+.sans { font-family: var(--font-body, sans-serif); }
+
+.display-text {
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.heading-text {
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.body-text {
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
+  text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
+}
+.caption-text {
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
+  text-wrap: pretty; overflow-wrap: break-word;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.slide--dark .text-gradient, .slide--gradient .text-gradient, .slide--hero .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.card {
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
+  background: var(--surface-light, #F3F5FC);
+  border: 1px solid var(--border-light, #C4C7D1);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: break-word; word-break: break-word;
+}
+.slide--dark .card, .slide--gradient .card, .slide--hero .card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dark, #2A2D3D);
+  box-shadow: var(--shadow-md);
+}
+
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-lg);
+}
+.slide--light .glass, .slide--mesh .glass {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.badge {
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
+}
+.slide--light .badge, .slide--mesh .badge {
+  background: var(--primary)15; color: var(--primary);
+  border: 1px solid var(--primary)30;
+}
+.slide--dark .badge, .slide--gradient .badge, .slide--hero .badge {
+  background: var(--text-on-dark)15; color: var(--text-on-dark);
+  border: 1px solid var(--text-on-dark)30;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-decoration: none;
+  box-shadow: var(--shadow-md); transition: transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.slide--light .btn, .slide--mesh .btn {
+  background: var(--primary); color: #FFFFFF;
+}
+.slide--dark .btn, .slide--gradient .btn, .slide--hero .btn {
+  background: var(--surface-light); color: var(--primary-dark);
+}
+
+.icon-box {
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
+}
+.slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
+.slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
+.timeline-number {
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
+}
+.timeline-content { flex: 1; }
+
+.callout {
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
+  border-radius: var(--radius-md, 8px); border: 1px solid transparent;
+}
+.callout--warning {
+  background: rgba(255, 165, 0, 0.1); border-color: var(--status-warning, #FFA500);
+}
+.callout--info {
+  background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
+}
+
+.breadcrumb-progress {
+  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
+  display: flex; align-items: center; gap: 6px;
+  z-index: 50;
+}
+.breadcrumb-chip {
+  height: 2px; flex: 1; border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
+.slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
+.slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
+.breadcrumb-chip.active {
+  height: 3px; flex: 2.2;
+}
+.slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
+.slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.swipe-arrow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  z-index: 50;
+}
+.slide--light .swipe-arrow, .slide--mesh .swipe-arrow { background: linear-gradient(to right, transparent, rgba(0,0,0,0.06)); }
+.slide--dark .swipe-arrow, .slide--gradient .swipe-arrow, .slide--hero .swipe-arrow { background: linear-gradient(to right, transparent, rgba(255,255,255,0.08)); }
+.swipe-arrow svg { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
+.slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
+
+.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
+.slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
+.slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
+.slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
+.slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
+.slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
+.slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
+.slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+
+            :root {
+                --font-heading: 'Playfair Display', Georgia, serif;
+                --font-body: 'Inter', system-ui, sans-serif;
+                --radius-lg: 8px;
+                --radius-md: 6px;
+            }
+            .slide--light, .slide--mesh { --surface-light: #F8F6F3; }
+            .slide--dark, .slide--hero { --surface-dark: #0A0A0F; }
+            .overlay__brand {
+                font-family: var(--font-heading), Georgia, serif !important;
+                font-style: normal !important;
+                text-transform: none !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                opacity: 0.9 !important;
+            }
+            .overlay__topic, .overlay__url, .overlay__hashtags {
+                font-family: var(--font-body), sans-serif !important;
+                font-style: normal !important;
+                text-transform: uppercase !important;
+                font-size: 11.5px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12em !important;
+                opacity: 0.75 !important;
+            }
+        
+.ig-frame {
+  width: var(--slide-width); background: #fff; border-radius: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--primary, #0B0A0F);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+.ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-subtitle { font-size: 11px; color: #8e8e8e; }
+.ig-dots { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
+.ig-dot { width: 6px; height: 6px; border-radius: 50%; background: #d8d8d8; transition: background 0.2s; }
+.ig-dot.active { background: #262626; }
+.ig-actions { display: flex; gap: 14px; padding: 8px 14px; }
+.ig-actions svg { width: 22px; height: 22px; stroke: #262626; fill: none; stroke-width: 1.8; cursor: pointer; }
+.ig-actions svg:hover { opacity: 0.6; }
+.ig-actions svg.bookmark { margin-left: auto; }
+.ig-caption { padding: 0 14px 12px; font-size: 12px; line-height: 1.45; color: #262626; }
+.ig-caption strong { font-weight: 600; }
+.ig-caption .timestamp { color: #8e8e8e; font-size: 11px; margin-top: 4px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div style="width:1080px;height:1826px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:710px;">
+    <div class="ig-frame">
+  <div class="ig-header">
+    <div class="ig-avatar">S</div>
+    <div>
+      <div class="ig-handle">@slideforge</div>
+      <div class="ig-subtitle">Carousel</div>
+    </div>
+  </div>
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #0D47A1; border-radius: 50%; opacity: 0.07; left: -80px; top: -80px; height: 320px; pointer-events: none; position: absolute; width: 320px"></div><div style="width: 120px; position: absolute; border-radius: 4px; left: auto; pointer-events: none; right: -40px; opacity: 0.05; top: 60%; transform: rotate(60deg); height: 120px; background: #783D00"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><div style="display: inline-block; padding: 6px 16px; background: #4A84E415; border: 1px solid #4A84E430; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #4A84E4; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">NEW RELEASE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EBEFF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">The Future of Collective Mobilization</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C8CED8; margin: 8px 0 0; text-align: left">A new paradigm in digital communication and engagement</p></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); inset: 0; z-index: 1; position: absolute"></div>
+            
+            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="position:relative;width:100%;height:100%;">
+            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600" alt="Visual Impact" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
+            </div>
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
+                <h2 style="font-family:Plus Jakarta Sans;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">Visual Impact</h2>
+                <p style="font-family:Plus Jakarta Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Where imagery meets narrative</p>
+            </div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#EFF6FF;border:1px solid #C2C8D133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-display-size, 52px);font-weight:900;color:#0D47A1;margin:0;line-height:1;">340%</span>
+            <h3 style="font-family:Plus Jakarta Sans;font-size:var(--text-base);font-weight:600;color:#090B0F;margin:var(--space-1) 0 6px;line-height:1.2;">vs. previous campaign period</h3>
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:600;color:#10B981;display:block;margin-bottom:8px;">+127%</span>
+            
+        </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#EFF6FF;border:1px solid #C2C8D133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-display-size, 52px);font-weight:900;color:#0D47A1;margin:0;line-height:1;">340%</span>
+            <h3 style="font-family:Plus Jakarta Sans;font-size:var(--text-base);font-weight:600;color:#090B0F;margin:var(--space-1) 0 6px;line-height:1.2;">vs. previous campaign period</h3>
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:600;color:#10B981;display:block;margin-bottom:8px;">+127%</span>
+            
+        </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#EFF6FF;border:1px solid #C2C8D133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-display-size, 52px);font-weight:900;color:#0D47A1;margin:0;line-height:1;">340%</span>
+            <h3 style="font-family:Plus Jakarta Sans;font-size:var(--text-base);font-weight:600;color:#090B0F;margin:var(--space-1) 0 6px;line-height:1.2;">vs. previous campaign period</h3>
+            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:600;color:#10B981;display:block;margin-bottom:8px;">+127%</span>
+            
+        </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #0D47A115 0px, transparent 50%), radial-gradient(at 80% 0%, #783D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #508AEB12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #090B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Capabilities</h2><div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;flex:1;min-height:0;margin-top:8px;"><div style="flex:1;min-width:0;min-height:0;background:#EFF6FF;border:1px solid #C2C8D125;border-radius:10px;padding:6px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#0D47A1" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#0D47A1;"><line x1="18" y1="20" x2="18" y2="10" stroke-width="2"/><line x1="12" y1="20" x2="12" y2="4" stroke-width="2"/><line x1="6" y1="20" x2="6" y2="14" stroke-width="2"/><path d="M3 20h18" stroke-width="2"/></svg></div>
+                <h3 style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#090B0F;margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">Data-Driven</h3>
+                <p style="font-family:Plus Jakarta Sans;font-size:9px;color:#3E434B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">Evidence-based decision making with real-time analytics</p>
+            </div><div style="flex:1;min-width:0;min-height:0;background:#EFF6FF;border:1px solid #C2C8D125;border-radius:10px;padding:6px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;">🎨</div>
+                <h3 style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#090B0F;margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">Visual Impact</h3>
+                <p style="font-family:Plus Jakarta Sans;font-size:9px;color:#3E434B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">Stunning visual compositions that command attention</p>
+            </div><div style="flex:1;min-width:0;min-height:0;background:#EFF6FF;border:1px solid #C2C8D125;border-radius:10px;padding:6px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#0D47A1" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#0D47A1;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.39-1.4 4.5-2 4.5-2z"/><path d="M12 15v5s3.03-.55 4.5-2c1.4-1.39 2-4.5 2-4.5z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#090B0F;margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">Rapid Deployment</h3>
+                <p style="font-family:Plus Jakarta Sans;font-size:9px;color:#3E434B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">From concept to published content in minutes</p>
+            </div><div style="flex:1;min-width:0;min-height:0;background:#EFF6FF;border:1px solid #C2C8D125;border-radius:10px;padding:6px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;box-sizing:border-box;">
+                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#0D47A1" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;color:#0D47A1;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/></svg></div>
+                <h3 style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#090B0F;margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">Trust Architecture</h3>
+                <p style="font-family:Plus Jakarta Sans;font-size:9px;color:#3E434B;margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">Built on principles of transparency and credibility</p>
+            </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EBEFF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Workflow</h2>
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #252E3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#4A84E4;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">01</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#EBEFF5;margin-bottom:2px;">Research</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#C8CED8;line-height:1.4;">Audience analysis</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #252E3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#4A84E4;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">02</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#EBEFF5;margin-bottom:2px;">Design</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#C8CED8;line-height:1.4;">Arc architecture</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #252E3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#4A84E4;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">03</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#EBEFF5;margin-bottom:2px;">Build</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#C8CED8;line-height:1.4;">Slide composition</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #252E3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#4A84E4;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">04</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#EBEFF5;margin-bottom:2px;">Launch</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#C8CED8;line-height:1.4;">Deploy &amp; measure</div>
+                </div>
+            </div></div>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#C8CED8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:60px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
+            
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:900;color:#EBEFF5;margin:0 0 4px;line-height:1.2;text-align:center;letter-spacing:-0.01em;">Learn More</h2>
+            <div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 16px 36px rgba(0,0,0,0.18);box-sizing:border-box;margin:10px auto;">
+            <img src="data:image/svg+xml;utf8,%3C?xml version='1.0' standalone='yes'?%3E%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='264' height='264' viewBox='0 0 264 264' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='264' height='264' fill='%23FFFFFF'/%3E%3Cpath fill='%230B0A0F' d='M32 32h8v8H32V32M40 32h8v8H40V32M48 32h8v8H48V32M56 32h8v8H56V32M64 32h8v8H64V32M72 32h8v8H72V32M80 32h8v8H80V32M104 32h8v8H104V32M112 32h8v8H112V32M128 32h8v8H128V32M144 32h8v8H144V32M152 32h8v8H152V32M176 32h8v8H176V32M184 32h8v8H184V32M192 32h8v8H192V32M200 32h8v8H200V32M208 32h8v8H208V32M216 32h8v8H216V32M224 32h8v8H224V32M32 40h8v8H32V40M80 40h8v8H80V40M96 40h8v8H96V40M104 40h8v8H104V40M120 40h8v8H120V40M136 40h8v8H136V40M144 40h8v8H144V40M152 40h8v8H152V40M160 40h8v8H160V40M176 40h8v8H176V40M224 40h8v8H224V40M32 48h8v8H32V48M48 48h8v8H48V48M56 48h8v8H56V48M64 48h8v8H64V48M80 48h8v8H80V48M120 48h8v8H120V48M152 48h8v8H152V48M176 48h8v8H176V48M192 48h8v8H192V48M200 48h8v8H200V48M208 48h8v8H208V48M224 48h8v8H224V48M32 56h8v8H32V56M48 56h8v8H48V56M56 56h8v8H56V56M64 56h8v8H64V56M80 56h8v8H80V56M104 56h8v8H104V56M152 56h8v8H152V56M176 56h8v8H176V56M192 56h8v8H192V56M200 56h8v8H200V56M208 56h8v8H208V56M224 56h8v8H224V56M32 64h8v8H32V64M48 64h8v8H48V64M56 64h8v8H56V64M64 64h8v8H64V64M80 64h8v8H80V64M96 64h8v8H96V64M120 64h8v8H120V64M136 64h8v8H136V64M144 64h8v8H144V64M152 64h8v8H152V64M176 64h8v8H176V64M192 64h8v8H192V64M200 64h8v8H200V64M208 64h8v8H208V64M224 64h8v8H224V64M32 72h8v8H32V72M80 72h8v8H80V72M104 72h8v8H104V72M120 72h8v8H120V72M144 72h8v8H144V72M152 72h8v8H152V72M176 72h8v8H176V72M224 72h8v8H224V72M32 80h8v8H32V80M40 80h8v8H40V80M48 80h8v8H48V80M56 80h8v8H56V80M64 80h8v8H64V80M72 80h8v8H72V80M80 80h8v8H80V80M96 80h8v8H96V80M112 80h8v8H112V80M128 80h8v8H128V80M144 80h8v8H144V80M160 80h8v8H160V80M176 80h8v8H176V80M184 80h8v8H184V80M192 80h8v8H192V80M200 80h8v8H200V80M208 80h8v8H208V80M216 80h8v8H216V80M224 80h8v8H224V80M104 88h8v8H104V88M120 88h8v8H120V88M136 88h8v8H136V88M32 96h8v8H32V96M48 96h8v8H48V96M64 96h8v8H64V96M80 96h8v8H80V96M112 96h8v8H112V96M128 96h8v8H128V96M136 96h8v8H136V96M192 96h8v8H192V96M216 96h8v8H216V96M32 104h8v8H32V104M40 104h8v8H40V104M48 104h8v8H48V104M56 104h8v8H56V104M72 104h8v8H72V104M128 104h8v8H128V104M136 104h8v8H136V104M160 104h8v8H160V104M168 104h8v8H168V104M176 104h8v8H176V104M224 104h8v8H224V104M32 112h8v8H32V112M40 112h8v8H40V112M80 112h8v8H80V112M88 112h8v8H88V112M120 112h8v8H120V112M128 112h8v8H128V112M168 112h8v8H168V112M184 112h8v8H184V112M208 112h8v8H208V112M216 112h8v8H216V112M224 112h8v8H224V112M32 120h8v8H32V120M48 120h8v8H48V120M56 120h8v8H56V120M72 120h8v8H72V120M96 120h8v8H96V120M104 120h8v8H104V120M112 120h8v8H112V120M120 120h8v8H120V120M136 120h8v8H136V120M160 120h8v8H160V120M168 120h8v8H168V120M184 120h8v8H184V120M216 120h8v8H216V120M32 128h8v8H32V128M48 128h8v8H48V128M56 128h8v8H56V128M72 128h8v8H72V128M80 128h8v8H80V128M112 128h8v8H112V128M120 128h8v8H120V128M136 128h8v8H136V128M152 128h8v8H152V128M160 128h8v8H160V128M168 128h8v8H168V128M176 128h8v8H176V128M184 128h8v8H184V128M200 128h8v8H200V128M216 128h8v8H216V128M224 128h8v8H224V128M40 136h8v8H40V136M48 136h8v8H48V136M56 136h8v8H56V136M72 136h8v8H72V136M88 136h8v8H88V136M120 136h8v8H120V136M136 136h8v8H136V136M160 136h8v8H160V136M168 136h8v8H168V136M176 136h8v8H176V136M200 136h8v8H200V136M224 136h8v8H224V136M32 144h8v8H32V144M80 144h8v8H80V144M112 144h8v8H112V144M160 144h8v8H160V144M184 144h8v8H184V144M208 144h8v8H208V144M216 144h8v8H216V144M224 144h8v8H224V144M40 152h8v8H40V152M64 152h8v8H64V152M72 152h8v8H72V152M96 152h8v8H96V152M112 152h8v8H112V152M120 152h8v8H120V152M136 152h8v8H136V152M144 152h8v8H144V152M160 152h8v8H160V152M192 152h8v8H192V152M216 152h8v8H216V152M32 160h8v8H32V160M48 160h8v8H48V160M56 160h8v8H56V160M64 160h8v8H64V160M72 160h8v8H72V160M80 160h8v8H80V160M88 160h8v8H88V160M104 160h8v8H104V160M128 160h8v8H128V160M136 160h8v8H136V160M160 160h8v8H160V160M168 160h8v8H168V160M176 160h8v8H176V160M184 160h8v8H184V160M192 160h8v8H192V160M200 160h8v8H200V160M96 168h8v8H96V168M120 168h8v8H120V168M128 168h8v8H128V168M136 168h8v8H136V168M144 168h8v8H144V168M152 168h8v8H152V168M160 168h8v8H160V168M192 168h8v8H192V168M200 168h8v8H200V168M216 168h8v8H216V168M224 168h8v8H224V168M32 176h8v8H32V176M40 176h8v8H40V176M48 176h8v8H48V176M56 176h8v8H56V176M64 176h8v8H64V176M72 176h8v8H72V176M80 176h8v8H80V176M104 176h8v8H104V176M112 176h8v8H112V176M120 176h8v8H120V176M128 176h8v8H128V176M136 176h8v8H136V176M152 176h8v8H152V176M160 176h8v8H160V176M176 176h8v8H176V176M192 176h8v8H192V176M200 176h8v8H200V176M216 176h8v8H216V176M224 176h8v8H224V176M32 184h8v8H32V184M80 184h8v8H80V184M128 184h8v8H128V184M136 184h8v8H136V184M160 184h8v8H160V184M192 184h8v8H192V184M200 184h8v8H200V184M216 184h8v8H216V184M224 184h8v8H224V184M32 192h8v8H32V192M48 192h8v8H48V192M56 192h8v8H56V192M64 192h8v8H64V192M80 192h8v8H80V192M96 192h8v8H96V192M104 192h8v8H104V192M112 192h8v8H112V192M120 192h8v8H120V192M144 192h8v8H144V192M160 192h8v8H160V192M168 192h8v8H168V192M176 192h8v8H176V192M184 192h8v8H184V192M192 192h8v8H192V192M200 192h8v8H200V192M216 192h8v8H216V192M224 192h8v8H224V192M32 200h8v8H32V200M48 200h8v8H48V200M56 200h8v8H56V200M64 200h8v8H64V200M80 200h8v8H80V200M104 200h8v8H104V200M120 200h8v8H120V200M184 200h8v8H184V200M192 200h8v8H192V200M200 200h8v8H200V200M208 200h8v8H208V200M32 208h8v8H32V208M48 208h8v8H48V208M56 208h8v8H56V208M64 208h8v8H64V208M80 208h8v8H80V208M96 208h8v8H96V208M104 208h8v8H104V208M136 208h8v8H136V208M152 208h8v8H152V208M160 208h8v8H160V208M192 208h8v8H192V208M224 208h8v8H224V208M32 216h8v8H32V216M80 216h8v8H80V216M104 216h8v8H104V216M120 216h8v8H120V216M152 216h8v8H152V216M160 216h8v8H160V216M192 216h8v8H192V216M200 216h8v8H200V216M216 216h8v8H216V216M32 224h8v8H32V224M40 224h8v8H40V224M48 224h8v8H48V224M56 224h8v8H56V224M64 224h8v8H64V224M72 224h8v8H72V224M80 224h8v8H80V224M96 224h8v8H96V224M128 224h8v8H128V224M152 224h8v8H152V224M160 224h8v8H160V224M176 224h8v8H176V224M184 224h8v8H184V224M216 224h8v8H216V224M224 224h8v8H224V224'/%3E%3C/svg%3E" alt="Get Started" style="width:160px;height:160px;display:block;" />
+            <div style="margin-top:8px;font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#1F2937;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.1);border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 slideforge.dev</div>
+        </div>
+            <div style="margin-top:10px;background:#4A84E4;color:#000205;font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;padding:10px 24px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.12);text-align:center;letter-spacing:-0.01em;display:inline-block;">Get Started</div>
+            <p style="font-family:Plus Jakarta Sans;font-size:11px;line-height:1.4;color:#C8CED8;margin:8px 0 0;text-align:center;max-width:320px;opacity:0.85;">Scan to explore the full framework</p>
+            
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">COLLECTIVE MOBILIZATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+  </div>
+</div>
+
+</div>
+</div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-actions">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="ig-caption">
+    <strong>@slideforge</strong> Swipe through for the full breakdown
+    <span class="timestamp">2 hours ago</span>
+  </div>
+</div>
+  </div>
+</div>
+
+
+<script>
+(function() {
+  const track = document.getElementById('carouselTrack');
+  const dots = document.querySelectorAll('.ig-dot');
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  const total = 8;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    track.style.transform = `translateX(${-current * 420}px)`;
+    if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; track.style.transition = 'none'; });
+  track.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; track.style.transition = 'none'; }, { passive: true });
+
+  function endDrag(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - x;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+    else goTo(current);
+  }
+
+  track.addEventListener('mouseup', (e) => endDrag(e.clientX));
+  track.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientX));
+  track.addEventListener('mouseleave', (e) => { if (isDragging) endDrag(e.clientX); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>
