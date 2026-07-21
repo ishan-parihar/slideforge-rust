@@ -1,0 +1,1215 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "description": "SlideForge Campaign Presets — dynamic slide-type arrays for AI-agent carousel generation",
+    "usage": "AI agent selects a preset, fills in {{variables}} with content from the user's brief, and generates the carousel via the slideforge MCP/render-carousel pipeline.",
+    "rhythm_principles": [
+      "Never repeat the same slide_type consecutively",
+      "Alternate dark/light bg_style for visual contrast (DLD pattern: Dark-Light-Dark)",
+      "Hook → Context → Evidence → Proof → Action arc",
+      "Dense data slides alternate with sparse narrative slides",
+      "Image slides break text-heavy sequences",
+      "CTA is always the final slide"
+    ],
+    "slide_type_vocabulary": {
+      "opening": ["hero", "image_headline", "section_divider", "headline_subheadline", "image_caption"],
+      "narrative": ["definition", "text_block", "problem_solution", "myth_fact", "before_after_story", "timeline", "process_map"],
+      "data": ["chart", "column_chart", "scatter_plot", "gauge", "radar_chart", "progress_rings", "comparison_bars", "metric_grid", "metric_card", "funnel_chart", "stat_row", "table"],
+      "social_proof": ["testimonial_avatar", "logo_cloud", "case_study_result", "faq"],
+      "visual": ["image_caption", "image_headline", "image_quote", "image_callout", "image_gallery", "image_collage", "image_comparison", "image_stat"],
+      "feature": ["feature", "grid_cards", "split_features", "list", "checklist_action_plan"],
+      "closing": ["cta", "qr_destination", "pricing_plan"]
+    }
+  },
+
+  "presets": [
+    {
+      "id": "product_launch",
+      "name": "Product Launch",
+      "description": "Announce a new product or major feature release. Hook with impact, explain the problem it solves, show proof it works, close with access.",
+      "ideal_slide_count": "8-10",
+      "rhythm": "Hero → Problem → Solution → Features → Proof → CTA",
+      "theme_preferences": {"primary": "bold", "secondary": "editorial"},
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "hero",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{product_name}}",
+            "subheadline": "{{one_line_value_prop}}",
+            "badge": "{{launch_badge}}"
+          }
+        },
+        {
+          "slot": "problem_context",
+          "required": true,
+          "slide_type": "problem_solution",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{problem_title}}",
+            "problem": "{{problem_statement}}",
+            "solution": "{{solution_statement}}",
+            "proof_points": "{{proof_points}}"
+          }
+        },
+        {
+          "slot": "feature_grid",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "variant": "dense",
+          "params_template": {
+            "title": "{{features_title}}",
+            "cards": "{{feature_cards}}"
+          }
+        },
+        {
+          "slot": "social_proof",
+          "required": false,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{testimonial_quote}}",
+            "author": "{{testimonial_author}}",
+            "role": "{{testimonial_role}}",
+            "avatar_url": "{{avatar_url}}"
+          }
+        },
+        {
+          "slot": "metric_proof",
+          "required": false,
+          "slide_type": "metric_grid",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{metrics_title}}",
+            "metrics": "{{key_metrics}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "educational_howto",
+      "name": "Educational / How-To",
+      "description": "Teach a concept or walk through a process step-by-step. Definition → Steps → Common Mistakes → Checklist.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Definition → Steps → Deep-Dive → Checklist → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_definition",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{concept_name}}",
+            "phonetic": "{{phonetic_pronunciation}}",
+            "definition": "{{concept_definition}}",
+            "context": "{{context_paragraph}}"
+          }
+        },
+        {
+          "slot": "process_steps",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{process_title}}",
+            "steps": "{{process_steps}}"
+          }
+        },
+        {
+          "slot": "deep_dive",
+          "required": true,
+          "slide_type": "text_block",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{deep_dive_title}}",
+            "body": "{{deep_dive_content}}"
+          }
+        },
+        {
+          "slot": "myth_busting",
+          "required": false,
+          "slide_type": "myth_fact",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "variant": "debunk",
+          "params_template": {
+            "myth": "{{common_myth}}",
+            "fact": "{{actual_fact}}",
+            "explanation": "{{explanation}}"
+          }
+        },
+        {
+          "slot": "visual_example",
+          "required": false,
+          "slide_type": "image_caption",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "image_url": "{{example_image_url}}",
+            "caption": "{{image_caption}}",
+            "description": "{{image_description}}"
+          }
+        },
+        {
+          "slot": "checklist",
+          "required": true,
+          "slide_type": "checklist_action_plan",
+          "theme": "bold",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{checklist_title}}",
+            "items": "{{checklist_items}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "case_study",
+      "name": "Case Study / Success Story",
+      "description": "Showcase a client success story. Challenge → Solution → Results → Testimonial → CTA.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Hook → Challenge → Solution → Results → Social Proof → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "section_divider",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "kicker": "{{case_study_label}}",
+            "title": "{{client_name}}",
+            "subtitle": "{{one_line_outcome}}"
+          }
+        },
+        {
+          "slot": "challenge",
+          "required": true,
+          "slide_type": "problem_solution",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{challenge_title}}",
+            "problem": "{{challenge_description}}",
+            "solution": "{{solution_approach}}",
+            "proof_points": "{{approach_highlights}}"
+          }
+        },
+        {
+          "slot": "before_after",
+          "required": true,
+          "slide_type": "before_after_story",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{transformation_title}}",
+            "before": "{{before_state}}",
+            "after": "{{after_state}}",
+            "metric": "{{key_metric}}"
+          }
+        },
+        {
+          "slot": "results_data",
+          "required": true,
+          "slide_type": "case_study_result",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "client": "{{client_name}}",
+            "challenge": "{{challenge_summary}}",
+            "solution": "{{solution_summary}}",
+            "results": "{{result_metrics}}"
+          }
+        },
+        {
+          "slot": "data_visualization",
+          "required": false,
+          "slide_type": "chart",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "chart_type": "{{chart_type}}",
+            "title": "{{chart_title}}",
+            "caption": "{{chart_caption}}",
+            "data": "{{chart_data}}"
+          }
+        },
+        {
+          "slot": "testimonial",
+          "required": true,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{client_quote}}",
+            "author": "{{client_name}}",
+            "role": "{{client_role}}",
+            "avatar_url": "{{client_avatar_url}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{case_study_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "data_story",
+      "name": "Data Story / Analytics",
+      "description": "Lead with numbers and visualizations. Metrics → Charts → Insights → Takeaway → CTA.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Headline → Metric → Chart → Deep-Dive → Chart → Insight → CTA",
+      "theme_preferences": {"primary": "bold", "secondary": "editorial"},
+      "slides": [
+        {
+          "slot": "opening_headline",
+          "required": true,
+          "slide_type": "headline_subheadline",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "headline": "{{data_story_headline}}",
+            "subheadline": "{{data_story_subtitle}}"
+          }
+        },
+        {
+          "slot": "hero_metric",
+          "required": true,
+          "slide_type": "metric_card",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "value": "{{hero_metric_value}}",
+            "label": "{{hero_metric_label}}",
+            "trend": "{{trend_direction}}",
+            "context": "{{metric_context}}"
+          }
+        },
+        {
+          "slot": "primary_chart",
+          "required": true,
+          "slide_type": "chart",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "chart_type": "{{primary_chart_type}}",
+            "title": "{{chart_title}}",
+            "caption": "{{chart_caption}}",
+            "data": "{{chart_data}}"
+          }
+        },
+        {
+          "slot": "insight_callout",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{insight_title}}",
+            "text": "{{insight_text}}",
+            "icon": "{{insight_icon}}"
+          }
+        },
+        {
+          "slot": "secondary_chart",
+          "required": false,
+          "slide_type": "radar_chart",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{radar_title}}",
+            "description": "{{radar_description}}",
+            "data": "{{radar_data}}"
+          }
+        },
+        {
+          "slot": "comparison",
+          "required": false,
+          "slide_type": "comparison_bars",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{comparison_title}}",
+            "description": "{{comparison_description}}",
+            "comparison": "{{comparison_data}}"
+          }
+        },
+        {
+          "slot": "metric_grid",
+          "required": true,
+          "slide_type": "metric_grid",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{summary_metrics_title}}",
+            "metrics": "{{summary_metrics}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "brand_origin",
+      "name": "Brand Origin Story",
+      "description": "Tell the story of how/why the brand was created. Journey → Milestones → Values → Vision → CTA.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Image → Story → Timeline → Values → Vision → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_image",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{brand_image_url}}",
+            "headline": "{{brand_name}}",
+            "subheadline": "{{brand_tagline}}"
+          }
+        },
+        {
+          "slot": "origin_quote",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{founder_image_url}}",
+            "quote": "{{founder_quote}}",
+            "author": "{{founder_name}}",
+            "role": "{{founder_role}}"
+          }
+        },
+        {
+          "slot": "timeline",
+          "required": true,
+          "slide_type": "timeline",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{timeline_title}}",
+            "steps": "{{milestone_steps}}"
+          }
+        },
+        {
+          "slot": "values_grid",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "variant": "compact",
+          "params_template": {
+            "title": "{{values_title}}",
+            "cards": "{{value_cards}}"
+          }
+        },
+        {
+          "slot": "vision_callout",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{vision_title}}",
+            "text": "{{vision_statement}}",
+            "icon": "{{vision_icon}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "feature_deepdive",
+      "name": "Feature Deep-Dive",
+      "description": "Deep dive into a single feature or capability. Hook → What → How → Why It Matters → Proof → CTA.",
+      "ideal_slide_count": "7-8",
+      "rhythm": "Hook → Explanation → Visual → Data → Social Proof → CTA",
+      "theme_preferences": {"primary": "bold", "secondary": "editorial"},
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "feature",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "icon": "{{feature_icon}}",
+            "title": "{{feature_name}}",
+            "description": "{{feature_one_liner}}",
+            "number": "{{feature_number}}"
+          }
+        },
+        {
+          "slot": "definition",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{feature_name}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{technical_definition}}",
+            "context": "{{context_paragraph}}"
+          }
+        },
+        {
+          "slot": "visual_demo",
+          "required": true,
+          "slide_type": "image_callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "image_url": "{{demo_image_url}}",
+            "callouts": "{{callout_points}}",
+            "description": "{{demo_description}}"
+          }
+        },
+        {
+          "slot": "how_it_works",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{how_it_works_title}}",
+            "steps": "{{process_steps}}"
+          }
+        },
+        {
+          "slot": "comparison",
+          "required": false,
+          "slide_type": "before_after_story",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{comparison_title}}",
+            "before": "{{before_state}}",
+            "after": "{{after_state}}",
+            "metric": "{{improvement_metric}}"
+          }
+        },
+        {
+          "slot": "testimonial",
+          "required": false,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{testimonial_quote}}",
+            "author": "{{author_name}}",
+            "role": "{{author_role}}",
+            "avatar_url": "{{avatar_url}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{feature_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "comparison_alternative",
+      "name": "Comparison / Alternative",
+      "description": "Compare two options (your product vs competitor, or old way vs new way). Hook → Side-by-Side → Deep Comparison → Verdict → CTA.",
+      "ideal_slide_count": "7-8",
+      "rhythm": "Hook → Comparison Table → Visual Compare → Feature Grid → Verdict → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "headline_subheadline",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{comparison_headline}}",
+            "subheadline": "{{comparison_subtitle}}"
+          }
+        },
+        {
+          "slot": "comparison_table",
+          "required": true,
+          "slide_type": "table",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{table_title}}",
+            "headers": "{{table_headers}}",
+            "rows": "{{table_rows}}",
+            "caption": "{{table_caption}}"
+          }
+        },
+        {
+          "slot": "visual_comparison",
+          "required": true,
+          "slide_type": "image_comparison",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{visual_compare_title}}",
+            "before_image": "{{option_a_image}}",
+            "after_image": "{{option_b_image}}",
+            "before_label": "{{option_a_label}}",
+            "after_label": "{{option_b_label}}",
+            "description": "{{comparison_description}}"
+          }
+        },
+        {
+          "slot": "feature_grid",
+          "required": true,
+          "slide_type": "split_features",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{features_title}}",
+            "features": "{{feature_comparison}}"
+          }
+        },
+        {
+          "slot": "verdict_metric",
+          "required": true,
+          "slide_type": "comparison_bars",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{verdict_title}}",
+            "description": "{{verdict_description}}",
+            "comparison": "{{verdict_data}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "testimonial_wall",
+      "name": "Testimonial / Social Proof",
+      "description": "Stack social proof to build trust. Logo Cloud → Multiple Testimonials → Results → CTA.",
+      "ideal_slide_count": "6-8",
+      "rhythm": "Logos → Quote → Quote → Data → Quote → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_logos",
+          "required": true,
+          "slide_type": "logo_cloud",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{trusted_by_title}}",
+            "logos": "{{logo_list}}"
+          }
+        },
+        {
+          "slot": "testimonial_1",
+          "required": true,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{quote_1}}",
+            "author": "{{author_1}}",
+            "role": "{{role_1}}",
+            "avatar_url": "{{avatar_1}}"
+          }
+        },
+        {
+          "slot": "testimonial_2",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{author_2_image}}",
+            "quote": "{{quote_2}}",
+            "author": "{{author_2}}",
+            "role": "{{role_2}}"
+          }
+        },
+        {
+          "slot": "results_metrics",
+          "required": true,
+          "slide_type": "metric_grid",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{results_title}}",
+            "metrics": "{{result_metrics}}"
+          }
+        },
+        {
+          "slot": "case_study_teaser",
+          "required": false,
+          "slide_type": "case_study_result",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "client": "{{client_name}}",
+            "challenge": "{{challenge}}",
+            "solution": "{{solution}}",
+            "results": "{{results}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "behind_scenes",
+      "name": "Behind-the-Scenes",
+      "description": "Show the process, team, or craft behind the product. Image → Process → Team → Values → CTA.",
+      "ideal_slide_count": "6-8",
+      "rhythm": "Image → Process → Image → Values → Quote → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_image",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{bts_image_url}}",
+            "headline": "{{bts_headline}}",
+            "subheadline": "{{bts_subtitle}}"
+          }
+        },
+        {
+          "slot": "process_steps",
+          "required": true,
+          "slide_type": "timeline",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{process_title}}",
+            "steps": "{{process_steps}}"
+          }
+        },
+        {
+          "slot": "gallery",
+          "required": true,
+          "slide_type": "image_gallery",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{gallery_title}}",
+            "images": "{{gallery_images}}",
+            "section_caption": "{{gallery_caption}}"
+          }
+        },
+        {
+          "slot": "values_callout",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{values_title}}",
+            "text": "{{values_statement}}",
+            "icon": "{{values_icon}}"
+          }
+        },
+        {
+          "slot": "team_quote",
+          "required": false,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{team_member_image}}",
+            "quote": "{{team_quote}}",
+            "author": "{{team_member_name}}",
+            "role": "{{team_member_role}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "event_webinar",
+      "name": "Event / Webinar Promo",
+      "description": "Promote an upcoming event or webinar. Date/Time → What You'll Learn → Speaker → Agenda → Register CTA.",
+      "ideal_slide_count": "6-8",
+      "rhythm": "Hook → Agenda → Speaker → Learning Outcomes → Register → CTA",
+      "theme_preferences": {"primary": "bold", "secondary": "editorial"},
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "hero",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{event_name}}",
+            "subheadline": "{{event_date_time}}",
+            "badge": "{{event_badge}}"
+          }
+        },
+        {
+          "slot": "agenda",
+          "required": true,
+          "slide_type": "list",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{agenda_title}}",
+            "items": "{{agenda_items}}",
+            "numbered": true
+          }
+        },
+        {
+          "slot": "speaker",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{speaker_image}}",
+            "quote": "{{speaker_quote}}",
+            "author": "{{speaker_name}}",
+            "role": "{{speaker_title}}"
+          }
+        },
+        {
+          "slot": "learning_outcomes",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "variant": "compact",
+          "params_template": {
+            "title": "{{outcomes_title}}",
+            "cards": "{{outcome_cards}}"
+          }
+        },
+        {
+          "slot": "social_proof",
+          "required": false,
+          "slide_type": "metric_grid",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{proof_title}}",
+            "metrics": "{{proof_metrics}}"
+          }
+        },
+        {
+          "slot": "closing_register",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{registration_url}}",
+            "heading": "{{register_headline}}",
+            "caption": "{{register_caption}}",
+            "cta_text": "{{register_button_text}}",
+            "short_url": "{{short_url}}",
+            "incentive_text": "{{early_bird_incentive}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "thought_leadership",
+      "name": "Thought Leadership",
+      "description": "Share a contrarian insight or industry perspective. Myth → Insight → Evidence → Framework → CTA.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Myth → Insight → Evidence → Data → Framework → CTA",
+      "theme_preferences": {"primary": "editorial", "secondary": "bold"},
+      "slides": [
+        {
+          "slot": "opening_myth",
+          "required": true,
+          "slide_type": "myth_fact",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "variant": "debunk",
+          "params_template": {
+            "myth": "{{industry_myth}}",
+            "fact": "{{contrarian_truth}}",
+            "explanation": "{{evidence_summary}}"
+          }
+        },
+        {
+          "slot": "insight_definition",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{insight_term}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{insight_definition}}",
+            "context": "{{context}}"
+          }
+        },
+        {
+          "slot": "evidence_chart",
+          "required": true,
+          "slide_type": "chart",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "chart_type": "{{chart_type}}",
+            "title": "{{evidence_chart_title}}",
+            "caption": "{{evidence_caption}}",
+            "data": "{{evidence_data}}"
+          }
+        },
+        {
+          "slot": "framework",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{framework_title}}",
+            "steps": "{{framework_steps}}"
+          }
+        },
+        {
+          "slot": "radar_assessment",
+          "required": false,
+          "slide_type": "radar_chart",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{radar_title}}",
+            "description": "{{radar_description}}",
+            "data": "{{radar_data}}"
+          }
+        },
+        {
+          "slot": "key_takeaway",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{takeaway_title}}",
+            "text": "{{takeaway_text}}",
+            "icon": "{{takeaway_icon}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "ecommerce_showcase",
+      "name": "E-commerce / Product Showcase",
+      "description": "Showcase a product with images, features, and social proof. Image → Features → Gallery → Reviews → Price → CTA.",
+      "ideal_slide_count": "8-10",
+      "rhythm": "Image → Features → Gallery → Review → Price → CTA",
+      "theme_preferences": {"primary": "bold", "secondary": "editorial"},
+      "slides": [
+        {
+          "slot": "opening_image",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{product_image_url}}",
+            "headline": "{{product_name}}",
+            "subheadline": "{{product_tagline}}"
+          }
+        },
+        {
+          "slot": "feature_list",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "variant": "dense",
+          "params_template": {
+            "title": "{{features_title}}",
+            "cards": "{{feature_cards}}"
+          }
+        },
+        {
+          "slot": "product_gallery",
+          "required": true,
+          "slide_type": "image_gallery",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{gallery_title}}",
+            "images": "{{product_images}}",
+            "section_caption": "{{gallery_caption}}"
+          }
+        },
+        {
+          "slot": "review_1",
+          "required": true,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{review_1}}",
+            "author": "{{reviewer_1}}",
+            "role": "{{reviewer_1_title}}",
+            "avatar_url": "{{reviewer_1_avatar}}"
+          }
+        },
+        {
+          "slot": "product_in_use",
+          "required": false,
+          "slide_type": "image_caption",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{product_use_image}}",
+            "caption": "{{use_case_caption}}",
+            "description": "{{use_case_description}}"
+          }
+        },
+        {
+          "slot": "pricing",
+          "required": true,
+          "slide_type": "pricing_plan",
+          "theme": "bold",
+          "bg_style": "light",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "title": "{{pricing_title}}",
+            "plans": "{{pricing_plans}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{product_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}"
+          }
+        }
+      ]
+    }
+  ]
+}
