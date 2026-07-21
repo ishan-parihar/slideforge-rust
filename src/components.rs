@@ -346,43 +346,12 @@ pub fn render_themed_image(
     // Frame mapping
     let mut frame_css = String::new();
     let fr = treatment.image_frame.as_str();
-    if fr == "rounded" {
-        frame_css = format!(
-            "border-radius: {};",
-            tokens
-                .radii
-                .get("lg")
-                .cloned()
-                .unwrap_or_else(|| "var(--space-1)".to_string())
-        );
-    } else if fr == "squircle" {
-        frame_css = format!("border-radius: var(--radius-md);");
-    } else if fr == "sharp" {
-        frame_css = "border-radius: 0;".to_string();
-    } else if fr == "pill" {
-        frame_css = format!(
-            "border-radius: {};",
-            tokens
-                .radii
-                .get("lg")
-                .cloned()
-                .unwrap_or_else(|| "var(--radius-lg)".to_string())
-        );
-    } else if fr == "organic" {
-        frame_css = format!(
-            "border-radius: var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);"
-        );
-    } else if fr == "circle" {
-        frame_css = format!(
-            "border-radius: {};",
-            tokens
-                .radii
-                .get("lg")
-                .cloned()
-                .unwrap_or_else(|| "var(--radius-lg)".to_string())
-        );
+    if fr == "rounded" || fr == "squircle" || fr == "pill" || fr == "circle" || fr == "organic" {
+        frame_css = "border-radius: var(--radius-md);".to_string();
     } else if fr == "polaroid" {
-        frame_css = format!("border: var(--space-2) solid white; box-shadow: var(--shadow-md);");
+        frame_css = format!("border: var(--space-2) solid white; box-shadow: var(--shadow-md); border-radius: var(--radius-sm);");
+    } else {
+        frame_css = "border-radius: 4px;".to_string();
     }
 
     // Overlay mapping
@@ -6965,16 +6934,25 @@ pub fn image_callout_slide(
         }
     }
 
+    let sub_desc_html = if !description.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:12px;color:{};margin:10px 0 0;line-height:1.45;opacity:0.9;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
+
     let content = format!(
         r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            {}
-            <div style="position:relative;width:100%;height:240px;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid {}30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid {}30;">
                 {}
                 {}
             </div>
             {}
+            {}
         </div>"#,
-        desc_html, colors.border, img_html, markers, list_html
+        colors.border, img_html, markers, sub_desc_html, list_html
     );
 
     let padding_val = if padding.is_empty() {

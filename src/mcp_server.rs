@@ -1743,8 +1743,11 @@ mod tests {
         assert!(restored.validated);
     }
 
+    static TEST_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
     #[test]
     fn test_server_new_restores_persisted_state() {
+        let _guard = TEST_LOCK.lock().unwrap();
         // Simulate a prior session by writing a state file with non-default values
         // and verifying that Server::new() loads it instead of using defaults.
         let path = session_state_path().expect("home dir");
