@@ -6890,20 +6890,8 @@ pub fn image_callout_slide(
         is_dark,
     );
 
-    let mut markers = String::new();
-    for (idx, c) in callouts.iter().enumerate() {
-        if let (Some(x), Some(y)) = (c.get("x").and_then(|v| v.as_f64()), c.get("y").and_then(|v| v.as_f64())) {
-            let lbl = c.get("label").and_then(|v| v.as_str()).unwrap_or("");
-            markers.push_str(&format!(
-                r#"<div style="position:absolute;left:{:.1}%;top:{:.1}%;transform:translate(-50%,-50%);z-index:4;">
-                    <div style="width:26px;height:26px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;box-shadow:0 0 0 3px rgba(255,255,255,0.4), 0 4px 14px rgba(0,0,0,0.3);backdrop-filter:blur(4px);cursor:pointer;" title="{}">
-                        {}
-                    </div>
-                </div>"#,
-                x, y, colors.primary, tokens.body_font, escape_html(lbl), idx + 1
-            ));
-        }
-    }
+    // ponytail: callout markers removed for clean image display; add back if numbered annotation is needed
+    let markers = String::new();
 
     let desc_html = if !description.is_empty() {
         heading_block(description, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 10px", true)
