@@ -50,7 +50,7 @@ impl Default for ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -66,7 +66,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
@@ -79,7 +79,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -92,7 +92,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "center".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -105,7 +105,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -118,7 +118,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -131,7 +131,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "rounded".to_string(),
+            image_frame: "sharp".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
@@ -346,12 +346,14 @@ pub fn render_themed_image(
     // Frame mapping
     let mut frame_css = String::new();
     let fr = treatment.image_frame.as_str();
-    if fr == "rounded" || fr == "squircle" || fr == "pill" || fr == "circle" || fr == "organic" {
-        frame_css = "border-radius: var(--radius-md);".to_string();
+    if fr == "rounded" || fr == "squircle" {
+        frame_css = "border-radius: var(--radius-sm);".to_string();
+    } else if fr == "pill" || fr == "circle" || fr == "organic" {
+        frame_css = "border-radius: 9999px;".to_string();
     } else if fr == "polaroid" {
         frame_css = format!("border: var(--space-2) solid white; box-shadow: var(--shadow-md); border-radius: var(--radius-sm);");
     } else {
-        frame_css = "border-radius: 4px;".to_string();
+        frame_css = "border-radius: 0;".to_string();
     }
 
     // Overlay mapping
