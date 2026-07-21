@@ -50,7 +50,7 @@ impl Default for ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "none".to_string(),
+            image_frame: "rounded".to_string(),
             image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -64,10 +64,10 @@ impl Default for ImageTreatment {
 impl ImageTreatment {
     pub fn editorial_preset() -> Self {
         Self {
-            image_filter: "grayscale".to_string(),
+            image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "sharp".to_string(),
-            image_overlay: "duotone".to_string(),
+            image_frame: "rounded".to_string(),
+            image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "none".to_string(),
@@ -77,10 +77,10 @@ impl ImageTreatment {
     }
     pub fn bold_preset() -> Self {
         Self {
-            image_filter: "high-contrast".to_string(),
+            image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "rounded".to_string(),
-            image_overlay: "solid".to_string(),
+            image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -92,7 +92,7 @@ impl ImageTreatment {
         Self {
             image_filter: "none".to_string(),
             image_position: "center".to_string(),
-            image_frame: "sharp".to_string(),
+            image_frame: "rounded".to_string(),
             image_overlay: "none".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
@@ -103,10 +103,10 @@ impl ImageTreatment {
     }
     pub fn dark_preset() -> Self {
         Self {
-            image_filter: "duotone-cool".to_string(),
+            image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "rounded".to_string(),
-            image_overlay: "vignette".to_string(),
+            image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -116,7 +116,7 @@ impl ImageTreatment {
     }
     pub fn vibrant_preset() -> Self {
         Self {
-            image_filter: "high-contrast".to_string(),
+            image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
             image_frame: "rounded".to_string(),
             image_overlay: "gradient".to_string(),
@@ -129,10 +129,10 @@ impl ImageTreatment {
     }
     pub fn natural_preset() -> Self {
         Self {
-            image_filter: "vintage".to_string(),
+            image_filter: "none".to_string(),
             image_position: "full-bleed".to_string(),
-            image_frame: "organic".to_string(),
-            image_overlay: "tint".to_string(),
+            image_frame: "rounded".to_string(),
+            image_overlay: "gradient".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "fade-in".to_string(),
@@ -388,25 +388,14 @@ pub fn render_themed_image(
     // Overlay mapping
     let mut overlay_html = String::new();
     match treatment.image_overlay.as_str() {
-        "gradient" => {
-            overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.75));z-index:2;"></div>"#.to_string();
+        "none" => {}
+        _ => {
+            if is_dark {
+                overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>"#.to_string();
+            } else {
+                overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.55));z-index:2;"></div>"#.to_string();
+            }
         }
-        "solid" => {
-            overlay_html = r#"<div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:2;"></div>"#.to_string();
-        }
-        "duotone" => {
-            overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(236, 72, 153, 0.4));z-index:2;"></div>"#.to_string();
-        }
-        "vignette" => {
-            overlay_html = r#"<div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.75) 100%);z-index:2;"></div>"#.to_string();
-        }
-        "tint" => {
-            overlay_html = format!(
-                r#"<div style="position:absolute;inset:0;background:{}4D;z-index:2;"></div>"#,
-                tokens.primary
-            );
-        }
-        _ => {}
     }
 
     // Mix Blend mapping
@@ -7209,9 +7198,9 @@ pub fn image_gallery_slide(
     };
 
     let grid_height = match eff_layout {
-        "4-grid" | "6-grid" => if has_header || has_footer { "190px" } else { "230px" },
-        "3-grid" => if has_header || has_footer { "175px" } else { "220px" },
-        _ => if has_header || has_footer { "210px" } else { "250px" },
+        "4-grid" | "6-grid" => if has_header && has_footer { "210px" } else if has_header || has_footer { "235px" } else { "275px" },
+        "3-grid" => if has_header && has_footer { "190px" } else if has_header || has_footer { "220px" } else { "260px" },
+        _ => if has_header && has_footer { "220px" } else if has_header || has_footer { "245px" } else { "280px" },
     };
 
     let grid_html = match eff_layout {
@@ -7343,7 +7332,7 @@ pub fn image_gallery_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
+        "60px var(--space-6) 60px"
     } else {
         padding
     };
