@@ -1,18 +1,15 @@
 {
   "_meta": {
-    "version": "2.0.0",
-    "description": "SlideForge Campaign Presets v2 — full-spectrum catalog for AI-agent carousel generation. Covers brand, education, data, political, sociological, psychological, spiritual, and narrative campaigns.",
+    "version": "3.0.0",
+    "description": "SlideForge Campaign Presets v3 — function-named catalog. Presets are named by their emotional objective, not their topic domain. A preset named 'evidence_argument' works for political policy, business strategy, or academic thesis — the emotional engine is identical.",
     "categories": [
-      "brand_marketing",
-      "education_knowledge",
-      "data_analytics",
-      "social_proof",
-      "events",
-      "political_advocacy",
-      "sociological_cultural",
-      "psychological_behavioral",
-      "spiritual_philosophical",
-      "narrative_persuasion"
+      "hook_and_introduction",
+      "credibility_and_proof",
+      "evidence_and_argument",
+      "knowledge_and_transfer",
+      "perspective_and_transformation",
+      "mobilization_and_action",
+      "narrative_and_emotion"
     ],
     "rhythm_principles": [
       "Never repeat the same slide_type consecutively (exception: within repeatable unit_slides, types may repeat across units)",
@@ -39,23 +36,28 @@
       "social_proof": ["testimonial_avatar", "logo_cloud", "case_study_result", "faq"],
       "visual": ["image_caption", "image_headline", "image_quote", "image_callout", "image_gallery", "image_collage", "image_comparison", "image_stat"],
       "feature": ["feature", "grid_cards", "split_features", "list", "checklist_action_plan"],
-      "closing": ["cta", "qr_destination", "pricing_plan"],
-      "political": ["section_divider", "hero", "definition", "myth_fact", "comparison_bars", "metric_grid", "testimonial_avatar", "image_headline", "image_quote", "grid_cards", "callout", "cta", "qr_destination"],
-      "persuasion": ["myth_fact", "definition", "problem_solution", "before_after_story", "comparison_bars", "testimonial_avatar", "case_study_result", "metric_grid", "callout", "image_callout", "process_map", "checklist_action_plan"]
+      "closing": ["cta", "qr_destination", "pricing_plan"]
+    },
+    "emotional_arc_fields": {
+      "description": "Every preset declares its emotional_arc (the psychological journey the reader travels) and persuasion_techniques (which influence principles are structurally embedded). These fields guide the AI agent's content generation — not just what slides to produce, but WHY they're sequenced that way.",
+      "emotional_arc": "Comma-separated progression of emotional states, e.g. 'Curiosity → Understanding → Conviction → Action'",
+      "persuasion_techniques": "Array of influence technique IDs. Known techniques: authority_transfer, social_proof, bandwagon, scarcity, contrast, fear_appeal, hope_appeal, cognitive_dissonance, narrative_transport, emotional_priming, commitment_escalation, reciprocity, plain_folks, identity_framing, reframing, evidence_stacking, transparency"
     }
   },
 
   "presets": [
 
-    {"_category": "══════ BRAND & MARKETING ══════"},
+    {"_group": "══════ HOOK & INTRODUCTION ══════"},
 
     {
-      "id": "product_launch",
-      "name": "Product Launch",
-      "category": "brand_marketing",
-      "description": "Announce a new product or major feature release. Hook with impact, explain the problem it solves, show proof it works, close with access.",
+      "id": "announcement",
+      "name": "Announcement",
+      "category": "hook_and_introduction",
+      "description": "Announce a new product, feature, or milestone. Hook with impact, explain value, prove it works, close with access.",
       "ideal_slide_count": "8-10",
       "rhythm": "Hero → Problem → Features → Proof → CTA",
+      "emotional_arc": "Excitement → Understanding → Proof → Action",
+      "persuasion_techniques": ["authority_transfer", "social_proof", "scarcity"],
       "slides": [
         {
           "slot": "opening_hook",
@@ -141,12 +143,116 @@
     },
 
     {
-      "id": "brand_origin",
-      "name": "Brand Origin Story",
-      "category": "brand_marketing",
-      "description": "Tell the story of how/why the brand was created. Journey → Milestones → Values → Vision → CTA.",
+      "id": "authority_introduction",
+      "name": "Authority Introduction",
+      "category": "hook_and_introduction",
+      "description": "Introduce an authority figure — a leader, expert, or brand — with credibility, values, and endorsements. Works for political candidates, CEOs, keynote speakers, nonprofit founders, or any figure needing trust established.",
+      "ideal_slide_count": "8-10",
+      "rhythm": "Image → Origin → Values → Positions → Endorsements → CTA",
+      "emotional_arc": "Respect → Empathy → Admiration → Trust → Action",
+      "persuasion_techniques": ["authority_transfer", "plain_folks", "bandwagon", "testimonial"],
+      "slides": [
+        {
+          "slot": "opening_image",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{figure_image_url}}",
+            "headline": "{{figure_name}}",
+            "subheadline": "{{figure_tagline}}"
+          }
+        },
+        {
+          "slot": "origin_quote",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{figure_candid_image}}",
+            "quote": "{{figure_personal_quote}}",
+            "author": "{{figure_name}}",
+            "role": "{{figure_background}}"
+          }
+        },
+        {
+          "slot": "values_grid",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "variant": "compact",
+          "params_template": {
+            "title": "{{values_title}}",
+            "cards": "{{core_value_cards}}"
+          }
+        },
+        {
+          "slot": "key_positions",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 2, "max": 4},
+          "description": "Each iteration is a key position or priority: problem → solution → evidence",
+          "unit_slides": [
+            {
+              "slide_type": "problem_solution",
+              "theme": "editorial",
+              "bg_style": "{{position_{{unit_index}}_bg}}",
+              "archetype": "data_analyst",
+              "params_template": {
+                "title": "{{position_{{unit_index}}_title}}",
+                "problem": "{{position_{{unit_index}}_problem}}",
+                "solution": "{{position_{{unit_index}}_solution}}",
+                "proof_points": "{{position_{{unit_index}}_proof}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "endorsements",
+          "required": true,
+          "slide_type": "logo_cloud",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{endorsed_by_title}}",
+            "logos": "{{endorsement_logos}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{figure_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}",
+            "incentive_text": "{{urgency_text}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "origin_story",
+      "name": "Origin Story",
+      "category": "hook_and_introduction",
+      "description": "Tell the story of how something came to be. Works for brands, projects, movements, relationships, or ideas. Creates emotional connection through narrative.",
       "ideal_slide_count": "7-9",
       "rhythm": "Image → Story → Timeline → Values → Vision → CTA",
+      "emotional_arc": "Curiosity → Connection → Admiration → Trust → Action",
+      "persuasion_techniques": ["narrative_transport", "plain_folks", "identity_framing"],
       "slides": [
         {
           "slot": "opening_image",
@@ -156,9 +262,9 @@
           "bg_style": "dark",
           "archetype": "thought_leader",
           "params_template": {
-            "image_url": "{{brand_image_url}}",
-            "headline": "{{brand_name}}",
-            "subheadline": "{{brand_tagline}}"
+            "image_url": "{{origin_image_url}}",
+            "headline": "{{entity_name}}",
+            "subheadline": "{{entity_tagline}}"
           }
         },
         {
@@ -230,178 +336,159 @@
       ]
     },
 
-    {
-      "id": "feature_deepdive",
-      "name": "Feature Deep-Dive",
-      "category": "brand_marketing",
-      "description": "Deep dive into a single feature or capability. Hook → What → How → Why It Matters → Proof → CTA.",
-      "ideal_slide_count": "7-8",
-      "rhythm": "Hook → Explanation → Visual → Data → Social Proof → CTA",
-      "slides": [
-        {
-          "slot": "opening_hook",
-          "required": true,
-          "slide_type": "feature",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "icon": "{{feature_icon}}",
-            "title": "{{feature_name}}",
-            "description": "{{feature_one_liner}}",
-            "number": "{{feature_number}}"
-          }
-        },
-        {
-          "slot": "definition",
-          "required": true,
-          "slide_type": "definition",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "term": "{{feature_name}}",
-            "phonetic": "{{phonetic}}",
-            "definition": "{{technical_definition}}",
-            "context": "{{context_paragraph}}"
-          }
-        },
-        {
-          "slot": "visual_demo",
-          "required": true,
-          "slide_type": "image_callout",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "image_url": "{{demo_image_url}}",
-            "callouts": "{{callout_points}}",
-            "description": "{{demo_description}}"
-          }
-        },
-        {
-          "slot": "how_it_works",
-          "required": true,
-          "slide_type": "process_map",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{how_it_works_title}}",
-            "steps": "{{process_steps}}"
-          }
-        },
-        {
-          "slot": "comparison",
-          "required": false,
-          "slide_type": "before_after_story",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "title": "{{comparison_title}}",
-            "before": "{{before_state}}",
-            "after": "{{after_state}}",
-            "metric": "{{improvement_metric}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "qr_destination",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "destination_url": "{{feature_url}}",
-            "heading": "{{cta_headline}}",
-            "caption": "{{cta_caption}}",
-            "cta_text": "{{cta_button_text}}",
-            "short_url": "{{short_url}}"
-          }
-        }
-      ]
-    },
+    {"_group": "══════ CREDIBILITY & PROOF ══════"},
 
     {
-      "id": "ecommerce_showcase",
-      "name": "E-commerce / Product Showcase",
-      "category": "brand_marketing",
-      "description": "Showcase a product with images, features, and social proof.",
-      "ideal_slide_count": "8-10",
-      "rhythm": "Image → Features → Gallery → Review → Price → CTA",
+      "id": "credibility_cascade",
+      "name": "Credibility Cascade",
+      "category": "credibility_and_proof",
+      "description": "Stack social proof to build trust. Logo cloud → Multiple testimonials → Results metrics → CTA. The repetition of voices creates bandwagon momentum.",
+      "ideal_slide_count": "7-10",
+      "rhythm": "Logos → [Quote × N] → Data → CTA",
+      "emotional_arc": "Skepticism → Recognition → Trust → Action",
+      "persuasion_techniques": ["social_proof", "bandwagon", "authority_transfer"],
       "slides": [
         {
-          "slot": "opening_image",
+          "slot": "opening_logos",
           "required": true,
-          "slide_type": "image_headline",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{product_image_url}}",
-            "headline": "{{product_name}}",
-            "subheadline": "{{product_tagline}}"
-          }
-        },
-        {
-          "slot": "feature_list",
-          "required": true,
-          "slide_type": "grid_cards",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "data_analyst",
-          "variant": "dense",
-          "params_template": {
-            "title": "{{features_title}}",
-            "cards": "{{feature_cards}}"
-          }
-        },
-        {
-          "slot": "product_gallery",
-          "required": true,
-          "slide_type": "image_gallery",
+          "slide_type": "logo_cloud",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "thought_leader",
           "params_template": {
-            "title": "{{gallery_title}}",
-            "images": "{{product_images}}",
-            "section_caption": "{{gallery_caption}}"
+            "title": "{{trusted_by_title}}",
+            "logos": "{{logo_list}}"
           }
         },
         {
-          "slot": "review_sequence",
+          "slot": "testimonial_sequence",
           "required": true,
           "type": "repeatable",
-          "repeat_count": {"min": 2, "max": 3},
-          "description": "Stack 2-3 reviews from different customers for credibility depth",
+          "repeat_count": {"min": 3, "max": 5},
+          "description": "Each iteration is a testimonial. Alternate bg_style for visual variety.",
           "unit_slides": [
             {
               "slide_type": "testimonial_avatar",
               "theme": "editorial",
-              "bg_style": "dark",
+              "bg_style": "{{testimonial_{{unit_index}}_bg}}",
               "archetype": "thought_leader",
               "params_template": {
-                "quote": "{{review_{{unit_index}}}}",
-                "author": "{{reviewer_{{unit_index}}}}",
-                "role": "{{reviewer_{{unit_index}}_title}}",
-                "avatar_url": "{{reviewer_{{unit_index}}_avatar}}"
+                "quote": "{{quote_{{unit_index}}}}",
+                "author": "{{author_{{unit_index}}}}",
+                "role": "{{role_{{unit_index}}}}",
+                "avatar_url": "{{avatar_{{unit_index}}}}"
               }
             }
           ]
         },
         {
-          "slot": "pricing",
+          "slot": "results_metrics",
           "required": true,
-          "slide_type": "pricing_plan",
+          "slide_type": "metric_grid",
           "theme": "bold",
-          "bg_style": "light",
-          "archetype": "startup_pitch",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
           "params_template": {
-            "title": "{{pricing_title}}",
-            "plans": "{{pricing_plans}}"
+            "title": "{{results_title}}",
+            "metrics": "{{result_metrics}}"
           }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "proof_stacking",
+      "name": "Proof Stacking",
+      "category": "credibility_and_proof",
+      "description": "Stack proof through multiple case studies. Each case is a complete unit: challenge → before/after → results → testimonial. Works for any domain where evidence accumulates.",
+      "ideal_slide_count": "7-14",
+      "rhythm": "Hook → [Case × N] → Aggregate Proof → CTA",
+      "emotional_arc": "Skepticism → Recognition → Conviction → Trust → Action",
+      "persuasion_techniques": ["social_proof", "evidence_stacking", "authority_transfer"],
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "section_divider",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "kicker": "{{proof_label}}",
+            "title": "{{collection_title}}",
+            "subtitle": "{{one_line_outcome}}"
+          }
+        },
+        {
+          "slot": "case_sequence",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 1, "max": 3},
+          "description": "Each iteration is a complete case study: challenge → transformation → results → testimonial",
+          "unit_slides": [
+            {
+              "slide_type": "problem_solution",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "data_analyst",
+              "params_template": {
+                "title": "{{case_{{unit_index}}_challenge_title}}",
+                "problem": "{{case_{{unit_index}}_problem}}",
+                "solution": "{{case_{{unit_index}}_solution}}",
+                "proof_points": "{{case_{{unit_index}}_highlights}}"
+              }
+            },
+            {
+              "slide_type": "before_after_story",
+              "theme": "editorial",
+              "bg_style": "dark",
+              "archetype": "data_analyst",
+              "params_template": {
+                "title": "{{case_{{unit_index}}_transformation}}",
+                "before": "{{case_{{unit_index}}_before}}",
+                "after": "{{case_{{unit_index}}_after}}",
+                "metric": "{{case_{{unit_index}}_metric}}"
+              }
+            },
+            {
+              "slide_type": "case_study_result",
+              "theme": "bold",
+              "bg_style": "dark",
+              "archetype": "data_analyst",
+              "params_template": {
+                "client": "{{case_{{unit_index}}_client}}",
+                "challenge": "{{case_{{unit_index}}_challenge_summary}}",
+                "solution": "{{case_{{unit_index}}_solution_summary}}",
+                "results": "{{case_{{unit_index}}_results}}"
+              }
+            },
+            {
+              "slide_type": "testimonial_avatar",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "thought_leader",
+              "params_template": {
+                "quote": "{{case_{{unit_index}}_quote}}",
+                "author": "{{case_{{unit_index}}_client_name}}",
+                "role": "{{case_{{unit_index}}_client_role}}",
+                "avatar_url": "{{case_{{unit_index}}_avatar}}"
+              }
+            }
+          ]
         },
         {
           "slot": "closing_cta",
@@ -411,7 +498,7 @@
           "bg_style": "dark",
           "archetype": "startup_pitch",
           "params_template": {
-            "destination_url": "{{product_url}}",
+            "destination_url": "{{proof_url}}",
             "heading": "{{cta_headline}}",
             "caption": "{{cta_caption}}",
             "cta_text": "{{cta_button_text}}",
@@ -422,12 +509,14 @@
     },
 
     {
-      "id": "behind_scenes",
-      "name": "Behind-the-Scenes",
-      "category": "brand_marketing",
-      "description": "Show the process, team, or craft behind the product.",
+      "id": "process_transparency",
+      "name": "Process Transparency",
+      "category": "credibility_and_proof",
+      "description": "Show the process, craft, or methodology behind something. Builds trust through visibility. Works for manufacturing, creative work, research, cooking, engineering, any domain where process reveals quality.",
       "ideal_slide_count": "6-8",
-      "rhythm": "Image → Process → Image → Values → Quote → CTA",
+      "rhythm": "Image → Process → Gallery → Values → Quote → CTA",
+      "emotional_arc": "Curiosity → Understanding → Appreciation → Trust → Action",
+      "persuasion_techniques": ["transparency", "plain_folks", "social_proof"],
       "slides": [
         {
           "slot": "opening_image",
@@ -437,9 +526,9 @@
           "bg_style": "dark",
           "archetype": "thought_leader",
           "params_template": {
-            "image_url": "{{bts_image_url}}",
-            "headline": "{{bts_headline}}",
-            "subheadline": "{{bts_subtitle}}"
+            "image_url": "{{process_image_url}}",
+            "headline": "{{process_headline}}",
+            "subheadline": "{{process_subtitle}}"
           }
         },
         {
@@ -497,220 +586,117 @@
       ]
     },
 
-    {"_category": "══════ EDUCATION & KNOWLEDGE ══════"},
-
     {
-      "id": "educational_howto",
-      "name": "Educational / How-To",
-      "category": "education_knowledge",
-      "description": "Teach a concept or walk through a process step-by-step. Each step is a repeatable module with its own dedicated slides.",
-      "ideal_slide_count": "9-15",
-      "rhythm": "Definition → [Step Module × N] → Checklist → CTA",
+      "id": "product_showcase",
+      "name": "Product Showcase",
+      "category": "credibility_and_proof",
+      "description": "Showcase a product with features, gallery, reviews, and pricing. Works for any product — physical goods, digital products, services, courses, memberships.",
+      "ideal_slide_count": "8-10",
+      "rhythm": "Image → Features → Gallery → Reviews → Price → CTA",
+      "emotional_arc": "Desire → Evidence → Trust → Commitment → Action",
+      "persuasion_techniques": ["social_proof", "authority_transfer", "scarcity"],
       "slides": [
         {
-          "slot": "opening_definition",
+          "slot": "opening_image",
           "required": true,
-          "slide_type": "definition",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "term": "{{concept_name}}",
-            "phonetic": "{{phonetic_pronunciation}}",
-            "definition": "{{concept_definition}}",
-            "context": "{{context_paragraph}}"
-          }
-        },
-        {
-          "slot": "learning_modules",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a complete learning module: section divider + visual + explanation. Agent fills different content per step.",
-          "unit_slides": [
-            {
-              "slide_type": "section_divider",
-              "theme": "bold",
-              "bg_style": "dark",
-              "archetype": "educator",
-              "params_template": {
-                "kicker": "STEP {{unit_index}}",
-                "title": "{{step_title}}",
-                "subtitle": "{{step_subtitle}}"
-              }
-            },
-            {
-              "slide_type": "image_caption",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "educator",
-              "params_template": {
-                "image_url": "{{step_{{unit_index}}_image_url}}",
-                "caption": "{{step_{{unit_index}}_caption}}",
-                "description": "{{step_{{unit_index}}_description}}"
-              }
-            },
-            {
-              "slide_type": "text_block",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "educator",
-              "params_template": {
-                "title": "{{step_{{unit_index}}_detail_title}}",
-                "body": "{{step_{{unit_index}}_detail_body}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "myth_busting",
-          "required": false,
-          "slide_type": "myth_fact",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "variant": "debunk",
-          "params_template": {
-            "myth": "{{common_myth}}",
-            "fact": "{{actual_fact}}",
-            "explanation": "{{explanation}}"
-          }
-        },
-        {
-          "slot": "checklist",
-          "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "image_headline",
           "theme": "bold",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{checklist_title}}",
-            "items": "{{checklist_items}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "thought_leadership",
-      "name": "Thought Leadership",
-      "category": "education_knowledge",
-      "description": "Share a contrarian insight or industry perspective. Myth → Insight → Evidence points (repeatable) → Framework → CTA.",
-      "ideal_slide_count": "8-12",
-      "rhythm": "Myth → Insight → [Evidence × N] → Framework → CTA",
-      "slides": [
-        {
-          "slot": "opening_myth",
-          "required": true,
-          "slide_type": "myth_fact",
-          "theme": "editorial",
           "bg_style": "dark",
           "archetype": "thought_leader",
-          "variant": "debunk",
           "params_template": {
-            "myth": "{{industry_myth}}",
-            "fact": "{{contrarian_truth}}",
-            "explanation": "{{evidence_summary}}"
+            "image_url": "{{product_image_url}}",
+            "headline": "{{product_name}}",
+            "subheadline": "{{product_tagline}}"
           }
         },
         {
-          "slot": "insight_definition",
+          "slot": "feature_list",
           "required": true,
-          "slide_type": "definition",
+          "slide_type": "grid_cards",
           "theme": "editorial",
           "bg_style": "light",
-          "archetype": "educator",
+          "archetype": "data_analyst",
+          "variant": "dense",
           "params_template": {
-            "term": "{{insight_term}}",
-            "phonetic": "{{phonetic}}",
-            "definition": "{{insight_definition}}",
-            "context": "{{context}}"
+            "title": "{{features_title}}",
+            "cards": "{{feature_cards}}"
           }
         },
         {
-          "slot": "evidence_sequence",
+          "slot": "product_gallery",
+          "required": true,
+          "slide_type": "image_gallery",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{gallery_title}}",
+            "images": "{{product_images}}",
+            "section_caption": "{{gallery_caption}}"
+          }
+        },
+        {
+          "slot": "review_sequence",
           "required": true,
           "type": "repeatable",
-          "repeat_count": {"min": 2, "max": 4},
-          "description": "Each iteration presents one evidence point with a different visualization type for visual variety",
+          "repeat_count": {"min": 2, "max": 3},
+          "description": "Stack 2-3 reviews from different sources for credibility depth",
           "unit_slides": [
             {
-              "slide_type": "chart",
+              "slide_type": "testimonial_avatar",
               "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "data_analyst",
-              "params_template": {
-                "chart_type": "{{evidence_{{unit_index}}_chart_type}}",
-                "title": "{{evidence_{{unit_index}}_title}}",
-                "caption": "{{evidence_{{unit_index}}_caption}}",
-                "data": "{{evidence_{{unit_index}}_data}}"
-              }
-            },
-            {
-              "slide_type": "callout",
-              "theme": "bold",
               "bg_style": "dark",
               "archetype": "thought_leader",
               "params_template": {
-                "title": "{{evidence_{{unit_index}}_insight_title}}",
-                "text": "{{evidence_{{unit_index}}_insight_text}}",
-                "icon": "{{evidence_{{unit_index}}_icon}}"
+                "quote": "{{review_{{unit_index}}}}",
+                "author": "{{reviewer_{{unit_index}}}}",
+                "role": "{{reviewer_{{unit_index}}_title}}",
+                "avatar_url": "{{reviewer_{{unit_index}}_avatar}}"
               }
             }
           ]
         },
         {
-          "slot": "framework",
+          "slot": "pricing",
           "required": true,
-          "slide_type": "process_map",
+          "slide_type": "pricing_plan",
           "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "educator",
+          "bg_style": "light",
+          "archetype": "startup_pitch",
           "params_template": {
-            "title": "{{framework_title}}",
-            "steps": "{{framework_steps}}"
+            "title": "{{pricing_title}}",
+            "plans": "{{pricing_plans}}"
           }
         },
         {
           "slot": "closing_cta",
           "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
+          "slide_type": "qr_destination",
+          "theme": "bold",
           "bg_style": "dark",
-          "archetype": "thought_leader",
+          "archetype": "startup_pitch",
           "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
+            "destination_url": "{{product_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}"
           }
         }
       ]
     },
 
-    {"_category": "══════ DATA & ANALYTICS ══════"},
+    {"_group": "══════ EVIDENCE & ARGUMENT ══════"},
 
     {
-      "id": "data_story",
-      "name": "Data Story / Analytics",
-      "category": "data_analytics",
-      "description": "Lead with numbers and visualizations. Metrics → Charts (repeatable) → Insights → CTA.",
+      "id": "evidence_narrative",
+      "name": "Evidence Narrative",
+      "category": "evidence_and_argument",
+      "description": "Lead with numbers and build a data-driven story. Metrics → Charts (repeatable) → Insights → CTA. Works for any domain where data tells the story.",
       "ideal_slide_count": "8-12",
       "rhythm": "Headline → Metric → [Chart + Insight × N] → Summary → CTA",
+      "emotional_arc": "Curiosity → Discovery → Understanding → Conviction → Action",
+      "persuasion_techniques": ["evidence_stacking", "authority_transfer", "social_proof"],
       "slides": [
         {
           "slot": "opening_headline",
@@ -720,8 +706,8 @@
           "bg_style": "dark",
           "archetype": "data_analyst",
           "params_template": {
-            "headline": "{{data_story_headline}}",
-            "subheadline": "{{data_story_subtitle}}"
+            "headline": "{{narrative_headline}}",
+            "subheadline": "{{narrative_subtitle}}"
           }
         },
         {
@@ -800,163 +786,90 @@
     },
 
     {
-      "id": "case_study",
-      "name": "Case Study / Success Story",
-      "category": "data_analytics",
-      "description": "Showcase client success stories. Supports stacking multiple case studies as repeatable units.",
-      "ideal_slide_count": "7-14",
-      "rhythm": "Hook → [Case Study × N] → Aggregate Proof → CTA",
+      "id": "evidence_argument",
+      "name": "Evidence Argument",
+      "category": "evidence_and_argument",
+      "description": "Build a systematic case with repeatable evidence blocks. Problem statement → [Evidence × N] → Solution → Impact → CTA. Works for policy positions, business cases, research arguments, or any domain requiring structured persuasion.",
+      "ideal_slide_count": "8-12",
+      "rhythm": "Problem → [Evidence Block × N] → Solution → Impact → CTA",
+      "emotional_arc": "Concern → Understanding → Conviction → Hope → Action",
+      "persuasion_techniques": ["fear_appeal", "evidence_stacking", "authority_transfer", "hope_appeal"],
       "slides": [
         {
-          "slot": "opening_hook",
+          "slot": "opening_problem",
           "required": true,
-          "slide_type": "section_divider",
+          "slide_type": "hero",
           "theme": "bold",
           "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "kicker": "{{case_study_label}}",
-            "title": "{{collection_title}}",
-            "subtitle": "{{one_line_outcome}}"
-          }
-        },
-        {
-          "slot": "case_study_sequence",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 1, "max": 3},
-          "description": "Each iteration is a complete case study: challenge → before/after → results → testimonial",
-          "unit_slides": [
-            {
-              "slide_type": "problem_solution",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "data_analyst",
-              "params_template": {
-                "title": "{{case_{{unit_index}}_challenge_title}}",
-                "problem": "{{case_{{unit_index}}_problem}}",
-                "solution": "{{case_{{unit_index}}_solution}}",
-                "proof_points": "{{case_{{unit_index}}_highlights}}"
-              }
-            },
-            {
-              "slide_type": "before_after_story",
-              "theme": "editorial",
-              "bg_style": "dark",
-              "archetype": "data_analyst",
-              "params_template": {
-                "title": "{{case_{{unit_index}}_transformation}}",
-                "before": "{{case_{{unit_index}}_before}}",
-                "after": "{{case_{{unit_index}}_after}}",
-                "metric": "{{case_{{unit_index}}_metric}}"
-              }
-            },
-            {
-              "slide_type": "case_study_result",
-              "theme": "bold",
-              "bg_style": "dark",
-              "archetype": "data_analyst",
-              "params_template": {
-                "client": "{{case_{{unit_index}}_client}}",
-                "challenge": "{{case_{{unit_index}}_challenge_summary}}",
-                "solution": "{{case_{{unit_index}}_solution_summary}}",
-                "results": "{{case_{{unit_index}}_results}}"
-              }
-            },
-            {
-              "slide_type": "testimonial_avatar",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "thought_leader",
-              "params_template": {
-                "quote": "{{case_{{unit_index}}_quote}}",
-                "author": "{{case_{{unit_index}}_client_name}}",
-                "role": "{{case_{{unit_index}}_client_role}}",
-                "avatar_url": "{{case_{{unit_index}}_avatar}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "qr_destination",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "destination_url": "{{case_study_url}}",
-            "heading": "{{cta_headline}}",
-            "caption": "{{cta_caption}}",
-            "cta_text": "{{cta_button_text}}",
-            "short_url": "{{short_url}}"
-          }
-        }
-      ]
-    },
-
-    {"_category": "══════ SOCIAL PROOF ══════"},
-
-    {
-      "id": "testimonial_wall",
-      "name": "Testimonial / Social Proof",
-      "category": "social_proof",
-      "description": "Stack social proof to build trust. Logo cloud → Multiple testimonials (repeatable) → Results → CTA.",
-      "ideal_slide_count": "7-10",
-      "rhythm": "Logos → [Quote × N] → Data → CTA",
-      "slides": [
-        {
-          "slot": "opening_logos",
-          "required": true,
-          "slide_type": "logo_cloud",
-          "theme": "editorial",
-          "bg_style": "light",
           "archetype": "thought_leader",
           "params_template": {
-            "title": "{{trusted_by_title}}",
-            "logos": "{{logo_list}}"
+            "headline": "{{problem_headline}}",
+            "subheadline": "{{problem_subheadline}}"
           }
         },
         {
-          "slot": "testimonial_sequence",
+          "slot": "evidence_blocks",
           "required": true,
           "type": "repeatable",
-          "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a testimonial. Alternate between avatar-style and image-quote-style for visual variety.",
+          "repeat_count": {"min": 2, "max": 4},
+          "description": "Each iteration is an evidence block: data visualization + interpretation callout",
           "unit_slides": [
             {
-              "slide_type": "testimonial_avatar",
+              "slide_type": "chart",
               "theme": "editorial",
-              "bg_style": "{{testimonial_{{unit_index}}_bg}}",
+              "bg_style": "light",
+              "archetype": "data_analyst",
+              "params_template": {
+                "chart_type": "{{evidence_{{unit_index}}_chart_type}}",
+                "title": "{{evidence_{{unit_index}}_title}}",
+                "caption": "{{evidence_{{unit_index}}_caption}}",
+                "data": "{{evidence_{{unit_index}}_data}}"
+              }
+            },
+            {
+              "slide_type": "callout",
+              "theme": "bold",
+              "bg_style": "dark",
               "archetype": "thought_leader",
               "params_template": {
-                "quote": "{{quote_{{unit_index}}}}",
-                "author": "{{author_{{unit_index}}}}",
-                "role": "{{role_{{unit_index}}}}",
-                "avatar_url": "{{avatar_{{unit_index}}}}"
+                "title": "{{evidence_{{unit_index}}_takeaway_title}}",
+                "text": "{{evidence_{{unit_index}}_takeaway_text}}",
+                "icon": "{{evidence_{{unit_index}}_icon}}"
               }
             }
           ]
         },
         {
-          "slot": "results_metrics",
+          "slot": "solution",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{solution_title}}",
+            "steps": "{{solution_steps}}"
+          }
+        },
+        {
+          "slot": "impact_metric",
           "required": true,
           "slide_type": "metric_grid",
           "theme": "bold",
           "bg_style": "dark",
           "archetype": "data_analyst",
           "params_template": {
-            "title": "{{results_title}}",
-            "metrics": "{{result_metrics}}"
+            "title": "{{impact_title}}",
+            "metrics": "{{impact_metrics}}"
           }
         },
         {
           "slot": "closing_cta",
           "required": true,
           "slide_type": "cta",
-          "theme": "editorial",
+          "theme": "bold",
           "bg_style": "dark",
-          "archetype": "thought_leader",
+          "archetype": "startup_pitch",
           "params_template": {
             "headline": "{{cta_headline}}",
             "button_text": "{{cta_button_text}}",
@@ -968,12 +881,14 @@
     },
 
     {
-      "id": "comparison_alternative",
-      "name": "Comparison / Alternative",
-      "category": "social_proof",
-      "description": "Compare two options (your product vs competitor, or old way vs new way).",
+      "id": "contrast_analysis",
+      "name": "Contrast Analysis",
+      "category": "evidence_and_argument",
+      "description": "Compare two options analytically. Table → Visual compare → Features → Verdict. Works for product comparisons, methodology evaluations, strategy options, or any decision between alternatives.",
       "ideal_slide_count": "7-8",
-      "rhythm": "Hook → Table → Visual Compare → Features → Verdict → CTA",
+      "rhythm": "Hook → Table → Visual → Features → Verdict → CTA",
+      "emotional_arc": "Confusion → Clarity → Conviction → Action",
+      "persuasion_techniques": ["contrast", "evidence_stacking", "authority_transfer"],
       "slides": [
         {
           "slot": "opening_hook",
@@ -1059,295 +974,14 @@
       ]
     },
 
-    {"_category": "══════ EVENTS ══════"},
-
     {
-      "id": "event_webinar",
-      "name": "Event / Webinar Promo",
-      "category": "events",
-      "description": "Promote an upcoming event or webinar.",
-      "ideal_slide_count": "6-8",
-      "rhythm": "Hook → Agenda → Speaker → Outcomes → Register → CTA",
-      "slides": [
-        {
-          "slot": "opening_hook",
-          "required": true,
-          "slide_type": "hero",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "headline": "{{event_name}}",
-            "subheadline": "{{event_date_time}}",
-            "badge": "{{event_badge}}"
-          }
-        },
-        {
-          "slot": "agenda",
-          "required": true,
-          "slide_type": "list",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{agenda_title}}",
-            "items": "{{agenda_items}}",
-            "numbered": true
-          }
-        },
-        {
-          "slot": "speaker",
-          "required": true,
-          "slide_type": "image_quote",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{speaker_image}}",
-            "quote": "{{speaker_quote}}",
-            "author": "{{speaker_name}}",
-            "role": "{{speaker_title}}"
-          }
-        },
-        {
-          "slot": "learning_outcomes",
-          "required": true,
-          "slide_type": "grid_cards",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "variant": "compact",
-          "params_template": {
-            "title": "{{outcomes_title}}",
-            "cards": "{{outcome_cards}}"
-          }
-        },
-        {
-          "slot": "closing_register",
-          "required": true,
-          "slide_type": "qr_destination",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "destination_url": "{{registration_url}}",
-            "heading": "{{register_headline}}",
-            "caption": "{{register_caption}}",
-            "cta_text": "{{register_button_text}}",
-            "short_url": "{{short_url}}",
-            "incentive_text": "{{early_bird_incentive}}"
-          }
-        }
-      ]
-    },
-
-    {"_category": "══════ POLITICAL & ADVOCACY ══════"},
-
-    {
-      "id": "political_candidate_intro",
-      "name": "Political Candidate Introduction",
-      "category": "political_advocacy",
-      "description": "Introduce a candidate with authority, values, and endorsements. Emotional arc: Trust → Connection → Authority → Commitment.",
-      "ideal_slide_count": "8-10",
-      "rhythm": "Hero → Origin → Values → Policy Grid → Endorsement → CTA",
-      "emotional_arc": "Respect → Empathy → Admiration → Trust → Action",
-      "persuasion_techniques": ["authority_transfer", "plain_folks", "bandwagon", "testimonial"],
-      "slides": [
-        {
-          "slot": "opening_hero",
-          "required": true,
-          "slide_type": "image_headline",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{candidate_image_url}}",
-            "headline": "{{candidate_name}}",
-            "subheadline": "{{campaign_slogan}}"
-          }
-        },
-        {
-          "slot": "origin_story",
-          "required": true,
-          "slide_type": "image_quote",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{candidate_candid_image}}",
-            "quote": "{{candidate_personal_quote}}",
-            "author": "{{candidate_name}}",
-            "role": "{{candidate_background}}"
-          }
-        },
-        {
-          "slot": "values_grid",
-          "required": true,
-          "slide_type": "grid_cards",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "thought_leader",
-          "variant": "compact",
-          "params_template": {
-            "title": "{{values_title}}",
-            "cards": "{{core_value_cards}}"
-          }
-        },
-        {
-          "slot": "policy_positions",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 2, "max": 4},
-          "description": "Each iteration is a policy position: problem → solution → evidence",
-          "unit_slides": [
-            {
-              "slide_type": "problem_solution",
-              "theme": "editorial",
-              "bg_style": "{{policy_{{unit_index}}_bg}}",
-              "archetype": "data_analyst",
-              "params_template": {
-                "title": "{{policy_{{unit_index}}_title}}",
-                "problem": "{{policy_{{unit_index}}_problem}}",
-                "solution": "{{policy_{{unit_index}}_solution}}",
-                "proof_points": "{{policy_{{unit_index}}_proof}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "endorsement_stack",
-          "required": true,
-          "slide_type": "logo_cloud",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "thought_leader",
-          "params_template": {
-            "title": "{{endorsed_by_title}}",
-            "logos": "{{endorsement_logos}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "qr_destination",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "destination_url": "{{campaign_url}}",
-            "heading": "{{cta_headline}}",
-            "caption": "{{cta_caption}}",
-            "cta_text": "{{cta_button_text}}",
-            "short_url": "{{short_url}}",
-            "incentive_text": "{{urgency_text}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "political_policy_position",
-      "name": "Political Policy Position",
-      "category": "political_advocacy",
-      "description": "Deep-dive into a specific policy position. Repeatable evidence blocks build the case systematically.",
-      "ideal_slide_count": "8-12",
-      "rhythm": "Problem Statement → [Evidence Block × N] → Impact → CTA",
-      "emotional_arc": "Concern → Understanding → Conviction → Hope → Action",
-      "persuasion_techniques": ["fear_appeal", "evidence_stacking", "authority_transfer", "bandwagon"],
-      "slides": [
-        {
-          "slot": "opening_problem",
-          "required": true,
-          "slide_type": "hero",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "headline": "{{policy_problem_headline}}",
-            "subheadline": "{{policy_problem_subheadline}}"
-          }
-        },
-        {
-          "slot": "evidence_blocks",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 2, "max": 4},
-          "description": "Each iteration is an evidence block: data visualization + interpretation callout",
-          "unit_slides": [
-            {
-              "slide_type": "chart",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "data_analyst",
-              "params_template": {
-                "chart_type": "{{evidence_{{unit_index}}_chart_type}}",
-                "title": "{{evidence_{{unit_index}}_title}}",
-                "caption": "{{evidence_{{unit_index}}_caption}}",
-                "data": "{{evidence_{{unit_index}}_data}}"
-              }
-            },
-            {
-              "slide_type": "callout",
-              "theme": "bold",
-              "bg_style": "dark",
-              "archetype": "thought_leader",
-              "params_template": {
-                "title": "{{evidence_{{unit_index}}_takeaway_title}}",
-                "text": "{{evidence_{{unit_index}}_takeaway_text}}",
-                "icon": "{{evidence_{{unit_index}}_icon}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "policy_solution",
-          "required": true,
-          "slide_type": "process_map",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{policy_solution_title}}",
-            "steps": "{{policy_solution_steps}}"
-          }
-        },
-        {
-          "slot": "impact_metric",
-          "required": true,
-          "slide_type": "metric_grid",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "title": "{{impact_title}}",
-            "metrics": "{{impact_metrics}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "political_contrast_attack",
-      "name": "Political Contrast / Attack",
-      "category": "political_advocacy",
-      "description": "Side-by-side contrast with opponent. Their record vs our record. Uses comparison and before/after for maximum impact.",
+      "id": "contrast_demonstration",
+      "name": "Contrast Demonstration",
+      "category": "evidence_and_argument",
+      "description": "Aggressive side-by-side contrast. Their record vs our record. Uses comparison and before/after for maximum impact. Works when you need to show one option is clearly superior.",
       "ideal_slide_count": "7-9",
-      "rhythm": "Hook → Their Record → Our Record → Comparison → Verdict → CTA",
-      "emotional_arc": "Frustration → Contrast → Hope → Conviction → Action",
+      "rhythm": "Hook → Theirs → Ours → Compare → Verdict → CTA",
+      "emotional_arc": "Frustration → Clarity → Hope → Conviction → Action",
       "persuasion_techniques": ["contrast", "fear_appeal", "hope_appeal", "social_proof"],
       "slides": [
         {
@@ -1363,28 +997,28 @@
           }
         },
         {
-          "slot": "their_record",
+          "slot": "option_a_record",
           "required": true,
           "slide_type": "list",
           "theme": "editorial",
           "bg_style": "dark",
           "archetype": "data_analyst",
           "params_template": {
-            "title": "{{opponent_name}} — Record",
-            "items": "{{opponent_failures}}",
+            "title": "{{option_a_name}} — Record",
+            "items": "{{option_a_points}}",
             "numbered": true
           }
         },
         {
-          "slot": "our_record",
+          "slot": "option_b_record",
           "required": true,
           "slide_type": "list",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "data_analyst",
           "params_template": {
-            "title": "{{our_name}} — Record",
-            "items": "{{our_achievements}}",
+            "title": "{{option_b_name}} — Record",
+            "items": "{{option_b_points}}",
             "numbered": true
           }
         },
@@ -1397,8 +1031,8 @@
           "archetype": "data_analyst",
           "params_template": {
             "title": "{{comparison_title}}",
-            "before": "{{their_outcome}}",
-            "after": "{{our_outcome}}",
+            "before": "{{option_a_outcome}}",
+            "after": "{{option_b_outcome}}",
             "metric": "{{key_difference_metric}}"
           }
         },
@@ -1446,78 +1080,191 @@
       ]
     },
 
+    {"_group": "══════ KNOWLEDGE & TRANSFER ══════"},
+
     {
-      "id": "political_mobilize",
-      "name": "Political Mobilization / Get Out The Vote",
-      "category": "political_advocacy",
-      "description": "Rally supporters to action. Urgency → What's at stake → How to act → Social proof → CTA.",
-      "ideal_slide_count": "7-9",
-      "rhythm": "Urgency → Stakes → Proof → How-To → Social Proof → CTA",
-      "emotional_arc": "Urgency → Fear → Determination → Empowerment → Action",
-      "persuasion_techniques": ["scarcity", "fear_appeal", "bandwagon", "commitment_escalation"],
+      "id": "skill_transfer",
+      "name": "Skill Transfer",
+      "category": "knowledge_and_transfer",
+      "description": "Teach a skill or walk through a process. Each step is a repeatable module with its own dedicated slides. Works for tutorials, onboarding, training, educational content.",
+      "ideal_slide_count": "9-15",
+      "rhythm": "Definition → [Step Module × N] → Checklist → CTA",
+      "emotional_arc": "Confusion → Understanding → Practice → Mastery → Confidence",
+      "persuasion_techniques": ["authority_transfer", "commitment_escalation", "social_proof"],
       "slides": [
         {
-          "slot": "opening_urgency",
+          "slot": "opening_definition",
           "required": true,
-          "slide_type": "hero",
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{concept_name}}",
+            "phonetic": "{{phonetic_pronunciation}}",
+            "definition": "{{concept_definition}}",
+            "context": "{{context_paragraph}}"
+          }
+        },
+        {
+          "slot": "learning_modules",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 3, "max": 5},
+          "description": "Each iteration is a complete learning module: section divider + visual + explanation",
+          "unit_slides": [
+            {
+              "slide_type": "section_divider",
+              "theme": "bold",
+              "bg_style": "dark",
+              "archetype": "educator",
+              "params_template": {
+                "kicker": "STEP {{unit_index}}",
+                "title": "{{step_title}}",
+                "subtitle": "{{step_subtitle}}"
+              }
+            },
+            {
+              "slide_type": "image_caption",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "educator",
+              "params_template": {
+                "image_url": "{{step_{{unit_index}}_image_url}}",
+                "caption": "{{step_{{unit_index}}_caption}}",
+                "description": "{{step_{{unit_index}}_description}}"
+              }
+            },
+            {
+              "slide_type": "text_block",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "educator",
+              "params_template": {
+                "title": "{{step_{{unit_index}}_detail_title}}",
+                "body": "{{step_{{unit_index}}_detail_body}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "myth_busting",
+          "required": false,
+          "slide_type": "myth_fact",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "variant": "debunk",
+          "params_template": {
+            "myth": "{{common_myth}}",
+            "fact": "{{actual_fact}}",
+            "explanation": "{{explanation}}"
+          }
+        },
+        {
+          "slot": "checklist",
+          "required": true,
+          "slide_type": "checklist_action_plan",
+          "theme": "bold",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{checklist_title}}",
+            "items": "{{checklist_items}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "deep_dive",
+      "name": "Deep Dive",
+      "category": "knowledge_and_transfer",
+      "description": "Deep explanation of one concept, feature, or capability. Hook → What → How → Why It Matters → Proof → CTA. Works for feature explanations, concept breakdowns, methodology deep-dives.",
+      "ideal_slide_count": "7-8",
+      "rhythm": "Hook → Explanation → Visual → Process → Proof → CTA",
+      "emotional_arc": "Curiosity → Understanding → Mastery → Confidence → Action",
+      "persuasion_techniques": ["authority_transfer", "evidence_stacking", "social_proof"],
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "feature",
           "theme": "bold",
           "bg_style": "dark",
           "archetype": "thought_leader",
           "params_template": {
-            "headline": "{{urgency_headline}}",
-            "subheadline": "{{deadline_or_date}}",
-            "badge": "{{urgency_badge}}"
+            "icon": "{{subject_icon}}",
+            "title": "{{subject_name}}",
+            "description": "{{subject_one_liner}}",
+            "number": "{{subject_number}}"
           }
         },
         {
-          "slot": "whats_at_stake",
+          "slot": "definition",
           "required": true,
-          "slide_type": "grid_cards",
+          "slide_type": "definition",
           "theme": "editorial",
           "bg_style": "light",
-          "archetype": "data_analyst",
-          "variant": "dense",
+          "archetype": "educator",
           "params_template": {
-            "title": "{{stakes_title}}",
-            "cards": "{{stake_cards}}"
+            "term": "{{subject_name}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{technical_definition}}",
+            "context": "{{context_paragraph}}"
           }
         },
         {
-          "slot": "evidence_of_impact",
+          "slot": "visual_demo",
           "required": true,
-          "slide_type": "metric_grid",
+          "slide_type": "image_callout",
           "theme": "bold",
           "bg_style": "dark",
           "archetype": "data_analyst",
           "params_template": {
-            "title": "{{impact_title}}",
-            "metrics": "{{impact_metrics}}"
+            "image_url": "{{demo_image_url}}",
+            "callouts": "{{callout_points}}",
+            "description": "{{demo_description}}"
           }
         },
         {
-          "slot": "how_to_act",
+          "slot": "how_it_works",
           "required": true,
           "slide_type": "process_map",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "educator",
           "params_template": {
-            "title": "{{action_steps_title}}",
-            "steps": "{{action_steps}}"
+            "title": "{{how_it_works_title}}",
+            "steps": "{{process_steps}}"
           }
         },
         {
-          "slot": "social_momentum",
-          "required": true,
-          "slide_type": "testimonial_avatar",
+          "slot": "comparison",
+          "required": false,
+          "slide_type": "before_after_story",
           "theme": "editorial",
           "bg_style": "dark",
-          "archetype": "thought_leader",
+          "archetype": "data_analyst",
           "params_template": {
-            "quote": "{{mobilization_quote}}",
-            "author": "{{supporter_name}}",
-            "role": "{{supporter_role}}",
-            "avatar_url": "{{supporter_avatar}}"
+            "title": "{{comparison_title}}",
+            "before": "{{before_state}}",
+            "after": "{{after_state}}",
+            "metric": "{{improvement_metric}}"
           }
         },
         {
@@ -1528,24 +1275,408 @@
           "bg_style": "dark",
           "archetype": "startup_pitch",
           "params_template": {
-            "destination_url": "{{action_url}}",
+            "destination_url": "{{subject_url}}",
             "heading": "{{cta_headline}}",
             "caption": "{{cta_caption}}",
             "cta_text": "{{cta_button_text}}",
-            "short_url": "{{short_url}}",
-            "incentive_text": "{{urgency_countdown}}"
+            "short_url": "{{short_url}}"
           }
         }
       ]
     },
 
-    {"_category": "══════ SOCIOLOGICAL & CULTURAL ══════"},
+    {
+      "id": "principle_education",
+      "name": "Principle Education",
+      "category": "knowledge_and_transfer",
+      "description": "Teach a behavioral model, psychological principle, or theoretical framework. Concept → Principles (repeatable) → Application → Practice → CTA. Works for any educational content that teaches underlying principles.",
+      "ideal_slide_count": "9-13",
+      "rhythm": "Concept → [Principle × N] → Application → Practice → CTA",
+      "emotional_arc": "Curiosity → Recognition → Understanding → Empowerment → Action",
+      "persuasion_techniques": ["cognitive_dissonance", "authority_transfer", "commitment_escalation", "social_proof"],
+      "slides": [
+        {
+          "slot": "opening_concept",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{framework_name}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{framework_definition}}",
+            "context": "{{context_paragraph}}"
+          }
+        },
+        {
+          "slot": "principle_sequence",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 3, "max": 5},
+          "description": "Each iteration is a principle: visual example + explanation + myth-busting",
+          "unit_slides": [
+            {
+              "slide_type": "image_callout",
+              "theme": "bold",
+              "bg_style": "dark",
+              "archetype": "data_analyst",
+              "params_template": {
+                "image_url": "{{principle_{{unit_index}}_image}}",
+                "callouts": "{{principle_{{unit_index}}_callouts}}",
+                "description": "{{principle_{{unit_index}}_description}}"
+              }
+            },
+            {
+              "slide_type": "myth_fact",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "educator",
+              "variant": "debunk",
+              "params_template": {
+                "myth": "{{principle_{{unit_index}}_myth}}",
+                "fact": "{{principle_{{unit_index}}_fact}}",
+                "explanation": "{{principle_{{unit_index}}_explanation}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "application",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{application_title}}",
+            "steps": "{{application_steps}}"
+          }
+        },
+        {
+          "slot": "practice_checklist",
+          "required": true,
+          "slide_type": "checklist_action_plan",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{practice_title}}",
+            "items": "{{practice_items}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
 
     {
-      "id": "sociological_commentary",
-      "name": "Sociological Commentary",
-      "category": "sociological_cultural",
-      "description": "Social critique with data-driven analysis. Observation → Data evidence (repeatable) → Reframe → Call to awareness.",
+      "id": "technique_mastery",
+      "name": "Technique Mastery",
+      "category": "knowledge_and_transfer",
+      "description": "Teach persuasion, communication, or behavioral techniques. Principle → Mechanism → Example → Application → Ethics → CTA. Works for any skill that requires both technique and responsible use.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Principle → Mechanism → Example → Application → Ethics → CTA",
+      "emotional_arc": "Curiosity → Recognition → Mastery → Responsibility → Action",
+      "persuasion_techniques": ["authority_transfer", "social_proof", "reciprocity"],
+      "slides": [
+        {
+          "slot": "opening_principle",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{technique_name}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{technique_definition}}",
+            "context": "{{context}}"
+          }
+        },
+        {
+          "slot": "mechanism",
+          "required": true,
+          "slide_type": "image_callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "image_url": "{{mechanism_image}}",
+            "callouts": "{{mechanism_callouts}}",
+            "description": "{{mechanism_description}}"
+          }
+        },
+        {
+          "slot": "real_world_example",
+          "required": true,
+          "slide_type": "image_caption",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{example_image}}",
+            "caption": "{{example_caption}}",
+            "description": "{{example_description}}"
+          }
+        },
+        {
+          "slot": "application_steps",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{application_title}}",
+            "steps": "{{application_steps}}"
+          }
+        },
+        {
+          "slot": "ethics_callout",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{ethics_title}}",
+            "text": "{{ethics_text}}",
+            "icon": "{{ethics_icon}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "wisdom_transmission",
+      "name": "Wisdom Transmission",
+      "category": "knowledge_and_transfer",
+      "description": "Transmit wisdom, philosophy, or spiritual teaching. Concept → Teachings (repeatable) → Practice → Closing wisdom → CTA. Works for any philosophical, spiritual, or contemplative content.",
+      "ideal_slide_count": "9-13",
+      "rhythm": "Concept → [Teaching × N] → Practice → Wisdom → CTA",
+      "emotional_arc": "Wonder → Understanding → Deepening → Practice → Commitment",
+      "persuasion_techniques": ["authority_transfer", "cognitive_dissonance", "commitment_escalation", "social_proof"],
+      "slides": [
+        {
+          "slot": "opening_concept",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{concept_name}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{concept_definition}}",
+            "context": "{{philosophical_context}}"
+          }
+        },
+        {
+          "slot": "teaching_sequence",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 3, "max": 5},
+          "description": "Each iteration is a teaching: quote/insight + visual + explanation",
+          "unit_slides": [
+            {
+              "slide_type": "image_quote",
+              "theme": "editorial",
+              "bg_style": "dark",
+              "archetype": "thought_leader",
+              "params_template": {
+                "image_url": "{{teaching_{{unit_index}}_image}}",
+                "quote": "{{teaching_{{unit_index}}_quote}}",
+                "author": "{{teaching_{{unit_index}}_author}}",
+                "role": "{{teaching_{{unit_index}}_source}}"
+              }
+            },
+            {
+              "slide_type": "text_block",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "educator",
+              "params_template": {
+                "title": "{{teaching_{{unit_index}}_title}}",
+                "body": "{{teaching_{{unit_index}}_explanation}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "practice",
+          "required": true,
+          "slide_type": "checklist_action_plan",
+          "theme": "bold",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{practice_title}}",
+            "items": "{{practice_items}}"
+          }
+        },
+        {
+          "slot": "closing_wisdom",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{wisdom_title}}",
+            "text": "{{wisdom_text}}",
+            "icon": "{{wisdom_icon}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {"_group": "══════ PERSPECTIVE & TRANSFORMATION ══════"},
+
+    {
+      "id": "contrarian_reframe",
+      "name": "Contrarian Reframe",
+      "category": "perspective_and_transformation",
+      "description": "Challenge conventional wisdom with evidence. Myth → Insight → Evidence points (repeatable) → New framework → CTA. Works for thought leadership, contrarian takes, paradigm challenges.",
+      "ideal_slide_count": "8-12",
+      "rhythm": "Myth → Insight → [Evidence × N] → Framework → CTA",
+      "emotional_arc": "Surprise → Discomfort → Understanding → Reframing → Action",
+      "persuasion_techniques": ["cognitive_dissonance", "authority_transfer", "evidence_stacking"],
+      "slides": [
+        {
+          "slot": "opening_myth",
+          "required": true,
+          "slide_type": "myth_fact",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "variant": "debunk",
+          "params_template": {
+            "myth": "{{industry_myth}}",
+            "fact": "{{contrarian_truth}}",
+            "explanation": "{{evidence_summary}}"
+          }
+        },
+        {
+          "slot": "insight_definition",
+          "required": true,
+          "slide_type": "definition",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "term": "{{insight_term}}",
+            "phonetic": "{{phonetic}}",
+            "definition": "{{insight_definition}}",
+            "context": "{{context}}"
+          }
+        },
+        {
+          "slot": "evidence_sequence",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 2, "max": 4},
+          "description": "Each iteration presents one evidence point with a different visualization type",
+          "unit_slides": [
+            {
+              "slide_type": "chart",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "data_analyst",
+              "params_template": {
+                "chart_type": "{{evidence_{{unit_index}}_chart_type}}",
+                "title": "{{evidence_{{unit_index}}_title}}",
+                "caption": "{{evidence_{{unit_index}}_caption}}",
+                "data": "{{evidence_{{unit_index}}_data}}"
+              }
+            },
+            {
+              "slide_type": "callout",
+              "theme": "bold",
+              "bg_style": "dark",
+              "archetype": "thought_leader",
+              "params_template": {
+                "title": "{{evidence_{{unit_index}}_insight_title}}",
+                "text": "{{evidence_{{unit_index}}_insight_text}}",
+                "icon": "{{evidence_{{unit_index}}_icon}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "framework",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{framework_title}}",
+            "steps": "{{framework_steps}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "paradigm_shift",
+      "name": "Paradigm Shift",
+      "category": "perspective_and_transformation",
+      "description": "Social or cultural critique with data-driven analysis. Observation → Data evidence (repeatable) → Reframe → Call to awareness. Works for any commentary that challenges assumed norms.",
       "ideal_slide_count": "8-12",
       "rhythm": "Observation → [Evidence × N] → Analysis → Reframe → CTA",
       "emotional_arc": "Recognition → Discomfort → Understanding → Reframing → Engagement",
@@ -1642,10 +1773,285 @@
     },
 
     {
-      "id": "sociological_movement",
-      "name": "Sociological Movement Building",
-      "category": "sociological_cultural",
-      "description": "Build a social movement. Problem → Who we are → What we want → How to join → Momentum → CTA.",
+      "id": "transformation_arc",
+      "name": "Transformation Arc",
+      "category": "perspective_and_transformation",
+      "description": "Guide personal transformation. Current state → Desired state → Bridge (repeatable steps) → Proof → CTA. Works for self-improvement, habit change, mindset shifts, career pivots.",
+      "ideal_slide_count": "9-13",
+      "rhythm": "Current → Desired → [Step × N] → Proof → CTA",
+      "emotional_arc": "Dissatisfaction → Hope → Progress → Confidence → Commitment",
+      "persuasion_techniques": ["contrast", "commitment_escalation", "social_proof", "scarcity"],
+      "slides": [
+        {
+          "slot": "current_state",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{current_state_image}}",
+            "headline": "{{current_state_headline}}",
+            "subheadline": "{{current_state_feeling}}"
+          }
+        },
+        {
+          "slot": "desired_state",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{desired_state_image}}",
+            "headline": "{{desired_state_headline}}",
+            "subheadline": "{{desired_state_feeling}}"
+          }
+        },
+        {
+          "slot": "transformation_steps",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 3, "max": 5},
+          "description": "Each iteration is a transformation step: section divider + visual",
+          "unit_slides": [
+            {
+              "slide_type": "section_divider",
+              "theme": "bold",
+              "bg_style": "{{step_{{unit_index}}_bg}}",
+              "archetype": "educator",
+              "params_template": {
+                "kicker": "STEP {{unit_index}}",
+                "title": "{{step_{{unit_index}}_title}}",
+                "subtitle": "{{step_{{unit_index}}_subtitle}}"
+              }
+            },
+            {
+              "slide_type": "image_caption",
+              "theme": "editorial",
+              "bg_style": "light",
+              "archetype": "educator",
+              "params_template": {
+                "image_url": "{{step_{{unit_index}}_image}}",
+                "caption": "{{step_{{unit_index}}_caption}}",
+                "description": "{{step_{{unit_index}}_description}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "transformation_proof",
+          "required": true,
+          "slide_type": "before_after_story",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{transformation_title}}",
+            "before": "{{before_state}}",
+            "after": "{{after_state}}",
+            "metric": "{{transformation_metric}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
+          }
+        }
+      ]
+    },
+
+    {"_group": "══════ MOBILIZATION & ACTION ══════"},
+
+    {
+      "id": "event_mobilization",
+      "name": "Event Mobilization",
+      "category": "mobilization_and_action",
+      "description": "Mobilize for an upcoming event, webinar, or gathering. Hook → Agenda → Speaker → Outcomes → Register → CTA. Works for any event promotion.",
+      "ideal_slide_count": "6-8",
+      "rhythm": "Hook → Agenda → Speaker → Outcomes → Register → CTA",
+      "emotional_arc": "Interest → Excitement → Commitment → Action",
+      "persuasion_techniques": ["scarcity", "social_proof", "commitment_escalation"],
+      "slides": [
+        {
+          "slot": "opening_hook",
+          "required": true,
+          "slide_type": "hero",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{event_name}}",
+            "subheadline": "{{event_date_time}}",
+            "badge": "{{event_badge}}"
+          }
+        },
+        {
+          "slot": "agenda",
+          "required": true,
+          "slide_type": "list",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{agenda_title}}",
+            "items": "{{agenda_items}}",
+            "numbered": true
+          }
+        },
+        {
+          "slot": "speaker",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{speaker_image}}",
+            "quote": "{{speaker_quote}}",
+            "author": "{{speaker_name}}",
+            "role": "{{speaker_title}}"
+          }
+        },
+        {
+          "slot": "learning_outcomes",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "variant": "compact",
+          "params_template": {
+            "title": "{{outcomes_title}}",
+            "cards": "{{outcome_cards}}"
+          }
+        },
+        {
+          "slot": "closing_register",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{registration_url}}",
+            "heading": "{{register_headline}}",
+            "caption": "{{register_caption}}",
+            "cta_text": "{{register_button_text}}",
+            "short_url": "{{short_url}}",
+            "incentive_text": "{{early_bird_incentive}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "urgency_mobilization",
+      "name": "Urgency Mobilization",
+      "category": "mobilization_and_action",
+      "description": "Drive urgent action through fear + hope. Urgency → What's at stake → Proof → How to act → Social proof → CTA. Works for deadlines, campaigns, crisis responses, time-sensitive calls to action.",
+      "ideal_slide_count": "7-9",
+      "rhythm": "Urgency → Stakes → Proof → How-To → Social Proof → CTA",
+      "emotional_arc": "Urgency → Fear → Determination → Empowerment → Action",
+      "persuasion_techniques": ["scarcity", "fear_appeal", "bandwagon", "commitment_escalation"],
+      "slides": [
+        {
+          "slot": "opening_urgency",
+          "required": true,
+          "slide_type": "hero",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{urgency_headline}}",
+            "subheadline": "{{deadline_or_date}}",
+            "badge": "{{urgency_badge}}"
+          }
+        },
+        {
+          "slot": "whats_at_stake",
+          "required": true,
+          "slide_type": "grid_cards",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "data_analyst",
+          "variant": "dense",
+          "params_template": {
+            "title": "{{stakes_title}}",
+            "cards": "{{stake_cards}}"
+          }
+        },
+        {
+          "slot": "evidence_of_impact",
+          "required": true,
+          "slide_type": "metric_grid",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "data_analyst",
+          "params_template": {
+            "title": "{{impact_title}}",
+            "metrics": "{{impact_metrics}}"
+          }
+        },
+        {
+          "slot": "how_to_act",
+          "required": true,
+          "slide_type": "process_map",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{action_steps_title}}",
+            "steps": "{{action_steps}}"
+          }
+        },
+        {
+          "slot": "social_momentum",
+          "required": true,
+          "slide_type": "testimonial_avatar",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "quote": "{{mobilization_quote}}",
+            "author": "{{supporter_name}}",
+            "role": "{{supporter_role}}",
+            "avatar_url": "{{supporter_avatar}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "qr_destination",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "startup_pitch",
+          "params_template": {
+            "destination_url": "{{action_url}}",
+            "heading": "{{cta_headline}}",
+            "caption": "{{cta_caption}}",
+            "cta_text": "{{cta_button_text}}",
+            "short_url": "{{short_url}}",
+            "incentive_text": "{{urgency_countdown}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "collective_mobilization",
+      "name": "Collective Mobilization",
+      "category": "mobilization_and_action",
+      "description": "Build a collective movement. Problem → Who we are → What we want → How to join → Momentum → CTA. Works for community building, social movements, organizational change, grassroots campaigns.",
       "ideal_slide_count": "8-10",
       "rhythm": "Problem → Identity → Vision → Steps → Momentum → CTA",
       "emotional_arc": "Anger → Belonging → Hope → Empowerment → Commitment",
@@ -1741,500 +2147,13 @@
       ]
     },
 
-    {"_category": "══════ PSYCHOLOGICAL & BEHAVIORAL ══════"},
+    {"_group": "══════ NARRATIVE & EMOTION ══════"},
 
     {
-      "id": "psychological_framework",
-      "name": "Psychological Framework Education",
-      "category": "psychological_behavioral",
-      "description": "Teach a behavioral model or psychological principle. Concept → Principles (repeatable) → Application → Practice → CTA.",
-      "ideal_slide_count": "9-13",
-      "rhythm": "Concept → [Principle × N] → Application → Practice → CTA",
-      "emotional_arc": "Curiosity → Recognition → Understanding → Empowerment → Action",
-      "persuasion_techniques": ["cognitive_dissonance", "authority_transfer", "commitment_escalation", "social_proof"],
-      "slides": [
-        {
-          "slot": "opening_concept",
-          "required": true,
-          "slide_type": "definition",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "term": "{{framework_name}}",
-            "phonetic": "{{phonetic}}",
-            "definition": "{{framework_definition}}",
-            "context": "{{context_paragraph}}"
-          }
-        },
-        {
-          "slot": "principle_sequence",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a principle: visual example + explanation + myth-busting",
-          "unit_slides": [
-            {
-              "slide_type": "image_callout",
-              "theme": "bold",
-              "bg_style": "dark",
-              "archetype": "data_analyst",
-              "params_template": {
-                "image_url": "{{principle_{{unit_index}}_image}}",
-                "callouts": "{{principle_{{unit_index}}_callouts}}",
-                "description": "{{principle_{{unit_index}}_description}}"
-              }
-            },
-            {
-              "slide_type": "myth_fact",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "educator",
-              "variant": "debunk",
-              "params_template": {
-                "myth": "{{principle_{{unit_index}}_myth}}",
-                "fact": "{{principle_{{unit_index}}_fact}}",
-                "explanation": "{{principle_{{unit_index}}_explanation}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "application",
-          "required": true,
-          "slide_type": "process_map",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{application_title}}",
-            "steps": "{{application_steps}}"
-          }
-        },
-        {
-          "slot": "practice_checklist",
-          "required": true,
-          "slide_type": "checklist_action_plan",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{practice_title}}",
-            "items": "{{practice_items}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "psychological_selfimprove",
-      "name": "Psychological Self-Improvement",
-      "category": "psychological_behavioral",
-      "description": "Self-improvement arc. Current state → Desired state → Bridge (repeatable steps) → Transformation proof → CTA.",
-      "ideal_slide_count": "9-13",
-      "rhythm": "Current State → Desired State → [Step × N] → Proof → CTA",
-      "emotional_arc": "Dissatisfaction → Hope → Progress → Confidence → Commitment",
-      "persuasion_techniques": ["contrast", "commitment_escalation", "social_proof", "scarcity"],
-      "slides": [
-        {
-          "slot": "current_state",
-          "required": true,
-          "slide_type": "image_headline",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{current_state_image}}",
-            "headline": "{{current_state_headline}}",
-            "subheadline": "{{current_state_feeling}}"
-          }
-        },
-        {
-          "slot": "desired_state",
-          "required": true,
-          "slide_type": "image_headline",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{desired_state_image}}",
-            "headline": "{{desired_state_headline}}",
-            "subheadline": "{{desired_state_feeling}}"
-          }
-        },
-        {
-          "slot": "transformation_steps",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a transformation step: section divider + visual + detail",
-          "unit_slides": [
-            {
-              "slide_type": "section_divider",
-              "theme": "bold",
-              "bg_style": "{{step_{{unit_index}}_bg}}",
-              "archetype": "educator",
-              "params_template": {
-                "kicker": "STEP {{unit_index}}",
-                "title": "{{step_{{unit_index}}_title}}",
-                "subtitle": "{{step_{{unit_index}}_subtitle}}"
-              }
-            },
-            {
-              "slide_type": "image_caption",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "educator",
-              "params_template": {
-                "image_url": "{{step_{{unit_index}}_image}}",
-                "caption": "{{step_{{unit_index}}_caption}}",
-                "description": "{{step_{{unit_index}}_description}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "transformation_proof",
-          "required": true,
-          "slide_type": "before_after_story",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "title": "{{transformation_title}}",
-            "before": "{{before_state}}",
-            "after": "{{after_state}}",
-            "metric": "{{transformation_metric}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "startup_pitch",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "psychological_persuasion",
-      "name": "Persuasion Technique Education",
-      "category": "psychological_behavioral",
-      "description": "Teach persuasion principles. Principle → How it works → Example → How to apply → Ethics → CTA.",
-      "ideal_slide_count": "7-9",
-      "rhythm": "Principle → Mechanism → Example → Application → Ethics → CTA",
-      "emotional_arc": "Curiosity → Recognition → Mastery → Responsibility → Action",
-      "persuasion_techniques": ["authority_transfer", "social_proof", "commitment_escalation", "reciprocity"],
-      "slides": [
-        {
-          "slot": "opening_principle",
-          "required": true,
-          "slide_type": "definition",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "term": "{{principle_name}}",
-            "phonetic": "{{phonetic}}",
-            "definition": "{{principle_definition}}",
-            "context": "{{context}}"
-          }
-        },
-        {
-          "slot": "mechanism",
-          "required": true,
-          "slide_type": "image_callout",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "data_analyst",
-          "params_template": {
-            "image_url": "{{mechanism_image}}",
-            "callouts": "{{mechanism_callouts}}",
-            "description": "{{mechanism_description}}"
-          }
-        },
-        {
-          "slot": "real_world_example",
-          "required": true,
-          "slide_type": "image_caption",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{example_image}}",
-            "caption": "{{example_caption}}",
-            "description": "{{example_description}}"
-          }
-        },
-        {
-          "slot": "application_steps",
-          "required": true,
-          "slide_type": "process_map",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{application_title}}",
-            "steps": "{{application_steps}}"
-          }
-        },
-        {
-          "slot": "ethics_callout",
-          "required": true,
-          "slide_type": "callout",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "title": "{{ethics_title}}",
-            "text": "{{ethics_text}}",
-            "icon": "{{ethics_icon}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "educator",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {"_category": "══════ SPIRITUAL & PHILOSOPHICAL ══════"},
-
-    {
-      "id": "spiritual_teaching",
-      "name": "Spiritual / Philosophical Teaching",
-      "category": "spiritual_philosophical",
-      "description": "Teach a spiritual or philosophical concept. Concept → Definition → Teachings (repeatable) → Practice → Wisdom → CTA.",
-      "ideal_slide_count": "9-13",
-      "rhythm": "Concept → [Teaching × N] → Practice → Wisdom → CTA",
-      "emotional_arc": "Wonder → Understanding → Deepening → Practice → Commitment",
-      "persuasion_techniques": ["authority_transfer", "cognitive_dissonance", "commitment_escalation", "social_proof"],
-      "slides": [
-        {
-          "slot": "opening_concept",
-          "required": true,
-          "slide_type": "definition",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "term": "{{concept_name}}",
-            "phonetic": "{{phonetic}}",
-            "definition": "{{concept_definition}}",
-            "context": "{{philosophical_context}}"
-          }
-        },
-        {
-          "slot": "teaching_sequence",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a teaching: quote/insight + visual + explanation",
-          "unit_slides": [
-            {
-              "slide_type": "image_quote",
-              "theme": "editorial",
-              "bg_style": "dark",
-              "archetype": "thought_leader",
-              "params_template": {
-                "image_url": "{{teaching_{{unit_index}}_image}}",
-                "quote": "{{teaching_{{unit_index}}_quote}}",
-                "author": "{{teaching_{{unit_index}}_author}}",
-                "role": "{{teaching_{{unit_index}}_source}}"
-              }
-            },
-            {
-              "slide_type": "text_block",
-              "theme": "editorial",
-              "bg_style": "light",
-              "archetype": "educator",
-              "params_template": {
-                "title": "{{teaching_{{unit_index}}_title}}",
-                "body": "{{teaching_{{unit_index}}_explanation}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "practice",
-          "required": true,
-          "slide_type": "checklist_action_plan",
-          "theme": "bold",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{practice_title}}",
-            "items": "{{practice_items}}"
-          }
-        },
-        {
-          "slot": "closing_wisdom",
-          "required": true,
-          "slide_type": "callout",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "title": "{{wisdom_title}}",
-            "text": "{{wisdom_text}}",
-            "icon": "{{wisdom_icon}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {
-      "id": "spiritual_practice",
-      "name": "Spiritual Practice / Meditation Guide",
-      "category": "spiritual_philosophical",
-      "description": "Guide a spiritual practice. Intention → Preparation → Practice (repeatable stages) → Integration → CTA.",
-      "ideal_slide_count": "8-12",
-      "rhythm": "Intention → Preparation → [Stage × N] → Integration → CTA",
-      "emotional_arc": "Stillness → Focus → Deepening → Opening → Peace",
-      "persuasion_techniques": ["authority_transfer", "commitment_escalation", "social_proof", "reciprocity"],
-      "slides": [
-        {
-          "slot": "opening_intention",
-          "required": true,
-          "slide_type": "image_headline",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{meditation_image_url}}",
-            "headline": "{{practice_name}}",
-            "subheadline": "{{intention_statement}}"
-          }
-        },
-        {
-          "slot": "preparation",
-          "required": true,
-          "slide_type": "text_block",
-          "theme": "editorial",
-          "bg_style": "light",
-          "archetype": "educator",
-          "params_template": {
-            "title": "{{preparation_title}}",
-            "body": "{{preparation_instructions}}"
-          }
-        },
-        {
-          "slot": "practice_stages",
-          "required": true,
-          "type": "repeatable",
-          "repeat_count": {"min": 2, "max": 4},
-          "description": "Each iteration is a practice stage: visual + instruction + focus point",
-          "unit_slides": [
-            {
-              "slide_type": "image_caption",
-              "theme": "editorial",
-              "bg_style": "{{stage_{{unit_index}}_bg}}",
-              "archetype": "educator",
-              "params_template": {
-                "image_url": "{{stage_{{unit_index}}_image}}",
-                "caption": "Stage {{unit_index}}: {{stage_{{unit_index}}_name}}",
-                "description": "{{stage_{{unit_index}}_instructions}}"
-              }
-            }
-          ]
-        },
-        {
-          "slot": "integration",
-          "required": true,
-          "slide_type": "callout",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "title": "{{integration_title}}",
-            "text": "{{integration_text}}",
-            "icon": "{{integration_icon}}"
-          }
-        },
-        {
-          "slot": "closing_wisdom",
-          "required": true,
-          "slide_type": "image_quote",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "image_url": "{{closing_image}}",
-            "quote": "{{closing_quote}}",
-            "author": "{{closing_author}}",
-            "role": "{{closing_source}}"
-          }
-        },
-        {
-          "slot": "closing_cta",
-          "required": true,
-          "slide_type": "cta",
-          "theme": "editorial",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "headline": "{{cta_headline}}",
-            "button_text": "{{cta_button_text}}",
-            "button_url": "{{cta_url}}",
-            "subtext": "{{cta_subtext}}"
-          }
-        }
-      ]
-    },
-
-    {"_category": "══════ NARRATIVE & PERSUASION ══════"},
-
-    {
-      "id": "narrative_arc",
-      "name": "Narrative Arc / Story-Based Persuasion",
-      "category": "narrative_persuasion",
-      "description": "Tell a story with repeatable scenes. Opening hook → [Scene × N] → Climax → Resolution → CTA.",
+      "id": "story_journey",
+      "name": "Story Journey",
+      "category": "narrative_and_emotion",
+      "description": "Take the reader on a narrative journey with repeatable scenes. Opening hook → [Scene × N] → Climax → Resolution → CTA. Works for any story-driven content where narrative transport is the persuasion mechanism.",
       "ideal_slide_count": "8-14",
       "rhythm": "Hook → [Scene × N] → Climax → Resolution → CTA",
       "emotional_arc": "Intrigue → Engagement → Tension → Catharsis → Action",
@@ -2257,7 +2176,7 @@
           "required": true,
           "type": "repeatable",
           "repeat_count": {"min": 3, "max": 5},
-          "description": "Each iteration is a scene: image + narrative text + emotional beat",
+          "description": "Each iteration is a scene: image + narrative text",
           "unit_slides": [
             {
               "slide_type": "image_headline",
@@ -2328,10 +2247,10 @@
     },
 
     {
-      "id": "emotional_funnel",
-      "name": "Emotional Funnel / Fear → Hope → Action",
-      "category": "narrative_persuasion",
-      "description": "Systematic emotional manipulation arc. Fear → Evidence → Contrast → Hope → Proof → Action. Repeatable fear/hope beats.",
+      "id": "emotional_engineering",
+      "name": "Emotional Engineering",
+      "category": "narrative_and_emotion",
+      "description": "Systematic emotional manipulation arc. Fear → Evidence → Contrast → Hope → Proof → Action. Repeatable fear/hope beats. Works for any content that needs to move people through a specific emotional sequence toward action.",
       "ideal_slide_count": "8-12",
       "rhythm": "Fear → [Evidence × N] → Contrast → Hope → Proof → CTA",
       "emotional_arc": "Fear → Urgency → Contrast → Hope → Trust → Commitment",
@@ -2435,6 +2354,105 @@
             "cta_text": "{{cta_button_text}}",
             "short_url": "{{short_url}}",
             "incentive_text": "{{scarcity_text}}"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "guided_experience",
+      "name": "Guided Experience",
+      "category": "narrative_and_emotion",
+      "description": "Guide a practice, meditation, or experiential journey. Intention → Preparation → Practice (repeatable stages) → Integration → CTA. Works for meditation guides, workshop facilitation, experiential learning, any content that guides participation.",
+      "ideal_slide_count": "8-12",
+      "rhythm": "Intention → Preparation → [Stage × N] → Integration → CTA",
+      "emotional_arc": "Stillness → Focus → Deepening → Opening → Peace → Action",
+      "persuasion_techniques": ["authority_transfer", "commitment_escalation", "reciprocity"],
+      "slides": [
+        {
+          "slot": "opening_intention",
+          "required": true,
+          "slide_type": "image_headline",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{experience_image_url}}",
+            "headline": "{{experience_name}}",
+            "subheadline": "{{intention_statement}}"
+          }
+        },
+        {
+          "slot": "preparation",
+          "required": true,
+          "slide_type": "text_block",
+          "theme": "editorial",
+          "bg_style": "light",
+          "archetype": "educator",
+          "params_template": {
+            "title": "{{preparation_title}}",
+            "body": "{{preparation_instructions}}"
+          }
+        },
+        {
+          "slot": "practice_stages",
+          "required": true,
+          "type": "repeatable",
+          "repeat_count": {"min": 2, "max": 4},
+          "description": "Each iteration is a practice stage: visual + instruction + focus point",
+          "unit_slides": [
+            {
+              "slide_type": "image_caption",
+              "theme": "editorial",
+              "bg_style": "{{stage_{{unit_index}}_bg}}",
+              "archetype": "educator",
+              "params_template": {
+                "image_url": "{{stage_{{unit_index}}_image}}",
+                "caption": "Stage {{unit_index}}: {{stage_{{unit_index}}_name}}",
+                "description": "{{stage_{{unit_index}}_instructions}}"
+              }
+            }
+          ]
+        },
+        {
+          "slot": "integration",
+          "required": true,
+          "slide_type": "callout",
+          "theme": "bold",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "title": "{{integration_title}}",
+            "text": "{{integration_text}}",
+            "icon": "{{integration_icon}}"
+          }
+        },
+        {
+          "slot": "closing_wisdom",
+          "required": true,
+          "slide_type": "image_quote",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "image_url": "{{closing_image}}",
+            "quote": "{{closing_quote}}",
+            "author": "{{closing_author}}",
+            "role": "{{closing_source}}"
+          }
+        },
+        {
+          "slot": "closing_cta",
+          "required": true,
+          "slide_type": "cta",
+          "theme": "editorial",
+          "bg_style": "dark",
+          "archetype": "thought_leader",
+          "params_template": {
+            "headline": "{{cta_headline}}",
+            "button_text": "{{cta_button_text}}",
+            "button_url": "{{cta_url}}",
+            "subtext": "{{cta_subtext}}"
           }
         }
       ]
