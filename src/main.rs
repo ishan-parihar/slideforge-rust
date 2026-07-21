@@ -337,6 +337,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if types.is_empty() {
                 println!("slides: 0 slide types registered");
             } else {
+                // AXI §4: Include total count header
+                println!("count: {} slide types", types.len());
                 println!("slides[{}]{{type,description}}:", types.len());
                 for t in &types {
                     if let Some(info) = slide_registry::get_slide_type_info(t) {
@@ -352,6 +354,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if all.is_empty() {
                 println!("platforms: 0 export platforms registered");
             } else {
+                // AXI §4: Include total count header
+                println!("count: {} export platforms", all.len());
                 println!("platforms[{}]{{name,dimensions,aspect_ratio,default_ratio}}:", all.len());
                 for p in &all {
                     println!(
@@ -367,6 +371,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if all.is_empty() {
                 println!("archetypes: 0 archetypes registered");
             } else {
+                // AXI §4: Include total count header
+                println!("count: {} archetypes", all.len());
                 println!("archetypes[{}]{{name,description}}:", all.len());
                 for a in &all {
                     println!("  {},{}", a.name, truncate_str(&a.description, 80));
@@ -382,6 +388,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ("vibrant", "Saturated colors with playful radii and energetic compositions"),
                 ("natural", "Organic shapes, earthy palette, and hand-crafted feel"),
             ];
+            // AXI §4: Include total count header
+            println!("count: {} themes", themes.len());
             println!("themes[{}]{{name,description}}:", themes.len());
             for (name, desc) in &themes {
                 println!("  {},{}", name, truncate_str(desc, 80));
@@ -389,7 +397,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }            Some(Commands::SlideInfo { slide_type }) => {
             match slide_registry::get_slide_type_info(slide_type) {
                 Some(info) => {
-                    output_toon(&info);
+                    // AXI §3: Truncate long description fields in detail views
+                    let mut truncated = info.clone();
+                    if let Some(obj) = truncated.as_object_mut() {
+                        for key in ["description", "body", "content", "notes", "details", "examples", "layout", "css"] {
+                            if let Some(val) = obj.get(key) {
+                                if let Some(s) = val.as_str() {
+                                    let total = s.len();
+                                    if total > 500 {
+                                        let cut: String = s.chars().take(500).collect();
+                                        obj.insert(key.to_string(), serde_json::json!(
+                                            format!("{}... (truncated, {} chars total)", cut, total)
+                                        ));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    output_toon(&truncated);
                 }
                 None => {
                     let valid = slide_registry::list_slide_types();
