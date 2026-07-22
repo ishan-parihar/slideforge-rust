@@ -208,6 +208,15 @@ enum Commands {
         /// Path to HTML file
         html_file: String,
     },
+    /// Validate a carousel composition against arc structure and constraints
+    ValidateComposition {
+        /// Path to JSON file with composition request
+        #[arg(long)]
+        file: Option<String>,
+        /// Composition request as JSON string
+        #[arg(long)]
+        json: Option<String>,
+    },
     /// Recommend color schemes from a primary color
     RecommendColors {
         primary: String,
@@ -491,6 +500,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let html = fs::read_to_string(html_file)?;
             let report = validate::validate_design(&html);
             println!("{}", serde_json::to_string_pretty(&report)?);
+        }
+        Some(Commands::ValidateComposition { file, json }) => {
+            let input = if let Some(f) = file {
+                fs::read_to_string(f)?
+            } else if let Some(j) = json {
+                j.clone()
+            } else {
+                eprintln!("Error: provide --file or --json");
+                std::process::exit(1);
+            };
+            let req: validate::CompositionRequest = serde_json::from_str(&input)
+                .map_err(|e| format!("Invalid JSON: {e}"))?;
+            let result = validate::validate_composition(&req);
+            println!("{}", serde_json::to_string_pretty(&result)?);
         }
         Some(Commands::RecommendColors {
             primary,

@@ -296,6 +296,64 @@ pub struct ValidateAndFixResponse {
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
+pub struct ValidateCompositionRequest {
+    /// Array of slide objects: [{slide_type, arc, bg_style?}]
+    pub composition: Vec<CompositionSlideInput>,
+    /// Arc structure: {arc_name: {types: [], pool: [], count: {min, max}}}
+    pub arc_structure: std::collections::HashMap<String, ArcPositionInput>,
+    /// Composition constraints
+    pub constraints: CompositionConstraintsInput,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct CompositionSlideInput {
+    pub slide_type: String,
+    pub arc: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bg_style: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct ArcPositionInput {
+    #[serde(default)]
+    pub types: Vec<String>,
+    #[serde(default)]
+    pub pool: Vec<String>,
+    pub count: ArcCountInput,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct ArcCountInput {
+    pub min: usize,
+    pub max: usize,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct CompositionConstraintsInput {
+    #[serde(default = "default_true")]
+    pub no_consecutive_same_type: bool,
+    #[serde(default = "default_bg_rhythm")]
+    pub bg_rhythm: String,
+    pub max_slides: usize,
+    pub min_slides: usize,
+    #[serde(default = "default_max_consecutive_dataviz")]
+    pub max_consecutive_dataviz: usize,
+    #[serde(default = "default_true")]
+    pub require_narrative_after_dataviz: bool,
+}
+
+fn default_true() -> bool { true }
+fn default_bg_rhythm() -> String { "alternating_dark_light".into() }
+fn default_max_consecutive_dataviz() -> usize { 2 }
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+pub struct ValidateCompositionResponse {
+    pub valid: bool,
+    pub errors: Vec<String>,
+    pub warnings: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
 pub struct ValidateDesignRequest {
     pub html: String,
 }
@@ -1286,6 +1344,68 @@ impl Server {
             params,
         }))
     }
+
+    // ── validate_composition ─────────────────────────────────────────────────
+
+    /// Validate a carousel composition against arc structure and constraints.
+    #[tool(
+        name = "validate_composition",
+        description = "Validate a carousel composition against arc_structure and constraints before content fill. Checks arc position counts, pool membership, no-consecutive-same-type, DLD rhythm, total slide count, and dataviz pacing."
+    )]
+    pub async fn validate_composition(
+        &self,
+        Parameters(req): Parameters<ValidateCompositionRequest>,
+    ) -> Result<Json<ValidateCompositionResponse>, ErrorData> {
+        let composition: Vec<validate::CompositionSlide> = req
+            .composition
+            .into_iter()
+            .map(|s| validate::CompositionSlide {
+                slide_type: s.slide_type,
+                arc: s.arc,
+                bg_style: s.bg_style,
+            })
+            .collect();
+
+        let arc_structure: std::collections::HashMap<String, validate::ArcPosition> = req
+            .arc_structure
+            .into_iter()
+            .map(|(k, v)| {
+                let count = validate::ArcCount { min: v.count.min, max: v.count.max };
+                (
+                    k,
+                    validate::ArcPosition {
+                        types: v.types,
+                        pool: v.pool,
+                        count,
+                    },
+                )
+            })
+            .collect();
+
+        let c = &req.constraints;
+        let constraints = validate::CompositionConstraints {
+            no_consecutive_same_type: c.no_consecutive_same_type,
+            bg_rhythm: c.bg_rhythm.clone(),
+            max_slides: c.max_slides,
+            min_slides: c.min_slides,
+            max_consecutive_dataviz: c.max_consecutive_dataviz,
+            require_narrative_after_dataviz: c.require_narrative_after_dataviz,
+        };
+
+        let request = validate::CompositionRequest {
+            composition,
+            arc_structure,
+            constraints,
+        };
+
+        let result = validate::validate_composition(&request);
+        Ok(Json(ValidateCompositionResponse {
+            valid: result.valid,
+            errors: result.errors,
+            warnings: result.warnings,
+        }))
+    }
+
     #[tool(
         name = "validate_design",
         description = "Validate carousel HTML for design, contrast, accessibility, and overflow issues."

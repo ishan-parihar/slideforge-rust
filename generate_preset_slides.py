@@ -7,6 +7,11 @@ is designed to deliver. No generic filler — each carousel should feel like a
 real campaign you'd publish.
 
 Pipeline: configure-design → generate-slide → render-carousel
+
+Flags:
+  --validate    Run composition validation on each preset's slide sequence
+  --only ID     Generate only the specified preset(s), comma-separated
+  --list        List all preset IDs and exit
 """
 
 import json, os, subprocess, sys, random
@@ -184,22 +189,25 @@ def preset_content(preset_id):
         return [
             # image_headline
             {"headline": "Dr. Amara Osei for City Council", "image_url": I[0], "subheadline": "15 years of public health. Now she's running to fix what policy broke."},
-            # image_quote
-            {"quote": "I've watched families choose between medication and rent. That's not a healthcare failure — it's a policy failure. And policy failures need policy makers who've lived them.", "author": "Dr. Amara Osei", "image_url": A[0]},
-            # grid_cards
+            # problem_solution (credentials gap)
+            {"problem": "Voters see candidates make promises they can't keep. Expertise without credibility signals gets dismissed as empty rhetoric.", "solution": "Lead with credentials. Anchor with proof. Close with specificity. The three-part authority structure that converts.", "proof_points": ["15 years of public health experience", "12 clinics opened, 40,000+ patients served", "3 bills authored at state level"]},
+            # grid_cards (core components)
             {"title": "Her Record Speaks", "cards": [
                 {"icon": "🏥", "title": "12 Clinics Opened", "description": "Built free clinics in underserved neighborhoods serving 40,000+ patients annually."},
                 {"icon": "📋", "title": "3 Bills Authored", "description": "State-level legislation expanding mental health coverage for uninsured residents."},
                 {"icon": "🎓", "title": "Mentored 200+", "description": "Trained the next generation of community health workers through the Osei Fellowship."},
                 {"icon": "🤝", "title": "Bipartisan Respect", "description": "Endorsed by both the Medical Association and the Teachers Union — rare common ground."},
             ]},
-            # problem_solution (×4 repeatable — policy positions)
-            {"title": "Housing Affordability", "problem": "Median rent in District 7 has risen 43% in five years while median wages grew only 8%. Families are being displaced from the neighborhoods they built.", "solution": "The Osei Plan: mandate 30% affordable units in new developments, expand community land trusts, and create a tenant protection office with real enforcement power.", "proof_points": ["30% affordable mandate", "Community land trusts", "Tenant protection office"]},
-            {"title": "Public Safety Reform", "problem": "Response times have increased 22% since 2022. Community trust in policing is at historic lows. Neither extreme — defund or militarize — has worked.", "solution": "Invest in violence interruption programs, civilian crisis response teams, and community policing officers who live in the districts they serve.", "proof_points": ["Violence interruption", "Crisis response teams", "Residency requirement"]},
-            {"title": "Education Equity", "problem": "Schools in District 7 receive $2,400 less per student than neighboring districts. Teacher turnover is double the city average.", "solution": "Equalize funding formulas, offer housing stipends to retain teachers, and expand after-school STEM programs in every Title I school.", "proof_points": ["$2,400 gap closed", "Teacher retention stipends", "STEM in every Title I school"]},
-            {"title": "Small Business Support", "problem": "60% of small businesses in District 7 closed permanently during the pandemic. Bureaucratic red tape keeps new ones from opening.", "solution": "One-stop permit shop, micro-loan program for minority-owned businesses, and a commercial rent stabilization pilot.", "proof_points": ["One-stop permits", "Micro-loan fund", "Rent stabilization pilot"]},
-            # logo_cloud
+            # problem_solution (authority signals)
+            {"problem": "Without authority signals, even brilliant content gets ignored. The audience doesn't know why they should listen.", "solution": "The Osei campaign leads with credentials in every touchpoint: 'Dr. Osei' not 'Amara.' '15 years' not 'experience.' Specificity builds trust.", "proof_points": ["Authority signals in first slide increase completion by 45%", "Credential anchoring reduces bounce rate by 62%", "Specific claims outperform general by 2.8x"]},
+            # image_quote (authority quote)
+            {"quote": "I've watched families choose between medication and rent. That's not a healthcare failure — it's a policy failure. And policy failures need policy makers who've lived them.", "author": "Dr. Amara Osei", "image_url": A[0]},
+            # problem_solution (expert blind spot)
+            {"problem": "Expert candidates assume voters understand the issues. They don't. Jargon and policy details alienate the very people they're trying to reach.", "solution": "Translate expertise into lived experience. 'Mental health coverage' becomes 'your neighbor can see a therapist.' 'Funding formula' becomes 'your kid's school gets $2,400 more.'", "proof_points": ["Plain-language content retains 78% past third slide", "Lived-experience framing increases sharing by 3.1x", "Accessibility-first messaging broadens coalition"]},
+            # logo_cloud (credibility logos)
             {"title": "Endorsed By", "logos": ["District 7 Teachers Union", "Metro Medical Assoc.", "Small Business Alliance", "Housing Now PAC", "Young Democrats", "Veterans for Change"]},
+            # problem_solution (conversion gap)
+            {"problem": "Voters who trust a candidate still don't act. The gap between 'I believe in her' and 'I'll vote for her' is the hardest to bridge.", "solution": "Make action specific and immediate: 'Register by Sept 15' not 'Register to vote.' 'Bring 3 friends' not 'Spread the word.' Specificity drives conversion.", "proof_points": ["Specific CTAs convert 3.2x better than generic", "Social proof in final slide increases sharing by 45%", "Deadline-driven CTAs outperform open-ended by 2.1x"]},
             # qr_destination
             {"destination_url": "https://amaraosei.org", "cta_text": "Join the Campaign", "heading": "Dr. Amara Osei for District 7", "caption": "Scan to volunteer, donate, or learn more", "short_url": "amaraosei.org"},
         ]
@@ -256,6 +264,12 @@ def preset_content(preset_id):
                 {"icon": "📈", "title": "Accelerate", "description": "Ship 10x more with the same headcount"},
                 {"icon": "🏆", "title": "Dominate", "description": "Outpace competitors who still design manually"},
             ]},
+            # progress_rings
+            {"title": "Your Compounding Advantage", "rings": [
+                {"label": "Speed", "value": 87, "max": 100, "color": "#6366f1"},
+                {"label": "Quality", "value": 94, "max": 100, "color": "#8b5cf6"},
+                {"label": "Consistency", "value": 98, "max": 100, "color": "#a78bfa"},
+            ]},
             # qr_destination
             {"destination_url": "https://slideforge.dev", "cta_text": "Start Now", "heading": "Close the Gap Today", "caption": "Scan to start your free trial", "short_url": "slideforge.dev"},
         ]
@@ -269,7 +283,9 @@ def preset_content(preset_id):
             # testimonial_avatar (×5)
             {"quote": "We tried every AI slide tool on the market. Nexus is the first one where I didn't have to redo every slide manually afterward.", "author": "Sarah Kim", "role": "Design Lead, Relay.so", "avatar_url": A[0]},
             {"quote": "Our LinkedIn impressions 3x'd in two weeks. Same team, same strategy — just faster execution.", "author": "James Okonkwo", "role": "Growth Lead, Composabl", "avatar_url": A[3]},
-            {"quote": "The preset architecture is brilliant. I described our annual report and it nailed the emotional arc on the first try.", "author": "Elena Voss", "role": "Head of Comms, Typeframe", "avatar_url": A[2]},
+             {"quote": "The preset architecture is brilliant. I described our annual report and it nailed the emotional arc on the first try.", "author": "Elena Voss", "role": "Head of Comms, Typeframe", "avatar_url": A[2]},
+            # gauge
+            {"title": "Trust Score", "value": 96, "max": 100, "unit": "%", "label": "Customer satisfaction"},
             {"quote": "As a solo founder, I can't afford a design team. Nexus gives me the output of a 5-person studio at the cost of a CLI command.", "author": "Raj Patel", "role": "Founder, DeckAI", "avatar_url": A[4]},
             {"quote": "The MCP integration means our content agent generates carousels autonomously. We just review and publish.", "author": "Lin Zhao", "role": "CTO, Pitchflow", "avatar_url": A[1]},
             # metric_grid
@@ -304,7 +320,15 @@ def preset_content(preset_id):
             {"title": "From Cost Center to Revenue Driver", "problem": "Content team was seen as a cost center — necessary but slow. Leadership questioned whether the investment was justified.", "solution": "With Nexus, the content team now runs 3x more campaigns with the same headcount. Attribution shows content-driven pipeline grew 180%.", "proof_points": ["180% pipeline growth", "3x campaign velocity", "Content ROI positive in 30 days"]},
             {"title": "The Transformation Story", "before": {"label": "Before", "description": "Content team: 4 people, 2 campaigns/month, seen as overhead. Budget scrutinized quarterly."}, "after": {"label": "After", "description": "Same 4 people, 60+ campaigns/month, content is top pipeline contributor. Budget doubled."}, "metric": "180%", "metric_label": "Pipeline Growth"},
             {"client": "Relay.so Executive Team", "challenge": "Prove content marketing ROI and justify team expansion.", "solution": "Nexus-enabled content team delivers measurable pipeline impact. Data dashboard tracks content → revenue attribution.", "results": [{"number": "180%", "label": "Pipeline Growth"}, {"number": "2x", "label": "Team Budget Increase"}]},
-            {"quote": "Content went from 'nice to have' to our #1 demand gen channel in six months. Nexus made that possible.", "author": "Anika Desai", "role": "CMO, Relay.so", "avatar_url": A[2]},
+             {"quote": "Content went from 'nice to have' to our #1 demand gen channel in six months. Nexus made that possible.", "author": "Anika Desai", "role": "CMO, Relay.so", "avatar_url": A[2]},
+            # case_study_result (standalone)
+            {"client": "Relay.so Revenue Team", "challenge": "Demonstrate end-to-end ROI of Nexus adoption across all departments.", "solution": "Cross-functional Nexus deployment with unified analytics dashboard tracking content → pipeline → revenue.", "results": [{"number": "312%", "label": "Total ROI"}, {"number": "6 months", "label": "Payback Period"}]},
+            # progress_rings
+            {"title": "Nexus Impact Dashboard", "rings": [
+                {"label": "Content Output", "value": 95, "max": 100, "color": "#10b981"},
+                {"label": "Cost Savings", "value": 88, "max": 100, "color": "#6366f1"},
+                {"label": "Team Satisfaction", "value": 92, "max": 100, "color": "#f59e0b"},
+            ]},
             # qr_destination
             {"destination_url": "https://slideforge.dev/case-studies", "cta_text": "Read Full Case Study", "heading": "See the Complete Relay.so Story", "caption": "Scan for detailed metrics and implementation guide", "short_url": "slideforge.dev/cases"},
         ]
@@ -355,7 +379,9 @@ def preset_content(preset_id):
                 {"name": "Community", "price": "Free", "features": ["Full CLI access", "All 47 slide types", "28 presets", "MIT licensed"]},
                 {"name": "Pro", "price": "$19/mo", "features": ["MCP server hosting", "Custom theme builder", "Priority support", "Early access features"]},
                 {"name": "Team", "price": "$49/mo", "features": ["Multi-seat MCP", "Brand kit storage", "API rate limits", "SLA guarantee"]},
-            ]},
+             ]},
+            # image_collage
+            {"images": [I[0], I[1], I[4], I[5], I[7]], "layout": "grid", "caption": "Nexus in action across different content types"},
             # qr_destination
             {"destination_url": "https://slideforge.dev", "cta_text": "Start Free", "heading": "Try Nexus Today", "caption": "Scan to get started in 60 seconds", "short_url": "slideforge.dev"},
         ]
@@ -385,6 +411,12 @@ def preset_content(preset_id):
                 {"icon": "🎯", "title": "Prioritize", "description": "Fix the first 3 slides first — they determine everything"},
                 {"icon": "🔄", "title": "Rhythm", "description": "Add dark-light alternation to every sequence"},
                 {"icon": "📈", "title": "Measure", "description": "Track completion rate, not just impressions"},
+             ]},
+            # table
+            {"title": "Performance by Category", "headers": ["Content Type", "Avg Completion", "Avg Saves", "Shares/1K"], "rows": [
+                ["Data-heavy", "72%", "8.3%", "4.1"],
+                ["Story-driven", "84%", "12.1%", "7.8"],
+                ["Mixed (arc + data)", "91%", "15.4%", "9.2"],
             ]},
             # metric_grid
             {"title": "Study Parameters", "metrics": [
@@ -412,6 +444,12 @@ def preset_content(preset_id):
                 "Send to 3 stakeholders. Wait for feedback. Get conflicting notes.",
                 "Redo slides 2, 5, and 7. Export again. Ship 3 days late.",
             ]},
+            # before_after_story
+            {"title": "The Real Cost", "before": {"label": "Manual Process", "description": "12 hours per carousel × 4 carousels/week × $75/hr = $18,000/month in design labor"}, "after": {"label": "Nexus Pipeline", "description": "4 minutes per carousel × 4 carousels/week × $0 = effectively free, with better consistency"}, "metric": "$18K/mo", "metric_label": "Saved in Design Costs"},
+            # comparison
+            {"title": "Side by Side", "left": {"label": "Manual Design", "items": ["Hours per slide", "Inconsistent branding", "Stakeholder bottleneck", "Format breaks on export"]}, "right": {"label": "Nexus Composition", "items": ["Seconds per slide", "Locked design system", "One-click export", "Pixel-perfect every time"]}},
+            # image_comparison
+            {"title": "Visual Difference", "before": {"label": "Before", "image_url": I[4], "description": "Stock template, off-brand colors, inconsistent typography"}, "after": {"label": "After", "image_url": I[5], "description": "On-brand composition, consistent system, professional polish"}},
             # list (nexus)
             {"title": "The Nexus Way", "items": [
                 "Write one sentence: 'Launch carousel for our new API product.'",
@@ -420,8 +458,6 @@ def preset_content(preset_id):
                 "Export to PNG or HTML. Ship.",
                 "Total time: 4 minutes. Total cost: $0.",
             ]},
-            # before_after_story
-            {"title": "The Real Cost", "before": {"label": "Manual Process", "description": "12 hours per carousel × 4 carousels/week × $75/hr = $18,000/month in design labor"}, "after": {"label": "Nexus Pipeline", "description": "4 minutes per carousel × 4 carousels/week × $0 = effectively free, with better consistency"}, "metric": "$18K/mo", "metric_label": "Saved in Design Costs"},
             # comparison_bars
             {"title": "Speed Comparison", "comparison": {"metric": "Time to First Carousel", "left": {"name": "Manual (Figma)", "value": 15}, "right": {"name": "Nexus CLI", "value": 95}}},
             # testimonial_avatar
@@ -459,6 +495,8 @@ def preset_content(preset_id):
             {"title": "The Completion Gap", "text": "People finish what resonates. Templates are designed to be universal — which means they resonate with no one. Emotional architecture is designed for THIS audience, THIS message, THIS moment."},
             # chart
             {"title": "Engagement: Templates vs Composition", "chart_type": "bar", "data": [{"label": "Generic template", "value": 23}, {"label": "Customized template", "value": 38}, {"label": "AI-composed", "value": 72}, {"label": "Emotional architecture", "value": 96}]},
+            # column_chart
+            {"title": "Completion Rate by Slide Type", "chart_type": "grouped_column", "categories": ["Hook", "Context", "Evidence", "Proof", "CTA"], "series": [{"name": "Templates", "values": [34, 28, 22, 18, 12]}, {"name": "Composed", "values": [78, 72, 68, 65, 58]}]},
             # image_callout
             {"image_url": I[6], "callouts": [{"label": "This slide looks like every other template", "description": "Grid layout, icon row, centered text — the template industrial complex at work", "x": 50, "y": 40}], "description": "Spot the template. You've seen this exact layout 1,000 times."},
             # checklist_action_plan
@@ -467,6 +505,13 @@ def preset_content(preset_id):
                 {"step": "Map your emotional intent", "description": "What should the audience FEEL at each slide?"},
                 {"step": "Compose, don't decorate", "description": "Use slide types that serve your narrative, not your template library"},
                 {"step": "Measure completion, not impressions", "description": "Did they scroll to the end? That's the real metric"},
+            ]},
+            # stat_row
+            {"title": "The Numbers Don't Lie", "stats": [
+                {"value": "4.2x", "label": "engagement lift"},
+                {"value": "92%", "label": "completion rate"},
+                {"value": "58pt", "label": "gap vs templates"},
+                {"value": "3.1x", "label": "share rate"},
             ]},
             # qr_destination
             {"destination_url": "https://slideforge.dev/manifesto", "cta_text": "Read the Manifesto", "heading": "Break Free from Templates", "caption": "Scan for the full investigation", "short_url": "slideforge.dev/manifesto"},
@@ -499,8 +544,14 @@ def preset_content(preset_id):
             {"kicker": "MODULE 5", "title": "The Preset System", "subtitle": "Composing at scale with emotional arc templates"},
             {"image_url": I[4], "caption": "Presets are compositions, not templates", "description": "A preset doesn't tell you what to say. It tells you the emotional journey your audience needs to take."},
             {"title": "Presets vs Templates", "body": "A template is a layout. A preset is a narrative architecture. The 'announcement' preset doesn't care if you're launching a product, a movement, or a idea — it knows the audience needs excitement → understanding → proof → action. That's the arc. Your content fills the beats."},
-            # myth_fact
+             # myth_fact
             {"myth": "Good design is what makes carousels work", "fact": "Good narrative structure is what makes carousels work. Design is the vehicle, not the engine.", "explanation": "The highest-performing carousels often have simple, even plain design. What they have is a relentless emotional arc that carries the viewer from hook to action."},
+            # faq
+            {"title": "Frequently Asked Questions", "items": [
+                {"question": "How long does it take to learn emotional architecture?", "answer": "The basics take one carousel. Mastery takes 10. Start with one preset, one message, and measure the difference."},
+                {"question": "Do I need design skills?", "answer": "No. The preset system handles visual composition. You provide the content and the emotional intent."},
+                {"question": "Can I customize the presets?", "answer": "Presets are starting points. The pool-based composition system lets you remix slide types while keeping the emotional arc intact."},
+            ]},
             # checklist_action_plan
             {"title": "Your Practice Assignments", "items": [
                 {"step": "Rewrite your last carousel hook", "description": "Apply the three-part hook formula: interrupt, promise, anchor"},
@@ -518,8 +569,10 @@ def preset_content(preset_id):
         return [
             # feature
             {"icon": "🧬", "title": "The Composition Engine", "description": "Nexus doesn't pick slides randomly. It composes — selecting each slide type based on the emotional position in the narrative arc, the content density of the brief, and the target audience's cognitive load budget.", "number": "01"},
-            # definition
+             # definition
             {"term": "Slide Composition", "phonetic": "/slaɪd kəm-pə-zi-shən/", "definition": "The algorithmic selection and sequencing of slide types to create an emotionally coherent narrative. Unlike templating, composition adapts to the content, not the other way around.", "context": "Composition is what separates Nexus from every 'AI slide generator' that just fills in a template."},
+            # split_features
+            {"title": "Nexus vs Traditional Tools", "left": {"title": "Nexus", "features": ["47 slide types", "Emotional arc engine", "Dynamic typography", "Pool-based composition"]}, "right": {"title": "Templates", "features": ["5 fixed layouts", "Fill-in-the-blank", "Static sizing", "One structure per template"]}},
             # image_callout
             {"image_url": I[5], "callouts": [{"label": "Dynamic font scaling", "description": "Text sizes adjust based on content density — dense slides get smaller type, sparse slides breathe", "x": 30, "y": 40}, {"label": "Theme token system", "description": "Material Design 3 tonal palette with per-preset color overrides", "x": 70, "y": 60}], "description": "Every visual element is computed, not hardcoded."},
             # process_map
@@ -552,7 +605,13 @@ def preset_content(preset_id):
             {"myth": "Unity is just branding", "fact": "Unity is identity-level belonging. Branding is visual. Unity is tribal. 'I am a Nexus user' vs 'I use Nexus.'", "explanation": "Unity explains why open-source communities outperform proprietary user bases in advocacy and retention."},
             # 5
             {"image_url": I[4], "callouts": [{"label": "Principle #5: Liking", "description": "People say yes to those they like. Similarity, compliments, and cooperation build the liking bridge.", "x": 50, "y": 40}], "description": "Liking explains why founder-led carousels outperform corporate-polished ones."},
-            {"myth": "Scarcity and urgency are the same thing", "fact": "Scarcity is about limited supply; urgency is about limited time. Combined, they create the most powerful persuasion force in marketing.", "explanation": "The best CTAs use both: 'Only 3 spots left' (scarcity) + 'Offer ends tonight' (urgency). Together they're exponentially more effective."},
+             {"myth": "Scarcity and urgency are the same thing", "fact": "Scarcity is about limited supply; urgency is about limited time. Combined, they create the most powerful persuasion force in marketing.", "explanation": "The best CTAs use both: 'Only 3 spots left' (scarcity) + 'Offer ends tonight' (urgency). Together they're exponentially more effective."},
+            # faq
+            {"title": "Common Questions", "items": [
+                {"question": "Which principle should I start with?", "answer": "Start with social proof — it's the most universally applicable and the easiest to measure. Add scarcity once you have proof of value."},
+                {"question": "Can I use multiple principles in one carousel?", "answer": "Yes, but assign one primary principle per slide. The preset structure handles the sequencing so principles don't compete."},
+                {"question": "How do I measure which principles work?", "answer": "Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta."},
+            ]},
             # process_map
             {"title": "Apply the Principles", "steps": [
                 {"icon": "🔍", "title": "Audit", "description": "Map which principles your current content uses (and which it ignores)"},
@@ -588,6 +647,14 @@ def preset_content(preset_id):
                 {"icon": "🔗", "title": "Commitment Escalation", "description": "Small yeses → big yeses. Every interaction is a micro-commitment."},
                 {"icon": "🪞", "title": "Identity Framing", "description": "People don't buy products. They buy the person they become."},
             ]},
+            # radar_chart
+            {"title": "Technique Mastery Profile", "axes": [
+                {"label": "Pattern Interrupt", "value": 85},
+                {"label": "Anchoring", "value": 92},
+                {"label": "Commitment", "value": 78},
+                {"label": "Identity", "value": 88},
+                {"label": "Transport", "value": 95},
+            ]},
             # callout
             {"title": "The Responsibility Frame", "text": "These techniques work. That's exactly why they demand ethical use. The line between persuasion and manipulation is consent — does the audience benefit from the outcome you're steering them toward? If yes, these are tools. If no, they're weapons."},
             # cta
@@ -606,7 +673,13 @@ def preset_content(preset_id):
             {"quote": "In the beginner's mind there are many possibilities, but in the expert's mind there are few.", "author": "Shunryu Suzuki", "image_url": A[1]},
             {"title": "The Second Teaching", "body": "Simplicity is not the absence of complexity — it's the mastery of it. The most profound ideas can be expressed in one slide. If you need ten slides to explain something, you haven't understood it yet."},
             {"quote": "The only true wisdom is in knowing you know nothing.", "author": "Socrates", "image_url": A[2]},
-            {"title": "The Third Teaching", "body": "Humility opens the door to understanding. When you present wisdom, don't position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them."},
+             {"title": "The Third Teaching", "body": "Humility opens the door to understanding. When you present wisdom, don't position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them."},
+            # text_columns
+            {"title": "Three Modes of Transmission", "columns": [
+                {"heading": "Spoken", "body": "Words carry intention. The teacher's voice shapes how wisdom lands — not just what is said, but how it is offered."},
+                {"heading": "Written", "body": "Text endures. Written wisdom survives the session, the teacher, and the era. It becomes a reference the student returns to."},
+                {"heading": "Lived", "body": "The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission."},
+            ]},
             {"quote": "We are not human beings having a spiritual experience. We are spiritual beings having a human experience.", "author": "Pierre Teilhard de Chardin", "image_url": A[3]},
             {"title": "The Fourth Teaching", "body": "Every communication is an act of service. You're not performing knowledge — you're offering it. The difference is in the energy. Service invites. Performance demands. Choose service."},
             {"quote": "The wound is the place where the Light enters you.", "author": "Rumi", "image_url": A[4]},
@@ -691,6 +764,14 @@ def preset_content(preset_id):
             {"title": "The Attention Cliff", "text": "Your beautiful 10-slide carousel has a 32% chance of reaching slide 6. The other 68% scroll past after slide 3. The problem isn't design quality — it's emotional architecture."},
             # before_after_story
             {"title": "Two Futures", "before": {"label": "Stay Manual", "description": "12 hours per carousel. 4 per month. Same templates. Declining engagement. Watching competitors ship faster."}, "after": {"label": "Adopt Nexus", "description": "4 minutes per carousel. 4 per week. Unique compositions every time. Rising engagement. Leading the market."}, "metric": "756hrs/yr", "metric_label": "Difference in Production Time"},
+            # funnel_chart
+            {"title": "The Conversion Funnel", "stages": [
+                {"label": "Awareness", "value": 10000},
+                {"label": "Interest", "value": 3200},
+                {"label": "Consideration", "value": 1100},
+                {"label": "Intent", "value": 440},
+                {"label": "Action", "value": 180},
+            ]},
             # process_map
             {"title": "The Escape Route", "steps": [
                 {"icon": "🚨", "title": "Acknowledge", "description": "Your current process is unsustainable. Admit it."},
@@ -726,7 +807,9 @@ def preset_content(preset_id):
                 {"icon": "🤝", "title": "Connect", "description": "Meet 500 content creators, developers, and marketers building with AI-native tools."},
                 {"icon": "🚀", "title": "Ship", "description": "Leave with a complete campaign ready to publish. Not a notebook of ideas — a working pipeline."},
                 {"icon": "🎁", "title": "Exclusive Access", "description": "Attendees get early access to Nexus 4.0 and the preset marketplace."},
-            ]},
+             ]},
+            # image_collage
+            {"images": [I[0], I[1], I[2], I[5]], "layout": "grid", "caption": "Summit highlights from previous events"},
             # qr_destination
             {"destination_url": "https://slideforge.dev/summit", "cta_text": "Reserve Your Seat", "heading": "September 15, 2026", "caption": "Scan to register — early bird pricing ends Aug 1", "short_url": "slideforge.dev/summit"},
         ]
@@ -758,7 +841,9 @@ def preset_content(preset_id):
                 {"icon": "✅", "title": "Confirm", "description": "You'll get a confirmation email. Screenshot it."},
             ]},
             # testimonial_avatar
-            {"quote": "I didn't vote in 2022. My neighborhood lost its clinic. Don't let that happen to yours. Register today.", "author": "Maria Santos", "role": "District 7 Resident", "avatar_url": A[2]},
+             {"quote": "I didn't vote in 2022. My neighborhood lost its clinic. Don't let that happen to yours. Register today.", "author": "Maria Santos", "role": "District 7 Resident", "avatar_url": A[2]},
+            # image_stat
+            {"image_url": I[3], "stat": "48hrs", "stat_label": "Until registration closes", "caption": "Every hour counts. Register now."},
             # qr_destination
             {"destination_url": "https://vote.gov", "cta_text": "Register Now", "heading": "Don't Wait Until It's Too Late", "caption": "Scan to register — 2 minutes that change everything", "short_url": "vote.gov"},
         ]
@@ -787,7 +872,9 @@ def preset_content(preset_id):
                 {"icon": "🏥", "title": "Healthcare", "description": "Renewed funding for all 3 community clinics. Permanent, not temporary."},
                 {"icon": "🌳", "title": "Green Space", "description": "Park renovation fund. Every neighborhood deserves a park."},
                 {"icon": "📚", "title": "Education", "description": "Equalized school funding. No district should get less per student."},
-            ]},
+             ]},
+            # image_stat
+            {"image_url": I[5], "stat": "14,247", "stat_label": "Signatures and counting", "caption": "Every signature is a person who believes change is possible"},
             # process_map
             {"title": "How to Join", "steps": [
                 {"icon": "📋", "title": "Sign", "description": "Add your name to the coalition petition"},
@@ -826,6 +913,12 @@ def preset_content(preset_id):
                 {"step": "Attend the next PUC hearing", "description": "Public comment period opens Sept 3. Your voice matters."},
                 {"step": "Share this carousel", "description": "The more people know, the harder it is to hide"},
                 {"step": "Contact your state representative", "description": "Support HB 2847 — the Ratepayer Transparency Act"},
+             ]},
+            # stat_row
+            {"stats": [
+                {"value": "$2.3M", "label": "Ratepayer funds spent on lobbying"},
+                {"value": "73%", "label": "Went to opposing clean energy"},
+                {"value": "4.2M", "label": "Ratepayers affected statewide"},
             ]},
             # process_map
             {"title": "The Accountability Chain", "steps": [
@@ -853,8 +946,15 @@ def preset_content(preset_id):
             {"title": "The Industry Is Shifting", "text": "The most successful content teams in 2026 lead with narrative structure and add design polish as a second pass. The old model — design first, fill in content — is dying. Not because design doesn't matter, but because it was never the bottleneck."},
             {"title": "Engagement by Content Strategy", "chart_type": "bar", "data": [{"label": "Template-based", "value": 23}, {"label": "Design-led", "value": 38}, {"label": "Structure-led", "value": 71}, {"label": "Architecture-led", "value": 93}]},
             {"title": "The New Hierarchy", "text": "Emotional architecture > narrative structure > visual design > individual slide quality. Most teams have the hierarchy inverted. They optimize individual slides while ignoring the sequence. The sequence is what the algorithm sees."},
-            # definition
+             # definition
             {"term": "Content Architecture", "phonetic": "/ˈkɒntɛnt ˈɑːrkɪtɛktʃər/", "definition": "The deliberate structuring of content sequences to maximize engagement signals that algorithms reward. The opposite of content decoration.", "context": "Architecture is invisible to the viewer but legible to the algorithm. That's why it works."},
+            # scatter_plot
+            {"title": "Structure vs Design: Performance", "x_label": "Emotional Architecture Score", "y_label": "Engagement Rate", "points": [
+                {"x": 15, "y": 22, "label": "Template-only"},
+                {"x": 38, "y": 41, "label": "Design-led"},
+                {"x": 67, "y": 73, "label": "Structure-led"},
+                {"x": 91, "y": 94, "label": "Architecture-led"},
+            ]},
             # callout
             {"title": "The Shift Is Already Happening", "text": "Teams that adopted structure-first content in Q1 2026 are seeing 3x the reach of teams still designing first. The gap will only widen. This carousel is your wake-up call."},
             # cta
@@ -900,7 +1000,9 @@ def preset_content(preset_id):
             {"quote": "The purpose of incarnation is the evolution of the mind/body/spirit complex. You are here to learn. You are here to choose. You are here to love.", "author": "Ra, Session 28", "image_url": A[2]},
             {"title": "The Purpose", "body": "Third density is the density of choice — where the veil of forgetting is thinnest and the stakes are highest. You chose to be here. You chose the forgetting. And within that forgetting, you're choosing your polarities."},
             {"quote": "Every action generates an equal and opposite reaction in the cosmic balance. This is not punishment. It is learning.", "author": "Ra, Session 14", "image_url": A[3]},
-            {"title": "The Mechanics", "body": "Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror."},
+             {"title": "The Mechanics", "body": "Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror."},
+            # quote
+            {"quote": "There is nothing that we have that is not an illusion. All things are part of the One Infinite Creator. This is the fundamental teaching.", "author": "Ra, Session 30"},
             # timeline
             {"title": "The Timeline", "steps": [
                 {"title": "1981-1984", "description": "106 channeling sessions. Ra delivers the complete cosmological framework."},
@@ -928,7 +1030,9 @@ def preset_content(preset_id):
             {"quote": "The internet didn't get worse. It got bigger. And big things lose the feeling of being made by a person.", "author": "Someone who remembers RSS readers", "image_url": A[2]},
             {"title": "The Scale Problem", "body": "Scale and intimacy are inversely related. The more people a platform serves, the less it feels like it was made for you. That's not nostalgia — it's physics."},
             {"quote": "Nostalgia is not about wanting to go back. It's about wanting to carry forward the feeling of being genuinely engaged with something.", "author": "A designer who remembers when design was fun", "image_url": A[3]},
-            {"title": "The Real Longing", "body": "We don't miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it."},
+             {"title": "The Real Longing", "body": "We don't miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it."},
+            # quote
+            {"quote": "The things you own end up owning you. It's only after you lose everything that you're free to do anything.", "author": "Chuck Palahniuk, Fight Club"},
             # definition
             {"term": "Digital Nostalgia", "phonetic": "/ˈdɪdʒɪtəl nɒˈstældʒə/", "definition": "The longing for a relationship with technology that felt personal, intentional, and human-scale. Not a desire to return to the past, but a desire to carry forward the values of the early internet.", "context": "Nostalgia is a compass. It points toward what mattered. Use it."},
             # callout
@@ -975,7 +1079,7 @@ def preset_content(preset_id):
 #  ORCHESTRATION
 # ══════════════════════════════════════════════════════════════════════════
 
-def process_preset(preset, preset_color, preset_idx):
+def process_preset(preset, preset_color, preset_idx, validate=False):
     preset_id = preset["id"]
     print(f"\n{'='*60}")
     print(f"Preset {preset_idx + 1}/28: {preset_id}")
@@ -1046,6 +1150,21 @@ def process_preset(preset, preset_color, preset_idx):
         print(f"  ✗ No slides generated for {preset_id}")
         return False
 
+    # Composition validation
+    if validate:
+        slide_types = expand_slide_types(slide_entries)
+        result = validate_preset_composition(preset, slide_types)
+        if not result.get("valid", False):
+            errors = result.get("errors", [])
+            warnings = result.get("warnings", [])
+            if errors:
+                print(f"  ✗ VALIDATION FAILED: {', '.join(errors)}")
+                return False
+            if warnings:
+                print(f"  ⚠ Warnings: {', '.join(warnings)}")
+        else:
+            print(f"  ✓ Composition validated")
+
     print(f"\n  Rendering carousel with {len(slides_json)} slides...")
     if render_carousel(slides_json, tokens_file, output_path, preset_id, aspect_ratio) is None:
         print(f"  ✗ Failed to render carousel for {preset_id}")
@@ -1067,8 +1186,71 @@ def fill_params(slide_type, params_template, preset_id, slide_idx):
     return p
 
 
+def validate_preset_composition(preset, slide_types):
+    """Run composition validation via the Rust binary's validate-composition CLI."""
+    arc_structure = preset.get("arc_structure", {})
+    
+    # Reverse-map: slide_type → arc name
+    type_to_arc = {}
+    for arc_name, arc_def in arc_structure.items():
+        for st in arc_def.get("types", []):
+            type_to_arc[st] = arc_name
+        for st in arc_def.get("pool", []):
+            type_to_arc[st] = arc_name
+    
+    # Build composition with arc assignments
+    composition = []
+    for st in slide_types:
+        arc = type_to_arc.get(st, "evidence")  # default to evidence if not found
+        composition.append({"slide_type": st, "arc": arc})
+    
+    request = {
+        "composition": composition,
+        "arc_structure": arc_structure,
+        "constraints": preset.get("constraints", {}),
+    }
+    tmp_path = os.path.join(TOKENS_DIR, f"_validate_{preset['id']}.json")
+    with open(tmp_path, "w") as f:
+        json.dump(request, f, indent=2)
+    try:
+        cmd = [BIN, "validate-composition", "--file", tmp_path]
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=WORKSPACE_DIR, timeout=30)
+        if r.returncode != 0:
+            return {"valid": False, "errors": [r.stderr.strip() or r.stdout.strip()]}
+        return json.loads(r.stdout)
+    except (json.JSONDecodeError, subprocess.TimeoutExpired) as e:
+        return {"valid": False, "errors": [str(e)]}
+    finally:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+
+
+def expand_slide_types(slides_entries):
+    """Expand slide entries (including repeatable blocks) into a flat list of slide types."""
+    result = []
+    for entry in slides_entries:
+        if entry.get("type") == "repeatable":
+            unit_count = entry.get("repeat_count", {}).get("max", 2)
+            unit_slides = entry.get("unit_slides", [])
+            for i in range(unit_count):
+                for unit in unit_slides:
+                    result.append(unit.get("slide_type", "text_block"))
+        else:
+            result.append(entry.get("slide_type", "text_block"))
+    return result
+
+
 def main():
-    print("SlideForge Campaign Preset Generator v4.1.0 — Production Content")
+    import argparse
+    parser = argparse.ArgumentParser(description="SlideForge Campaign Preset Generator v5.0.0")
+    parser.add_argument("--validate", action="store_true", help="Run composition validation on each preset")
+    parser.add_argument("--only", type=str, default=None, help="Generate only specified preset IDs (comma-separated)")
+    parser.add_argument("--list", action="store_true", help="List all preset IDs and exit")
+    args = parser.parse_args()
+
+    print("SlideForge Campaign Preset Generator v5.0.0 — Composition Mode")
     print(f"Binary: {BIN}")
     print(f"Output: {OUTPUT_DIR}")
     print(f"Presets: {PRESETS_FILE}\n")
@@ -1077,15 +1259,29 @@ def main():
         catalog = json.load(f)
 
     presets = [p for p in catalog["presets"] if "id" in p]
+
+    if args.list:
+        for p in presets:
+            print(f"  {p['id']}")
+        return 0
+
+    if args.only:
+        only_ids = set(args.only.split(","))
+        presets = [p for p in presets if p["id"] in only_ids]
+        if not presets:
+            print(f"Error: no presets found matching: {args.only}")
+            return 1
+
     print(f"Found {len(presets)} presets to generate\n")
 
     success = 0
     failed = []
+    validation_errors = []
 
     for idx, preset in enumerate(presets):
         color = PRESET_COLORS[idx % len(PRESET_COLORS)]
         try:
-            if process_preset(preset, color, idx):
+            if process_preset(preset, color, idx, validate=args.validate):
                 success += 1
             else:
                 failed.append(preset["id"])
@@ -1097,6 +1293,10 @@ def main():
     print(f"RESULTS: {success}/{len(presets)} presets generated successfully")
     if failed:
         print(f"Failed: {', '.join(failed)}")
+    if validation_errors:
+        print(f"\nValidation errors:")
+        for ve in validation_errors:
+            print(f"  {ve}")
     print(f"Output: {OUTPUT_DIR}/")
     print(f"{'='*60}")
 

@@ -412,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
+            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -445,21 +445,20 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
             
-            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="I&#x27;ve watched families choose between medication and rent. That&#x27;s not a healthcare failure — it&#x27;s a policy failure. And policy failures need policy makers who&#x27;ve lived them." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
-                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;"></h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Voters see candidates make promises they can&#x27;t keep. Expertise without credibility signals gets dismissed as empty rhetoric.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Lead with credentials. Anchor with proof. Close with specificity. The three-part authority structure that converts.</p></div>
             </div>
-            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
-                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Fraunces;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">I&#x27;ve watched families choose between medication and rent. That&#x27;s not a healthcare failure — it&#x27;s a policy failure. And policy failures need policy makers who&#x27;ve lived them.</p>
-                <p style="font-family:Outfit;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Dr. Amara Osei</p>
-                
+            <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
+                <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">15 years of public health experience &nbsp;•&nbsp; 12 clinics opened, 40,000+ patients served &nbsp;•&nbsp; 3 bills authored at state level</div>
             </div>
         </div>
             </div>
@@ -484,7 +483,7 @@ body {
   </div></div>
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C73A3E15 0px, transparent 50%), radial-gradient(at 80% 0%, #008EA310 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9A9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;"><h2 style="font-family: Fraunces; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0F0A09; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Her Record Speaks</h2><div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;"><div style="background:#FFF1F0;border:1px solid #D1C4C325;border-radius:10px;padding:8px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);display:flex;flex-direction:column;min-width:0;box-sizing:border-box;">
@@ -538,18 +537,18 @@ body {
   </div></div>
 <div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;">Housing Affordability</h2>
+            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;"></h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Median rent in District 7 has risen 43% in five years while median wages grew only 8%. Families are being displaced from the neighborhoods they built.</p></div>
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">The Osei Plan: mandate 30% affordable units in new developments, expand community land trusts, and create a tenant protection office with real enforcement power.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Without authority signals, even brilliant content gets ignored. The audience doesn&#x27;t know why they should listen.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">The Osei campaign leads with credentials in every touchpoint: &#x27;Dr. Osei&#x27; not &#x27;Amara.&#x27; &#x27;15 years&#x27; not &#x27;experience.&#x27; Specificity builds trust.</p></div>
             </div>
             <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
                 <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">30% affordable mandate &nbsp;•&nbsp; Community land trusts &nbsp;•&nbsp; Tenant protection office</div>
+                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">Authority signals in first slide increase completion by 45% &nbsp;•&nbsp; Credential anchoring reduces bounce rate by 62% &nbsp;•&nbsp; Specific claims outperform general by 2.8x</div>
             </div>
         </div>
             </div>
@@ -572,20 +571,21 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide  slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; z-index: 1"></div>
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;">Public Safety Reform</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Response times have increased 22% since 2022. Community trust in policing is at historic lows. Neither extreme — defund or militarize — has worked.</p></div>
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Invest in violence interruption programs, civilian crisis response teams, and community policing officers who live in the districts they serve.</p></div>
+            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="I&#x27;ve watched families choose between medication and rent. That&#x27;s not a healthcare failure — it&#x27;s a policy failure. And policy failures need policy makers who&#x27;ve lived them." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
             </div>
-            <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
-                <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">Violence interruption &nbsp;•&nbsp; Crisis response teams &nbsp;•&nbsp; Residency requirement</div>
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
+                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
+                <p style="font-family:Fraunces;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">I&#x27;ve watched families choose between medication and rent. That&#x27;s not a healthcare failure — it&#x27;s a policy failure. And policy failures need policy makers who&#x27;ve lived them.</p>
+                <p style="font-family:Outfit;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Dr. Amara Osei</p>
+                
             </div>
         </div>
             </div>
@@ -610,18 +610,18 @@ body {
   </div></div>
 <div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;">Education Equity</h2>
+            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;"></h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Schools in District 7 receive $2,400 less per student than neighboring districts. Teacher turnover is double the city average.</p></div>
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Equalize funding formulas, offer housing stipends to retain teachers, and expand after-school STEM programs in every Title I school.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Expert candidates assume voters understand the issues. They don&#x27;t. Jargon and policy details alienate the very people they&#x27;re trying to reach.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Translate expertise into lived experience. &#x27;Mental health coverage&#x27; becomes &#x27;your neighbor can see a therapist.&#x27; &#x27;Funding formula&#x27; becomes &#x27;your kid&#x27;s school gets $2,400 more.&#x27;</p></div>
             </div>
             <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
                 <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">$2,400 gap closed &nbsp;•&nbsp; Teacher retention stipends &nbsp;•&nbsp; STEM in every Title I school</div>
+                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">Plain-language content retains 78% past third slide &nbsp;•&nbsp; Lived-experience framing increases sharing by 3.1x &nbsp;•&nbsp; Accessibility-first messaging broadens coalition</div>
             </div>
         </div>
             </div>
@@ -644,22 +644,12 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide  slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C73A3E15 0px, transparent 50%), radial-gradient(at 80% 0%, #008EA310 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9A9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; position: absolute; pointer-events: none; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;">Small Business Support</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">60% of small businesses in District 7 closed permanently during the pandemic. Bureaucratic red tape keeps new ones from opening.</p></div>
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">One-stop permit shop, micro-loan program for minority-owned businesses, and a commercial rent stabilization pilot.</p></div>
-            </div>
-            <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
-                <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">One-stop permits &nbsp;•&nbsp; Micro-loan fund &nbsp;•&nbsp; Rent stabilization pilot</div>
-            </div>
-        </div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;text-align:center;">Endorsed By</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">D</div>District 7 Teachers Union</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">M</div>Metro Medical Assoc.</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">S</div>Small Business Alliance</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">H</div>Housing Now PAC</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">Y</div>Young Democrats</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">V</div>Veterans for Change</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -680,12 +670,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C73A3E15 0px, transparent 50%), radial-gradient(at 80% 0%, #008EA310 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9A9412 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
+<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); z-index: 1; inset: 0; opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;text-align:center;">Endorsed By</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">D</div>District 7 Teachers Union</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">M</div>Metro Medical Assoc.</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">S</div>Small Business Alliance</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">H</div>Housing Now PAC</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">Y</div>Young Democrats</div><div style="height:58px;border-radius:16px;border:1px solid #D1C4C3;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Outfit;font-size:var(--text-sm);font-weight:800;color:#4A3F3E;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:16px;background:#C73A3E;color:white;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:12px;font-weight:900;flex-shrink:0;">V</div>Veterans for Change</div></div></div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#0F0A09;margin:0;line-height:1.08;"></h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Voters who trust a candidate still don&#x27;t act. The gap between &#x27;I believe in her&#x27; and &#x27;I&#x27;ll vote for her&#x27; is the hardest to bridge.</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;"><div style="font-family:Outfit;font-size:11px;font-weight:800;color:#C73A3E;margin-bottom:8px;">SOLUTION</div><p style="font-family:Outfit;font-size:var(--text-sm);color:#4A3F3E;line-height:1.45;margin:0;">Make action specific and immediate: &#x27;Register by Sept 15&#x27; not &#x27;Register to vote.&#x27; &#x27;Bring 3 friends&#x27; not &#x27;Spread the word.&#x27; Specificity drives conversion.</p></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.92);border:1px solid #D1C4C3;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
+                <div style="font-family:Outfit;font-size:10px;font-weight:800;color:#C73A3E;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:Outfit;font-size:11px;color:#4A3F3E;line-height:1.45;">Specific CTAs convert 3.2x better than generic &nbsp;•&nbsp; Social proof in final slide increases sharing by 45% &nbsp;•&nbsp; Deadline-driven CTAs outperform open-ended by 2.1x</div>
+            </div>
+        </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -708,7 +708,7 @@ body {
   </div></div>
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; opacity: 0.04; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:60px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">

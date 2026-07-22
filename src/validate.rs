@@ -334,6 +334,267 @@ pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> Validatio
     result
 }
 
+// ── Composition validation ──────────────────────────────────────────────────
+
+/// Data-visualization slide types — used for dataviz pacing constraints.
+const DATAVIZ_TYPES: &[&str] = &[
+    "chart",
+    "column_chart",
+    "scatter_plot",
+    "gauge",
+    "radar_chart",
+    "progress_rings",
+    "comparison_bars",
+    "metric_grid",
+    "funnel_chart",
+    "stat_row",
+    "table",
+];
+
+/// A single slide entry in a composition.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct CompositionSlide {
+    pub slide_type: String,
+    pub arc: String,
+    pub bg_style: Option<String>,
+}
+
+/// Count bounds for an arc position.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct ArcCount {
+    pub min: usize,
+    pub max: usize,
+}
+
+/// An arc position definition (hook, evidence, proof, action).
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct ArcPosition {
+    /// Locked slide-types (for hook/action). Mutually exclusive with `pool`.
+    #[serde(default)]
+    pub types: Vec<String>,
+    /// Flexible slide-types pool (for evidence/proof). Mutually exclusive with `types`.
+    #[serde(default)]
+    pub pool: Vec<String>,
+    pub count: ArcCount,
+}
+
+/// Composition constraints.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct CompositionConstraints {
+    #[serde(default = "default_true")]
+    pub no_consecutive_same_type: bool,
+    #[serde(default = "default_bg_rhythm")]
+    pub bg_rhythm: String,
+    pub max_slides: usize,
+    pub min_slides: usize,
+    #[serde(default = "default_max_consecutive_dataviz")]
+    pub max_consecutive_dataviz: usize,
+    #[serde(default = "default_true")]
+    pub require_narrative_after_dataviz: bool,
+}
+
+fn default_true() -> bool { true }
+fn default_bg_rhythm() -> String { "alternating_dark_light".to_string() }
+fn default_max_consecutive_dataviz() -> usize { 2 }
+
+/// Request for composition validation.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+pub struct CompositionRequest {
+    /// The slide composition to validate.
+    pub composition: Vec<CompositionSlide>,
+    /// Arc structure defining pools and count bounds.
+    pub arc_structure: std::collections::HashMap<String, ArcPosition>,
+    /// Composition constraints.
+    pub constraints: CompositionConstraints,
+}
+
+/// Result of composition validation.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CompositionValidationResult {
+    pub valid: bool,
+    pub errors: Vec<String>,
+    pub warnings: Vec<String>,
+}
+
+impl CompositionValidationResult {
+    fn ok() -> Self {
+        Self { valid: true, errors: vec![], warnings: vec![] }
+    }
+    fn err(msg: impl Into<String>) -> Self {
+        Self { valid: false, errors: vec![msg.into()], warnings: vec![] }
+    }
+    fn add_error(&mut self, msg: impl Into<String>) {
+        self.errors.push(msg.into());
+        self.valid = false;
+    }
+    fn add_warning(&mut self, msg: impl Into<String>) {
+        self.warnings.push(msg.into());
+    }
+}
+
+/// Validate a carousel composition against arc structure and constraints.
+///
+/// Checks:
+/// 1. Arc position counts (min/max)
+/// 2. Pool membership (every type is allowed in its arc)
+/// 3. No consecutive same slide_type
+/// 4. DLD rhythm (no consecutive same bg_style)
+/// 5. Total slide count within bounds
+/// 6. Dataviz pacing (max N consecutive dataviz, narrative follows)
+pub fn validate_composition(request: &CompositionRequest) -> CompositionValidationResult {
+    let mut result = CompositionValidationResult::ok();
+    let c = &request.constraints;
+    let comp = &request.composition;
+
+    // ── Total slide count ───────────────────────────────────────────────────
+    if comp.len() < c.min_slides {
+        result.add_error(format!(
+            "Composition has {} slides, minimum is {}",
+            comp.len(),
+            c.min_slides
+        ));
+    }
+    if comp.len() > c.max_slides {
+        result.add_error(format!(
+            "Composition has {} slides, maximum is {}",
+            comp.len(),
+            c.max_slides
+        ));
+    }
+
+    // ── Group by arc ────────────────────────────────────────────────────────
+    let mut arc_counts: std::collections::HashMap<String, usize> =
+        std::collections::HashMap::new();
+    for slide in comp {
+        *arc_counts.entry(slide.arc.clone()).or_insert(0) += 1;
+    }
+
+    // ── Arc position counts ─────────────────────────────────────────────────
+    for (arc_name, arc_def) in &request.arc_structure {
+        let count = arc_counts.get(arc_name).copied().unwrap_or(0);
+        if count < arc_def.count.min {
+            result.add_error(format!(
+                "{} arc has {} slides, minimum is {}",
+                arc_name,
+                count,
+                arc_def.count.min
+            ));
+        }
+        if count > arc_def.count.max {
+            result.add_error(format!(
+                "{} arc has {} slides, maximum is {}",
+                arc_name,
+                count,
+                arc_def.count.max
+            ));
+        }
+    }
+
+    // ── Pool membership ─────────────────────────────────────────────────────
+    for (i, slide) in comp.iter().enumerate() {
+        if let Some(arc_def) = request.arc_structure.get(&slide.arc) {
+            let allowed = if !arc_def.types.is_empty() {
+                arc_def.types.contains(&slide.slide_type)
+            } else {
+                arc_def.pool.contains(&slide.slide_type)
+            };
+            if !allowed {
+                let mut available: Vec<&str> = arc_def
+                    .types.iter().chain(arc_def.pool.iter())
+                    .map(|s| s.as_str())
+                    .collect();
+                available.sort();
+                result.add_error(format!(
+                    "Slide {} ({}) is '{}' but {} arc only allows: {:?}",
+                    i + 1,
+                    slide.arc,
+                    slide.slide_type,
+                    slide.arc,
+                    available
+                ));
+            }
+        } else {
+            result.add_error(format!(
+                "Slide {} references unknown arc '{}'",
+                i + 1,
+                slide.arc
+            ));
+        }
+    }
+
+    // ── No consecutive same type ────────────────────────────────────────────
+    if c.no_consecutive_same_type && comp.len() >= 2 {
+        for window in comp.windows(2) {
+            if window[0].slide_type == window[1].slide_type {
+                result.add_error(format!(
+                    "'{}' appears consecutively at positions {} and {}",
+                    window[0].slide_type,
+                    comp.iter().position(|s| std::ptr::eq(s, &window[0])).unwrap_or(0) + 1,
+                    comp.iter().position(|s| std::ptr::eq(s, &window[1])).unwrap_or(0) + 1
+                ));
+            }
+        }
+    }
+
+    // ── DLD rhythm (bg_style) ──────────────────────────────────────────────
+    if c.bg_rhythm == "alternating_dark_light" && comp.len() >= 2 {
+        for window in comp.windows(2) {
+            let bg0 = window[0].bg_style.as_deref().unwrap_or("light");
+            let bg1 = window[1].bg_style.as_deref().unwrap_or("light");
+            if bg0 == bg1 {
+                result.add_warning(format!(
+                    "Background rhythm break: slides {} and {} both use '{}' bg_style",
+                    comp.iter().position(|s| std::ptr::eq(s, &window[0])).unwrap_or(0) + 1,
+                    comp.iter().position(|s| std::ptr::eq(s, &window[1])).unwrap_or(0) + 1,
+                    bg0
+                ));
+            }
+        }
+    }
+
+    // ── Dataviz pacing ──────────────────────────────────────────────────────
+    if comp.len() >= 2 {
+        let mut consecutive_dataviz = 0usize;
+        let mut dataviz_start = 0usize;
+        for (i, slide) in comp.iter().enumerate() {
+            if DATAVIZ_TYPES.contains(&slide.slide_type.as_str()) {
+                if consecutive_dataviz == 0 {
+                    dataviz_start = i;
+                }
+                consecutive_dataviz += 1;
+            } else {
+                consecutive_dataviz = 0;
+            }
+            // Check at every position if we've exceeded the limit
+            if consecutive_dataviz > c.max_consecutive_dataviz {
+                // Check if the next slide is narrative (if it exists)
+                if i + 1 < comp.len() {
+                    let next = &comp[i + 1];
+                    if DATAVIZ_TYPES.contains(&next.slide_type.as_str()) {
+                        result.add_error(format!(
+                            "{} consecutive dataviz slides at positions {}–{}, requires a narrative slide after position {}",
+                            consecutive_dataviz,
+                            dataviz_start + 1,
+                            i + 1,
+                            i + 1
+                        ));
+                    }
+                } else {
+                    // Last slide is dataviz and we've exceeded the limit
+                    result.add_error(format!(
+                        "{} consecutive dataviz slides at positions {}–{}, carousel ends with dataviz (requires narrative or closing slide)",
+                        consecutive_dataviz,
+                        dataviz_start + 1,
+                        i + 1
+                    ));
+                }
+            }
+        }
+    }
+
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -949,6 +1210,198 @@ mod tests {
         assert!(!r.valid);
         assert!(r.errors.iter().any(|e| e.contains("destination_url")));
         assert!(r.errors.iter().any(|e| e.contains("cta_text")));
+    }
+
+    // ── validate_composition ────────────────────────────────────────────────
+
+    fn make_arc_def(types: Vec<&str>, pool: Vec<&str>, min: usize, max: usize) -> ArcPosition {
+        ArcPosition {
+            types: types.into_iter().map(String::from).collect(),
+            pool: pool.into_iter().map(String::from).collect(),
+            count: ArcCount { min, max },
+        }
+    }
+
+    fn make_constraints(min: usize, max: usize) -> CompositionConstraints {
+        CompositionConstraints {
+            no_consecutive_same_type: true,
+            bg_rhythm: "alternating_dark_light".to_string(),
+            max_slides: max,
+            min_slides: min,
+            max_consecutive_dataviz: 2,
+            require_narrative_after_dataviz: true,
+        }
+    }
+
+    #[test]
+    fn test_composition_valid_simple() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("hook".into(), make_arc_def(vec!["hero"], vec![], 1, 1));
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart", "list"], 2, 4));
+        arc_structure.insert("action".into(), make_arc_def(vec!["cta"], vec![], 1, 1));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "hero".into(), arc: "hook".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+                CompositionSlide { slide_type: "list".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "cta".into(), arc: "action".into(), bg_style: Some("light".into()) },
+            ],
+            arc_structure,
+            constraints: make_constraints(3, 6),
+        };
+        let r = validate_composition(&request);
+        assert!(r.valid, "errors: {:?}", r.errors);
+    }
+
+    #[test]
+    fn test_composition_pool_violation() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart", "list"], 1, 3));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "cta".into(), arc: "evidence".into(), bg_style: None },
+            ],
+            arc_structure,
+            constraints: make_constraints(1, 5),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("cta") && e.contains("only allows")));
+    }
+
+    #[test]
+    fn test_composition_arc_count_below_min() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart"], 2, 5));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: None },
+            ],
+            arc_structure,
+            constraints: make_constraints(1, 5),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("evidence arc has 1 slides, minimum is 2")));
+    }
+
+    #[test]
+    fn test_composition_arc_count_above_max() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart"], 1, 2));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: None },
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: None },
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: None },
+            ],
+            arc_structure,
+            constraints: make_constraints(1, 5),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("evidence arc has 3 slides, maximum is 2")));
+    }
+
+    #[test]
+    fn test_composition_consecutive_same_type() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart", "list"], 2, 4));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+            ],
+            arc_structure,
+            constraints: make_constraints(2, 4),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("consecutively")));
+    }
+
+    #[test]
+    fn test_composition_dld_rhythm_warning() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(vec![], vec!["chart", "list"], 2, 4));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "list".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+            ],
+            arc_structure,
+            constraints: make_constraints(2, 4),
+        };
+        let r = validate_composition(&request);
+        // DLD rhythm is a warning, not an error
+        assert!(r.valid);
+        assert!(!r.warnings.is_empty());
+        assert!(r.warnings.iter().any(|w| w.contains("Background rhythm break")));
+    }
+
+    #[test]
+    fn test_composition_total_too_few() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("hook".into(), make_arc_def(vec!["hero"], vec![], 1, 1));
+        arc_structure.insert("action".into(), make_arc_def(vec!["cta"], vec![], 1, 1));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "hero".into(), arc: "hook".into(), bg_style: None },
+                CompositionSlide { slide_type: "cta".into(), arc: "action".into(), bg_style: None },
+            ],
+            arc_structure,
+            constraints: make_constraints(5, 10),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("2 slides, minimum is 5")));
+    }
+
+    #[test]
+    fn test_composition_dataviz_pacing() {
+        let mut arc_structure = std::collections::HashMap::new();
+        arc_structure.insert("evidence".into(), make_arc_def(
+            vec![],
+            vec!["chart", "column_chart", "list", "definition"],
+            5, 6,
+        ));
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "column_chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+                CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
+                CompositionSlide { slide_type: "column_chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+            ],
+            arc_structure,
+            constraints: make_constraints(4, 6),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("consecutive dataviz")));
+    }
+
+    #[test]
+    fn test_composition_unknown_arc() {
+        let arc_structure = std::collections::HashMap::new();
+
+        let request = CompositionRequest {
+            composition: vec![
+                CompositionSlide { slide_type: "hero".into(), arc: "mystery".into(), bg_style: None },
+            ],
+            arc_structure,
+            constraints: make_constraints(1, 3),
+        };
+        let r = validate_composition(&request);
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("unknown arc")));
     }
 }
 
