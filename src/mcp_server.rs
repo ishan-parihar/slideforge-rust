@@ -199,7 +199,7 @@ pub struct DesignSystemRequest {
 #[derive(Serialize, Deserialize, JsonSchema)]
 pub struct GenerateSlideRequest {
     /// Slide type: hero, feature, list, quote, cta, comparison, stat_row, timeline,
-    /// callout, split_features, grid_cards, headline_subheadline, definition, text_block
+    /// callout, split_features, grid_cards, headline_subheadline, definition, text_block, metric_grid, comparison_bars, gauge, progress_rings
     pub slide_type: String,
     pub primary_color: Option<String>,
     pub font_style: Option<String>,
@@ -657,7 +657,7 @@ impl Server {
     /// Generate HTML for a single slide using the configured session design.
     #[tool(
         name = "generate_slide",
-        description = "Generate HTML for a single slide. Supports 47 slide types across 6 categories: (1) Text & Layout: hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, section_divider, text_columns. (2) Data Viz: chart, scatter_plot, gauge, radar_chart, column_chart, table, metric_sparkline, funnel_chart, metric_grid, comparison_bars, progress_rings. (3) Metrics: metric_card, stat_row. (4) Story: problem_solution, myth_fact, case_study_result, testimonial_avatar, before_after_story, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map. (5) Image: image_caption, image_headline, image_quote, image_callout, image_stat, image_gallery, image_collage, image_comparison. (6) Conversion: qr_destination. Call list_slide_types for full details (required params, optional params, variants) and get_slide_type_info for a specific type's schema. Image URLs must be supplied by the caller in the image_url or background_image param — use embed_local_image to convert a local file to a data URI."
+        description = "Generate HTML for a single slide. Supports 47 slide types across 6 categories: (1) Text & Layout: hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, section_divider, text_columns. (2) Data Viz: chart, scatter_plot, gauge, radar_chart, column_chart, table, metric_sparkline, funnel_chart, metric_grid, comparison_bars, progress_rings. (3) Story: problem_solution, myth_fact, case_study_result, testimonial_avatar, before_after_story, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map. (4) Image: image_caption, image_headline, image_quote, image_callout, image_stat, image_gallery, image_collage, image_comparison. (5) Conversion: qr_destination. Call list_slide_types for full details (required params, optional params, variants) and get_slide_type_info for a specific type's schema. Image URLs must be supplied by the caller in the image_url or background_image param — use embed_local_image to convert a local file to a data URI."
     )]
     pub async fn generate_slide(
         &self,

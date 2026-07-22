@@ -44,7 +44,7 @@ slideforge export carousel.html --output-dir ./exports --slides 4 --preset insta
 
 ## Slide Types
 
-hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, chart, column_chart, metric_card, metric_grid, funnel_chart, progress_rings, comparison_bars, table, qr_destination, and more. Run `slideforge list-slides` for the full catalog.
+hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, chart, column_chart, metric_grid, funnel_chart, progress_rings, comparison_bars, table, qr_destination, and more. Run `slideforge list-slides` for the full catalog.
 
 ## Design System
 

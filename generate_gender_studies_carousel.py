@@ -116,18 +116,15 @@ def main():
         }
     })
 
-    # Slide 6: Metric Card
+    # Slide 6: Metric Grid (replacing metric_card)
     slides.append({
-        "slide_type": "metric_card",
+        "slide_type": "metric_grid",
         "theme": "dark",
         "bg_style": "dark",
         "archetype": "educator",
         "params": {
-            "value": "3.5x",
-            "metric": "3.5x",
-            "label": "Male Suicide Multiplier",
-            "trend": "Stable",
-            "context": "Compared to female suicide rates across Western countries.",
+            "title": "Key Statistics",
+            "items": [{"label": "Male Suicide Multiplier", "value": "3.5x", "trend": "Stable"}],
             "variant": "compact"
         }
     })

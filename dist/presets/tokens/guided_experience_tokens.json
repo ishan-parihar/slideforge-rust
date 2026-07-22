@@ -1,0 +1,147 @@
+{
+  "primary": "#006064",
+  "primary_light": "#59A5A9",
+  "primary_dark": "#00373B",
+  "surface_light": "#EAF8F9",
+  "surface_dark": "#000203",
+  "text_primary": "#070C0D",
+  "text_secondary": "#394545",
+  "text_on_dark": "#E7F1F1",
+  "text_on_dark_secondary": "#C3D1D1",
+  "border_light": "#BDCACB",
+  "border_dark": "#1B3234",
+  "accent": "#784242",
+  "secondary": "#3E5A5B",
+  "tertiary": "#435470",
+  "gradient": "linear-gradient(165deg, #000203 0%, #00373B 60%, #000203 100%)",
+  "temperature": "cool",
+  "heading_font": "Fraunces",
+  "body_font": "Outfit",
+  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Fraunces:wght@300,600&family=Outfit:wght@400,500,600&display=swap",
+  "type_scale": {
+    "display": {
+      "font_size": 31,
+      "line_height": 1.08,
+      "letter_spacing": -0.02,
+      "font_weight": 600
+    },
+    "headline": {
+      "font_size": 25,
+      "line_height": 1.12,
+      "letter_spacing": -0.015,
+      "font_weight": 600
+    },
+    "title": {
+      "font_size": 20,
+      "line_height": 1.18,
+      "letter_spacing": -0.01,
+      "font_weight": 600
+    },
+    "body": {
+      "font_size": 16,
+      "line_height": 1.55,
+      "letter_spacing": 0.0,
+      "font_weight": 400
+    },
+    "caption": {
+      "font_size": 13,
+      "line_height": 1.4,
+      "letter_spacing": 0.02,
+      "font_weight": 600
+    },
+    "micro": {
+      "font_size": 10,
+      "line_height": 1.35,
+      "letter_spacing": 0.04,
+      "font_weight": 500
+    }
+  },
+  "spacing": {
+    "0": 0,
+    "1": 8,
+    "2": 16,
+    "3": 24,
+    "4": 32,
+    "5": 40,
+    "6": 48,
+    "7": 56,
+    "8": 64,
+    "9": 72,
+    "10": 80,
+    "12": 96,
+    "14": 112,
+    "16": 128,
+    "18": 144,
+    "20": 160,
+    "24": 192,
+    "28": 224,
+    "32": 256
+  },
+  "contrast_report": {
+    "text_primary on surface_light": {
+      "ratio": 18.07,
+      "passes": true
+    },
+    "text_secondary on surface_light": {
+      "ratio": 9.14,
+      "passes": true
+    },
+    "text_on_dark on surface_dark": {
+      "ratio": 18.07,
+      "passes": true
+    },
+    "text_on_dark_secondary on surface_dark": {
+      "ratio": 13.23,
+      "passes": true
+    },
+    "border_light on surface_light": {
+      "ratio": 1.55,
+      "passes": true
+    },
+    "border_dark on surface_dark": {
+      "ratio": 1.54,
+      "passes": true
+    }
+  },
+  "shadows": {
+    "sm": "0 1px 2px rgba(0,0,0,0.05)",
+    "md": "0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05)",
+    "lg": "0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05)",
+    "xl": "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05)",
+    "inner": "inset 0 2px 2px 4px rgba(0,0,0,0.06)",
+    "glow": "0 0 20px #00606440"
+  },
+  "radii": {
+    "sm": "6px",
+    "md": "10px",
+    "lg": "16px",
+    "xl": "24px",
+    "pill": "9999px"
+  },
+  "gradients": {
+    "subtle": "linear-gradient(135deg, #EAF8F9 0%, #00606408 100%)",
+    "mesh": "radial-gradient(at 40% 20%, #00606415 0px, transparent 50%), radial-gradient(at 80% 0%, #78424210 0px, transparent 50%), radial-gradient(at 0% 50%, #59A5A912 0px, transparent 50%)",
+    "hero": "linear-gradient(135deg, #000203 0%, #00373B30 50%, #000203 100%)",
+    "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E\")"
+  },
+  "textures": {
+    "grain": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E\")"
+  },
+  "glass": {
+    "light": {
+      "blur": "12px",
+      "bg": "#EAF8F9CC",
+      "border": "1px solid #BDCACB40"
+    },
+    "dark": {
+      "blur": "12px",
+      "bg": "#000203CC",
+      "border": "1px solid #1B323440"
+    },
+    "frosted": {
+      "blur": "20px",
+      "bg": "#EAF8F9E6",
+      "border": "1px solid #BDCACB30"
+    }
+  }
+}

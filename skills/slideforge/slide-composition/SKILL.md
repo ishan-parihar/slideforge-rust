@@ -17,7 +17,7 @@ To view templates, mandatory parameters, and specific layout limits, read the re
 
 ### 2. [Data Visualization](file:///home/ishanp/.agents/skills/slideforge/slide-composition/data-viz/SKILL.md)
 - **When to descend:** You need to show quantitative metrics, numeric comparisons, tables, charts, progress status, or sparklines.
-- **Includes slide types:** `chart`, `scatter_plot`, `gauge`, `radar_chart`, `column_chart`, `table`, `metric_sparkline`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings`, `metric_card`, `stat_row`.
+- **Includes slide types:** `chart`, `scatter_plot`, `gauge`, `radar_chart`, `column_chart`, `table`, `metric_sparkline`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings`, `stat_row`.
 
 ### 3. [Story & Educational Flows](file:///home/ishanp/.agents/skills/slideforge/slide-composition/story-flows/SKILL.md)
 - **When to descend:** Your slide needs to structure structured learning paths, lists of actions, comparisons, problem/solution matches, myth/fact checks, or case studies.

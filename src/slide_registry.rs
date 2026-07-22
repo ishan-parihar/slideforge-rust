@@ -172,8 +172,8 @@ pub fn get_registry() -> Value {
             "best_for": ["opening", "section-intro", "key-message"]
         },
         "definition": {
-            "description": "Term definition with supporting context or elaboration",
-            "required_params": ["term", "definition"],
+            "description": "Term definition with phonetic pronunciation and supporting context",
+            "required_params": ["term", "definition", "phonetic"],
             "optional_params": ["context", "example", "icon", "variant"],
             "variants": ["card", "inline", "highlighted", "minimal"],
             "default_variant": "card",
@@ -208,9 +208,9 @@ pub fn get_registry() -> Value {
             "best_for": ["opening", "section-intro", "chapter-break"]
         },
         "problem_solution": {
-            "description": "Problem and solution pair with optional proof points",
-            "required_params": ["problem", "solution"],
-            "optional_params": ["title", "proof_points", "variant"],
+            "description": "Problem and solution pair with proof points",
+            "required_params": ["problem", "solution", "proof_points"],
+            "optional_params": ["title", "variant"],
             "variants": ["split", "proof-grid"],
             "default_variant": "split",
             "layout_family": "strategy",
@@ -297,15 +297,7 @@ pub fn get_registry() -> Value {
             "layout_family": "story",
             "best_for": ["transformation", "results", "case-study"]
         },
-        "metric_card": {
-            "description": "Single prominent metric with optional trend indicator",
-            "required_params": ["metric", "value"],
-            "optional_params": ["trend", "trend_direction", "label", "icon", "color", "variant"],
-            "variants": ["card", "hero-number", "with-trend", "minimal"],
-            "default_variant": "card",
-            "layout_family": "data",
-            "best_for": ["data", "kpi", "proof-points"]
-        },
+        // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings instead
         "chart": {
             "description": "Data chart — bar, line, pie, donut, scatter, etc.",
             "required_params": ["title", "chart_type", "data"],
@@ -727,7 +719,7 @@ mod tests {
             "headline_subheadline",
             "hero",
             "list",
-            "metric_card",
+            // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
             "quote",
             "split_features",
             "stat_row",

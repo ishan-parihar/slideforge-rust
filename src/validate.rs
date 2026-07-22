@@ -122,13 +122,13 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
                         let val = primary_val.unwrap();
                         match val {
                             serde_json::Value::Array(_) => {
-                                result.add_warning(format!(
-                                    "Required param '{primary_key}' is an empty array for slide type '{slide_type}'"
+                                result.add_error(format!(
+                                    "Required param '{primary_key}' is an empty array for slide type '{slide_type}' — fill it or call validate_and_fix"
                                 ));
                             }
                             _ => {
-                                result.add_warning(format!(
-                                    "Required param '{primary_key}' is present but empty for slide type '{slide_type}'"
+                                result.add_error(format!(
+                                    "Required param '{primary_key}' is present but empty for slide type '{slide_type}' — fill it or call validate_and_fix"
                                 ));
                             }
                         }
@@ -139,13 +139,13 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
                         let val = alt_val.unwrap();
                         match val {
                             serde_json::Value::Array(_) => {
-                                result.add_warning(format!(
-                                    "Required param '{alt}' is an empty array for slide type '{slide_type}'"
+                                result.add_error(format!(
+                                    "Required param '{alt}' is an empty array for slide type '{slide_type}' — fill it or call validate_and_fix"
                                 ));
                             }
                             _ => {
-                                result.add_warning(format!(
-                                    "Required param '{alt}' is present but empty for slide type '{slide_type}'"
+                                result.add_error(format!(
+                                    "Required param '{alt}' is present but empty for slide type '{slide_type}' — fill it or call validate_and_fix"
                                 ));
                             }
                         }
@@ -160,13 +160,13 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
                     ));
                 }
                 Some(Value::String(s)) if s.trim().is_empty() => {
-                    result.add_warning(format!(
-                        "Required param '{param}' is present but empty for slide type '{slide_type}'"
+                    result.add_error(format!(
+                        "Required param '{param}' is present but empty for slide type '{slide_type}' — fill it or call validate_and_fix"
                     ));
                 }
                 Some(Value::Array(arr)) if arr.is_empty() => {
-                    result.add_warning(format!(
-                        "Required param '{param}' is an empty array for slide type '{slide_type}'"
+                    result.add_error(format!(
+                        "Required param '{param}' is an empty array for slide type '{slide_type}' — fill it or call validate_and_fix"
                     ));
                 }
                 _ => {} // present and non-empty — OK
@@ -317,6 +317,10 @@ pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> Validatio
                 result.add_fix("cta: set default 'button_text' to \"Learn More\"");
             }
         }
+        // before_after_story, problem_solution, definition, checklist_action_plan:
+        // NO auto-fix — missing/empty required params must produce hard errors
+        // so the AI agent gets actionable feedback on which fields to fill.
+        // Auto-filling with wrong-shaped placeholders silently produces empty tiles.
         // quote: 'author' is optional — no fix needed.
         _ => {}
     }
@@ -362,18 +366,21 @@ mod tests {
     }
 
     #[test]
-    fn test_hero_empty_headline_warns() {
+    fn test_hero_empty_headline_errors() {
         let params = json!({ "headline": "   " });
         let r = validate_slide_spec("hero", &params);
-        // Empty string headline is still "present" but we warn.
-        assert!(!r.warnings.is_empty());
+        // Empty string headline must be an error, not a silent warning.
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("headline")));
     }
 
     #[test]
-    fn test_list_empty_items_warns() {
+    fn test_list_empty_items_errors() {
         let params = json!({ "title": "My List", "items": [] });
         let r = validate_slide_spec("list", &params);
-        assert!(r.warnings.iter().any(|w| w.contains("items")));
+        // Empty items array must be an error, not a silent warning.
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("items")));
     }
 
     #[test]
@@ -868,16 +875,17 @@ mod tests {
     }
 
     #[test]
-    fn test_qr_destination_empty_alternatives_warn() {
+    fn test_qr_destination_empty_alternatives_errors() {
         let params = json!({
             "url": "",
             "button_text": "   ",
             "headline": "Read the full guide"
         });
         let r = validate_slide_spec("qr_destination", &params);
-        assert!(r.valid);
-        assert!(r.warnings.iter().any(|w| w.contains("url")));
-        assert!(r.warnings.iter().any(|w| w.contains("button_text")));
+        // Empty required alternatives must be errors, not silent warnings.
+        assert!(!r.valid);
+        assert!(r.errors.iter().any(|e| e.contains("url")));
+        assert!(r.errors.iter().any(|e| e.contains("button_text")));
     }
 
     #[test]

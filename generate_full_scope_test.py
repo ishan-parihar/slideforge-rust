@@ -38,6 +38,9 @@ def generate_slide(slide_type, tokens_file, theme, bg_style, archetype, params, 
     if variant:
         params = dict(params)
         params["variant"] = variant
+    import tempfile
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as tmp:
+        out_path = tmp.name
     cmd = [
         BIN, "generate-slide", slide_type,
         "--tokens-file", tokens_file,
@@ -45,9 +48,13 @@ def generate_slide(slide_type, tokens_file, theme, bg_style, archetype, params, 
         "--bg-style", bg_style,
         "--archetype", archetype,
         "--params", json.dumps(params),
+        "--output", out_path,
     ]
-    stdout = run_cmd(cmd, f"gen:{slide_type}")
-    return json.loads(stdout)
+    run_cmd(cmd, f"gen:{slide_type}")
+    with open(out_path, "r") as f:
+        result = json.load(f)
+    os.unlink(out_path)
+    return result
 
 # ── Slide definitions ─────────────────────────────────────────────────
 SLIDES = [

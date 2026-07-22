@@ -3296,6 +3296,7 @@ pub fn definition_slide(
     tokens: &DesignTokens,
     term: &str,
     definition: &str,
+    phonetic: &str,
     context: &str,
     bg_style: &str,
     theme: &str,
@@ -3323,11 +3324,16 @@ pub fn definition_slide(
         escape_html(term)
     );
 
-    let phonetic_html = format!(
-        r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">/slīd kəm-pə-zi-shən/ • noun</div>"#,
-        tokens.body_font,
-        colors.text_secondary
-    );
+    let phonetic_html = if !phonetic.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">{}</div>"#,
+            tokens.body_font,
+            colors.text_secondary,
+            escape_html(phonetic)
+        )
+    } else {
+        String::new()
+    };
 
     let def_html = format!(
         r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
@@ -4720,6 +4726,10 @@ fn text_columns_slide(
 }
 
 fn simple_text(v: &Value, keys: &[&str]) -> String {
+    // If the value itself is a plain string, return it directly
+    if let Some(s) = v.as_str() {
+        return s.to_string();
+    }
     keys.iter()
         .find_map(|key| v.get(*key).and_then(|x| x.as_str()))
         .unwrap_or("")
@@ -4885,6 +4895,10 @@ pub fn problem_solution_slide(
             .iter()
             .take(4)
             .map(|item| {
+                // ponytail: plain-string items (no object keys) render as-is
+                if item.is_string() {
+                    return escape_html(&item.as_str().unwrap_or(""));
+                }
                 let t = simple_text(item, &["title", "label"]);
                 let d = simple_text(item, &["description", "body"]);
                 if !d.is_empty() {
@@ -5097,7 +5111,11 @@ pub fn checklist_action_plan_slide(
         .take(6)
         .enumerate()
         .map(|(idx, item)| {
-            let label = simple_text(item, &["label", "title", "task"]);
+            let label = if item.is_string() {
+                item.as_str().unwrap_or("").to_string()
+            } else {
+                simple_text(item, &["label", "title", "task", "step", "description"])
+            };
             format!(
                 r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:var(--space-1) 14px;">
                     <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;flex-shrink:0;">{}</div>
@@ -5798,6 +5816,30 @@ pub fn dispatch_slide(
             .unwrap_or("")
             .to_string()
     };
+    // Extract text from either a plain string or an object with label/description/title/body keys.
+    // For objects, concatenates label+description (or title+body) to capture the full content.
+    let s_or_text = |key: &str| {
+        p.get(key).map(|v| {
+            if let Some(s) = v.as_str() {
+                return s.to_string();
+            }
+            let primary = ["label", "title"]
+                .iter()
+                .find_map(|k| v.get(*k).and_then(|x| x.as_str()))
+                .unwrap_or("");
+            let secondary = ["description", "body"]
+                .iter()
+                .find_map(|k| v.get(*k).and_then(|x| x.as_str()))
+                .unwrap_or("");
+            if !secondary.is_empty() && !primary.is_empty() {
+                format!("{}: {}", primary, secondary)
+            } else if !secondary.is_empty() {
+                secondary.to_string()
+            } else {
+                primary.to_string()
+            }
+        }).unwrap_or_default()
+    };
     let b = |key: &str, default: bool| p.get(key).and_then(|v| v.as_bool()).unwrap_or(default);
     let f = |key: &str, default: f32| -> f32 {
         p.get(key)
@@ -6013,6 +6055,7 @@ pub fn dispatch_slide(
             tokens,
             &s("term"),
             &s("definition"),
+            &s("phonetic"),
             &s("context"),
             bg_style,
             theme,
@@ -6028,17 +6071,7 @@ pub fn dispatch_slide(
             &bg_img,
             img_opacity,
         )),
-        "metric_card" => Ok(metric_card_slide(
-            tokens,
-            &s("value").if_empty(&s("metric")),
-            &s("label"),
-            &s("trend"),
-            &s("context"),
-            bg_style,
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
+        // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
         "chart" => {
             let data = p
                 .get("data")
@@ -6405,8 +6438,8 @@ pub fn dispatch_slide(
         "before_after_story" => Ok(before_after_story_slide(
             tokens,
             &s("title"),
-            &s("before"),
-            &s("after"),
+            &s_or_text("before"),
+            &s_or_text("after"),
             &s("metric"),
             bg_style,
             theme,

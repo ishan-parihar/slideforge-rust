@@ -56,8 +56,8 @@ SLIDE_CONTENT = {
         {"title": "A Guide to Modularity", "body": "Modularity is the art of breaking a system into self-contained modules that can be modified independently."},
     ],
     # ── 13 new slide types ───────────────────────────────────────────────
-    "metric_card": [
-        {"value": "1.2M", "label": "Monthly Active Users", "trend": "+18%", "context": "Up from 1.0M last quarter"},
+    "metric_grid": [
+        {"title": "Key Metrics", "items": [{"label": "Monthly Active Users", "value": "1.2M", "trend": "+18%"}]},
     ],
     "chart": [
         {"chart_type": "bar", "title": "Revenue Growth", "data": [{"label": "Q1", "value": 40}, {"label": "Q2", "value": 65}, {"label": "Q3", "value": 90}]},

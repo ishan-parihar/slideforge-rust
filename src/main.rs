@@ -1075,7 +1075,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "headline_subheadline",
         "definition",
         "text_block",
-        "metric_card",
+        // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
         "chart",
         "progress_rings",
         "comparison_bars",
@@ -1306,13 +1306,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     "body": "Aesthetics are a primary developer criteria. Using generic colors or raw gray backgrounds results in amateur layouts.\nAlways leverage duotone gradients, fine noise textures, and micro-interactions.",
                     "bg_style": rand_bg
                 }),
-                "metric_card" => json!({
-                    "value": "$48.2K",
-                    "label": "Average MRR Growth",
-                    "trend": "↑ 42% monthly increase",
-                    "context": "Audited by SlideForge financial tracking core",
-                    "bg_style": rand_bg
-                }),
+                // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
                 "progress_rings" => json!({
                     "title": "Completion Metrics",
                     "items": [
