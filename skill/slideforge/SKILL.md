@@ -112,6 +112,37 @@ slideforge validate-layout hero --params '{"headline":"Test"}'
 
 # Validate rendered carousel HTML for design issues
 slideforge validate-design carousel.html
+
+# Validate a carousel composition against arc structure and constraints
+slideforge validate-composition --file composition-request.json
+```
+
+The `validate-composition` command checks:
+- **Pool membership** — every slide_type in the composition must be in one of the arc_structure pools
+- **Bg rhythm alternation** — light/dark backgrounds must alternate for visual contrast
+- **No consecutive same-type** — same slide_type cannot appear back-to-back (DLD rhythm)
+- **Max consecutive dataviz** — limits how many data-viz slides can appear in a row
+- **Min/max slide count** — composition must fall within preset's ideal range
+
+Input format (JSON):
+```json
+{
+  "composition": [
+    {"slide_type": "hero", "arc": "hook"},
+    {"slide_type": "problem_solution", "arc": "evidence"},
+    {"slide_type": "cta", "arc": "action"}
+  ],
+  "arc_structure": {
+    "hook": {"types": ["hero"], "pool": [], "count": {"min": 1, "max": 6}},
+    "evidence": {"types": [], "pool": ["problem_solution", "grid_cards"], "count": {"min": 4, "max": 6}},
+    "action": {"types": ["cta"], "pool": [], "count": {"min": 1, "max": 6}}
+  },
+  "constraints": {
+    "max_consecutive_dataviz": 2,
+    "min_slides": 5,
+    "max_slides": 12
+  }
+}
 ```
 
 ## MCP Server
@@ -265,6 +296,36 @@ slideforge validate-design carousel.html
 
 The validator catches: layout overflow, contrast issues, image visibility, progress-slider spacing, full-bleed centering, and more. Fix all errors before exporting.
 
+### Pattern 5: Campaign Presets
+
+For pre-built campaign carousels with emotional arc templates, use the preset system:
+
+```bash
+# Generate all 28 campaign presets
+python3 generate_preset_slides.py
+
+# Generate specific presets
+python3 generate_preset_slides.py --only announcement,authority_introduction
+
+# Validate compositions without generating
+python3 generate_preset_slides.py --composition-mode validate
+
+# Check type diversity across generated carousels
+python3 generate_preset_slides.py --test-diversity
+
+# List available presets
+python3 generate_preset_slides.py --list
+```
+
+The preset system provides:
+- **28 campaign presets** across 7 categories (announcement, authority, origin, aspiration, credibility, proof, process, product, evidence, contrast, exposure, skill, deep_dive, principle, technique, wisdom, legacy, paradigm, transformation, event, urgency, collective, outrage, story, emotional, guided, nostalgia, underdog)
+- **Pool-based composition** — each preset declares `arc_structure` with hook/evidence/action pools
+- **Repeatable blocks** — `repeat_count` lets the AI agent decide iteration count within bounds
+- **DLD rhythm enforcement** — no consecutive same-type slides, alternating bg_style
+- **Content-fill fallback** — `fill_params()` provides demo values when `preset_content()` doesn't have an entry for a slot
+
+The generation script reads from `docs/presets/campaign-presets.json` and writes carousels to `dist/presets/*.html`.
+
 ## Common Params by Slide Type
 
 ### hero
@@ -384,7 +445,7 @@ slideforge --version
 
 ## MCP Tool Reference
 
-All 18 CLI commands have matching MCP tools with identical parameters:
+All 19 CLI commands have matching MCP tools with identical parameters:
 
 | MCP Tool | Equivalent CLI | Purpose |
 |----------|---------------|---------|
@@ -396,6 +457,7 @@ All 18 CLI commands have matching MCP tools with identical parameters:
 | `get_slide_type_info` | `slide-info` | Get slide schema |
 | `validate_layout` | `validate-layout` | Validate params |
 | `validate_design` | `validate-design` | Validate HTML |
+| `validate_composition` | `validate-composition` | Validate arc structure + constraints |
 | `embed_local_image` | `embed-image` | Local image → data URI |
 | `preview_slide` | `preview-slide` | Single-slide PNG preview |
 | `load_carousel_skill` | `skill-guide` | Load design guide |
