@@ -412,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1"></div>
+            <div style="opacity: 0.04; pointer-events: none; position: absolute; inset: 0; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:var(--space-10) var(--space-6) var(--space-10);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:0"><div style="width: var(--space-7); height: var(--space-7); background: #E24F8212; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: var(--space-3); margin: 0 0 16px;">🧬</div><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word"><span style="color:#E24F82;font-weight:800;margin-right:12px;font-family:Playfair Display;">01</span>The Composition Engine</h2><p style="font-family: DM Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #D7CACD; margin: 0; text-align: left">Nexus doesn&#x27;t pick slides randomly. It composes — selecting each slide type based on the emotional position in the narrative arc, the content density of the brief, and the target audience&#x27;s cognitive load budget.</p></div>
@@ -438,7 +438,7 @@ body {
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #AD145715 0px, transparent 50%), radial-gradient(at 80% 0%, #007E6910 0px, transparent 50%), radial-gradient(at 0% 50%, #FF76A712 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #D0C3C6;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
@@ -472,7 +472,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); pointer-events: none; inset: 0; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -512,7 +512,7 @@ body {
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #AD145715 0px, transparent 50%), radial-gradient(at 80% 0%, #007E6910 0px, transparent 50%), radial-gradient(at 0% 50%, #FF76A712 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute"></div>
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); inset: 0; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -566,7 +566,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="opacity: 0.04; pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -582,9 +582,9 @@ body {
                     <p style="font-family:DM Sans;font-size:var(--text-sm);color:#D7CACD;line-height:1.45;margin:0;">Composed Output: 8-15 slides adapted to content density. Each slide type chosen for its communication function. Typography scales to fit.</p>
                 </div>
             </div>
-            <div style="margin-top:14px;border-radius:0;background:rgba(255,255,255,0.06);border:1px solid #3B282C;padding:var(--space-2) 16px;display:flex;align-items:center;gap:var(--space-1);">
-                <div style="width:34px;height:34px;border-radius:0;background:#E65285;color:white;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:16px;font-weight:900;flex-shrink:0;">↗</div>
-                <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:800;color:#F5ECEE;line-height:1.45;">3.1x</div>
+            <div style="margin-top:14px;border-radius:0;background:rgba(255,255,255,0.06);border:1px solid #3B282C;padding:var(--space-2) 16px;">
+                <div style="font-family:Playfair Display;font-size:11px;font-weight:900;color:#E65285;letter-spacing:0.06em;margin-bottom:6px;">Engagement Improvement</div>
+                <div style="font-family:DM Sans;font-size:var(--text-lg);font-weight:800;color:#F5ECEE;line-height:1.2;">3.1x</div>
             </div>
         </div>
             </div>
@@ -609,7 +609,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1"></div>
+            <div style="opacity: 0.04; z-index: 1; pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:60px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">

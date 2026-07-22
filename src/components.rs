@@ -5523,6 +5523,7 @@ pub fn before_after_story_slide(
     before: &str,
     after: &str,
     metric: &str,
+    metric_label: &str,
     bg_style: &str,
     theme: &str,
     background_image: &str,
@@ -5537,7 +5538,25 @@ pub fn before_after_story_slide(
     };
     let metric_html = if metric.is_empty() {
         String::new()
+    } else if !metric_label.is_empty() {
+        // Full result/impact tile when metric_label is provided
+        format!(
+            r#"<div style="margin-top:14px;border-radius:{};background:{};border:1px solid {};padding:var(--space-2) 16px;">
+                <div style="font-family:{};font-size:11px;font-weight:900;color:{};letter-spacing:0.06em;margin-bottom:6px;">{}</div>
+                <div style="font-family:{};font-size:var(--text-lg);font-weight:800;color:{};line-height:1.2;">{}</div>
+            </div>"#,
+            radius,
+            card_bg,
+            colors.border,
+            tokens.heading_font,
+            colors.primary,
+            escape_html(metric_label),
+            tokens.body_font,
+            colors.text_primary,
+            escape_html(metric)
+        )
     } else {
+        // Legacy metric badge fallback
         format!(
             r#"<div style="margin-top:14px;border-radius:{};background:{};border:1px solid {};padding:var(--space-2) 16px;display:flex;align-items:center;gap:var(--space-1);">
                 <div style="width:34px;height:34px;border-radius:{};background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:16px;font-weight:900;flex-shrink:0;">↗</div>
@@ -6441,6 +6460,7 @@ pub fn dispatch_slide(
             &s_or_text("before"),
             &s_or_text("after"),
             &s("metric"),
+            &s("metric_label"),
             bg_style,
             theme,
             &bg_img,

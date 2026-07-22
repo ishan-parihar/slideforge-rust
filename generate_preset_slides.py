@@ -438,16 +438,24 @@ def preset_content(preset_id):
             {"headline": "The Template Industrial Complex", "subheadline": "Your carousel template was designed to sell templates, not to communicate your message.", "badge": "INVESTIGATION", "kicker": "WHAT THEY DON'T TELL YOU"},
             # repeatable ×4: metric_grid + callout
             # 1
-            {"metric": "87%", "value": "of carousel templates", "label": "use the same 5 layouts regardless of content type", "trend": "+12% since 2023", "trend_direction": "up"},
+            {"title": "The Layout Monopoly", "metrics": [
+                {"value": "87%", "label": "of carousel templates use the same 5 layouts regardless of content type", "trend": "+12% since 2023"},
+            ]},
             {"title": "The Layout Monopoly", "text": "We analyzed 500 popular carousel templates. 87% use identical grid structures. The 'variety' is color and font — not composition. Your audience sees through it."},
             # 2
-            {"metric": "73%", "value": "of template users", "label": "never customize beyond colors and text", "trend": "Industry-wide", "trend_direction": "down"},
+            {"title": "The Customization Illusion", "metrics": [
+                {"value": "73%", "label": "of template users never customize beyond colors and text", "trend": "Industry-wide"},
+            ]},
             {"title": "The Customization Illusion", "text": "Templates give the illusion of control. You change the text. You change the colors. But the underlying composition — the emotional structure — is fixed. And it's wrong for your message."},
             # 3
-            {"metric": "4.2x", "value": "engagement gap", "label": "between templated and composed carousels", "trend": "Widening", "trend_direction": "up"},
+            {"title": "Composed vs Templated", "metrics": [
+                {"value": "4.2x", "label": "engagement gap between templated and composed carousels", "trend": "Widening"},
+            ]},
             {"title": "Composed vs Templated", "text": "Emotionally-architected carousels — where every slide advances a deliberate narrative arc — outperform template-based carousels by 4.2x. Not because they look different. Because they think different."},
             # 4
-            {"metric": "92%", "value": "scroll completion", "label": "on emotionally-architected carousels vs 34% on templates", "trend": "+58 points", "trend_direction": "up"},
+            {"title": "The Completion Gap", "metrics": [
+                {"value": "92%", "label": "scroll completion on emotionally-architected carousels vs 34% on templates", "trend": "+58 points"},
+            ]},
             {"title": "The Completion Gap", "text": "People finish what resonates. Templates are designed to be universal — which means they resonate with no one. Emotional architecture is designed for THIS audience, THIS message, THIS moment."},
             # chart
             {"title": "Engagement: Templates vs Composition", "chart_type": "bar", "data": [{"label": "Generic template", "value": 23}, {"label": "Customized template", "value": 38}, {"label": "AI-composed", "value": 72}, {"label": "Emotional architecture", "value": 96}]},
@@ -669,11 +677,17 @@ def preset_content(preset_id):
             # hero
             {"headline": "Your Competitors Shipped 12 Carousels While You Read This", "subheadline": "Every day you spend manual-designing, the gap widens. This isn't about tools. It's about survival.", "badge": "URGENT", "kicker": "THE COST OF INACTION"},
             # repeatable ×3: metric_grid + callout
-            {"metric": "12x", "value": "output gap", "label": "between teams using composition engines and manual designers", "trend": "Growing 3x/quarter", "trend_direction": "up"},
+            {"title": "The Fear Is Rational", "metrics": [
+                {"value": "12x", "label": "output gap between teams using composition engines and manual designers", "trend": "Growing 3x/quarter"},
+            ]},
             {"title": "The Fear Is Rational", "text": "You're not being paranoid. The content gap is real and accelerating. Teams with AI-native pipelines produce 12x more content with the same headcount. This isn't a future threat — it's today's reality."},
-            {"metric": "$47K", "value": "annual cost", "label": "of manual carousel production at $75/hr, 12hrs/week", "trend": "+18% YoY", "trend_direction": "up"},
+            {"title": "The Money Is Leaving", "metrics": [
+                {"value": "$47K", "label": "annual cost of manual carousel production at $75/hr, 12hrs/week", "trend": "+18% YoY"},
+            ]},
             {"title": "The Money Is Leaving", "text": "Every hour your team spends dragging boxes in Figma is an hour not spent on strategy, research, or relationship building. The real cost isn't the design hours — it's the opportunity cost."},
-            {"metric": "68%", "value": "of audiences", "label": "never see slide 6 if slides 1-3 don't hook them", "trend": "Industry average", "trend_direction": "down"},
+            {"title": "The Attention Cliff", "metrics": [
+                {"value": "68%", "label": "of audiences never see slide 6 if slides 1-3 don't hook them", "trend": "Industry average"},
+            ]},
             {"title": "The Attention Cliff", "text": "Your beautiful 10-slide carousel has a 32% chance of reaching slide 6. The other 68% scroll past after slide 3. The problem isn't design quality — it's emotional architecture."},
             # before_after_story
             {"title": "Two Futures", "before": {"label": "Stay Manual", "description": "12 hours per carousel. 4 per month. Same templates. Declining engagement. Watching competitors ship faster."}, "after": {"label": "Adopt Nexus", "description": "4 minutes per carousel. 4 per week. Unique compositions every time. Rising engagement. Leading the market."}, "metric": "756hrs/yr", "metric_label": "Difference in Production Time"},
@@ -758,9 +772,15 @@ def preset_content(preset_id):
             # image_headline
             {"headline": "This Started With One Person", "image_url": I[5], "subheadline": "Six months ago, one resident started a petition. Today, 14,000 signatures and counting."},
             # metric_grid (×3)
-            {"metric": "14,247", "value": "signatures collected", "label": "in 6 months across District 7", "trend": "+890 this week", "trend_direction": "up"},
-            {"metric": "12", "value": "neighborhoods organized", "label": "with volunteer captains in every district", "trend": "+3 this month", "trend_direction": "up"},
-            {"metric": "3", "value": "city council meetings", "label": "where our coalition spoke — and was heard", "trend": "Next: Sept 12", "trend_direction": "up"},
+            {"title": "The Movement by Numbers", "metrics": [
+                {"value": "14,247", "label": "signatures collected in 6 months across District 7", "trend": "+890 this week"},
+            ]},
+            {"title": "Neighborhood Reach", "metrics": [
+                {"value": "12", "label": "neighborhoods organized with volunteer captains in every district", "trend": "+3 this month"},
+            ]},
+            {"title": "Political Impact", "metrics": [
+                {"value": "3", "label": "city council meetings where our coalition spoke — and was heard", "trend": "Next: Sept 12"},
+            ]},
             # grid_cards
             {"title": "Our Demands", "cards": [
                 {"icon": "🏠", "title": "Housing", "description": "30% affordable units in all new developments. No exceptions."},
@@ -786,11 +806,17 @@ def preset_content(preset_id):
             # hero
             {"headline": "Your Utility Bill Funded a Lobby Campaign Against You", "subheadline": "We traced $2.3M in ratepayer money to political ads opposing the very regulations that would lower your bills.", "badge": "INVESTIGATION", "kicker": "FOLLOW THE MONEY"},
             # repeatable ×3: metric_grid + image_callout
-            {"metric": "$2.3M", "value": "spent on lobbying", "label": "from utility ratepayer funds in 2025 alone", "trend": "+340% since 2022", "trend_direction": "up"},
+            {"title": "Where Your Money Went", "metrics": [
+                {"value": "$2.3M", "label": "spent on lobbying from utility ratepayer funds in 2025 alone", "trend": "+340% since 2022"},
+            ]},
             {"image_url": I[6], "callouts": [{"label": "Money trail: Ratepayer funds → PAC → Attack ads", "description": "Your monthly bill includes a 'system improvement charge' — $4.20 of every $100 goes to political spending", "x": 50, "y": 40}], "description": "The fee on your bill labeled 'system improvement' is funding political ads."},
-            {"metric": "73%", "value": "of lobbying spend", "label": "went to opposing clean energy regulations", "trend": "Public records", "trend_direction": "down"},
+            {"title": "What They Opposed", "metrics": [
+                {"value": "73%", "label": "of lobbying spend went to opposing clean energy regulations", "trend": "Public records"},
+            ]},
             {"image_url": I[4], "callouts": [{"label": "The ads they ran with your money", "description": "'Clean energy mandates will raise your bill by $340/year' — the actual analysis showed a $12 increase", "x": 50, "y": 40}], "description": "The attack ads used your money to spread misinformation about policies that would help you."},
-            {"metric": "$4.20", "value": "per $100 bill", "label": "goes to political spending, not infrastructure", "trend": "Every month", "trend_direction": "up"},
+            {"title": "Your Monthly Contribution", "metrics": [
+                {"value": "$4.20", "label": "per $100 bill goes to political spending, not infrastructure", "trend": "Every month"},
+            ]},
             {"image_url": I[3], "callouts": [{"label": "What $2.3M could have built", "description": "730 homes weatherized. 12 community solar installations. 4,600 LED streetlights.", "x": 50, "y": 40}], "description": "That $2.3M could have directly lowered bills — instead it was spent fighting the regulations that would."},
             # chart
             {"title": "Where Your Utility Dollar Goes", "chart_type": "bar", "data": [{"label": "Infrastructure", "value": 62}, {"label": "Profit margin", "value": 18}, {"label": "Admin/exec", "value": 12}, {"label": "Political spending", "value": 8}]},
@@ -918,11 +944,17 @@ def preset_content(preset_id):
             # image_headline
             {"headline": "They Said It Couldn't Be Done in Rust", "image_url": I[2], "subheadline": "A slide engine in Rust? With HTML rendering? The experts gave it six months."},
             # repeatable ×3: metric_grid + text_block
-            {"metric": "0", "value": "GitHub stars", "label": "at launch — 'just another side project'", "trend": "Day 1, June 2023", "trend_direction": "down"},
+            {"title": "Day 1 — Zero", "metrics": [
+                {"value": "0", "label": "GitHub stars at launch — 'just another side project'", "trend": "Day 1, June 2023"},
+            ]},
             {"title": "The Doubters", "body": "'Rust is the wrong choice for this.' 'HTML rendering belongs in the browser, not a binary.' 'You'll never match Figma.' The comments were polite. The sentiment was clear: this was a fool's errand."},
-            {"metric": "85", "value": "tests passing", "label": "after 547 days of continuous development", "trend": "0 failures", "trend_direction": "up"},
+            {"title": "The Grind — 547 Days", "metrics": [
+                {"value": "85", "label": "tests passing after 547 days of continuous development", "trend": "0 failures"},
+            ]},
             {"title": "The Grind", "body": "Month after month. Feature after feature. 47 slide types. 28 campaign presets. 85 unit tests. The borrow checker fought every step. The HTML rendering pipeline broke weekly. But the binary got faster. And the output got better."},
-            {"metric": "0.8s", "value": "render time", "label": "for 47 slides — 15x faster than the Python reference", "trend": "Benchmark verified", "trend_direction": "up"},
+            {"title": "The Result — 0.8s", "metrics": [
+                {"value": "0.8s", "label": "render time for 47 slides — 15x faster than the Python reference", "trend": "Benchmark verified"},
+            ]},
             {"title": "The Proof", "body": "The first real benchmark: 47 slides rendered in 0.8 seconds. The Python reference implementation took 12 seconds. The skeptics weren't wrong about difficulty — they were wrong about feasibility."},
             # definition
             {"term": "Dogfooding", "phonetic": "/ˈdɔːɡˌfuːdɪŋ/", "definition": "Using your own product to build the thing it's meant to build. SlideForge's campaign presets are built with SlideForge. The tool eats its own output.", "context": "If your tool can't build the thing it's meant to build, it's not ready. SlideForge generates its own marketing carousels. That's the ultimate quality signal."},

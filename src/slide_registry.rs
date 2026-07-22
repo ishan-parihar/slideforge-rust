@@ -291,7 +291,7 @@ pub fn get_registry() -> Value {
         "before_after_story": {
             "description": "Text and metric before/after transformation story",
             "required_params": ["title", "before", "after"],
-            "optional_params": ["metric", "variant"],
+            "optional_params": ["metric", "metric_label", "variant"],
             "variants": ["split", "metric"],
             "default_variant": "split",
             "layout_family": "story",

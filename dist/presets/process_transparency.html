@@ -412,7 +412,7 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="inset: 0; opacity: 0.04; position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -447,7 +447,7 @@ body {
   </div></div>
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C6282815 0px, transparent 50%), radial-gradient(at 80% 0%, #0088A610 0px, transparent 50%), radial-gradient(at 0% 50%, #FF978A12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="inset: 0; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain); z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -507,7 +507,7 @@ body {
   </div></div>
 <div class="slide slide--light slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #C6282815 0px, transparent 50%), radial-gradient(at 80% 0%, #0088A610 0px, transparent 50%), radial-gradient(at 0% 50%, #FF978A12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none; position: absolute; opacity: 0.04"></div>
+            <div style="opacity: 0.04; pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:60px var(--space-6) 60px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -571,13 +571,13 @@ body {
   </div></div>
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
             <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#C62828;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="border: 1px solid #3C282640; background: #050101CC; backdrop-filter: blur(12px); border-radius: 16px; -webkit-backdrop-filter: blur(12px); border-left: 6px solid #C62828;padding:36px 32px;box-shadow: 0 8px 32px -4px #C628281f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border-radius: 16px; border: 1px solid #3C282640; backdrop-filter: blur(12px); background: #050101CC; -webkit-backdrop-filter: blur(12px); border-left: 6px solid #C62828;padding:36px 32px;box-shadow: 0 8px 32px -4px #C628281f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
                     <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#C628281a;color:#C62828;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
@@ -610,8 +610,8 @@ body {
   </div></div>
 <div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -80px; opacity: 0.07; border-radius: 50%; pointer-events: none; height: 320px; width: 320px; background: #C62828; top: -80px; position: absolute"></div><div style="pointer-events: none; position: absolute; right: -40px; background: #0088A6; height: 120px; transform: rotate(60deg); left: auto; width: 120px; opacity: 0.05; top: 60%; border-radius: 4px"></div></div>
+            <div style="background: var(--texture-grain); position: absolute; z-index: 1; opacity: 0.04; inset: 0; pointer-events: none"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; width: 320px; left: -80px; top: -80px; position: absolute; background: #C62828; pointer-events: none; border-radius: 50%; opacity: 0.07"></div><div style="left: auto; transform: rotate(60deg); right: -40px; background: #0088A6; opacity: 0.05; top: 60%; pointer-events: none; position: absolute; height: 120px; border-radius: 4px; width: 120px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#EE514A;background:#EE514A18;border:1px solid #EE514A40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F5ECEB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Transparent by Design</span><p style="font-family:DM Sans;font-size:12px;color:#D7CAC8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Full architecture documentation, API reference, and extension guides.</p><a href="https://slideforge.dev/docs" style="display: inline-block; padding: 16px 40px; background: #FF978A; color: #050101; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #91000040; letter-spacing: 0.02em; margin: 0 0 14px;">Read the Docs</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#D7CAC8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
