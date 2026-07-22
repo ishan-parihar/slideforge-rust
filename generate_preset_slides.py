@@ -1248,6 +1248,11 @@ def main():
     parser.add_argument("--validate", action="store_true", help="Run composition validation on each preset")
     parser.add_argument("--only", type=str, default=None, help="Generate only specified preset IDs (comma-separated)")
     parser.add_argument("--list", action="store_true", help="List all preset IDs and exit")
+    parser.add_argument("--composition-mode", type=str, default="default",
+                        choices=["default", "remix", "validate"],
+                        help="Composition mode: default (use preset's default composition), "
+                             "remix (allow AI agent to remix from full pool), "
+                             "validate (validate composition without generating)")
     args = parser.parse_args()
 
     print("SlideForge Campaign Preset Generator v5.0.0 — Composition Mode")
@@ -1273,10 +1278,66 @@ def main():
             return 1
 
     print(f"Found {len(presets)} presets to generate\n")
+    print(f"Composition mode: {args.composition_mode}\n")
 
     success = 0
     failed = []
     validation_errors = []
+
+    # In validate mode, skip generation entirely
+    if args.composition_mode == "validate":
+        print("=" * 60)
+        print("VALIDATE MODE: Skipping generation, validating compositions only")
+        print("=" * 60)
+        for preset in presets:
+            pid = preset["id"]
+            slides = preset.get("slides", [])
+            # Count slots (with repeatable expansion at max)
+            slot_count = 0
+            for s in slides:
+                if s.get("type") == "repeatable":
+                    rc = s.get("repeat_count", {"min": 1, "max": 1})
+                    max_iter = rc.get("max", 1)
+                    for _ in range(max_iter):
+                        slot_count += len(s.get("unit_slides", []))
+                else:
+                    slot_count += 1
+            # Check arc_structure — pools are hook/evidence/action
+            # Each pool can have fixed types OR flexible pool entries
+            # A pool that is explicitly defined but empty is an error
+            # A pool that is missing entirely is OK (not all presets need all pools)
+            arc = preset.get("arc_structure", {})
+            pool_keys = ["hook", "evidence", "action"]
+            empty_pools = []
+            for k in pool_keys:
+                if k not in arc:
+                    continue  # Missing pool is OK
+                pool_data = arc.get(k, {})
+                types = pool_data.get("types", [])
+                pool = pool_data.get("pool", [])
+                if not types and not pool:
+                    empty_pools.append(k)
+            if empty_pools:
+                print(f"  ✗ {pid}: empty pools: {empty_pools}")
+                failed.append(pid)
+            else:
+                pool_counts = {}
+                for k in pool_keys:
+                    if k not in arc:
+                        pool_counts[k] = "absent"
+                        continue
+                    pool_data = arc.get(k, {})
+                    types = pool_data.get("types", [])
+                    pool = pool_data.get("pool", [])
+                    pool_counts[k] = f"{len(types)}t+{len(pool)}p"
+                print(f"  ✓ {pid}: {slot_count} slots, pools={pool_counts}")
+                success += 1
+        print(f"\n{'='*60}")
+        print(f"VALIDATION: {success}/{len(presets)} presets valid")
+        if failed:
+            print(f"Failed: {', '.join(failed)}")
+        print(f"{'='*60}")
+        return 0 if not failed else 1
 
     for idx, preset in enumerate(presets):
         color = PRESET_COLORS[idx % len(PRESET_COLORS)]
