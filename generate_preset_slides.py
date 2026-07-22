@@ -1253,6 +1253,8 @@ def main():
                         help="Composition mode: default (use preset's default composition), "
                              "remix (allow AI agent to remix from full pool), "
                              "validate (validate composition without generating)")
+    parser.add_argument("--test-diversity", action="store_true",
+                        help="Test type diversity across generated carousels (checks for excessive repetition)")
     args = parser.parse_args()
 
     print("SlideForge Campaign Preset Generator v5.0.0 — Composition Mode")
@@ -1360,6 +1362,55 @@ def main():
             print(f"  {ve}")
     print(f"Output: {OUTPUT_DIR}/")
     print(f"{'='*60}")
+
+    # Run diversity test if requested
+    if args.test_diversity:
+        print(f"\n{'='*60}")
+        print("DIVERSITY TEST: Checking type distribution across generated carousels")
+        print(f"{'='*60}")
+        diversity_failures = []
+        for preset in presets:
+            pid = preset["id"]
+            slides = preset.get("slides", [])
+            # Count type occurrences
+            type_counts = {}
+            total = 0
+            for s in slides:
+                if s.get("type") == "repeatable":
+                    rc = s.get("repeat_count", {"min": 1, "max": 1})
+                    max_iter = rc.get("max", 1)
+                    for _ in range(max_iter):
+                        for u in s.get("unit_slides", []):
+                            t = u.get("slide_type", "?")
+                            type_counts[t] = type_counts.get(t, 0) + 1
+                            total += 1
+                else:
+                    t = s.get("slide_type", "?")
+                    type_counts[t] = type_counts.get(t, 0) + 1
+                    total += 1
+            # Check no type exceeds 50% of slides
+            max_pct = 0
+            max_type = None
+            for t, c in type_counts.items():
+                pct = (c / total) * 100 if total > 0 else 0
+                if pct > max_pct:
+                    max_pct = pct
+                    max_type = t
+            unique_types = len(type_counts)
+            status = "✓" if max_pct <= 50 else "✗"
+            print(f"  {status} {pid}: {unique_types} unique types, max={max_type} ({max_pct:.0f}%)")
+            if max_pct > 50:
+                diversity_failures.append((pid, max_type, max_pct))
+        print(f"\n{'='*60}")
+        if diversity_failures:
+            print(f"DIVERSITY FAILURES: {len(diversity_failures)}")
+            for pid, t, pct in diversity_failures:
+                print(f"  {pid}: {t} at {pct:.0f}%")
+        else:
+            print("DIVERSITY: All presets pass (no type exceeds 50%)")
+        print(f"{'='*60}")
+        if diversity_failures:
+            return 1
 
     return 0 if not failed else 1
 
