@@ -246,10 +246,6 @@ def preset_content(preset_id):
         return [
             # image_headline
             {"headline": "The Top 1% of Content Teams Do This Differently", "image_url": I[2], "subheadline": "They stopped designing slides. They started composing campaigns."},
-            # image_headline
-            {"headline": "While You're Polishing One Deck, They've Shipped Twelve", "image_url": I[3], "subheadline": "Speed isn't about cutting corners. It's about removing the entire corner-cutting workflow."},
-            # testimonial_avatar
-            {"quote": "Our competitor shipped 8 carousels in the time it took us to approve one. That's when we knew the process was broken.", "author": "Marcus Chen", "role": "VP Growth, Acme Labs", "avatar_url": A[2]},
             # metric_grid
             {"title": "The Gap Is Real", "metrics": [
                 {"value": "12x", "label": "Output difference"},
@@ -257,6 +253,8 @@ def preset_content(preset_id):
                 {"value": "6hrs", "label": "Your avg production"},
                 {"value": "∞", "label": "Compounding advantage"},
             ]},
+            # image_headline
+            {"headline": "While You're Polishing One Deck, They've Shipped Twelve", "image_url": I[3], "subheadline": "Speed isn't about cutting corners. It's about removing the entire corner-cutting workflow."},
             # process_map
             {"title": "The Ascent Path", "steps": [
                 {"icon": "🔍", "title": "Audit", "description": "Map your current production bottlenecks"},
@@ -264,8 +262,10 @@ def preset_content(preset_id):
                 {"icon": "📈", "title": "Accelerate", "description": "Ship 10x more with the same headcount"},
                 {"icon": "🏆", "title": "Dominate", "description": "Outpace competitors who still design manually"},
             ]},
+            # testimonial_avatar
+            {"quote": "Our competitor shipped 8 carousels in the time it took us to approve one. That's when we knew the process was broken.", "author": "Marcus Chen", "role": "VP Growth, Acme Labs", "avatar_url": A[2]},
             # progress_rings
-            {"title": "Your Compounding Advantage", "rings": [
+            {"title": "Your Compounding Advantage", "items": [
                 {"label": "Speed", "value": 87, "max": 100, "color": "#6366f1"},
                 {"label": "Quality", "value": 94, "max": 100, "color": "#8b5cf6"},
                 {"label": "Consistency", "value": 98, "max": 100, "color": "#a78bfa"},
@@ -278,16 +278,12 @@ def preset_content(preset_id):
     # Arc: Skepticism → Recognition → Trust → Action
     elif preset_id == "credibility_cascade":
         return [
+            # testimonial_avatar
+            {"quote": "We tried every AI slide tool on the market. Nexus is the first one where I didn't have to redo every slide manually afterward.", "author": "Sarah Kim", "role": "Design Lead, Relay.so", "avatar_url": A[0]},
             # logo_cloud
             {"title": "Teams That Ship With Nexus", "logos": ["Relay.so", "Composabl", "Typeframe", "DeckAI", "Pitchflow", "Slidespkr"]},
-            # testimonial_avatar (×5)
-            {"quote": "We tried every AI slide tool on the market. Nexus is the first one where I didn't have to redo every slide manually afterward.", "author": "Sarah Kim", "role": "Design Lead, Relay.so", "avatar_url": A[0]},
+            # testimonial_avatar
             {"quote": "Our LinkedIn impressions 3x'd in two weeks. Same team, same strategy — just faster execution.", "author": "James Okonkwo", "role": "Growth Lead, Composabl", "avatar_url": A[3]},
-             {"quote": "The preset architecture is brilliant. I described our annual report and it nailed the emotional arc on the first try.", "author": "Elena Voss", "role": "Head of Comms, Typeframe", "avatar_url": A[2]},
-            # gauge
-            {"title": "Trust Score", "value": 96, "max": 100, "unit": "%", "label": "Customer satisfaction"},
-            {"quote": "As a solo founder, I can't afford a design team. Nexus gives me the output of a 5-person studio at the cost of a CLI command.", "author": "Raj Patel", "role": "Founder, DeckAI", "avatar_url": A[4]},
-            {"quote": "The MCP integration means our content agent generates carousels autonomously. We just review and publish.", "author": "Lin Zhao", "role": "CTO, Pitchflow", "avatar_url": A[1]},
             # metric_grid
             {"title": "Collective Impact", "metrics": [
                 {"value": "4.2M", "label": "Impressions generated"},
@@ -295,6 +291,14 @@ def preset_content(preset_id):
                 {"value": "6", "label": "Teams in case studies"},
                 {"value": "98%", "label": "Would recommend"},
             ]},
+            # gauge
+            {"title": "Trust Score", "value": 96, "max": 100, "unit": "%", "label": "Customer satisfaction"},
+            # testimonial_avatar
+            {"quote": "The preset architecture is brilliant. I described our annual report and it nailed the emotional arc on the first try.", "author": "Elena Voss", "role": "Head of Comms, Typeframe", "avatar_url": A[2]},
+            # callout
+            {"title": "The Numbers Don't Lie", "text": "4.2M impressions. 340% avg engagement lift. 98% would recommend. These aren't projections — they're measured outcomes from real teams shipping real carousels."},
+            # testimonial_avatar
+            {"quote": "The MCP integration means our content agent generates carousels autonomously. We just review and publish.", "author": "Lin Zhao", "role": "CTO, Pitchflow", "avatar_url": A[1]},
             # cta
             {"headline": "Join the Teams That Already Switched", "button_text": "Start Free Trial", "button_url": "https://slideforge.dev", "subtext": "No credit card required. Ship your first carousel in under a minute."},
         ]
@@ -361,6 +365,8 @@ def preset_content(preset_id):
         return [
             # image_headline
             {"headline": "Nexus Pro: AI-Native Slide Composition", "image_url": I[5], "subheadline": "The tool that turns product descriptions into campaign-ready carousels."},
+            # testimonial_avatar
+            {"quote": "Nexus replaced three separate tools in our stack. Design, copy, and export — all one pipeline.", "author": "Tom Lee", "role": "Founder, Typeframe", "avatar_url": A[3]},
             # grid_cards
             {"title": "What You Get", "cards": [
                 {"icon": "🧩", "title": "47 Slide Types", "description": "Heroes, charts, testimonials, comparisons, timelines, and more — each engineered for specific communication goals."},
@@ -368,11 +374,13 @@ def preset_content(preset_id):
                 {"icon": "⚡", "title": "CLI + MCP", "description": "Use it from your terminal or let any AI agent call it. Same engine, same output."},
                 {"icon": "🔒", "title": "Local-First", "description": "Runs on your machine. No cloud uploads. Your content never leaves your control."},
             ]},
+            # testimonial_avatar
+            {"quote": "The MCP integration is the killer feature. Our AI agent generates carousels while we sleep.", "author": "Amira Hassan", "role": "Eng Lead, DeckAI", "avatar_url": A[2]},
             # image_gallery
             {"title": "Slide Gallery", "images": [{"url": I[0], "caption": "Hero slides"}, {"url": I[1], "caption": "Data viz"}, {"url": I[4], "caption": "Testimonials"}, {"url": I[5], "caption": "CTAs"}], "section_caption": "Every slide type rendered at production quality"},
-            # testimonial_avatar (×3)
-            {"quote": "Nexus replaced three separate tools in our stack. Design, copy, and export — all one pipeline.", "author": "Tom Lee", "role": "Founder, Typeframe", "avatar_url": A[3]},
-            {"quote": "The MCP integration is the killer feature. Our AI agent generates carousels while we sleep.", "author": "Amira Hassan", "role": "Eng Lead, DeckAI", "avatar_url": A[2]},
+            # image_collage
+            {"images": [I[0], I[1], I[4], I[5], I[7]], "layout": "grid", "caption": "Nexus in action across different content types"},
+            # testimonial_avatar
             {"quote": "Best $0 we ever spent. Open source, runs locally, and the output quality is insane.", "author": "Chris Park", "role": "Indie Hacker", "avatar_url": A[4]},
             # pricing_plan
             {"title": "Simple Pricing", "plans": [
@@ -380,8 +388,6 @@ def preset_content(preset_id):
                 {"name": "Pro", "price": "$19/mo", "features": ["MCP server hosting", "Custom theme builder", "Priority support", "Early access features"]},
                 {"name": "Team", "price": "$49/mo", "features": ["Multi-seat MCP", "Brand kit storage", "API rate limits", "SLA guarantee"]},
              ]},
-            # image_collage
-            {"images": [I[0], I[1], I[4], I[5], I[7]], "layout": "grid", "caption": "Nexus in action across different content types"},
             # qr_destination
             {"destination_url": "https://slideforge.dev", "cta_text": "Start Free", "heading": "Try Nexus Today", "caption": "Scan to get started in 60 seconds", "short_url": "slideforge.dev"},
         ]
@@ -412,18 +418,18 @@ def preset_content(preset_id):
                 {"icon": "🔄", "title": "Rhythm", "description": "Add dark-light alternation to every sequence"},
                 {"icon": "📈", "title": "Measure", "description": "Track completion rate, not just impressions"},
              ]},
-            # table
-            {"title": "Performance by Category", "headers": ["Content Type", "Avg Completion", "Avg Saves", "Shares/1K"], "rows": [
-                ["Data-heavy", "72%", "8.3%", "4.1"],
-                ["Story-driven", "84%", "12.1%", "7.8"],
-                ["Mixed (arc + data)", "91%", "15.4%", "9.2"],
-            ]},
             # metric_grid
             {"title": "Study Parameters", "metrics": [
                 {"value": "10K", "label": "Carousels analyzed"},
                 {"value": "500", "label": "Brands studied"},
                 {"value": "6mo", "label": "Data collection"},
                 {"value": "95%", "label": "Confidence level"},
+            ]},
+            # table
+            {"title": "Performance by Category", "headers": ["Content Type", "Avg Completion", "Avg Saves", "Shares/1K"], "rows": [
+                ["Data-heavy", "72%", "8.3%", "4.1"],
+                ["Story-driven", "84%", "12.1%", "7.8"],
+                ["Mixed (arc + data)", "91%", "15.4%", "9.2"],
             ]},
             # cta
             {"headline": "Want the Full Dataset?", "button_text": "Download Report", "button_url": "https://slideforge.dev/research", "subtext": "Complete methodology, raw data, and interactive dashboard."},
