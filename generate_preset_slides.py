@@ -868,18 +868,12 @@ def preset_content(preset_id):
         return [
             # hero
             {"headline": "We Are 14,000 Strong.", "subheadline": "One community. One demand. One chance to change District 7 forever.", "badge": "MOVEMENT UPDATE", "kicker": "COMMUNITY ACTION"},
-            # image_headline
-            {"headline": "This Started With One Person", "image_url": I[5], "subheadline": "Six months ago, one resident started a petition. Today, 14,000 signatures and counting."},
-            # metric_grid (×3)
+            # metric_grid
             {"title": "The Movement by Numbers", "metrics": [
                 {"value": "14,247", "label": "signatures collected in 6 months across District 7", "trend": "+890 this week"},
             ]},
-            {"title": "Neighborhood Reach", "metrics": [
-                {"value": "12", "label": "neighborhoods organized with volunteer captains in every district", "trend": "+3 this month"},
-            ]},
-            {"title": "Political Impact", "metrics": [
-                {"value": "3", "label": "city council meetings where our coalition spoke — and was heard", "trend": "Next: Sept 12"},
-            ]},
+            # image_stat
+            {"image_url": I[5], "stat_value": "14,247", "stat_label": "Signatures and counting", "description": "Every signature is a person who believes change is possible"},
             # grid_cards
             {"title": "Our Demands", "cards": [
                 {"icon": "🏠", "title": "Housing", "description": "30% affordable units in all new developments. No exceptions."},
@@ -887,8 +881,16 @@ def preset_content(preset_id):
                 {"icon": "🌳", "title": "Green Space", "description": "Park renovation fund. Every neighborhood deserves a park."},
                 {"icon": "📚", "title": "Education", "description": "Equalized school funding. No district should get less per student."},
              ]},
-            # image_stat
-            {"image_url": I[5], "stat": "14,247", "stat_label": "Signatures and counting", "caption": "Every signature is a person who believes change is possible"},
+            # metric_grid
+            {"title": "Neighborhood Reach", "metrics": [
+                {"value": "12", "label": "neighborhoods organized with volunteer captains in every district", "trend": "+3 this month"},
+            ]},
+            # image_headline
+            {"headline": "This Started With One Person", "image_url": I[5], "subheadline": "Six months ago, one resident started a petition. Today, 14,000 signatures and counting."},
+            # metric_grid
+            {"title": "Political Impact", "metrics": [
+                {"value": "3", "label": "city council meetings where our coalition spoke — and was heard", "trend": "Next: Sept 12"},
+            ]},
             # process_map
             {"title": "How to Join", "steps": [
                 {"icon": "📋", "title": "Sign", "description": "Add your name to the coalition petition"},
@@ -928,18 +930,18 @@ def preset_content(preset_id):
                 {"step": "Share this carousel", "description": "The more people know, the harder it is to hide"},
                 {"step": "Contact your state representative", "description": "Support HB 2847 — the Ratepayer Transparency Act"},
              ]},
-            # stat_row
-            {"stats": [
-                {"value": "$2.3M", "label": "Ratepayer funds spent on lobbying"},
-                {"value": "73%", "label": "Went to opposing clean energy"},
-                {"value": "4.2M", "label": "Ratepayers affected statewide"},
-            ]},
             # process_map
             {"title": "The Accountability Chain", "steps": [
                 {"icon": "🔍", "title": "Investigate", "description": "Public records reveal where ratepayer money actually goes"},
                 {"icon": "📢", "title": "Expose", "description": "Share findings with affected communities"},
                 {"icon": "⚖️", "title": "Legislate", "description": "Support transparency laws that prevent misuse"},
                 {"icon": "🗳️", "title": "Enforce", "description": "Elect officials who prioritize ratepayers over utilities"},
+            ]},
+            # stat_row
+            {"stats": [
+                {"value": "$2.3M", "label": "Ratepayer funds spent on lobbying"},
+                {"value": "73%", "label": "Went to opposing clean energy"},
+                {"value": "4.2M", "label": "Ratepayers affected statewide"},
             ]},
             # qr_destination
             {"destination_url": "https://followthemoney.org", "cta_text": "See the Full Report", "heading": "The Complete Investigation", "caption": "Scan for source documents, data, and action tools", "short_url": "followthemoney.org"},
@@ -962,15 +964,15 @@ def preset_content(preset_id):
             {"title": "The New Hierarchy", "text": "Emotional architecture > narrative structure > visual design > individual slide quality. Most teams have the hierarchy inverted. They optimize individual slides while ignoring the sequence. The sequence is what the algorithm sees."},
              # definition
             {"term": "Content Architecture", "phonetic": "/ˈkɒntɛnt ˈɑːrkɪtɛktʃər/", "definition": "The deliberate structuring of content sequences to maximize engagement signals that algorithms reward. The opposite of content decoration.", "context": "Architecture is invisible to the viewer but legible to the algorithm. That's why it works."},
+            # callout
+            {"title": "The Shift Is Already Happening", "text": "Teams that adopted structure-first content in Q1 2026 are seeing 3x the reach of teams still designing first. The gap will only widen. This carousel is your wake-up call."},
             # scatter_plot
-            {"title": "Structure vs Design: Performance", "x_label": "Emotional Architecture Score", "y_label": "Engagement Rate", "points": [
+            {"title": "Structure vs Design: Performance", "x_label": "Emotional Architecture Score", "y_label": "Engagement Rate", "data": [
                 {"x": 15, "y": 22, "label": "Template-only"},
                 {"x": 38, "y": 41, "label": "Design-led"},
                 {"x": 67, "y": 73, "label": "Structure-led"},
                 {"x": 91, "y": 94, "label": "Architecture-led"},
             ]},
-            # callout
-            {"title": "The Shift Is Already Happening", "text": "Teams that adopted structure-first content in Q1 2026 are seeing 3x the reach of teams still designing first. The gap will only widen. This carousel is your wake-up call."},
             # cta
             {"headline": "Lead the Paradigm Shift", "button_text": "Adopt Architecture-First", "button_url": "https://slideforge.dev/paradigm", "subtext": "Start with the framework that puts structure before decoration."},
         ]
@@ -981,21 +983,30 @@ def preset_content(preset_id):
         return [
             # image_headline
             {"headline": "You're Not Lazy. You're Uninspired.", "image_url": I[7], "subheadline": "The gap between where you are and where you want to be isn't discipline — it's design."},
-            # image_headline
-            {"headline": "What If Your Workflow Was the Problem?", "image_url": I[2], "subheadline": "You don't need more motivation. You need a system that makes action the path of least resistance."},
-            # repeatable ×5: section_divider + image_caption
-            {"kicker": "WEEK 1", "title": "Dismantle the Old System", "subtitle": "Before building new habits, understand why the old ones failed"},
+            # image_caption
             {"image_url": I[0], "caption": "Week 1: Audit your current workflow", "description": "For one week, track every time you open Figma, Canva, or any design tool. Note what you're making, how long it takes, and how you feel about it."},
-            {"kicker": "WEEK 2", "title": "Install the New System", "subtitle": "Replace design time with composition time"},
+            # section_divider
+            {"kicker": "WEEK 1", "title": "Dismantle the Old System", "subtitle": "Before building new habits, understand why the old ones failed"},
+            # image_caption
             {"image_url": I[1], "caption": "Week 2: Generate your first 5 carousels with Nexus", "description": "Use a different preset each day. Compare the output to your manual work. Not the aesthetics — the emotional impact."},
-            {"kicker": "WEEK 3", "title": "Measure What Matters", "subtitle": "Stop tracking hours. Start tracking outcomes."},
+            # section_divider
+            {"kicker": "WEEK 2", "title": "Install the New System", "subtitle": "Replace design time with composition time"},
+            # image_caption
             {"image_url": I[3], "caption": "Week 3: Track engagement, not production time", "description": "Which carousel got more saves? More shares? More DMs? The answer will surprise you."},
-            {"kicker": "WEEK 4", "title": "Compound the Advantage", "subtitle": "The system is installed. Now it compounds."},
+            # section_divider
+            {"kicker": "WEEK 3", "title": "Measure What Matters", "subtitle": "Stop tracking hours. Start tracking outcomes."},
+            # image_caption
             {"image_url": I[4], "caption": "Week 4: Scale to daily publishing", "description": "You're now generating in minutes what used to take hours. Use the reclaimed time for strategy, relationships, and creative thinking."},
-            {"kicker": "WEEK 5", "title": "The New Normal", "subtitle": "This is just how you work now"},
+            # section_divider
+            {"kicker": "WEEK 4", "title": "Compound the Advantage", "subtitle": "The system is installed. Now it compounds."},
+            # image_caption
             {"image_url": I[5], "caption": "Week 5: Reflect on the transformation", "description": "Compare your Week 1 audit to your current output. The difference isn't just speed — it's creative freedom."},
+            # section_divider
+            {"kicker": "WEEK 5", "title": "The New Normal", "subtitle": "This is just how you work now"},
             # before_after_story
             {"title": "The Transformation", "before": {"label": "Before", "description": "Dreading content deadlines. Spending weekends on carousels. Watching competitors ship faster. Feeling stuck in a tool loop."}, "after": {"label": "After", "description": "Generating carousels between meetings. Publishing daily. Leading the conversation instead of following it. Creative energy freed for strategy."}, "metric": "5 hrs/week", "metric_label": "Reclaimed for Creative Work"},
+            # image_headline
+            {"headline": "What If Your Workflow Was the Problem?", "image_url": I[2], "subheadline": "You don't need more motivation. You need a system that makes action the path of least resistance."},
             # cta
             {"headline": "Your Transformation Starts Today", "button_text": "Start Week 1", "button_url": "https://slideforge.dev/transform", "subtext": "Free 5-week program with templates, presets, and community support."},
         ]
@@ -1014,9 +1025,7 @@ def preset_content(preset_id):
             {"quote": "The purpose of incarnation is the evolution of the mind/body/spirit complex. You are here to learn. You are here to choose. You are here to love.", "author": "Ra, Session 28", "image_url": A[2]},
             {"title": "The Purpose", "body": "Third density is the density of choice — where the veil of forgetting is thinnest and the stakes are highest. You chose to be here. You chose the forgetting. And within that forgetting, you're choosing your polarities."},
             {"quote": "Every action generates an equal and opposite reaction in the cosmic balance. This is not punishment. It is learning.", "author": "Ra, Session 14", "image_url": A[3]},
-             {"title": "The Mechanics", "body": "Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror."},
-            # quote
-            {"quote": "There is nothing that we have that is not an illusion. All things are part of the One Infinite Creator. This is the fundamental teaching.", "author": "Ra, Session 30"},
+            {"title": "The Mechanics", "body": "Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror."},
             # timeline
             {"title": "The Timeline", "steps": [
                 {"title": "1981-1984", "description": "106 channeling sessions. Ra delivers the complete cosmological framework."},
@@ -1026,6 +1035,8 @@ def preset_content(preset_id):
             ]},
             # callout
             {"title": "The Transmission Continues", "text": "These teachings were given freely. They should remain freely accessible. Every carousel, every summary, every visual transmission should preserve the integrity of the original sessions while making the material accessible to new seekers."},
+            # quote
+            {"quote": "There is nothing that we have that is not an illusion. All things are part of the One Infinite Creator. This is the fundamental teaching.", "author": "Ra, Session 30"},
             # cta
             {"headline": "Carry the Teaching Forward", "button_text": "Access the Archive", "button_url": "https://www.llresearch.org", "subtext": "All 106 sessions, freely available. The original source material."},
         ]
@@ -1044,13 +1055,13 @@ def preset_content(preset_id):
             {"quote": "The internet didn't get worse. It got bigger. And big things lose the feeling of being made by a person.", "author": "Someone who remembers RSS readers", "image_url": A[2]},
             {"title": "The Scale Problem", "body": "Scale and intimacy are inversely related. The more people a platform serves, the less it feels like it was made for you. That's not nostalgia — it's physics."},
             {"quote": "Nostalgia is not about wanting to go back. It's about wanting to carry forward the feeling of being genuinely engaged with something.", "author": "A designer who remembers when design was fun", "image_url": A[3]},
-             {"title": "The Real Longing", "body": "We don't miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it."},
-            # quote
-            {"quote": "The things you own end up owning you. It's only after you lose everything that you're free to do anything.", "author": "Chuck Palahniuk, Fight Club"},
+            {"title": "The Real Longing", "body": "We don't miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it."},
             # definition
             {"term": "Digital Nostalgia", "phonetic": "/ˈdɪdʒɪtəl nɒˈstældʒə/", "definition": "The longing for a relationship with technology that felt personal, intentional, and human-scale. Not a desire to return to the past, but a desire to carry forward the values of the early internet.", "context": "Nostalgia is a compass. It points toward what mattered. Use it."},
             # callout
             {"title": "Build Something That Feels Like That", "text": "The early internet wasn't better technology. It was better intention. Every page was made by someone who cared. You can bring that energy to everything you create — even in the age of AI."},
+            # quote
+            {"quote": "The things you own end up owning you. It's only after you lose everything that you're free to do anything.", "author": "Chuck Palahniuk, Fight Club"},
             # cta
             {"headline": "Create Something Real", "button_text": "Start Building", "button_url": "https://slideforge.dev", "subtext": "Tools for people who care about what they make."},
         ]

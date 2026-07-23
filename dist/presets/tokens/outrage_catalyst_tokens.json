@@ -1,23 +1,23 @@
 {
-  "primary": "#CD3800",
-  "primary_light": "#FFA177",
-  "primary_dark": "#980000",
-  "surface_light": "#FFF2EE",
-  "surface_dark": "#050100",
-  "text_primary": "#0F0A08",
-  "text_secondary": "#4A403D",
-  "text_on_dark": "#F5ECEA",
-  "text_on_dark_secondary": "#D7CBC7",
-  "border_light": "#D4C7C4",
-  "border_dark": "#3B2923",
-  "accent": "#008BBC",
-  "secondary": "#B77761",
-  "tertiary": "#9C8A00",
-  "gradient": "linear-gradient(165deg, #050100 0%, #980000 60%, #050100 100%)",
+  "primary": "#5E5FE0",
+  "primary_light": "#A2ACFF",
+  "primary_dark": "#3A2EAD",
+  "surface_light": "#F2F4FF",
+  "surface_dark": "#010105",
+  "text_primary": "#0A0B0F",
+  "text_secondary": "#40424B",
+  "text_on_dark": "#EDEEF5",
+  "text_on_dark_secondary": "#CBCDD8",
+  "border_light": "#C5C7D1",
+  "border_dark": "#2A2C3D",
+  "accent": "#937000",
+  "secondary": "#686FA5",
+  "tertiary": "#A2538E",
+  "gradient": "linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%)",
   "temperature": "cool",
-  "heading_font": "Plus Jakarta Sans",
-  "body_font": "Plus Jakarta Sans",
-  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap",
+  "heading_font": "Playfair Display",
+  "body_font": "DM Sans",
+  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap",
   "type_scale": {
     "display": {
       "font_size": 31,
@@ -79,23 +79,23 @@
   },
   "contrast_report": {
     "text_primary on surface_light": {
-      "ratio": 17.98,
+      "ratio": 17.95,
       "passes": true
     },
     "text_secondary on surface_light": {
-      "ratio": 9.17,
+      "ratio": 9.13,
       "passes": true
     },
     "text_on_dark on surface_dark": {
-      "ratio": 17.88,
+      "ratio": 18.01,
       "passes": true
     },
     "text_on_dark_secondary on surface_dark": {
-      "ratio": 13.11,
+      "ratio": 13.16,
       "passes": true
     },
     "border_light on surface_light": {
-      "ratio": 1.5,
+      "ratio": 1.54,
       "passes": true
     },
     "border_dark on surface_dark": {
@@ -109,7 +109,7 @@
     "lg": "0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05)",
     "xl": "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05)",
     "inner": "inset 0 2px 2px 4px rgba(0,0,0,0.06)",
-    "glow": "0 0 20px #CD380040"
+    "glow": "0 0 20px #5E5FE040"
   },
   "radii": {
     "sm": "6px",
@@ -119,9 +119,9 @@
     "pill": "9999px"
   },
   "gradients": {
-    "subtle": "linear-gradient(135deg, #FFF2EE 0%, #CD380008 100%)",
-    "mesh": "radial-gradient(at 40% 20%, #CD380015 0px, transparent 50%), radial-gradient(at 80% 0%, #008BBC10 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA17712 0px, transparent 50%)",
-    "hero": "linear-gradient(135deg, #050100 0%, #98000030 50%, #050100 100%)",
+    "subtle": "linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%)",
+    "mesh": "radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%)",
+    "hero": "linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%)",
     "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E\")"
   },
   "textures": {
@@ -130,18 +130,18 @@
   "glass": {
     "light": {
       "blur": "12px",
-      "bg": "#FFF2EECC",
-      "border": "1px solid #D4C7C440"
+      "bg": "#F2F4FFCC",
+      "border": "1px solid #C5C7D140"
     },
     "dark": {
       "blur": "12px",
-      "bg": "#050100CC",
-      "border": "1px solid #3B292340"
+      "bg": "#010105CC",
+      "border": "1px solid #2A2C3D40"
     },
     "frosted": {
       "blur": "20px",
-      "bg": "#FFF2EEE6",
-      "border": "1px solid #D4C7C430"
+      "bg": "#F2F4FFE6",
+      "border": "1px solid #C5C7D130"
     }
   }
 }

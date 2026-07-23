@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,48 +16,48 @@
 }
 
 :root {
-  --primary: #007D6F;
-  --primary-light: #64C5B5;
-  --primary-dark: #005145;
-  --surface-light: #EBF9F6;
-  --surface-dark: #000302;
-  --text-primary: #070D0B;
-  --text-secondary: #3A4543;
-  --text-on-dark: #E8F1EF;
-  --text-on-dark-secondary: #C4D1CE;
-  --border-light: #BDCBC8;
-  --border-dark: #1C332F;
-  --accent: #985368;
-  --secondary: #587F78;
-  --tertiary: #527B9B;
-  --gradient: linear-gradient(165deg, #000302 0%, #005145 60%, #000302 100%);
+  --primary: #5E5FE0;
+  --primary-light: #A2ACFF;
+  --primary-dark: #3A2EAD;
+  --surface-light: #F2F4FF;
+  --surface-dark: #010105;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #EDEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C5C7D1;
+  --border-dark: #2A2C3D;
+  --accent: #937000;
+  --secondary: #686FA5;
+  --tertiary: #A2538E;
+  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #007D6F40;
+  --shadow-glow: 0 0 20px #5E5FE040;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #EBF9F6 0%, #007D6F08 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #007D6F15 0px, transparent 50%), radial-gradient(at 80% 0%, #98536810 0px, transparent 50%), radial-gradient(at 0% 50%, #64C5B512 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #000302 0%, #00514530 50%, #000302 100%);
+  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #EBF9F6CC;
-  --glass-light-border: 1px solid #BDCBC840;
+  --glass-light-bg: #F2F4FFCC;
+  --glass-light-border: 1px solid #C5C7D140;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #000302CC;
-  --glass-dark-border: 1px solid #1C332F40;
+  --glass-dark-bg: #010105CC;
+  --glass-dark-border: 1px solid #2A2C3D40;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #EBF9F6E6;
-  --glass-frosted-border: 1px solid #BDCBC830;
-  --font-heading: 'Plus Jakarta Sans', serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --glass-frosted-bg: #F2F4FFE6;
+  --glass-frosted-border: 1px solid #C5C7D130;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -421,8 +421,8 @@ body {
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
-                <h2 style="font-family:Plus Jakarta Sans;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">The 106 Ra Sessions Changed Everything</h2>
-                <p style="font-family:Plus Jakarta Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">How a 1981 contact phenomenon became the most comprehensive spiritual teaching of the modern era.</p>
+                <h2 style="font-family:Playfair Display;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">The 106 Ra Sessions Changed Everything</h2>
+                <p style="font-family:DM Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">How a 1981 contact phenomenon became the most comprehensive spiritual teaching of the modern era.</p>
             </div>
         </div>
             </div>
@@ -438,7 +438,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -447,7 +447,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1"></div>
+            <div style="inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -457,8 +457,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">I am Ra. I speak with one voice. I have not spoken before in this working. We are those of the social memory complex known to you as Ra.</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 1</p>
+                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">I am Ra. I speak with one voice. I have not spoken before in this working. We are those of the social memory complex known to you as Ra.</p>
+                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 1</p>
                 
             </div>
         </div>
@@ -475,7 +475,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -483,13 +483,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007D6F15 0px, transparent 50%), radial-gradient(at 80% 0%, #98536810 0px, transparent 50%), radial-gradient(at 0% 50%, #64C5B512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain); z-index: 1; inset: 0"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#070D0B;margin:0 0 16px;line-height:1.2;">The Beginning</h2>
-            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#3A4543;margin:0 0 12px;line-height:1.6;">In January 1981, a group in Louisville, Kentucky began a series of channeling sessions that would span four years and 106 sessions. The entity communicating called itself Ra — a sixth-density social memory complex from the Venusian system. What emerged was the Law of One.</p></div>
+            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Beginning</h2>
+            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">In January 1981, a group in Louisville, Kentucky began a series of channeling sessions that would span four years and 106 sessions. The entity communicating called itself Ra — a sixth-density social memory complex from the Venusian system. What emerged was the Law of One.</p></div>
         </div>
             </div>
         </div>
@@ -504,7 +504,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -513,7 +513,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; inset: 0; opacity: 0.04"></div>
+            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -523,8 +523,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The Law of One may be simplified, in its distillation to the most essential concept, to this: All things are one. That is the Law of One.</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 15</p>
+                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The Law of One may be simplified, in its distillation to the most essential concept, to this: All things are one. That is the Law of One.</p>
+                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 15</p>
                 
             </div>
         </div>
@@ -541,7 +541,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -549,13 +549,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007D6F15 0px, transparent 50%), radial-gradient(at 80% 0%, #98536810 0px, transparent 50%), radial-gradient(at 0% 50%, #64C5B512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#070D0B;margin:0 0 16px;line-height:1.2;">The Core Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#3A4543;margin:0 0 12px;line-height:1.6;">All is One. Every separation is illusion. Every encounter is an encounter with self. Every choice is a polarization — toward service-to-others or service-to-self. This is the framework. Everything else is commentary.</p></div>
+            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Core Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">All is One. Every separation is illusion. Every encounter is an encounter with self. Every choice is a polarization — toward service-to-others or service-to-self. This is the framework. Everything else is commentary.</p></div>
         </div>
             </div>
         </div>
@@ -570,7 +570,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -579,7 +579,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -589,8 +589,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The purpose of incarnation is the evolution of the mind/body/spirit complex. You are here to learn. You are here to choose. You are here to love.</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 28</p>
+                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The purpose of incarnation is the evolution of the mind/body/spirit complex. You are here to learn. You are here to choose. You are here to love.</p>
+                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 28</p>
                 
             </div>
         </div>
@@ -607,7 +607,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -615,13 +615,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007D6F15 0px, transparent 50%), radial-gradient(at 80% 0%, #98536810 0px, transparent 50%), radial-gradient(at 0% 50%, #64C5B512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#070D0B;margin:0 0 16px;line-height:1.2;">The Purpose</h2>
-            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#3A4543;margin:0 0 12px;line-height:1.6;">Third density is the density of choice — where the veil of forgetting is thinnest and the stakes are highest. You chose to be here. You chose the forgetting. And within that forgetting, you&#x27;re choosing your polarities.</p></div>
+            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Purpose</h2>
+            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Third density is the density of choice — where the veil of forgetting is thinnest and the stakes are highest. You chose to be here. You chose the forgetting. And within that forgetting, you&#x27;re choosing your polarities.</p></div>
         </div>
             </div>
         </div>
@@ -636,7 +636,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -645,7 +645,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
+            <div style="opacity: 0.04; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -655,8 +655,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">Every action generates an equal and opposite reaction in the cosmic balance. This is not punishment. It is learning.</p>
-                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 14</p>
+                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">Every action generates an equal and opposite reaction in the cosmic balance. This is not punishment. It is learning.</p>
+                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Ra, Session 14</p>
                 
             </div>
         </div>
@@ -673,7 +673,7 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -681,13 +681,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007D6F15 0px, transparent 50%), radial-gradient(at 80% 0%, #98536810 0px, transparent 50%), radial-gradient(at 0% 50%, #64C5B512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); z-index: 1; inset: 0; position: absolute; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#070D0B;margin:0 0 16px;line-height:1.2;">The Mechanics</h2>
-            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#3A4543;margin:0 0 12px;line-height:1.6;">Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror.</p></div>
+            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Mechanics</h2>
+            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Catalyst → Experience → Wisdom → Transformation. This is the cycle of spiritual evolution. Every challenge is an opportunity. Every wound is a doorway. Every relationship is a mirror.</p></div>
         </div>
             </div>
         </div>
@@ -702,7 +702,61 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; opacity: 0.04; inset: 0; z-index: 1; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The Timeline</h2>
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid #5E5FE0;padding-left:14px;box-sizing:border-box;"><div style="min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">PHASE 01</span>
+                    <h3 style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#0A0B0F;margin:0;line-height:1.2;">1981-1984</h3>
+                </div>
+                <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.4;">106 channeling sessions. Ra delivers the complete cosmological framework.</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">PHASE 02</span>
+                    <h3 style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#0A0B0F;margin:0;line-height:1.2;">2018</h3>
+                </div>
+                <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.4;">LL Research publishes all sessions freely online. The archive opens to the world.</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">PHASE 03</span>
+                    <h3 style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#0A0B0F;margin:0;line-height:1.2;">2024</h3>
+                </div>
+                <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.4;">AI agents begin organizing and cross-referencing the material. New synthesis tools emerge.</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">PHASE 04</span>
+                    <h3 style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#0A0B0F;margin:0;line-height:1.2;">2026</h3>
+                </div>
+                <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:0;line-height:1.4;">SlideForge presets enable visual transmission of Ra&#x27;s teachings for the social media age.</p>
+            </div></div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:4px 0 0;line-height:1.4;opacity:0.85;">Chronological roadmap tracking SlideForge engine milestones from core compilation to headless PNG export.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">LEGACY PRESERVATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -711,10 +765,23 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #007D6F; pointer-events: none; left: -80px; position: absolute; width: 320px; border-radius: 50%; opacity: 0.07; top: -80px; height: 320px"></div><div style="position: absolute; opacity: 0.05; transform: rotate(60deg); pointer-events: none; border-radius: 4px; width: 120px; right: -40px; left: auto; height: 120px; background: #985368; top: 60%"></div></div>
+            <div style="z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; pointer-events: none"></div>
+            
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#339889;background:#33988918;border:1px solid #33988940;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #E8F1EF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Carry the Teaching Forward</span><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#C4D1CE;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">All 106 sessions, freely available. The original source material.</p><a href="https://www.llresearch.org" style="display: inline-block; padding: 16px 40px; background: #64C5B5; color: #000302; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00514540; letter-spacing: 0.02em; margin: 0 0 14px;">Access the Archive</a><div style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#C4D1CE;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
+            <div style="-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-radius: 16px; background: #010105CC; border: 1px solid #2A2C3D40; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Transmission Continues</h2>
+                    </div>
+                </div>
+                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">These teachings were given freely. They should remain freely accessible. Every carousel, every summary, every visual transmission should preserve the integrity of the original sessions while making the material accessible to new seekers.</p>
+            </div>
+        </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -728,13 +795,71 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 44px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="background: #010105CC; border-radius: 0; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid #2A2C3D40;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Playfair Display;font-size:20px;font-weight:600;line-height:1.2;color:#EDEEF5;margin:0;text-align:center;text-wrap:balance;">There is nothing that we have that is not an illusion. All things are part of the One Infinite Creator. This is the fundamental teaching.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #EDEEF520; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #EDEEF5; flex-shrink: 0;">R</div>
+            <div>
+                <div style="font-family:DM Sans;font-size:13px;font-weight:600;color:#EDEEF5;">Ra, Session 30</div>
+                <div style="font-family:DM Sans;font-size:10px;color:#40424B;"></div>
+            </div>
+        </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">LEGACY PRESERVATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #5E5FE0; position: absolute; width: 320px; height: 320px; pointer-events: none; left: -80px; border-radius: 50%; opacity: 0.07; top: -80px"></div><div style="left: auto; right: -40px; position: absolute; pointer-events: none; border-radius: 4px; height: 120px; width: 120px; transform: rotate(60deg); opacity: 0.05; background: #937000; top: 60%"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Carry the Teaching Forward</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">All 106 sessions, freely available. The original source material.</p><a href="https://www.llresearch.org" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Access the Archive</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">LEGACY PRESERVATION</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 </div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -757,7 +882,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 10;
+  const total = 13;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));
