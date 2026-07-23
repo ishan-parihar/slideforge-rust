@@ -714,17 +714,20 @@ def preset_content(preset_id):
         return [
             # image_headline
             {"headline": "A Three-Minute Breathing Practice", "image_url": I[7], "subheadline": "Wherever you are right now, this is enough. Let's begin."},
-            # text_block
-            {"title": "Settling In", "body": "Close your eyes or soften your gaze. Feel the weight of your body in the chair. Notice the temperature of the air on your skin. You don't need to do anything right now except be here. This carousel is your container for the next three minutes."},
-            # image_caption (×4)
+            # image_caption
             {"image_url": I[0], "caption": "Breathe in for 4 counts", "description": "Let the breath arrive. Don't force it. Simply notice the air entering your body. Count: one... two... three... four."},
-            {"image_url": I[1], "caption": "Hold for 4 counts", "description": "The breath is held. Not strained — held. Like cupping water in your hands. Notice the stillness between the inhale and the exhale."},
-            {"image_url": I[2], "caption": "Exhale for 6 counts", "description": "Release. Let the breath leave slowly. One... two... three... four... five... six. Feel the body soften with each count."},
-            {"image_url": I[3], "caption": "Rest in the gap", "description": "After the exhale, there's a moment of emptiness. Don't rush to fill it. That gap is where peace lives."},
             # callout
             {"title": "Returning", "text": "Gently bring your awareness back to the room. Wiggle your fingers. Notice how you feel compared to three minutes ago. Carry this quality of attention into whatever comes next."},
+            # image_caption
+            {"image_url": I[1], "caption": "Hold for 4 counts", "description": "The breath is held. Not strained — held. Like cupping water in your hands. Notice the stillness between the inhale and the exhale."},
             # image_quote
             {"quote": "Feelings come and go like clouds in a windy sky. Conscious breathing is my anchor.", "author": "Andy Puddicombe", "image_url": A[3]},
+            # image_caption
+            {"image_url": I[2], "caption": "Exhale for 6 counts", "description": "Release. Let the breath leave slowly. One... two... three... four... five... six. Feel the body soften with each count."},
+            # text_block
+            {"title": "Settling In", "body": "Close your eyes or soften your gaze. Feel the weight of your body in the chair. Notice the temperature of the air on your skin. You don't need to do anything right now except be here. This carousel is your container for the next three minutes."},
+            # image_caption
+            {"image_url": I[3], "caption": "Rest in the gap", "description": "After the exhale, there's a moment of emptiness. Don't rush to fill it. That gap is where peace lives."},
             # cta
             {"headline": "Practice Again Tomorrow", "button_text": "Save This Carousel", "button_url": "https://slideforge.dev", "subtext": "Return to this practice whenever you need to find stillness."},
         ]
@@ -776,7 +779,7 @@ def preset_content(preset_id):
             # before_after_story
             {"title": "Two Futures", "before": {"label": "Stay Manual", "description": "12 hours per carousel. 4 per month. Same templates. Declining engagement. Watching competitors ship faster."}, "after": {"label": "Adopt Nexus", "description": "4 minutes per carousel. 4 per week. Unique compositions every time. Rising engagement. Leading the market."}, "metric": "756hrs/yr", "metric_label": "Difference in Production Time"},
             # funnel_chart
-            {"title": "The Conversion Funnel", "stages": [
+            {"title": "The Conversion Funnel", "steps": [
                 {"label": "Awareness", "value": 10000},
                 {"label": "Interest", "value": 3200},
                 {"label": "Consideration", "value": 1100},
@@ -812,6 +815,8 @@ def preset_content(preset_id):
             ]},
             # image_quote
             {"quote": "The future of content isn't AI replacing designers. It's AI freeing designers to do what they actually got into design for — solving problems, not dragging boxes.", "author": "Ishan Parihar", "image_url": A[1]},
+            # image_collage
+            {"images": [I[0], I[1], I[2], I[5]], "layout": "grid", "caption": "Summit highlights from previous events"},
             # grid_cards
             {"title": "Why Attend", "cards": [
                 {"icon": "🎓", "title": "Learn", "description": "Hands-on workshops with the SlideForge team. Build real carousels, not toy demos."},
@@ -819,8 +824,6 @@ def preset_content(preset_id):
                 {"icon": "🚀", "title": "Ship", "description": "Leave with a complete campaign ready to publish. Not a notebook of ideas — a working pipeline."},
                 {"icon": "🎁", "title": "Exclusive Access", "description": "Attendees get early access to Nexus 4.0 and the preset marketplace."},
              ]},
-            # image_collage
-            {"images": [I[0], I[1], I[2], I[5]], "layout": "grid", "caption": "Summit highlights from previous events"},
             # qr_destination
             {"destination_url": "https://slideforge.dev/summit", "cta_text": "Reserve Your Seat", "heading": "September 15, 2026", "caption": "Scan to register — early bird pricing ends Aug 1", "short_url": "slideforge.dev/summit"},
         ]
@@ -845,6 +848,8 @@ def preset_content(preset_id):
                 {"value": "$14M", "label": "School funding at stake"},
                 {"value": "3", "label": "Clinics closing"},
             ]},
+            # image_stat
+            {"image_url": I[3], "stat_value": "48hrs", "stat_label": "Until registration closes", "description": "Every hour counts. Register now."},
             # process_map
             {"title": "Register in 3 Steps", "steps": [
                 {"icon": "📱", "title": "Scan", "description": "Use the QR code to open your state's registration page"},
@@ -852,9 +857,7 @@ def preset_content(preset_id):
                 {"icon": "✅", "title": "Confirm", "description": "You'll get a confirmation email. Screenshot it."},
             ]},
             # testimonial_avatar
-             {"quote": "I didn't vote in 2022. My neighborhood lost its clinic. Don't let that happen to yours. Register today.", "author": "Maria Santos", "role": "District 7 Resident", "avatar_url": A[2]},
-            # image_stat
-            {"image_url": I[3], "stat": "48hrs", "stat_label": "Until registration closes", "caption": "Every hour counts. Register now."},
+            {"quote": "I didn't vote in 2022. My neighborhood lost its clinic. Don't let that happen to yours. Register today.", "author": "Maria Santos", "role": "District 7 Resident", "avatar_url": A[2]},
             # qr_destination
             {"destination_url": "https://vote.gov", "cta_text": "Register Now", "heading": "Don't Wait Until It's Too Late", "caption": "Scan to register — 2 minutes that change everything", "short_url": "vote.gov"},
         ]

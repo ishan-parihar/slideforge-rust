@@ -3,61 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300,600&family=Outfit:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --slide-width: 420px;
-  --slide-height: 560px;
+  --slide-height: 525px;
   --composition-width: 420px;
   --composition-height: 525px;
 }
 
 :root {
-  --primary: #006064;
-  --primary-light: #59A5A9;
-  --primary-dark: #00373B;
-  --surface-light: #EAF8F9;
-  --surface-dark: #000203;
-  --text-primary: #070C0D;
-  --text-secondary: #394545;
-  --text-on-dark: #E7F1F1;
-  --text-on-dark-secondary: #C3D1D1;
-  --border-light: #BDCACB;
-  --border-dark: #1B3234;
-  --accent: #784242;
-  --secondary: #3E5A5B;
-  --tertiary: #435470;
-  --gradient: linear-gradient(165deg, #000203 0%, #00373B 60%, #000203 100%);
+  --primary: #5E5FE0;
+  --primary-light: #A2ACFF;
+  --primary-dark: #3A2EAD;
+  --surface-light: #F2F4FF;
+  --surface-dark: #010105;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #EDEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C5C7D1;
+  --border-dark: #2A2C3D;
+  --accent: #937000;
+  --secondary: #686FA5;
+  --tertiary: #A2538E;
+  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #00606440;
+  --shadow-glow: 0 0 20px #5E5FE040;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #EAF8F9 0%, #00606408 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #00606415 0px, transparent 50%), radial-gradient(at 80% 0%, #78424210 0px, transparent 50%), radial-gradient(at 0% 50%, #59A5A912 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #000203 0%, #00373B30 50%, #000203 100%);
+  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #EAF8F9CC;
-  --glass-light-border: 1px solid #BDCACB40;
+  --glass-light-bg: #F2F4FFCC;
+  --glass-light-border: 1px solid #C5C7D140;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #000203CC;
-  --glass-dark-border: 1px solid #1B323440;
+  --glass-dark-bg: #010105CC;
+  --glass-dark-border: 1px solid #2A2C3D40;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #EAF8F9E6;
-  --glass-frosted-border: 1px solid #BDCACB30;
-  --font-heading: 'Fraunces', serif;
-  --font-body: 'Outfit', sans-serif;
+  --glass-frosted-bg: #F2F4FFE6;
+  --glass-frosted-border: 1px solid #C5C7D130;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -398,8 +398,8 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1826px;overflow:visible;position:relative;margin:0 auto;">
-  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:710px;">
+<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">S</div>
@@ -410,9 +410,9 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; position: absolute; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -421,8 +421,8 @@ body {
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
-                <h2 style="font-family:Fraunces;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">A Three-Minute Breathing Practice</h2>
-                <p style="font-family:Outfit;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Wherever you are right now, this is enough. Let&#x27;s begin.</p>
+                <h2 style="font-family:Playfair Display;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">A Three-Minute Breathing Practice</h2>
+                <p style="font-family:DM Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Wherever you are right now, this is enough. Let&#x27;s begin.</p>
             </div>
         </div>
             </div>
@@ -438,16 +438,90 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div class="slide "><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
+                    <div style="position:relative;width:100%;height:225px;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Breathe in for 4 counts" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.02) brightness(1.02);" />
+                
+            </div>
+                    <div style="display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Breathe in for 4 counts</h2>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">Let the breath arrive. Don&#x27;t force it. Simply notice the air entering your body. Count: one... two... three... four.</p>
+        </div>
+                </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">GUIDED EXPERIENCE</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
+            <div style="background: #010105CC; border: 1px solid #2A2C3D40; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Returning</h2>
+                    </div>
+                </div>
+                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Gently bring your awareness back to the room. Wiggle your fingers. Notice how you feel compared to three minutes ago. Carry this quality of attention into whatever comes next.</p>
+            </div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">GUIDED EXPERIENCE</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide "><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -456,8 +530,8 @@ body {
                 
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Fraunces; font-size: 25px; font-weight: 600; line-height: 1.12; color: #070C0D; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Hold for 4 counts</h2>
-            <p style="font-family:Outfit;font-size:12px;color:#394545;margin:0;line-height:1.45;opacity:0.9;">The breath is held. Not strained — held. Like cupping water in your hands. Notice the stillness between the inhale and the exhale.</p>
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Hold for 4 counts</h2>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">The breath is held. Not strained — held. Like cupping water in your hands. Notice the stillness between the inhale and the exhale.</p>
         </div>
                 </div>
             </div>
@@ -473,16 +547,117 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide  slide--full-bleed"><div class="slide-composition">
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; pointer-events: none; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Feelings come and go like clouds in a windy sky. Conscious breathing is my anchor." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
+            </div>
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
+                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
+                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">Feelings come and go like clouds in a windy sky. Conscious breathing is my anchor.</p>
+                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Andy Puddicombe</p>
+                
+            </div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">GUIDED EXPERIENCE</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide "><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
+                    <div style="position:relative;width:100%;height:225px;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600" alt="Exhale for 6 counts" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.02) brightness(1.02);" />
+                
+            </div>
+                    <div style="display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Exhale for 6 counts</h2>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">Release. Let the breath leave slowly. One... two... three... four... five... six. Feel the body soften with each count.</p>
+        </div>
+                </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">GUIDED EXPERIENCE</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); z-index: 1; position: absolute; inset: 0; opacity: 0.04; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
+            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">Settling In</h2>
+            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Close your eyes or soften your gaze. Feel the weight of your body in the chair. Notice the temperature of the air on your skin. You don&#x27;t need to do anything right now except be here. This carousel is your container for the next three minutes.</p></div>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">GUIDED EXPERIENCE</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#slides #campaign</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide "><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -491,8 +666,8 @@ body {
                 
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Fraunces; font-size: 25px; font-weight: 600; line-height: 1.12; color: #070C0D; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Rest in the gap</h2>
-            <p style="font-family:Outfit;font-size:12px;color:#394545;margin:0;line-height:1.45;opacity:0.9;">After the exhale, there&#x27;s a moment of emptiness. Don&#x27;t rush to fill it. That gap is where peace lives.</p>
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Rest in the gap</h2>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">After the exhale, there&#x27;s a moment of emptiness. Don&#x27;t rush to fill it. That gap is where peace lives.</p>
         </div>
                 </div>
             </div>
@@ -508,19 +683,19 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
   </div>
   <div class="swipe-arrow">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
+<div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; top: -80px; opacity: 0.07; width: 320px; height: 320px; background: #006064; border-radius: 50%; left: -80px; pointer-events: none"></div><div style="position: absolute; width: 120px; height: 120px; right: -40px; background: #784242; opacity: 0.05; left: auto; top: 60%; pointer-events: none; transform: rotate(60deg); border-radius: 4px"></div></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #5E5FE0; top: -80px; position: absolute; pointer-events: none; left: -80px; border-radius: 50%; width: 320px; height: 320px; opacity: 0.07"></div><div style="background: #937000; position: absolute; height: 120px; transform: rotate(60deg); width: 120px; right: -40px; left: auto; top: 60%; pointer-events: none; border-radius: 4px; opacity: 0.05"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Outfit;font-size:10px;font-weight:800;color:#499599;background:#49959918;border:1px solid #49959940;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #E7F1F1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Fraunces; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Practice Again Tomorrow</span><p style="font-family:Outfit;font-size:12px;color:#C3D1D1;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Return to this practice whenever you need to find stillness.</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #59A5A9; color: #000203; font-family: Outfit; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00373B40; letter-spacing: 0.02em; margin: 0 0 14px;">Save This Carousel</a><div style="font-family:Outfit;font-size:11px;font-weight:600;color:#C3D1D1;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Practice Again Tomorrow</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Return to this practice whenever you need to find stillness.</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Save This Carousel</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -534,13 +709,13 @@ body {
     </div>
   </div>
   <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
   </div>
 </div>
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -563,7 +738,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 4;
+  const total = 9;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));
