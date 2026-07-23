@@ -3,61 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --slide-width: 420px;
+  --slide-width: 525px;
   --slide-height: 525px;
   --composition-width: 420px;
   --composition-height: 525px;
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #EDEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --primary: #B71C1C;
+  --primary-light: #FF8778;
+  --primary-dark: #830000;
+  --surface-light: #FFF2F0;
+  --surface-dark: #050101;
+  --text-primary: #0F0A09;
+  --text-secondary: #4A3F3E;
+  --text-on-dark: #F5ECEB;
+  --text-on-dark-secondary: #D7CAC8;
+  --border-light: #D4C7C5;
+  --border-dark: #3C2826;
+  --accent: #007C9A;
+  --secondary: #8D5049;
+  --tertiary: #825D00;
+  --gradient: linear-gradient(165deg, #050101 0%, #830000 60%, #050101 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #B71C1C40;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #FFF2F0 0%, #B71C1C08 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #050101 0%, #83000030 50%, #050101 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #FFF2F0CC;
+  --glass-light-border: 1px solid #D4C7C540;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-bg: #050101CC;
+  --glass-dark-border: 1px solid #3C282640;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --glass-frosted-bg: #FFF2F0E6;
+  --glass-frosted-border: 1px solid #D4C7C530;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -398,8 +398,8 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
-  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+<div style="width:1080px;height:1389px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.057143);transform-origin:top left;width:525px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">S</div>
@@ -410,9 +410,9 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -421,8 +421,8 @@ body {
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
-                <h2 style="font-family:Playfair Display;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">Remember When the Internet Felt Small?</h2>
-                <p style="font-family:DM Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Before algorithms. Before feeds. Before content farms. When every website was a person&#x27;s passion project.</p>
+                <h2 style="font-family:Plus Jakarta Sans;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">Remember When the Internet Felt Small?</h2>
+                <p style="font-family:Plus Jakarta Sans;font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Before algorithms. Before feeds. Before content farms. When every website was a person&#x27;s passion project.</p>
             </div>
         </div>
             </div>
@@ -445,9 +445,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0"></div>
+            <div style="z-index: 1; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -457,8 +457,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The best things on the internet were made by one person who cared. Not a team. Not a brand. Just someone building something they wanted to exist.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">The early web ethos</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The best things on the internet were made by one person who cared. Not a team. Not a brand. Just someone building something they wanted to exist.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">The early web ethos</p>
                 
             </div>
         </div>
@@ -482,14 +482,14 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none; opacity: 0.04"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Handmade Web</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">GeoCities pages with custom cursors. Blogspot blogs with hand-coded CSS. Flash portfolios that took three minutes to load and you didn&#x27;t care. The internet used to feel like a neighborhood. Now it feels like a mall.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0F0A09;margin:0 0 16px;line-height:1.2;">The Handmade Web</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#4A3F3E;margin:0 0 12px;line-height:1.6;">GeoCities pages with custom cursors. Blogspot blogs with hand-coded CSS. Flash portfolios that took three minutes to load and you didn&#x27;t care. The internet used to feel like a neighborhood. Now it feels like a mall.</p></div>
         </div>
             </div>
         </div>
@@ -511,9 +511,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute"></div>
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -523,8 +523,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">We didn&#x27;t know we were in the golden age. We just thought it was Tuesday.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Every person who used the internet before 2010</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">We didn&#x27;t know we were in the golden age. We just thought it was Tuesday.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Every person who used the internet before 2010</p>
                 
             </div>
         </div>
@@ -548,14 +548,14 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">What We Lost</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">The serendipity. Finding a random blog at 2am that changed how you thought about everything. The intimacy. Knowing the person behind the website. The patience. Reading 5,000 words because the writing was that good.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0F0A09;margin:0 0 16px;line-height:1.2;">What We Lost</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#4A3F3E;margin:0 0 12px;line-height:1.6;">The serendipity. Finding a random blog at 2am that changed how you thought about everything. The intimacy. Knowing the person behind the website. The patience. Reading 5,000 words because the writing was that good.</p></div>
         </div>
             </div>
         </div>
@@ -577,9 +577,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; inset: 0"></div>
+            <div style="opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -589,8 +589,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The internet didn&#x27;t get worse. It got bigger. And big things lose the feeling of being made by a person.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Someone who remembers RSS readers</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The internet didn&#x27;t get worse. It got bigger. And big things lose the feeling of being made by a person.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Someone who remembers RSS readers</p>
                 
             </div>
         </div>
@@ -614,14 +614,14 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; background: var(--texture-grain); position: absolute"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Scale Problem</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Scale and intimacy are inversely related. The more people a platform serves, the less it feels like it was made for you. That&#x27;s not nostalgia — it&#x27;s physics.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0F0A09;margin:0 0 16px;line-height:1.2;">The Scale Problem</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#4A3F3E;margin:0 0 12px;line-height:1.6;">Scale and intimacy are inversely related. The more people a platform serves, the less it feels like it was made for you. That&#x27;s not nostalgia — it&#x27;s physics.</p></div>
         </div>
             </div>
         </div>
@@ -643,9 +643,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); position: absolute"></div>
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -655,8 +655,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">Nostalgia is not about wanting to go back. It&#x27;s about wanting to carry forward the feeling of being genuinely engaged with something.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">A designer who remembers when design was fun</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">Nostalgia is not about wanting to go back. It&#x27;s about wanting to carry forward the feeling of being genuinely engaged with something.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">A designer who remembers when design was fun</p>
                 
             </div>
         </div>
@@ -680,14 +680,14 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; position: absolute; inset: 0; pointer-events: none; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Real Longing</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">We don&#x27;t miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0F0A09;margin:0 0 16px;line-height:1.2;">The Real Longing</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#4A3F3E;margin:0 0 12px;line-height:1.6;">We don&#x27;t miss the technology. We miss the feeling. The feeling of discovering something made by a person who cared. The feeling of being part of something small and real. That feeling is available — you just have to build it.</p></div>
         </div>
             </div>
         </div>
@@ -709,19 +709,19 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #B71C1C15 0px, transparent 50%), radial-gradient(at 80% 0%, #007C9A10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF877812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain); z-index: 1; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
-            <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#5E5FE0;background:#5E5FE018;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
-            <h2 style="font-family:Playfair Display;font-size:28px;font-weight:900;color:#0A0B0F;margin:0 0 4px;line-height:1.1;">Digital Nostalgia</h2>
-            <div style="font-family:DM Sans;font-size:11px;font-style:italic;color:#40424B;margin-bottom:12px;opacity:0.8;">/ˈdɪdʒɪtəl nɒˈstældʒə/</div>
-            <div style="border-left:3px solid #5E5FE0;padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:DM Sans;font-size:13px;font-weight:500;color:#0A0B0F;margin:0;line-height:1.5;">The longing for a relationship with technology that felt personal, intentional, and human-scale. Not a desire to return to the past, but a desire to carry forward the values of the early internet.</p>
+                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #D4C7C5;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#B71C1C;background:#B71C1C18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:28px;font-weight:900;color:#0F0A09;margin:0 0 4px;line-height:1.1;">Digital Nostalgia</h2>
+            <div style="font-family:Plus Jakarta Sans;font-size:11px;font-style:italic;color:#4A3F3E;margin-bottom:12px;opacity:0.8;">/ˈdɪdʒɪtəl nɒˈstældʒə/</div>
+            <div style="border-left:3px solid #B71C1C;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:500;color:#0F0A09;margin:0;line-height:1.5;">The longing for a relationship with technology that felt personal, intentional, and human-scale. Not a desire to return to the past, but a desire to carry forward the values of the early internet.</p>
         </div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Nostalgia is a compass. It points toward what mattered. Use it.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#4A3F3E;margin:0;line-height:1.4;opacity:0.85;">Nostalgia is a compass. It points toward what mattered. Use it.</p>
         </div>
             </div>
         </div>
@@ -743,23 +743,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#B71C1C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid #2A2C3D40; -webkit-backdrop-filter: blur(12px); background: #010105CC; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="background: #050101CC; border-radius: 16px; border: 1px solid #3C282640; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-left: 6px solid #B71C1C;padding:36px 32px;box-shadow: 0 8px 32px -4px #B71C1C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#B71C1C1a;color:#B71C1C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Build Something That Feels Like That</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#B71C1C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEB;margin:0;line-height:1.2;">Build Something That Feels Like That</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">The early internet wasn&#x27;t better technology. It was better intention. Every page was made by someone who cared. You can bring that energy to everything you create — even in the age of AI.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CAC8;margin:0;overflow-wrap:break-word;word-break:break-word;">The early internet wasn&#x27;t better technology. It was better intention. Every page was made by someone who cared. You can bring that energy to everything you create — even in the age of AI.</p>
             </div>
         </div>
             </div>
@@ -782,16 +782,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; position: absolute; z-index: 1; pointer-events: none"></div>
+            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 44px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="backdrop-filter: blur(12px); border: 1px solid #2A2C3D40; background: #010105CC; -webkit-backdrop-filter: blur(12px); border-radius: 0;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Playfair Display;font-size:25px;font-weight:600;line-height:1.2;color:#EDEEF5;margin:0;text-align:center;text-wrap:balance;">The things you own end up owning you. It&#x27;s only after you lose everything that you&#x27;re free to do anything.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: #EDEEF520; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #EDEEF5; flex-shrink: 0;">C</div>
+                <div style="border: 1px solid #3C282640; border-radius: 0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: #050101CC;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><blockquote style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:600;line-height:1.2;color:#F5ECEB;margin:0;text-align:center;text-wrap:balance;">The things you own end up owning you. It&#x27;s only after you lose everything that you&#x27;re free to do anything.</blockquote><div style="margin-top:32px;text-align:center;"><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #F5ECEB20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #F5ECEB; flex-shrink: 0;">C</div>
             <div>
-                <div style="font-family:DM Sans;font-size:13px;font-weight:600;color:#EDEEF5;">Chuck Palahniuk, Fight Club</div>
-                <div style="font-family:DM Sans;font-size:10px;color:#40424B;"></div>
+                <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:600;color:#F5ECEB;">Chuck Palahniuk, Fight Club</div>
+                <div style="font-family:Plus Jakarta Sans;font-size:10px;color:#4A3F3E;"></div>
             </div>
         </div></div></div>
             </div>
@@ -814,12 +814,12 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute; opacity: 0.04"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; background: #5E5FE0; position: absolute; border-radius: 50%; height: 320px; pointer-events: none; top: -80px; width: 320px; left: -80px"></div><div style="left: auto; position: absolute; right: -40px; top: 60%; height: 120px; transform: rotate(60deg); width: 120px; opacity: 0.05; border-radius: 4px; background: #937000; pointer-events: none"></div></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; top: -80px; pointer-events: none; border-radius: 50%; left: -80px; background: #B71C1C; position: absolute; opacity: 0.07; width: 320px"></div><div style="width: 120px; position: absolute; height: 120px; background: #007C9A; opacity: 0.05; border-radius: 4px; right: -40px; top: 60%; transform: rotate(60deg); pointer-events: none; left: auto"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Create Something Real</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Tools for people who care about what they make.</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Start Building</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#ED554B;background:#ED554B18;border:1px solid #ED554B40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F5ECEB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Create Something Real</span><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CAC8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Tools for people who care about what they make.</p><a href="https://slideforge.dev" style="display: inline-block; padding: 16px 40px; background: #FF8778; color: #050101; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #83000040; letter-spacing: 0.02em; margin: 0 0 14px;">Start Building</a><div style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#D7CAC8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -867,7 +867,7 @@ body {
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));
     track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    track.style.transform = `translateX(${-current * 420}px)`;
+    track.style.transform = `translateX(${-current * 525}px)`;
     if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
   }
 

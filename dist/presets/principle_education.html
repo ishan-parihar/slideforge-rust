@@ -3,61 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300,600&family=Outfit:wght@400,500,600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --slide-width: 420px;
-  --slide-height: 525px;
+  --slide-height: 560px;
   --composition-width: 420px;
   --composition-height: 525px;
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #EDEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --primary: #1565C0;
+  --primary-light: #62ADFF;
+  --primary-dark: #00378F;
+  --surface-light: #EFF6FF;
+  --surface-dark: #000205;
+  --text-primary: #080B0F;
+  --text-secondary: #3D434A;
+  --text-on-dark: #EAEFF5;
+  --text-on-dark-secondary: #C7CED8;
+  --border-light: #C4CBD4;
+  --border-dark: #242F3D;
+  --accent: #9A5400;
+  --secondary: #4C698F;
+  --tertiary: #7F5291;
+  --gradient: linear-gradient(165deg, #000205 0%, #00378F 60%, #000205 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #1565C040;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #EFF6FF 0%, #1565C008 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #000205 0%, #00378F30 50%, #000205 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #EFF6FFCC;
+  --glass-light-border: 1px solid #C4CBD440;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-bg: #000205CC;
+  --glass-dark-border: 1px solid #242F3D40;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --glass-frosted-bg: #EFF6FFE6;
+  --glass-frosted-border: 1px solid #C4CBD430;
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'Outfit', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -398,8 +398,8 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
-  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+<div style="width:1080px;height:1826px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:710px;">
     <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">S</div>
@@ -410,19 +410,19 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain); z-index: 1"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
-            <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#5E5FE0;background:#5E5FE018;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
-            <h2 style="font-family:Playfair Display;font-size:28px;font-weight:900;color:#0A0B0F;margin:0 0 4px;line-height:1.1;">Cialdini&#x27;s Seven Principles</h2>
-            <div style="font-family:DM Sans;font-size:11px;font-style:italic;color:#40424B;margin-bottom:12px;opacity:0.8;">/si-əl-DI-niz ˈsɛvən ˈprɪnsəpəlz/</div>
-            <div style="border-left:3px solid #5E5FE0;padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:DM Sans;font-size:13px;font-weight:500;color:#0A0B0F;margin:0;line-height:1.5;">Robert Cialdini&#x27;s framework of seven universal persuasion principles: Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity, and Unity.</p>
+                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C4CBD4;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Fraunces;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#1565C0;background:#1565C018;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Fraunces;font-size:28px;font-weight:900;color:#080B0F;margin:0 0 4px;line-height:1.1;">Cialdini&#x27;s Seven Principles</h2>
+            <div style="font-family:Outfit;font-size:11px;font-style:italic;color:#3D434A;margin-bottom:12px;opacity:0.8;">/si-əl-DI-niz ˈsɛvən ˈprɪnsəpəlz/</div>
+            <div style="border-left:3px solid #1565C0;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:Outfit;font-size:13px;font-weight:500;color:#080B0F;margin:0;line-height:1.5;">Robert Cialdini&#x27;s framework of seven universal persuasion principles: Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity, and Unity.</p>
         </div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Every effective campaign implicitly or explicitly uses these principles. Making them explicit turns persuasion from art into engineering.</p>
+            <p style="font-family:Outfit;font-size:10.5px;color:#3D434A;margin:0;line-height:1.4;opacity:0.85;">Every effective campaign implicitly or explicitly uses these principles. Making them explicit turns persuasion from art into engineering.</p>
         </div>
             </div>
         </div>
@@ -444,22 +444,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2C3D30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #242F3D30;">
                 <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
                 
             </div>
-            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Reciprocity is why free content converts better than paid advertising.</p>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;">
-                        <strong style="color:#EDEEF5;font-weight:700;">Principle #1: Reciprocity</strong> — Give value first. The audience feels obligated to reciprocate — with attention, engagement, or action.
+            <p style="font-family:Outfit;font-size:12px;color:#C7CED8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Reciprocity is why free content converts better than paid advertising.</p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;">
+                        <strong style="color:#EAEFF5;font-weight:700;">Principle #1: Reciprocity</strong> — Give value first. The audience feels obligated to reciprocate — with attention, engagement, or action.
                     </div></div>
         </div>
             </div>
@@ -482,18 +482,18 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#F2F4FF;border:1px solid #C5C7D125;border-radius:0;padding:14px 18px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:16px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Scarcity only works for physical products</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#F2F4FF;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:#F2F4FF;border-left:4px solid #5E5FE0;border:1px solid #C5C7D125;border-left-width:4px;border-radius:0;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:16px;font-weight:600;color:#0A0B0F;line-height:1.35;">Information scarcity (&#x27;this insight won&#x27;t be shared again&#x27;) drives 2.8x more engagement than abundance framing</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:14px;line-height:1.45;">Scarcity is about perceived value, not physical limitation. Limited-time insights, exclusive data, and &#x27;first to know&#x27; framing all trigger the same response.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Fraunces; font-size: 20px; font-weight: 600; line-height: 1.18; color: #080B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#EFF6FF;border:1px solid #C4CBD425;border-radius:0;padding:14px 18px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Outfit;font-size:16px;font-weight:600;color:#3D434A;text-decoration:line-through;text-decoration-color:#1565C0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Scarcity only works for physical products</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Fraunces;font-size:10px;font-weight:800;color:#EFF6FF;letter-spacing:0.12em;text-transform:uppercase;background:#1565C0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:#EFF6FF;border-left:4px solid #1565C0;border:1px solid #C4CBD425;border-left-width:4px;border-radius:0;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Fraunces;font-size:10px;font-weight:800;color:#1565C0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Outfit;font-size:16px;font-weight:600;color:#080B0F;line-height:1.35;">Information scarcity (&#x27;this insight won&#x27;t be shared again&#x27;) drives 2.8x more engagement than abundance framing</div>
+                </div><div style="font-family:Outfit;font-size:13px;color:#3D434A;margin-top:14px;line-height:1.45;">Scarcity is about perceived value, not physical limitation. Limited-time insights, exclusive data, and &#x27;first to know&#x27; framing all trigger the same response.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -514,22 +514,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2C3D30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #242F3D30;">
                 <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
                 
             </div>
-            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Social proof is why testimonial_avatar is one of the most-used slide types.</p>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;">
-                        <strong style="color:#EDEEF5;font-weight:700;">Principle #2: Social Proof</strong> — People follow people. Testimonials, user counts, and &#x27;trusted by&#x27; logos reduce decision friction.
+            <p style="font-family:Outfit;font-size:12px;color:#C7CED8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Social proof is why testimonial_avatar is one of the most-used slide types.</p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;">
+                        <strong style="color:#EAEFF5;font-weight:700;">Principle #2: Social Proof</strong> — People follow people. Testimonials, user counts, and &#x27;trusted by&#x27; logos reduce decision friction.
                     </div></div>
         </div>
             </div>
@@ -552,18 +552,18 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#F2F4FF;border:1px solid #C5C7D125;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Authority requires credentials</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#F2F4FF;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:#F2F4FF;border-left:4px solid #5E5FE0;border:1px solid #C5C7D125;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;line-height:1.35;">Perceived authority comes from confidence and specificity, not titles. &#x27;We analyzed 10,000 slides&#x27; beats &#x27;our expert says.&#x27;</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:14px;line-height:1.45;">Authority is established through demonstrated knowledge, not claimed credentials. Data beats titles.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Fraunces; font-size: 20px; font-weight: 600; line-height: 1.18; color: #080B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#EFF6FF;border:1px solid #C4CBD425;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#3D434A;text-decoration:line-through;text-decoration-color:#1565C0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Authority requires credentials</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Fraunces;font-size:10px;font-weight:800;color:#EFF6FF;letter-spacing:0.12em;text-transform:uppercase;background:#1565C0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:#EFF6FF;border-left:4px solid #1565C0;border:1px solid #C4CBD425;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Fraunces;font-size:10px;font-weight:800;color:#1565C0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#080B0F;line-height:1.35;">Perceived authority comes from confidence and specificity, not titles. &#x27;We analyzed 10,000 slides&#x27; beats &#x27;our expert says.&#x27;</div>
+                </div><div style="font-family:Outfit;font-size:13px;color:#3D434A;margin-top:14px;line-height:1.45;">Authority is established through demonstrated knowledge, not claimed credentials. Data beats titles.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -584,22 +584,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="background: var(--texture-grain); z-index: 1; pointer-events: none; inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2C3D30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #242F3D30;">
                 <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
                 
             </div>
-            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Commitment explains why carousel completion rate predicts conversion better than click-through rate.</p>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;">
-                        <strong style="color:#EDEEF5;font-weight:700;">Principle #3: Commitment</strong> — Small yeses lead to big yeses. Each micro-commitment (save, share, read) escalates investment.
+            <p style="font-family:Outfit;font-size:12px;color:#C7CED8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Commitment explains why carousel completion rate predicts conversion better than click-through rate.</p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;">
+                        <strong style="color:#EAEFF5;font-weight:700;">Principle #3: Commitment</strong> — Small yeses lead to big yeses. Each micro-commitment (save, share, read) escalates investment.
                     </div></div>
         </div>
             </div>
@@ -622,18 +622,18 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#F2F4FF;border:1px solid #C5C7D125;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Liking is about being likeable</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#F2F4FF;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:#F2F4FF;border-left:4px solid #5E5FE0;border:1px solid #C5C7D125;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;line-height:1.35;">Liking is about similarity and shared identity. &#x27;People like me use this&#x27; is more powerful than &#x27;this person is charismatic.&#x27;</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:14px;line-height:1.45;">The liking principle works through identification, not charm. That&#x27;s why founder stories outperform celebrity endorsements for niche products.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Fraunces; font-size: 20px; font-weight: 600; line-height: 1.18; color: #080B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#EFF6FF;border:1px solid #C4CBD425;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#3D434A;text-decoration:line-through;text-decoration-color:#1565C0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Liking is about being likeable</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Fraunces;font-size:10px;font-weight:800;color:#EFF6FF;letter-spacing:0.12em;text-transform:uppercase;background:#1565C0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:#EFF6FF;border-left:4px solid #1565C0;border:1px solid #C4CBD425;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Fraunces;font-size:10px;font-weight:800;color:#1565C0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#080B0F;line-height:1.35;">Liking is about similarity and shared identity. &#x27;People like me use this&#x27; is more powerful than &#x27;this person is charismatic.&#x27;</div>
+                </div><div style="font-family:Outfit;font-size:13px;color:#3D434A;margin-top:14px;line-height:1.45;">The liking principle works through identification, not charm. That&#x27;s why founder stories outperform celebrity endorsements for niche products.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -654,22 +654,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2C3D30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #242F3D30;">
                 <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
                 
             </div>
-            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Unity is Cialdini&#x27;s most overlooked principle — and the most powerful for building movements.</p>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;">
-                        <strong style="color:#EDEEF5;font-weight:700;">Principle #4: Unity</strong> — Shared identity. &#x27;We&#x27; language. &#x27;Our community.&#x27; Unity turns customers into members and members into advocates.
+            <p style="font-family:Outfit;font-size:12px;color:#C7CED8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Unity is Cialdini&#x27;s most overlooked principle — and the most powerful for building movements.</p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;">
+                        <strong style="color:#EAEFF5;font-weight:700;">Principle #4: Unity</strong> — Shared identity. &#x27;We&#x27; language. &#x27;Our community.&#x27; Unity turns customers into members and members into advocates.
                     </div></div>
         </div>
             </div>
@@ -692,18 +692,18 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; z-index: 1; pointer-events: none"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#F2F4FF;border:1px solid #C5C7D125;border-radius:0;padding:14px 18px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:16px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Unity is just branding</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#F2F4FF;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:#F2F4FF;border-left:4px solid #5E5FE0;border:1px solid #C5C7D125;border-left-width:4px;border-radius:0;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:16px;font-weight:600;color:#0A0B0F;line-height:1.35;">Unity is identity-level belonging. Branding is visual. Unity is tribal. &#x27;I am a Nexus user&#x27; vs &#x27;I use Nexus.&#x27;</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:14px;line-height:1.45;">Unity explains why open-source communities outperform proprietary user bases in advocacy and retention.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Fraunces; font-size: 20px; font-weight: 600; line-height: 1.18; color: #080B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#EFF6FF;border:1px solid #C4CBD425;border-radius:0;padding:14px 18px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Outfit;font-size:16px;font-weight:600;color:#3D434A;text-decoration:line-through;text-decoration-color:#1565C0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Unity is just branding</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Fraunces;font-size:10px;font-weight:800;color:#EFF6FF;letter-spacing:0.12em;text-transform:uppercase;background:#1565C0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:#EFF6FF;border-left:4px solid #1565C0;border:1px solid #C4CBD425;border-left-width:4px;border-radius:0;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Fraunces;font-size:10px;font-weight:800;color:#1565C0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Outfit;font-size:16px;font-weight:600;color:#080B0F;line-height:1.35;">Unity is identity-level belonging. Branding is visual. Unity is tribal. &#x27;I am a Nexus user&#x27; vs &#x27;I use Nexus.&#x27;</div>
+                </div><div style="font-family:Outfit;font-size:13px;color:#3D434A;margin-top:14px;line-height:1.45;">Unity explains why open-source communities outperform proprietary user bases in advocacy and retention.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -724,22 +724,22 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2C3D30;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #242F3D30;">
                 <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
                 <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
                 
             </div>
-            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Liking explains why founder-led carousels outperform corporate-polished ones.</p>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;">
-                        <strong style="color:#EDEEF5;font-weight:700;">Principle #5: Liking</strong> — People say yes to those they like. Similarity, compliments, and cooperation build the liking bridge.
+            <p style="font-family:Outfit;font-size:12px;color:#C7CED8;margin:10px 0 0;line-height:1.45;opacity:0.9;">Liking explains why founder-led carousels outperform corporate-polished ones.</p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;"><div style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;">
+                        <strong style="color:#EAEFF5;font-weight:700;">Principle #5: Liking</strong> — People say yes to those they like. Similarity, compliments, and cooperation build the liking bridge.
                     </div></div>
         </div>
             </div>
@@ -762,18 +762,18 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#F2F4FF;border:1px solid #C5C7D125;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#40424B;text-decoration:line-through;text-decoration-color:#5E5FE0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Scarcity and urgency are the same thing</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#F2F4FF;letter-spacing:0.12em;text-transform:uppercase;background:#5E5FE0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:#F2F4FF;border-left:4px solid #5E5FE0;border:1px solid #C5C7D125;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#5E5FE0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#0A0B0F;line-height:1.35;">Scarcity is about limited supply; urgency is about limited time. Combined, they create the most powerful persuasion force in marketing.</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#40424B;margin-top:14px;line-height:1.45;">The best CTAs use both: &#x27;Only 3 spots left&#x27; (scarcity) + &#x27;Offer ends tonight&#x27; (urgency). Together they&#x27;re exponentially more effective.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Fraunces; font-size: 20px; font-weight: 600; line-height: 1.18; color: #080B0F; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:#EFF6FF;border:1px solid #C4CBD425;border-radius:0;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#3D434A;text-decoration:line-through;text-decoration-color:#1565C0;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Scarcity and urgency are the same thing</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Fraunces;font-size:10px;font-weight:800;color:#EFF6FF;letter-spacing:0.12em;text-transform:uppercase;background:#1565C0;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:#EFF6FF;border-left:4px solid #1565C0;border:1px solid #C4CBD425;border-left-width:4px;border-radius:0;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Fraunces;font-size:10px;font-weight:800;color:#1565C0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#080B0F;line-height:1.35;">Scarcity is about limited supply; urgency is about limited time. Combined, they create the most powerful persuasion force in marketing.</div>
+                </div><div style="font-family:Outfit;font-size:13px;color:#3D434A;margin-top:14px;line-height:1.45;">The best CTAs use both: &#x27;Only 3 spots left&#x27; (scarcity) + &#x27;Offer ends tonight&#x27; (urgency). Together they&#x27;re exponentially more effective.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -794,39 +794,39 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1; position: absolute"></div>
+            <div style="position: absolute; z-index: 1; pointer-events: none; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Apply the Principles</h2>
-            <div style="display:flex;flex-direction:column;gap:10px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7478FC;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">01</div>
+            <h2 style="font-family: Fraunces; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EAEFF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Apply the Principles</h2>
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#3C87E5;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:13px;font-weight:900;flex-shrink:0;">01</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Audit</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Map which principles your current content uses (and which it ignores)</div>
+                    <div style="font-family:Fraunces;font-size:13px;font-weight:800;color:#EAEFF5;margin-bottom:2px;">Audit</div>
+                    <div style="font-family:Outfit;font-size:11px;color:#C7CED8;line-height:1.4;">Map which principles your current content uses (and which it ignores)</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7478FC;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">02</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#3C87E5;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:13px;font-weight:900;flex-shrink:0;">02</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Integrate</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Assign one principle per slide. Let the preset structure do the sequencing.</div>
+                    <div style="font-family:Fraunces;font-size:13px;font-weight:800;color:#EAEFF5;margin-bottom:2px;">Integrate</div>
+                    <div style="font-family:Outfit;font-size:11px;color:#C7CED8;line-height:1.4;">Assign one principle per slide. Let the preset structure do the sequencing.</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7478FC;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">03</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#3C87E5;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:13px;font-weight:900;flex-shrink:0;">03</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Measure</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Track which principles drive the most engagement for your audience</div>
+                    <div style="font-family:Fraunces;font-size:13px;font-weight:800;color:#EAEFF5;margin-bottom:2px;">Measure</div>
+                    <div style="font-family:Outfit;font-size:11px;color:#C7CED8;line-height:1.4;">Track which principles drive the most engagement for your audience</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7478FC;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">04</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#3C87E5;color:#000205;display:flex;align-items:center;justify-content:center;font-family:Fraunces;font-size:13px;font-weight:900;flex-shrink:0;">04</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Iterate</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Double down on what works. Drop what doesn&#x27;t.</div>
+                    <div style="font-family:Fraunces;font-size:13px;font-weight:800;color:#EAEFF5;margin-bottom:2px;">Iterate</div>
+                    <div style="font-family:Outfit;font-size:11px;color:#C7CED8;line-height:1.4;">Double down on what works. Drop what doesn&#x27;t.</div>
                 </div>
             </div></div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
+            <p style="font-family:Outfit;font-size:10.5px;color:#C7CED8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>
             </div>
         </div>
@@ -848,23 +848,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #1565C015 0px, transparent 50%), radial-gradient(at 80% 0%, #9A540010 0px, transparent 50%), radial-gradient(at 0% 50%, #62ADFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#0A0B0F;margin:0;">Implementation Checklist</h2><div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">1</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Identify your primary principle</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">2</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Map principles to slide types</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">3</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Generate with a preset</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5E5FE0;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">4</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">A/B test principle emphasis</div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:Fraunces;font-size:30px;font-weight:900;color:#080B0F;margin:0;">Implementation Checklist</h2><div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C4CBD4;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#1565C0;color:white;display:flex;align-items:center;justify-content:center;font-family:Outfit;font-size:12px;font-weight:800;flex-shrink:0;">1</div>
+                    <div style="font-family:Outfit;font-size:var(--text-sm);font-weight:700;color:#080B0F;line-height:1.45;">Identify your primary principle</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C4CBD4;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#1565C0;color:white;display:flex;align-items:center;justify-content:center;font-family:Outfit;font-size:12px;font-weight:800;flex-shrink:0;">2</div>
+                    <div style="font-family:Outfit;font-size:var(--text-sm);font-weight:700;color:#080B0F;line-height:1.45;">Map principles to slide types</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C4CBD4;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#1565C0;color:white;display:flex;align-items:center;justify-content:center;font-family:Outfit;font-size:12px;font-weight:800;flex-shrink:0;">3</div>
+                    <div style="font-family:Outfit;font-size:var(--text-sm);font-weight:700;color:#080B0F;line-height:1.45;">Generate with a preset</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C4CBD4;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#1565C0;color:white;display:flex;align-items:center;justify-content:center;font-family:Outfit;font-size:12px;font-weight:800;flex-shrink:0;">4</div>
+                    <div style="font-family:Outfit;font-size:var(--text-sm);font-weight:700;color:#080B0F;line-height:1.45;">A/B test principle emphasis</div>
                 </div></div></div>
             </div>
         </div>
@@ -886,31 +886,31 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Common Questions</h2>
-            <div style="display:flex;flex-direction:column;gap:8px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+            <h2 style="font-family: Fraunces; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EAEFF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Common Questions</h2>
+            <div style="display:flex;flex-direction:column;gap:8px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:16px;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#767CFF;background:#767CFF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q1</span>
-                    <h3 style="font-family:Playfair Display;font-size:12.5px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Which principle should I start with?</h3>
+                    <span style="font-family:Fraunces;font-size:9.5px;font-weight:900;color:#3C87E5;background:#3C87E518;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q1</span>
+                    <h3 style="font-family:Fraunces;font-size:12.5px;font-weight:800;color:#EAEFF5;margin:0;line-height:1.2;">Which principle should I start with?</h3>
                 </div>
-                <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">Start with social proof — it&#x27;s the most universally applicable and the easiest to measure. Add scarcity once you have proof of value.</p>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <p style="font-family:Outfit;font-size:11px;color:#C7CED8;margin:0;line-height:1.4;">Start with social proof — it&#x27;s the most universally applicable and the easiest to measure. Add scarcity once you have proof of value.</p>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:16px;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#767CFF;background:#767CFF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q2</span>
-                    <h3 style="font-family:Playfair Display;font-size:12.5px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Can I use multiple principles in one carousel?</h3>
+                    <span style="font-family:Fraunces;font-size:9.5px;font-weight:900;color:#3C87E5;background:#3C87E518;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q2</span>
+                    <h3 style="font-family:Fraunces;font-size:12.5px;font-weight:800;color:#EAEFF5;margin:0;line-height:1.2;">Can I use multiple principles in one carousel?</h3>
                 </div>
-                <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">Yes, but assign one primary principle per slide. The preset structure handles the sequencing so principles don&#x27;t compete.</p>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <p style="font-family:Outfit;font-size:11px;color:#C7CED8;margin:0;line-height:1.4;">Yes, but assign one primary principle per slide. The preset structure handles the sequencing so principles don&#x27;t compete.</p>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #242F3D;border-radius:16px;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;color:#767CFF;background:#767CFF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q3</span>
-                    <h3 style="font-family:Playfair Display;font-size:12.5px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">How do I measure which principles work?</h3>
+                    <span style="font-family:Fraunces;font-size:9.5px;font-weight:900;color:#3C87E5;background:#3C87E518;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q3</span>
+                    <h3 style="font-family:Fraunces;font-size:12.5px;font-weight:800;color:#EAEFF5;margin:0;line-height:1.2;">How do I measure which principles work?</h3>
                 </div>
-                <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta.</p>
+                <p style="font-family:Outfit;font-size:11px;color:#C7CED8;margin:0;line-height:1.4;">Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta.</p>
             </div></div>
         </div>
             </div>
@@ -933,12 +933,12 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; opacity: 0.07; position: absolute; width: 320px; background: #5E5FE0; top: -80px; pointer-events: none; left: -80px; height: 320px"></div><div style="top: 60%; width: 120px; transform: rotate(60deg); height: 120px; opacity: 0.05; pointer-events: none; right: -40px; left: auto; background: #937000; position: absolute; border-radius: 4px"></div></div>
+            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1; position: absolute; opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #1565C0; width: 320px; position: absolute; left: -80px; opacity: 0.07; top: -80px; height: 320px; pointer-events: none; border-radius: 50%"></div><div style="position: absolute; border-radius: 4px; top: 60%; pointer-events: none; right: -40px; left: auto; width: 120px; opacity: 0.05; height: 120px; transform: rotate(60deg); background: #9A5400"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Engineer Your Next Campaign</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">28 presets, each built on proven persuasion architecture.</p><a href="https://slideforge.dev/presets" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Start with a Preset</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Outfit;font-size:10px;font-weight:800;color:#3F8AE9;background:#3F8AE918;border:1px solid #3F8AE940;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EAEFF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Fraunces; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Engineer Your Next Campaign</span><p style="font-family:Outfit;font-size:12px;color:#C7CED8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">28 presets, each built on proven persuasion architecture.</p><a href="https://slideforge.dev/presets" style="display: inline-block; padding: 16px 40px; background: #62ADFF; color: #000205; font-family: Outfit; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #00378F40; letter-spacing: 0.02em; margin: 0 0 14px;">Start with a Preset</a><div style="font-family:Outfit;font-size:11px;font-weight:600;color:#C7CED8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">

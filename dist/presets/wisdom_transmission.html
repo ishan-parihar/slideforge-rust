@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,48 +16,48 @@
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #EDEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --primary: #6A1B9A;
+  --primary-light: #B66EED;
+  --primary-dark: #40006A;
+  --surface-light: #F8F3FD;
+  --surface-dark: #020104;
+  --text-primary: #0C0A0E;
+  --text-secondary: #454049;
+  --text-on-dark: #F0EDF4;
+  --text-on-dark-secondary: #D0CBD5;
+  --border-light: #CDC8D2;
+  --border-dark: #322A3A;
+  --accent: #2C5C00;
+  --secondary: #5A4070;
+  --tertiary: #832640;
+  --gradient: linear-gradient(165deg, #020104 0%, #40006A 60%, #020104 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #6A1B9A40;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #F8F3FD 0%, #6A1B9A08 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #020104 0%, #40006A30 50%, #020104 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #F8F3FDCC;
+  --glass-light-border: 1px solid #CDC8D240;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-bg: #020104CC;
+  --glass-dark-border: 1px solid #322A3A40;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --glass-frosted-bg: #F8F3FDE6;
+  --glass-frosted-border: 1px solid #CDC8D230;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -411,18 +411,18 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
-            <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#5E5FE0;background:#5E5FE018;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
-            <h2 style="font-family:Playfair Display;font-size:28px;font-weight:900;color:#0A0B0F;margin:0 0 4px;line-height:1.1;">Dharma</h2>
-            <div style="font-family:DM Sans;font-size:11px;font-style:italic;color:#40424B;margin-bottom:12px;opacity:0.8;">/ˈdɑːrmə/</div>
-            <div style="border-left:3px solid #5E5FE0;padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:DM Sans;font-size:13px;font-weight:500;color:#0A0B0F;margin:0;line-height:1.5;">The cosmic order that sustains the universe. In communication, dharma is the truth that exists beneath the surface of words — the message that the audience already knows but hasn&#x27;t yet articulated.</p>
+                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #CDC8D2;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#6A1B9A;background:#6A1B9A18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:28px;font-weight:900;color:#0C0A0E;margin:0 0 4px;line-height:1.1;">Dharma</h2>
+            <div style="font-family:Plus Jakarta Sans;font-size:11px;font-style:italic;color:#454049;margin-bottom:12px;opacity:0.8;">/ˈdɑːrmə/</div>
+            <div style="border-left:3px solid #6A1B9A;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:500;color:#0C0A0E;margin:0;line-height:1.5;">The cosmic order that sustains the universe. In communication, dharma is the truth that exists beneath the surface of words — the message that the audience already knows but hasn&#x27;t yet articulated.</p>
         </div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Teaching isn&#x27;t about filling empty vessels. It&#x27;s about helping people remember what they already know.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#454049;margin:0;line-height:1.4;opacity:0.85;">Teaching isn&#x27;t about filling empty vessels. It&#x27;s about helping people remember what they already know.</p>
         </div>
             </div>
         </div>
@@ -446,7 +446,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -456,8 +456,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The teacher who is indeed wise does not bid you to enter the house of his wisdom, but rather leads you to the threshold of your mind.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Khalil Gibran</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The teacher who is indeed wise does not bid you to enter the house of his wisdom, but rather leads you to the threshold of your mind.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Khalil Gibran</p>
                 
             </div>
         </div>
@@ -482,13 +482,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The First Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Before you can transmit wisdom, you must learn to listen. Not to respond — to understand. Every audience carries a question they haven&#x27;t yet formed words for. Your carousel should answer that question before they ask it.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0C0A0E;margin:0 0 16px;line-height:1.2;">The First Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#454049;margin:0 0 12px;line-height:1.6;">Before you can transmit wisdom, you must learn to listen. Not to respond — to understand. Every audience carries a question they haven&#x27;t yet formed words for. Your carousel should answer that question before they ask it.</p></div>
         </div>
             </div>
         </div>
@@ -512,7 +512,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="inset: 0; background: var(--texture-grain); z-index: 1; position: absolute; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -522,8 +522,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">In the beginner&#x27;s mind there are many possibilities, but in the expert&#x27;s mind there are few.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Shunryu Suzuki</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">In the beginner&#x27;s mind there are many possibilities, but in the expert&#x27;s mind there are few.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Shunryu Suzuki</p>
                 
             </div>
         </div>
@@ -548,13 +548,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Second Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Simplicity is not the absence of complexity — it&#x27;s the mastery of it. The most profound ideas can be expressed in one slide. If you need ten slides to explain something, you haven&#x27;t understood it yet.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0C0A0E;margin:0 0 16px;line-height:1.2;">The Second Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#454049;margin:0 0 12px;line-height:1.6;">Simplicity is not the absence of complexity — it&#x27;s the mastery of it. The most profound ideas can be expressed in one slide. If you need ten slides to explain something, you haven&#x27;t understood it yet.</p></div>
         </div>
             </div>
         </div>
@@ -578,7 +578,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04"></div>
+            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -588,8 +588,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The only true wisdom is in knowing you know nothing.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Socrates</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The only true wisdom is in knowing you know nothing.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Socrates</p>
                 
             </div>
         </div>
@@ -614,13 +614,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Third Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Humility opens the door to understanding. When you present wisdom, don&#x27;t position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0C0A0E;margin:0 0 16px;line-height:1.2;">The Third Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#454049;margin:0 0 12px;line-height:1.6;">Humility opens the door to understanding. When you present wisdom, don&#x27;t position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them.</p></div>
         </div>
             </div>
         </div>
@@ -644,7 +644,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain); z-index: 1"></div>
+            <div style="position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain); z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -654,8 +654,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">We are not human beings having a spiritual experience. We are spiritual beings having a human experience.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Pierre Teilhard de Chardin</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">We are not human beings having a spiritual experience. We are spiritual beings having a human experience.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Pierre Teilhard de Chardin</p>
                 
             </div>
         </div>
@@ -680,13 +680,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Fourth Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Every communication is an act of service. You&#x27;re not performing knowledge — you&#x27;re offering it. The difference is in the energy. Service invites. Performance demands. Choose service.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0C0A0E;margin:0 0 16px;line-height:1.2;">The Fourth Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#454049;margin:0 0 12px;line-height:1.6;">Every communication is an act of service. You&#x27;re not performing knowledge — you&#x27;re offering it. The difference is in the energy. Service invites. Performance demands. Choose service.</p></div>
         </div>
             </div>
         </div>
@@ -710,7 +710,7 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; z-index: 1; opacity: 0.04; position: absolute; pointer-events: none"></div>
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -720,8 +720,8 @@ body {
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:Playfair Display;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The wound is the place where the Light enters you.</p>
-                <p style="font-family:DM Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Rumi</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">The wound is the place where the Light enters you.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">Rumi</p>
                 
             </div>
         </div>
@@ -746,13 +746,13 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1; position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
-            <h2 style="font-family:Playfair Display;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">The Fifth Teaching</h2>
-            <div style="margin-top:4px;"><p style="font-family:DM Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Vulnerability is the bridge between teacher and student. Share your struggles, not just your insights. The audience trusts the person who admits they&#x27;re still learning more than the one who claims to have arrived.</p></div>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0C0A0E;margin:0 0 16px;line-height:1.2;">The Fifth Teaching</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#454049;margin:0 0 12px;line-height:1.6;">Vulnerability is the bridge between teacher and student. Share your struggles, not just your insights. The audience trusts the person who admits they&#x27;re still learning more than the one who claims to have arrived.</p></div>
         </div>
             </div>
         </div>
@@ -775,22 +775,22 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #6A1B9A15 0px, transparent 50%), radial-gradient(at 80% 0%, #2C5C0010 0px, transparent 50%), radial-gradient(at 0% 50%, #B66EED12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#0A0B0F;margin:0;">Practice Guidelines</h2><div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5B5CDD;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">1</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Sit with the topic before composing</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5B5CDD;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">2</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Write the audience&#x27;s question first</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5B5CDD;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">3</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">Use one image per insight</div>
-                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:#5B5CDD;color:white;display:flex;align-items:center;justify-content:center;font-family:DM Sans;font-size:12px;font-weight:800;flex-shrink:0;">4</div>
-                    <div style="font-family:DM Sans;font-size:var(--text-sm);font-weight:700;color:#0A0B0F;line-height:1.45;">End with an invitation, not a command</div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:Plus Jakarta Sans;font-size:30px;font-weight:900;color:#0C0A0E;margin:0;">Practice Guidelines</h2><div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #CDC8D2;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#6A1B9A;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;flex-shrink:0;">1</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:700;color:#0C0A0E;line-height:1.45;">Sit with the topic before composing</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #CDC8D2;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#6A1B9A;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;flex-shrink:0;">2</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:700;color:#0C0A0E;line-height:1.45;">Write the audience&#x27;s question first</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #CDC8D2;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#6A1B9A;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;flex-shrink:0;">3</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:700;color:#0C0A0E;line-height:1.45;">Use one image per insight</div>
+                </div><div style="display:flex;gap:var(--space-1);align-items:flex-start;background:rgba(255,255,255,0.92);border:1px solid #CDC8D2;border-radius:0;padding:var(--space-1) 14px;">
+                    <div style="width:24px;height:24px;border-radius:50%;background:#6A1B9A;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:12px;font-weight:800;flex-shrink:0;">4</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:700;color:#0C0A0E;line-height:1.45;">End with an invitation, not a command</div>
                 </div></div></div>
             </div>
         </div>
@@ -814,21 +814,21 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); z-index: 1; opacity: 0.04; pointer-events: none; position: absolute"></div>
+            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#6A1B9A;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="border: 1px solid #2A2C3D40; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: #010105CC; border-radius: 16px; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border: 1px solid #322A3A40; backdrop-filter: blur(12px); background: #020104CC; -webkit-backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #6A1B9A;padding:36px 32px;box-shadow: 0 8px 32px -4px #6A1B9A1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#6A1B9A1a;color:#6A1B9A;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Transmission Is Complete When</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6A1B9A;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F0EDF4;margin:0;line-height:1.2;">The Transmission Is Complete When</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">The audience doesn&#x27;t remember your words — they remember their own realization. That&#x27;s when teaching becomes transformation.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D0CBD5;margin:0;overflow-wrap:break-word;word-break:break-word;">The audience doesn&#x27;t remember your words — they remember their own realization. That&#x27;s when teaching becomes transformation.</p>
             </div>
         </div>
             </div>
@@ -853,36 +853,36 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; position: absolute; pointer-events: none"></div>
+            <div style="inset: 0; z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:12px;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Three Modes of Transmission</h2><div style="display:flex;gap:12px;width:100%;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-top:3px solid #767CFF;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F0EDF4; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Three Modes of Transmission</h2><div style="display:flex;gap:12px;width:100%;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #322A3A;border-top:3px solid #B36BEA;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
                 <div>
                     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#767CFF;background:#767CFF18;padding:2px 6px;border-radius:4px;">01 PILLAR</span>
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#B36BEA;background:#B36BEA18;padding:2px 6px;border-radius:4px;">01 PILLAR</span>
                     </div>
-                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#EDEEF5;margin:0 0 6px;line-height:1.2;">Spoken</h3>
-                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.45;margin:0;">Words carry intention. The teacher&#x27;s voice shapes how wisdom lands — not just what is said, but how it is offered.</p>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#F0EDF4;margin:0 0 6px;line-height:1.2;">Spoken</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#D0CBD5;line-height:1.45;margin:0;">Words carry intention. The teacher&#x27;s voice shapes how wisdom lands — not just what is said, but how it is offered.</p>
                 </div>
-                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#767CFF;background:#767CFF15;padding:3px 8px;border-radius:999px;width:fit-content;">⚡ High Speed</div>
-            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-top:3px solid #767CFF;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#B36BEA;background:#B36BEA15;padding:3px 8px;border-radius:999px;width:fit-content;">⚡ High Speed</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #322A3A;border-top:3px solid #B36BEA;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
                 <div>
                     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#767CFF;background:#767CFF18;padding:2px 6px;border-radius:4px;">02 PILLAR</span>
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#B36BEA;background:#B36BEA18;padding:2px 6px;border-radius:4px;">02 PILLAR</span>
                     </div>
-                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#EDEEF5;margin:0 0 6px;line-height:1.2;">Written</h3>
-                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.45;margin:0;">Text endures. Written wisdom survives the session, the teacher, and the era. It becomes a reference the student returns to.</p>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#F0EDF4;margin:0 0 6px;line-height:1.2;">Written</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#D0CBD5;line-height:1.45;margin:0;">Text endures. Written wisdom survives the session, the teacher, and the era. It becomes a reference the student returns to.</p>
                 </div>
-                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#767CFF;background:#767CFF15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
-            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-top:3px solid #767CFF;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#B36BEA;background:#B36BEA15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #322A3A;border-top:3px solid #B36BEA;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
                 <div>
                     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#767CFF;background:#767CFF18;padding:2px 6px;border-radius:4px;">03 PILLAR</span>
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#B36BEA;background:#B36BEA18;padding:2px 6px;border-radius:4px;">03 PILLAR</span>
                     </div>
-                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#EDEEF5;margin:0 0 6px;line-height:1.2;">Lived</h3>
-                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.45;margin:0;">The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission.</p>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#F0EDF4;margin:0 0 6px;line-height:1.2;">Lived</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#D0CBD5;line-height:1.45;margin:0;">The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission.</p>
                 </div>
-                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#767CFF;background:#767CFF15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#B36BEA;background:#B36BEA15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
             </div></div></div>
             </div>
         </div>
@@ -906,10 +906,10 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; inset: 0; pointer-events: none; opacity: 0.04; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; position: absolute; top: -80px; pointer-events: none; left: -80px; opacity: 0.07; background: #5E5FE0; height: 320px; width: 320px"></div><div style="opacity: 0.05; right: -40px; width: 120px; height: 120px; left: auto; top: 60%; background: #937000; position: absolute; pointer-events: none; border-radius: 4px; transform: rotate(60deg)"></div></div>
+            <div style="inset: 0; background: var(--texture-grain); z-index: 1; opacity: 0.04; pointer-events: none; position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #6A1B9A; left: -80px; border-radius: 50%; top: -80px; width: 320px; position: absolute; height: 320px; pointer-events: none; opacity: 0.07"></div><div style="width: 120px; left: auto; top: 60%; border-radius: 4px; background: #2C5C00; height: 120px; transform: rotate(60deg); right: -40px; pointer-events: none; opacity: 0.05; position: absolute"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Continue the Practice</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">A growing library of wisdom transmission presets and examples.</p><a href="https://slideforge.dev/wisdom" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Explore More Teachings</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#AF68E7;background:#AF68E718;border:1px solid #AF68E740;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F0EDF4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Continue the Practice</span><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D0CBD5;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">A growing library of wisdom transmission presets and examples.</p><a href="https://slideforge.dev/wisdom" style="display: inline-block; padding: 16px 40px; background: #B66EED; color: #020104; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #40006A40; letter-spacing: 0.02em; margin: 0 0 14px;">Explore More Teachings</a><div style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#D0CBD5;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">

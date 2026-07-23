@@ -9,53 +9,53 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --slide-width: 420px;
+  --slide-width: 525px;
   --slide-height: 525px;
   --composition-width: 420px;
   --composition-height: 525px;
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
+  --primary: #311B92;
+  --primary-light: #7776F0;
+  --primary-dark: #180062;
+  --surface-light: #F3F4FF;
   --surface-dark: #010105;
   --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
+  --text-secondary: #41424A;
   --text-on-dark: #EDEEF5;
   --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --border-light: #C5C6D1;
+  --border-dark: #2B2C3D;
+  --accent: #513500;
+  --secondary: #323462;
+  --tertiary: #5F184D;
+  --gradient: linear-gradient(165deg, #010105 0%, #180062 60%, #010105 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #311B9240;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #F3F4FF 0%, #311B9208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #010105 0%, #18006230 50%, #010105 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #F3F4FFCC;
+  --glass-light-border: 1px solid #C5C6D140;
   --glass-dark-blur: 12px;
   --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-border: 1px solid #2B2C3D40;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
+  --glass-frosted-bg: #F3F4FFE6;
+  --glass-frosted-border: 1px solid #C5C6D130;
   --font-heading: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
   --text-display-size: 31px;
@@ -398,8 +398,8 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
-  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+<div style="width:1080px;height:1389px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.057143);transform-origin:top left;width:525px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">S</div>
@@ -410,9 +410,9 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; z-index: 1; opacity: 0.04; background: var(--texture-grain); inset: 0"></div>
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -445,9 +445,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -457,7 +457,7 @@ body {
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Week 1: Audit your current workflow</h2>
-            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">For one week, track every time you open Figma, Canva, or any design tool. Note what you&#x27;re making, how long it takes, and how you feel about it.</p>
+            <p style="font-family:DM Sans;font-size:12px;color:#41424A;margin:0;line-height:1.45;opacity:0.9;">For one week, track every time you open Figma, Canva, or any design tool. Note what you&#x27;re making, how long it takes, and how you feel about it.</p>
         </div>
                 </div>
             </div>
@@ -480,16 +480,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide "><div class="slide-composition">
+<div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; pointer-events: none; opacity: 0.06; background: #5E5FE0; width: 300px; height: 300px; left: -70px; top: -70px; position: absolute"></div><div style="border-radius: 9999px; opacity: 0.04; left: auto; position: absolute; right: -40px; top: 65%; pointer-events: none; width: 160px; height: 160px; background: #937000"></div></div>
+            <div style="opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 300px; top: -70px; background: #311B92; left: -70px; pointer-events: none; position: absolute; height: 300px; border-radius: 50%; opacity: 0.06"></div><div style="width: 160px; position: absolute; top: 65%; height: 160px; pointer-events: none; background: #513500; border-radius: 9999px; opacity: 0.04; left: auto; right: -40px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#5B5CDD;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 1</div>
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#311B92;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 1</div>
             <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#0A0B0F;line-height:1.02;margin:0;max-width:320px;">Dismantle the Old System</h1>
-            <div style="width:76px;height:4px;background:#5B5CDD;border-radius:0;margin:var(--space-3) 0;"></div>
-            <p style="font-family:DM Sans;font-size:15px;color:#40424B;line-height:1.45;margin:0;max-width:300px;">Before building new habits, understand why the old ones failed</p>
+            <div style="width:76px;height:4px;background:#311B92;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#41424A;line-height:1.45;margin:0;max-width:300px;">Before building new habits, understand why the old ones failed</p>
         </div>
             </div>
         </div>
@@ -511,9 +511,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -523,7 +523,7 @@ body {
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Week 2: Generate your first 5 carousels with Nexus</h2>
-            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">Use a different preset each day. Compare the output to your manual work. Not the aesthetics — the emotional impact.</p>
+            <p style="font-family:DM Sans;font-size:12px;color:#41424A;margin:0;line-height:1.45;opacity:0.9;">Use a different preset each day. Compare the output to your manual work. Not the aesthetics — the emotional impact.</p>
         </div>
                 </div>
             </div>
@@ -546,16 +546,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide "><div class="slide-composition">
+<div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 300px; border-radius: 50%; top: -70px; position: absolute; background: #5E5FE0; opacity: 0.06; left: -70px; pointer-events: none; height: 300px"></div><div style="pointer-events: none; border-radius: 9999px; width: 160px; height: 160px; top: 65%; right: -40px; opacity: 0.04; position: absolute; left: auto; background: #937000"></div></div>
+            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; left: -70px; background: #311B92; width: 300px; top: -70px; opacity: 0.06; border-radius: 50%; pointer-events: none; height: 300px"></div><div style="background: #513500; pointer-events: none; right: -40px; height: 160px; position: absolute; opacity: 0.04; left: auto; top: 65%; border-radius: 9999px; width: 160px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#5B5CDD;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 2</div>
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#311B92;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 2</div>
             <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#0A0B0F;line-height:1.02;margin:0;max-width:320px;">Install the New System</h1>
-            <div style="width:76px;height:4px;background:#5B5CDD;border-radius:0;margin:var(--space-3) 0;"></div>
-            <p style="font-family:DM Sans;font-size:15px;color:#40424B;line-height:1.45;margin:0;max-width:300px;">Replace design time with composition time</p>
+            <div style="width:76px;height:4px;background:#311B92;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#41424A;line-height:1.45;margin:0;max-width:300px;">Replace design time with composition time</p>
         </div>
             </div>
         </div>
@@ -577,9 +577,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -589,7 +589,7 @@ body {
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Week 3: Track engagement, not production time</h2>
-            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">Which carousel got more saves? More shares? More DMs? The answer will surprise you.</p>
+            <p style="font-family:DM Sans;font-size:12px;color:#41424A;margin:0;line-height:1.45;opacity:0.9;">Which carousel got more saves? More shares? More DMs? The answer will surprise you.</p>
         </div>
                 </div>
             </div>
@@ -612,16 +612,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide "><div class="slide-composition">
+<div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; pointer-events: none; width: 300px; background: #5E5FE0; border-radius: 50%; opacity: 0.06; left: -70px; top: -70px; height: 300px"></div><div style="opacity: 0.04; position: absolute; height: 160px; top: 65%; border-radius: 9999px; left: auto; width: 160px; pointer-events: none; background: #937000; right: -40px"></div></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; opacity: 0.04; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -70px; position: absolute; pointer-events: none; top: -70px; width: 300px; opacity: 0.06; background: #311B92; border-radius: 50%; height: 300px"></div><div style="left: auto; border-radius: 9999px; position: absolute; height: 160px; top: 65%; opacity: 0.04; width: 160px; background: #513500; right: -40px; pointer-events: none"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#5B5CDD;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 3</div>
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#311B92;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 3</div>
             <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#0A0B0F;line-height:1.02;margin:0;max-width:320px;">Measure What Matters</h1>
-            <div style="width:76px;height:4px;background:#5B5CDD;border-radius:0;margin:var(--space-3) 0;"></div>
-            <p style="font-family:DM Sans;font-size:15px;color:#40424B;line-height:1.45;margin:0;max-width:300px;">Stop tracking hours. Start tracking outcomes.</p>
+            <div style="width:76px;height:4px;background:#311B92;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#41424A;line-height:1.45;margin:0;max-width:300px;">Stop tracking hours. Start tracking outcomes.</p>
         </div>
             </div>
         </div>
@@ -643,9 +643,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -655,7 +655,7 @@ body {
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Week 4: Scale to daily publishing</h2>
-            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">You&#x27;re now generating in minutes what used to take hours. Use the reclaimed time for strategy, relationships, and creative thinking.</p>
+            <p style="font-family:DM Sans;font-size:12px;color:#41424A;margin:0;line-height:1.45;opacity:0.9;">You&#x27;re now generating in minutes what used to take hours. Use the reclaimed time for strategy, relationships, and creative thinking.</p>
         </div>
                 </div>
             </div>
@@ -678,16 +678,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide "><div class="slide-composition">
+<div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0; position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 300px; pointer-events: none; width: 300px; top: -70px; border-radius: 50%; opacity: 0.06; position: absolute; background: #5E5FE0; left: -70px"></div><div style="position: absolute; width: 160px; pointer-events: none; background: #937000; left: auto; border-radius: 9999px; right: -40px; top: 65%; height: 160px; opacity: 0.04"></div></div>
+            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 300px; position: absolute; background: #311B92; left: -70px; height: 300px; border-radius: 50%; opacity: 0.06; pointer-events: none; top: -70px"></div><div style="border-radius: 9999px; background: #513500; top: 65%; position: absolute; width: 160px; pointer-events: none; left: auto; right: -40px; opacity: 0.04; height: 160px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#5B5CDD;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 4</div>
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#311B92;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 4</div>
             <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#0A0B0F;line-height:1.02;margin:0;max-width:320px;">Compound the Advantage</h1>
-            <div style="width:76px;height:4px;background:#5B5CDD;border-radius:0;margin:var(--space-3) 0;"></div>
-            <p style="font-family:DM Sans;font-size:15px;color:#40424B;line-height:1.45;margin:0;max-width:300px;">The system is installed. Now it compounds.</p>
+            <div style="width:76px;height:4px;background:#311B92;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#41424A;line-height:1.45;margin:0;max-width:300px;">The system is installed. Now it compounds.</p>
         </div>
             </div>
         </div>
@@ -709,9 +709,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #311B9215 0px, transparent 50%), radial-gradient(at 80% 0%, #51350010 0px, transparent 50%), radial-gradient(at 0% 50%, #7776F012 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -721,7 +721,7 @@ body {
             </div>
                     <div style="display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 8px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Week 5: Reflect on the transformation</h2>
-            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.45;opacity:0.9;">Compare your Week 1 audit to your current output. The difference isn&#x27;t just speed — it&#x27;s creative freedom.</p>
+            <p style="font-family:DM Sans;font-size:12px;color:#41424A;margin:0;line-height:1.45;opacity:0.9;">Compare your Week 1 audit to your current output. The difference isn&#x27;t just speed — it&#x27;s creative freedom.</p>
         </div>
                 </div>
             </div>
@@ -744,16 +744,16 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide "><div class="slide-composition">
+<div class="slide  slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; top: -70px; width: 300px; border-radius: 50%; pointer-events: none; height: 300px; left: -70px; opacity: 0.06; background: #5E5FE0"></div><div style="left: auto; opacity: 0.04; border-radius: 9999px; background: #937000; position: absolute; top: 65%; right: -40px; pointer-events: none; width: 160px; height: 160px"></div></div>
+            <div style="opacity: 0.04; pointer-events: none; inset: 0; z-index: 1; background: var(--texture-grain); position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 300px; left: -70px; border-radius: 50%; position: absolute; opacity: 0.06; top: -70px; pointer-events: none; background: #311B92; width: 300px"></div><div style="height: 160px; width: 160px; opacity: 0.04; left: auto; top: 65%; position: absolute; background: #513500; pointer-events: none; border-radius: 9999px; right: -40px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#5B5CDD;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 5</div>
+            <div style="font-family:DM Sans;font-size:12px;font-weight:800;color:#311B92;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">WEEK 5</div>
             <h1 style="font-family:Playfair Display;font-size:31px;font-weight:900;color:#0A0B0F;line-height:1.02;margin:0;max-width:320px;">The New Normal</h1>
-            <div style="width:76px;height:4px;background:#5B5CDD;border-radius:0;margin:var(--space-3) 0;"></div>
-            <p style="font-family:DM Sans;font-size:15px;color:#40424B;line-height:1.45;margin:0;max-width:300px;">This is just how you work now</p>
+            <div style="width:76px;height:4px;background:#311B92;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:DM Sans;font-size:15px;color:#41424A;line-height:1.45;margin:0;max-width:300px;">This is just how you work now</p>
         </div>
             </div>
         </div>
@@ -775,26 +775,26 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; z-index: 1; pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:Playfair Display;font-size:28px;font-weight:900;color:#EDEEF5;margin:0;line-height:1.08;">The Transformation</h2>
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
-                <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;box-sizing:border-box;">
+                <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.06);border:1px solid #2B2C3D;box-sizing:border-box;">
                     <div style="font-family:DM Sans;font-size:11px;font-weight:900;color:#EF4444;margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
                     <p style="font-family:DM Sans;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">Before: Dreading content deadlines. Spending weekends on carousels. Watching competitors ship faster. Feeling stuck in a tool loop.</p>
                 </div>
-                <div style="display:flex;align-items:center;justify-content:center;color:#767CFF;font-family:Playfair Display;font-size:22px;font-weight:900;">→</div>
-                <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;box-sizing:border-box;">
-                    <div style="font-family:DM Sans;font-size:11px;font-weight:900;color:#767CFF;margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
+                <div style="display:flex;align-items:center;justify-content:center;color:#7979F4;font-family:Playfair Display;font-size:22px;font-weight:900;">→</div>
+                <div style="border-radius:0;padding:16px;background:rgba(255,255,255,0.06);border:1px solid #2B2C3D;box-sizing:border-box;">
+                    <div style="font-family:DM Sans;font-size:11px;font-weight:900;color:#7979F4;margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
                     <p style="font-family:DM Sans;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">After: Generating carousels between meetings. Publishing daily. Leading the conversation instead of following it. Creative energy freed for strategy.</p>
                 </div>
             </div>
-            <div style="margin-top:14px;border-radius:0;background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;padding:var(--space-2) 16px;">
-                <div style="font-family:Playfair Display;font-size:11px;font-weight:900;color:#767CFF;letter-spacing:0.06em;margin-bottom:6px;">Reclaimed for Creative Work</div>
+            <div style="margin-top:14px;border-radius:0;background:rgba(255,255,255,0.06);border:1px solid #2B2C3D;padding:var(--space-2) 16px;">
+                <div style="font-family:Playfair Display;font-size:11px;font-weight:900;color:#7979F4;letter-spacing:0.06em;margin-bottom:6px;">Reclaimed for Creative Work</div>
                 <div style="font-family:DM Sans;font-size:var(--text-lg);font-weight:800;color:#EDEEF5;line-height:1.2;">5 hrs/week</div>
             </div>
         </div>
@@ -818,9 +818,9 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; pointer-events: none"></div>
+            <div style="z-index: 1; inset: 0; opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -853,12 +853,12 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; opacity: 0.07; width: 320px; border-radius: 50%; position: absolute; left: -80px; top: -80px; height: 320px; background: #5E5FE0"></div><div style="height: 120px; position: absolute; opacity: 0.05; top: 60%; transform: rotate(60deg); right: -40px; background: #937000; width: 120px; left: auto; pointer-events: none; border-radius: 4px"></div></div>
+            <div style="inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; border-radius: 50%; width: 320px; opacity: 0.07; background: #311B92; left: -80px; position: absolute; top: -80px; height: 320px"></div><div style="top: 60%; width: 120px; transform: rotate(60deg); height: 120px; opacity: 0.05; background: #513500; left: auto; border-radius: 4px; position: absolute; right: -40px; pointer-events: none"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#7478FC;background:#7478FC18;border:1px solid #7478FC40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Your Transformation Starts Today</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Free 5-week program with templates, presets, and community support.</p><a href="https://slideforge.dev/transform" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Start Week 1</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#7979F4;background:#7979F418;border:1px solid #7979F440;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Your Transformation Starts Today</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Free 5-week program with templates, presets, and community support.</p><a href="https://slideforge.dev/transform" style="display: inline-block; padding: 16px 40px; background: #7776F0; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #18006240; letter-spacing: 0.02em; margin: 0 0 14px;">Start Week 1</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -906,7 +906,7 @@ body {
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));
     track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    track.style.transform = `translateX(${-current * 420}px)`;
+    track.style.transform = `translateX(${-current * 525}px)`;
     if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
   }
 

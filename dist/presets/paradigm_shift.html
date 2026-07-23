@@ -3,61 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --slide-width: 420px;
-  --slide-height: 525px;
+  --slide-height: 560px;
   --composition-width: 420px;
   --composition-height: 525px;
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #EDEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --primary: #BF360C;
+  --primary-light: #FF936E;
+  --primary-dark: #8B0000;
+  --surface-light: #FFF2EE;
+  --surface-dark: #050100;
+  --text-primary: #0F0A08;
+  --text-secondary: #4A403D;
+  --text-on-dark: #F5ECEA;
+  --text-on-dark-secondary: #D7CBC7;
+  --border-light: #D4C7C4;
+  --border-dark: #3B2924;
+  --accent: #0083AE;
+  --secondary: #965C4E;
+  --tertiary: #836C00;
+  --gradient: linear-gradient(165deg, #050100 0%, #8B0000 60%, #050100 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #BF360C40;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #FFF2EE 0%, #BF360C08 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #050100 0%, #8B000030 50%, #050100 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #FFF2EECC;
+  --glass-light-border: 1px solid #D4C7C440;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-bg: #050100CC;
+  --glass-dark-border: 1px solid #3B292440;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --glass-frosted-bg: #FFF2EEE6;
+  --glass-frosted-border: 1px solid #D4C7C430;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -398,8 +398,8 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
-  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+<div style="width:1080px;height:1826px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:710px;">
     <div class="ig-frame">
   <div class="ig-header">
     <div class="ig-avatar">S</div>
@@ -410,18 +410,18 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="position: absolute; pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#CBCDD8;text-decoration:line-through;text-decoration-color:#767CFF;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Content quality determines reach</div>
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Playfair Display;font-size:10px;font-weight:800;color:#010105;letter-spacing:0.12em;text-transform:uppercase;background:#767CFF;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
-                </div><div style="background:rgba(255,255,255,0.04);border-left:4px solid #767CFF;border:1px solid rgba(255,255,255,0.08);border-left-width:4px;border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
-                    <div style="font-family:Playfair Display;font-size:10px;font-weight:800;color:#767CFF;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:DM Sans;font-size:14px;font-weight:600;color:#EDEEF5;line-height:1.35;">Content structure determines reach. The same information, restructured with emotional architecture, reaches 3x more people.</div>
-                </div><div style="font-family:DM Sans;font-size:13px;color:#CBCDD8;margin-top:14px;line-height:1.45;">Algorithms don&#x27;t evaluate quality — they evaluate engagement signals: completion rate, shares, saves. Structure drives those signals, not polish.</div></div></div>
+                <div style="width:100%;"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #F5ECEA; margin: 0 0 16px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2><div style="display:flex;flex-direction:column;width:100%;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);position:relative;flex-shrink:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:600;color:#D7CBC7;text-decoration:line-through;text-decoration-color:#E65B38;text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">Content quality determines reach</div>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#050100;letter-spacing:0.12em;text-transform:uppercase;background:#E65B38;padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
+                </div><div style="background:rgba(255,255,255,0.04);border-left:4px solid #E65B38;border:1px solid rgba(255,255,255,0.08);border-left-width:4px;border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,0.05);flex-shrink:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#E65B38;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:600;color:#F5ECEA;line-height:1.35;">Content structure determines reach. The same information, restructured with emotional architecture, reaches 3x more people.</div>
+                </div><div style="font-family:Plus Jakarta Sans;font-size:13px;color:#D7CBC7;margin-top:14px;line-height:1.45;">Algorithms don&#x27;t evaluate quality — they evaluate engagement signals: completion rate, shares, saves. Structure drives those signals, not polish.</div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -442,36 +442,36 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Quality vs Structure: Reach Impact</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0F0A08; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Quality vs Structure: Reach Impact</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>High quality, no arc</span>
-                        <strong style="color:#5E5FE0;">31</strong>
+                        <strong style="color:#BF360C;">31</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:33.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:33.0%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Average quality, strong arc</span>
-                        <strong style="color:#937000;">78</strong>
+                        <strong style="color:#0083AE;">78</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:83.0%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#0083AE22;border-radius:6px;overflow:hidden;">
+                        <div style="width:83.0%;min-width:8px;height:100%;background:#0083AE;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>High quality + strong arc</span>
-                        <strong style="color:#5E5FE0;">94</strong>
+                        <strong style="color:#BF360C;">94</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -496,23 +496,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; opacity: 0.04"></div>
+            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BF360C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="backdrop-filter: blur(12px); border: 1px solid #2A2C3D40; background: #010105CC; -webkit-backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="background: #050100CC; -webkit-backdrop-filter: blur(12px); border: 1px solid #3B292440; border-radius: 16px; backdrop-filter: blur(12px); border-left: 6px solid #BF360C;padding:36px 32px;box-shadow: 0 8px 32px -4px #BF360C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BF360C1a;color:#BF360C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Uncomfortable Truth</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF360C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEA;margin:0;line-height:1.2;">The Uncomfortable Truth</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Your best-designed carousel might be your worst-performing one. Beauty doesn&#x27;t convert — structure converts. The most shared carousels on LinkedIn aren&#x27;t the prettiest. They&#x27;re the ones with the clearest emotional arc.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CBC7;margin:0;overflow-wrap:break-word;word-break:break-word;">Your best-designed carousel might be your worst-performing one. Beauty doesn&#x27;t convert — structure converts. The most shared carousels on LinkedIn aren&#x27;t the prettiest. They&#x27;re the ones with the clearest emotional arc.</p>
             </div>
         </div>
             </div>
@@ -535,44 +535,44 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); z-index: 1; position: absolute; opacity: 0.04"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Algorithm Signal Hierarchy</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0F0A08; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Algorithm Signal Hierarchy</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Completion rate</span>
-                        <strong style="color:#5E5FE0;">95</strong>
+                        <strong style="color:#BF360C;">95</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Saves</span>
-                        <strong style="color:#937000;">82</strong>
+                        <strong style="color:#0083AE;">82</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:86.3%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#0083AE22;border-radius:6px;overflow:hidden;">
+                        <div style="width:86.3%;min-width:8px;height:100%;background:#0083AE;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Shares</span>
-                        <strong style="color:#5E5FE0;">76</strong>
+                        <strong style="color:#BF360C;">76</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:80.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:80.0%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Likes</span>
-                        <strong style="color:#40424B;">34</strong>
+                        <strong style="color:#4A403D;">34</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#40424B22;border-radius:6px;overflow:hidden;">
-                        <div style="width:35.8%;min-width:8px;height:100%;background:#40424B;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#4A403D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:35.8%;min-width:8px;height:100%;background:#4A403D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -597,23 +597,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BF360C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="-webkit-backdrop-filter: blur(12px); background: #010105CC; border: 1px solid #2A2C3D40; border-radius: 16px; backdrop-filter: blur(12px); border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="-webkit-backdrop-filter: blur(12px); background: #050100CC; border: 1px solid #3B292440; border-radius: 16px; backdrop-filter: blur(12px); border-left: 6px solid #BF360C;padding:36px 32px;box-shadow: 0 8px 32px -4px #BF360C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BF360C1a;color:#BF360C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">What Algorithms Actually Measure</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF360C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEA;margin:0;line-height:1.2;">What Algorithms Actually Measure</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Completion rate is the #1 signal. Not likes, not comments — did they scroll to the end? Emotional architecture keeps them scrolling. Pretty slides don&#x27;t.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CBC7;margin:0;overflow-wrap:break-word;word-break:break-word;">Completion rate is the #1 signal. Not likes, not comments — did they scroll to the end? Emotional architecture keeps them scrolling. Pretty slides don&#x27;t.</p>
             </div>
         </div>
             </div>
@@ -636,36 +636,36 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain)"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); pointer-events: none; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">The Paradigm Shift in Data</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0F0A08; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">The Paradigm Shift in Data</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Before: design-first</span>
-                        <strong style="color:#5E5FE0;">28</strong>
+                        <strong style="color:#BF360C;">28</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:31.5%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:31.5%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Transition: hybrid</span>
-                        <strong style="color:#937000;">51</strong>
+                        <strong style="color:#0083AE;">51</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:57.3%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#0083AE22;border-radius:6px;overflow:hidden;">
+                        <div style="width:57.3%;min-width:8px;height:100%;background:#0083AE;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>After: structure-first</span>
-                        <strong style="color:#5E5FE0;">89</strong>
+                        <strong style="color:#BF360C;">89</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -690,23 +690,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; opacity: 0.04; inset: 0"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BF360C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid #2A2C3D40; border-radius: 16px; background: #010105CC; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="backdrop-filter: blur(12px); border: 1px solid #3B292440; -webkit-backdrop-filter: blur(12px); border-radius: 16px; background: #050100CC; border-left: 6px solid #BF360C;padding:36px 32px;box-shadow: 0 8px 32px -4px #BF360C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BF360C1a;color:#BF360C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Industry Is Shifting</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF360C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEA;margin:0;line-height:1.2;">The Industry Is Shifting</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">The most successful content teams in 2026 lead with narrative structure and add design polish as a second pass. The old model — design first, fill in content — is dying. Not because design doesn&#x27;t matter, but because it was never the bottleneck.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CBC7;margin:0;overflow-wrap:break-word;word-break:break-word;">The most successful content teams in 2026 lead with narrative structure and add design polish as a second pass. The old model — design first, fill in content — is dying. Not because design doesn&#x27;t matter, but because it was never the bottleneck.</p>
             </div>
         </div>
             </div>
@@ -729,44 +729,44 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Engagement by Content Strategy</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0F0A08; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Engagement by Content Strategy</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Template-based</span>
-                        <strong style="color:#5E5FE0;">23</strong>
+                        <strong style="color:#BF360C;">23</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:24.7%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:24.7%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Design-led</span>
-                        <strong style="color:#937000;">38</strong>
+                        <strong style="color:#0083AE;">38</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:40.9%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#0083AE22;border-radius:6px;overflow:hidden;">
+                        <div style="width:40.9%;min-width:8px;height:100%;background:#0083AE;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Structure-led</span>
-                        <strong style="color:#5E5FE0;">71</strong>
+                        <strong style="color:#BF360C;">71</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:76.3%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#BF360C22;border-radius:6px;overflow:hidden;">
+                        <div style="width:76.3%;min-width:8px;height:100%;background:#BF360C;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#0F0A08;margin-bottom:6px;">
                         <span>Architecture-led</span>
-                        <strong style="color:#40424B;">93</strong>
+                        <strong style="color:#4A403D;">93</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#40424B22;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#40424B;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#4A403D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#4A403D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -791,23 +791,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
+            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BF360C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="border: 1px solid #2A2C3D40; backdrop-filter: blur(12px); background: #010105CC; border-radius: 16px; -webkit-backdrop-filter: blur(12px); border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="background: #050100CC; border-radius: 16px; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid #3B292440; border-left: 6px solid #BF360C;padding:36px 32px;box-shadow: 0 8px 32px -4px #BF360C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BF360C1a;color:#BF360C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The New Hierarchy</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF360C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEA;margin:0;line-height:1.2;">The New Hierarchy</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Emotional architecture &gt; narrative structure &gt; visual design &gt; individual slide quality. Most teams have the hierarchy inverted. They optimize individual slides while ignoring the sequence. The sequence is what the algorithm sees.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CBC7;margin:0;overflow-wrap:break-word;word-break:break-word;">Emotional architecture &gt; narrative structure &gt; visual design &gt; individual slide quality. Most teams have the hierarchy inverted. They optimize individual slides while ignoring the sequence. The sequence is what the algorithm sees.</p>
             </div>
         </div>
             </div>
@@ -830,19 +830,19 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute"></div>
+<div class="slide slide--light slide--full-bleed"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #BF360C15 0px, transparent 50%), radial-gradient(at 80% 0%, #0083AE10 0px, transparent 50%), radial-gradient(at 0% 50%, #FF936E12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
-            <span style="font-family:Playfair Display;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#5E5FE0;background:#5E5FE018;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
-            <h2 style="font-family:Playfair Display;font-size:28px;font-weight:900;color:#0A0B0F;margin:0 0 4px;line-height:1.1;">Content Architecture</h2>
-            <div style="font-family:DM Sans;font-size:11px;font-style:italic;color:#40424B;margin-bottom:12px;opacity:0.8;">/ˈkɒntɛnt ˈɑːrkɪtɛktʃər/</div>
-            <div style="border-left:3px solid #5E5FE0;padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:DM Sans;font-size:13px;font-weight:500;color:#0A0B0F;margin:0;line-height:1.5;">The deliberate structuring of content sequences to maximize engagement signals that algorithms reward. The opposite of content decoration.</p>
+                <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #D4C7C4;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#BF360C;background:#BF360C18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Plus Jakarta Sans;font-size:28px;font-weight:900;color:#0F0A08;margin:0 0 4px;line-height:1.1;">Content Architecture</h2>
+            <div style="font-family:Plus Jakarta Sans;font-size:11px;font-style:italic;color:#4A403D;margin-bottom:12px;opacity:0.8;">/ˈkɒntɛnt ˈɑːrkɪtɛktʃər/</div>
+            <div style="border-left:3px solid #BF360C;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:500;color:#0F0A08;margin:0;line-height:1.5;">The deliberate structuring of content sequences to maximize engagement signals that algorithms reward. The opposite of content decoration.</p>
         </div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Architecture is invisible to the viewer but legible to the algorithm. That&#x27;s why it works.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#4A403D;margin:0;line-height:1.4;opacity:0.85;">Architecture is invisible to the viewer but legible to the algorithm. That&#x27;s why it works.</p>
         </div>
             </div>
         </div>
@@ -864,23 +864,23 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain)"></div>
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#BF360C;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="border-radius: 16px; border: 1px solid #2A2C3D40; backdrop-filter: blur(12px); background: #010105CC; -webkit-backdrop-filter: blur(12px); border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="backdrop-filter: blur(12px); border: 1px solid #3B292440; background: #050100CC; -webkit-backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #BF360C;padding:36px 32px;box-shadow: 0 8px 32px -4px #BF360C1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#BF360C1a;color:#BF360C;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Shift Is Already Happening</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF360C;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEA;margin:0;line-height:1.2;">The Shift Is Already Happening</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Teams that adopted structure-first content in Q1 2026 are seeing 3x the reach of teams still designing first. The gap will only widen. This carousel is your wake-up call.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CBC7;margin:0;overflow-wrap:break-word;word-break:break-word;">Teams that adopted structure-first content in Q1 2026 are seeing 3x the reach of teams still designing first. The gap will only widen. This carousel is your wake-up call.</p>
             </div>
         </div>
             </div>
@@ -903,33 +903,33 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; background: var(--texture-grain); z-index: 1; pointer-events: none"></div>
+            <div style="pointer-events: none; z-index: 1; position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Structure vs Design: Performance</h2>
-            <div style="width:100%;height:195px;border-radius:0;overflow:hidden;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><svg width="100%" height="185px" viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg">
-            <line x1="50" y1="147.0" x2="296" y2="147.0" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="150.0" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">22.0</text><line x1="50" y1="87.5" x2="296" y2="87.5" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="90.5" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">58.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">94.0</text><line x1="50.0" y1="28" x2="50.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">15</text><line x1="173.0" y1="28" x2="173.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">53</text><line x1="296.0" y1="28" x2="296.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">91</text>
-            <path d="M 72.0 129.0 L 133.1 107.1 L 210.2 70.2 L 274.0 46.0" fill="none" stroke="#767CFF" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEA; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Structure vs Design: Performance</h2>
+            <div style="width:100%;height:195px;border-radius:var(--radius-lg);overflow:hidden;background:rgba(255,255,255,0.05);border:1px solid #3B2924;padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><svg width="100%" height="185px" viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="147.0" x2="296" y2="147.0" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="150.0" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="end">22.0</text><line x1="50" y1="87.5" x2="296" y2="87.5" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="90.5" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="end">58.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="end">94.0</text><line x1="50.0" y1="28" x2="50.0" y2="147" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="161" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="middle">15</text><line x1="173.0" y1="28" x2="173.0" y2="147" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="161" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="middle">53</text><line x1="296.0" y1="28" x2="296.0" y2="147" stroke="#3B292444" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="161" font-size="8.5px" font-weight="600" fill="#D7CBC7" text-anchor="middle">91</text>
+            <path d="M 72.0 129.0 L 133.1 107.1 L 210.2 70.2 L 274.0 46.0" fill="none" stroke="#E95E3B" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
             <g>
-                <circle cx="72.0" cy="129.0" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
-                <text x="72.0" y="113.5" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">Template-only</text>
+                <circle cx="72.0" cy="129.0" r="11.5" fill="#E95E3B" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="113.5" font-size="8px" fill="#F5ECEA" text-anchor="middle" font-weight="800">Template-only</text>
             </g><g>
-                <circle cx="133.1" cy="107.1" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
-                <text x="133.1" y="91.6" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">Design-led</text>
+                <circle cx="133.1" cy="107.1" r="11.5" fill="#E95E3B" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="133.1" y="91.6" font-size="8px" fill="#F5ECEA" text-anchor="middle" font-weight="800">Design-led</text>
             </g><g>
-                <circle cx="210.2" cy="70.2" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
-                <text x="210.2" y="54.7" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">Structure-led</text>
+                <circle cx="210.2" cy="70.2" r="11.5" fill="#E95E3B" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="210.2" y="54.7" font-size="8px" fill="#F5ECEA" text-anchor="middle" font-weight="800">Structure-led</text>
             </g><g>
-                <circle cx="274.0" cy="46.0" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
-                <text x="274.0" y="30.5" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">Architecture-led</text>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#E95E3B" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#F5ECEA" text-anchor="middle" font-weight="800">Architecture-led</text>
             </g>
-            <text x="173" y="183" font-size="9px" font-weight="800" fill="#CBCDD8" text-anchor="middle" letter-spacing="0.05em">Emotional Architecture Score</text>
-            <text x="50" y="14" font-size="9px" font-weight="800" fill="#CBCDD8" text-anchor="start" letter-spacing="0.05em">Engagement Rate</text>
+            <text x="173" y="183" font-size="9px" font-weight="800" fill="#D7CBC7" text-anchor="middle" letter-spacing="0.05em">Emotional Architecture Score</text>
+            <text x="50" y="14" font-size="9px" font-weight="800" fill="#D7CBC7" text-anchor="start" letter-spacing="0.05em">Engagement Rate</text>
         </svg></div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#D7CBC7;margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
         </div>
             </div>
         </div>
@@ -951,12 +951,12 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark"><div class="slide-composition">
+<div class="slide slide--dark slide--full-bleed"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; width: 320px; opacity: 0.07; top: -80px; background: #5E5FE0; left: -80px; border-radius: 50%; pointer-events: none; position: absolute"></div><div style="position: absolute; border-radius: 4px; background: #937000; right: -40px; height: 120px; opacity: 0.05; width: 120px; top: 60%; left: auto; pointer-events: none; transform: rotate(60deg)"></div></div>
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; pointer-events: none; inset: 0; opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #BF360C; position: absolute; opacity: 0.07; border-radius: 50%; left: -80px; pointer-events: none; top: -80px; height: 320px; width: 320px"></div><div style="border-radius: 4px; right: -40px; background: #0083AE; top: 60%; opacity: 0.05; left: auto; height: 120px; pointer-events: none; transform: rotate(60deg); width: 120px; position: absolute"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Lead the Paradigm Shift</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Start with the framework that puts structure before decoration.</p><a href="https://slideforge.dev/paradigm" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Adopt Architecture-First</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#E65B38;background:#E65B3818;border:1px solid #E65B3840;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F5ECEA 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Lead the Paradigm Shift</span><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CBC7;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Start with the framework that puts structure before decoration.</p><a href="https://slideforge.dev/paradigm" style="display: inline-block; padding: 16px 40px; background: #FF936E; color: #050100; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #8B000040; letter-spacing: 0.02em; margin: 0 0 14px;">Adopt Architecture-First</a><div style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#D7CBC7;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">

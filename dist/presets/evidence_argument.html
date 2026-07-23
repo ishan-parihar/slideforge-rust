@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus Jakarta Sans:wght@700&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,48 +16,48 @@
 }
 
 :root {
-  --primary: #5E5FE0;
-  --primary-light: #A2ACFF;
-  --primary-dark: #3A2EAD;
-  --surface-light: #F2F4FF;
-  --surface-dark: #010105;
-  --text-primary: #0A0B0F;
-  --text-secondary: #40424B;
-  --text-on-dark: #EDEEF5;
-  --text-on-dark-secondary: #CBCDD8;
-  --border-light: #C5C7D1;
-  --border-dark: #2A2C3D;
-  --accent: #937000;
-  --secondary: #686FA5;
-  --tertiary: #A2538E;
-  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --primary: #477C1D;
+  --primary-light: #8BC468;
+  --primary-dark: #1D5000;
+  --surface-light: #F1F8ED;
+  --surface-dark: #010200;
+  --text-primary: #090C08;
+  --text-secondary: #3F443C;
+  --text-on-dark: #ECF0E9;
+  --text-on-dark-secondary: #CAD0C6;
+  --border-light: #C6CDC3;
+  --border-dark: #273122;
+  --accent: #8850A2;
+  --secondary: #6B825E;
+  --tertiary: #1F8B8A;
+  --gradient: linear-gradient(165deg, #010200 0%, #1D5000 60%, #010200 100%);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
-  --shadow-glow: 0 0 20px #5E5FE040;
+  --shadow-glow: 0 0 20px #477C1D40;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-pill: 9999px;
-  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
-  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
-  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-subtle: linear-gradient(135deg, #F1F8ED 0%, #477C1D08 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #477C1D15 0px, transparent 50%), radial-gradient(at 80% 0%, #8850A210 0px, transparent 50%), radial-gradient(at 0% 50%, #8BC46812 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #010200 0%, #1D500030 50%, #010200 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
   --glass-light-blur: 12px;
-  --glass-light-bg: #F2F4FFCC;
-  --glass-light-border: 1px solid #C5C7D140;
+  --glass-light-bg: #F1F8EDCC;
+  --glass-light-border: 1px solid #C6CDC340;
   --glass-dark-blur: 12px;
-  --glass-dark-bg: #010105CC;
-  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-dark-bg: #010200CC;
+  --glass-dark-border: 1px solid #27312240;
   --glass-frosted-blur: 20px;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-border: 1px solid #C5C7D130;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --glass-frosted-bg: #F1F8EDE6;
+  --glass-frosted-border: 1px solid #C6CDC330;
+  --font-heading: 'Plus Jakarta Sans', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
   --text-display-lh: 1.08;
   --text-display-ls: -0.02em;
@@ -412,10 +412,10 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; width: 320px; background: #5E5FE0; position: absolute; opacity: 0.07; border-radius: 50%; left: -80px; top: -80px; pointer-events: none"></div><div style="top: 60%; pointer-events: none; border-radius: 4px; left: auto; transform: rotate(60deg); opacity: 0.05; right: -40px; height: 120px; width: 120px; position: absolute; background: #937000"></div></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #477C1D; top: -80px; width: 320px; left: -80px; position: absolute; height: 320px; opacity: 0.07; pointer-events: none; border-radius: 50%"></div><div style="pointer-events: none; transform: rotate(60deg); right: -40px; border-radius: 4px; position: absolute; width: 120px; height: 120px; background: #8850A2; top: 60%; left: auto; opacity: 0.05"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><div style="display: inline-block; padding: 6px 16px; background: #767CFF15; border: 1px solid #767CFF30; border-radius: 9999px; font-family: DM Sans; font-size: 13px; font-weight: 600; color: #767CFF; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">RESEARCH REPORT</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">The Data Behind Emotional Architecture</span><p style="font-family: DM Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #CBCDD8; margin: 8px 0 0; text-align: left">We analyzed 10,000 carousels across 500 brands. The patterns are unmistakable.</p></div>
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-8);"><div style="display: inline-block; padding: 6px 16px; background: #649B3F15; border: 1px solid #649B3F30; border-radius: 9999px; font-family: Plus Jakarta Sans; font-size: 13px; font-weight: 600; color: #649B3F; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">RESEARCH REPORT</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #ECF0E9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">The Data Behind Emotional Architecture</span><p style="font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #CAD0C6; margin: 8px 0 0; text-align: left">We analyzed 10,000 carousels across 500 brands. The patterns are unmistakable.</p></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -438,42 +438,42 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Engagement by Slide Position</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Engagement by Slide Position</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Slide 1-3</span>
-                        <strong style="color:#767CFF;">92</strong>
+                        <strong style="color:#649B3F;">92</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#649B3F22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#649B3F;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Slide 4-6</span>
-                        <strong style="color:#937000;">71</strong>
+                        <strong style="color:#8850A2;">71</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:77.2%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#8850A222;border-radius:6px;overflow:hidden;">
+                        <div style="width:77.2%;min-width:8px;height:100%;background:#8850A2;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Slide 7-9</span>
-                        <strong style="color:#5E5FE0;">58</strong>
+                        <strong style="color:#477C1D;">58</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:63.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#477C1D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:63.0%;min-width:8px;height:100%;background:#477C1D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Slide 10+</span>
-                        <strong style="color:#CBCDD8;">34</strong>
+                        <strong style="color:#CAD0C6;">34</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#CBCDD822;border-radius:6px;overflow:hidden;">
-                        <div style="width:37.0%;min-width:8px;height:100%;background:#CBCDD8;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#CAD0C622;border-radius:6px;overflow:hidden;">
+                        <div style="width:37.0%;min-width:8px;height:100%;background:#CAD0C6;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -500,21 +500,21 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0; pointer-events: none"></div>
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#477C1D;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="border: 1px solid #2A2C3D40; border-radius: 16px; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); background: #010105CC; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border: 1px solid #27312240; border-radius: 16px; background: #010200CC; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-left: 6px solid #477C1D;padding:36px 32px;box-shadow: 0 8px 32px -4px #477C1D1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#477C1D1a;color:#477C1D;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Key Finding</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#477C1D;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#ECF0E9;margin:0;line-height:1.2;">Key Finding</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Carousels with strong emotional hooks in slides 1-3 retain 2.7x more viewers through the full sequence. The first three slides determine whether anyone sees slide 10.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#CAD0C6;margin:0;overflow-wrap:break-word;word-break:break-word;">Carousels with strong emotional hooks in slides 1-3 retain 2.7x more viewers through the full sequence. The first three slides determine whether anyone sees slide 10.</p>
             </div>
         </div>
             </div>
@@ -539,42 +539,42 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
+            <div style="position: absolute; inset: 0; z-index: 1; background: var(--texture-grain); pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Emotional Arc vs Flat Structure</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Emotional Arc vs Flat Structure</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Flat (no arc)</span>
-                        <strong style="color:#767CFF;">31</strong>
+                        <strong style="color:#649B3F;">31</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
-                        <div style="width:33.0%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#649B3F22;border-radius:6px;overflow:hidden;">
+                        <div style="width:33.0%;min-width:8px;height:100%;background:#649B3F;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Light arc</span>
-                        <strong style="color:#937000;">54</strong>
+                        <strong style="color:#8850A2;">54</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:57.4%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#8850A222;border-radius:6px;overflow:hidden;">
+                        <div style="width:57.4%;min-width:8px;height:100%;background:#8850A2;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Strong arc</span>
-                        <strong style="color:#5E5FE0;">87</strong>
+                        <strong style="color:#477C1D;">87</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:92.6%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#477C1D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:92.6%;min-width:8px;height:100%;background:#477C1D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Full persuasion</span>
-                        <strong style="color:#CBCDD8;">94</strong>
+                        <strong style="color:#CAD0C6;">94</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#CBCDD822;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#CBCDD8;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#CAD0C622;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#CAD0C6;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -601,21 +601,21 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#477C1D;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="backdrop-filter: blur(12px); background: #010105CC; border-radius: 16px; -webkit-backdrop-filter: blur(12px); border: 1px solid #2A2C3D40; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border: 1px solid #27312240; background: #010200CC; border-radius: 16px; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-left: 6px solid #477C1D;padding:36px 32px;box-shadow: 0 8px 32px -4px #477C1D1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#477C1D1a;color:#477C1D;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">The Arc Premium</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#477C1D;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#ECF0E9;margin:0;line-height:1.2;">The Arc Premium</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Carousels designed with deliberate emotional progression outperform flat content by 3x. The difference isn&#x27;t design quality — it&#x27;s narrative structure.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#CAD0C6;margin:0;overflow-wrap:break-word;word-break:break-word;">Carousels designed with deliberate emotional progression outperform flat content by 3x. The difference isn&#x27;t design quality — it&#x27;s narrative structure.</p>
             </div>
         </div>
             </div>
@@ -640,34 +640,34 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
+            <div style="z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain); inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Visual Rhythm Impact</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Visual Rhythm Impact</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Same bg all slides</span>
-                        <strong style="color:#767CFF;">28</strong>
+                        <strong style="color:#649B3F;">28</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
-                        <div style="width:38.4%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#649B3F22;border-radius:6px;overflow:hidden;">
+                        <div style="width:38.4%;min-width:8px;height:100%;background:#649B3F;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Random variation</span>
-                        <strong style="color:#937000;">45</strong>
+                        <strong style="color:#8850A2;">45</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:61.6%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#8850A222;border-radius:6px;overflow:hidden;">
+                        <div style="width:61.6%;min-width:8px;height:100%;background:#8850A2;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>DLD rhythm</span>
-                        <strong style="color:#5E5FE0;">73</strong>
+                        <strong style="color:#477C1D;">73</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#477C1D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#477C1D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -694,21 +694,21 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#477C1D;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="-webkit-backdrop-filter: blur(12px); background: #010105CC; border: 1px solid #2A2C3D40; border-radius: 16px; backdrop-filter: blur(12px); border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="border: 1px solid #27312240; -webkit-backdrop-filter: blur(12px); background: #010200CC; backdrop-filter: blur(12px); border-radius: 16px; border-left: 6px solid #477C1D;padding:36px 32px;box-shadow: 0 8px 32px -4px #477C1D1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#477C1D1a;color:#477C1D;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Dark-Light-Dark Works</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#477C1D;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#ECF0E9;margin:0;line-height:1.2;">Dark-Light-Dark Works</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Alternating dark and light backgrounds creates visual rhythm that sustains attention. Monotone carousels lose 62% of viewers by slide 5.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#CAD0C6;margin:0;overflow-wrap:break-word;word-break:break-word;">Alternating dark and light backgrounds creates visual rhythm that sustains attention. Monotone carousels lose 62% of viewers by slide 5.</p>
             </div>
         </div>
             </div>
@@ -733,42 +733,42 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Evidence Stacking Effect</h2>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Evidence Stacking Effect</h2>
             <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Claim only</span>
-                        <strong style="color:#767CFF;">22</strong>
+                        <strong style="color:#649B3F;">22</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
-                        <div style="width:24.2%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#649B3F22;border-radius:6px;overflow:hidden;">
+                        <div style="width:24.2%;min-width:8px;height:100%;background:#649B3F;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Claim + 1 proof</span>
-                        <strong style="color:#937000;">48</strong>
+                        <strong style="color:#8850A2;">48</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
-                        <div style="width:52.7%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#8850A222;border-radius:6px;overflow:hidden;">
+                        <div style="width:52.7%;min-width:8px;height:100%;background:#8850A2;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Claim + 3 proofs</span>
-                        <strong style="color:#5E5FE0;">76</strong>
+                        <strong style="color:#477C1D;">76</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
-                        <div style="width:83.5%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#477C1D22;border-radius:6px;overflow:hidden;">
+                        <div style="width:83.5%;min-width:8px;height:100%;background:#477C1D;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div><div style="margin-bottom:16px;width:100%;">
-                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-family:Plus Jakarta Sans;font-size:12px;font-weight:600;color:#ECF0E9;margin-bottom:6px;">
                         <span>Claim + social proof</span>
-                        <strong style="color:#CBCDD8;">91</strong>
+                        <strong style="color:#CAD0C6;">91</strong>
                     </div>
-                    <div style="width:100%;height:12px;background:#CBCDD822;border-radius:6px;overflow:hidden;">
-                        <div style="width:100.0%;min-width:8px;height:100%;background:#CBCDD8;border-radius:6px;transition:width 0.3s;"></div>
+                    <div style="width:100%;height:12px;background:#CAD0C622;border-radius:6px;overflow:hidden;">
+                        <div style="width:100.0%;min-width:8px;height:100%;background:#CAD0C6;border-radius:6px;transition:width 0.3s;"></div>
                     </div>
                 </div></div>
             
@@ -795,21 +795,21 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1"></div>
+            <div style="z-index: 1; inset: 0; opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#5E5FE0;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#477C1D;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
             <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">💡</div>
-            <div style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid #2A2C3D40; border-radius: 16px; background: #010105CC; border-left: 6px solid #5E5FE0;padding:36px 32px;box-shadow: 0 8px 32px -4px #5E5FE01f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+            <div style="-webkit-backdrop-filter: blur(12px); border-radius: 16px; background: #010200CC; border: 1px solid #27312240; backdrop-filter: blur(12px); border-left: 6px solid #477C1D;padding:36px 32px;box-shadow: 0 8px 32px -4px #477C1D1f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
                 <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#5E5FE01a;color:#5E5FE0;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#477C1D1a;color:#477C1D;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">💡</div>
                     <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#5E5FE0;margin-bottom:4px;display:block;">info</span>
-                        <h2 style="font-family:Playfair Display;font-size:20px;font-weight:800;color:#EDEEF5;margin:0;line-height:1.2;">Stack Trust, Don&#x27;t Scatter It</h2>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#477C1D;margin-bottom:4px;display:block;">info</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#ECF0E9;margin:0;line-height:1.2;">Stack Trust, Don&#x27;t Scatter It</h2>
                     </div>
                 </div>
-                <p style="font-family:DM Sans;font-size:16px;line-height:1.65;color:#CBCDD8;margin:0;overflow-wrap:break-word;word-break:break-word;">Each additional proof point compounds credibility. But mixing proof types (data + testimonial + visual) is 40% more effective than repeating the same type.</p>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#CAD0C6;margin:0;overflow-wrap:break-word;word-break:break-word;">Each additional proof point compounds credibility. But mixing proof types (data + testimonial + visual) is 40% more effective than repeating the same type.</p>
             </div>
         </div>
             </div>
@@ -834,37 +834,37 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0"></div>
+            <div style="pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Apply This to Your Content</h2>
-            <div style="display:flex;flex-direction:column;gap:10px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#767CFF;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">01</div>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Apply This to Your Content</h2>
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#649B3F;color:#010200;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">01</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Audit</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Score your existing carousels against these benchmarks</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#ECF0E9;margin-bottom:2px;">Audit</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#CAD0C6;line-height:1.4;">Score your existing carousels against these benchmarks</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#767CFF;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">02</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#649B3F;color:#010200;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">02</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Prioritize</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Fix the first 3 slides first — they determine everything</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#ECF0E9;margin-bottom:2px;">Prioritize</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#CAD0C6;line-height:1.4;">Fix the first 3 slides first — they determine everything</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#767CFF;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">03</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#649B3F;color:#010200;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">03</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Rhythm</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Add dark-light alternation to every sequence</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#ECF0E9;margin-bottom:2px;">Rhythm</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#CAD0C6;line-height:1.4;">Add dark-light alternation to every sequence</div>
                 </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#767CFF;color:#010105;display:flex;align-items:center;justify-content:center;font-family:Playfair Display;font-size:13px;font-weight:900;flex-shrink:0;">04</div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#649B3F;color:#010200;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:13px;font-weight:900;flex-shrink:0;">04</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:Playfair Display;font-size:13px;font-weight:800;color:#EDEEF5;margin-bottom:2px;">Measure</div>
-                    <div style="font-family:DM Sans;font-size:11px;color:#CBCDD8;line-height:1.4;">Track completion rate, not just impressions</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:13px;font-weight:800;color:#ECF0E9;margin-bottom:2px;">Measure</div>
+                    <div style="font-family:Plus Jakarta Sans;font-size:11px;color:#CAD0C6;line-height:1.4;">Track completion rate, not just impressions</div>
                 </div>
             </div></div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#CAD0C6;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>
             </div>
         </div>
@@ -888,49 +888,49 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Study Parameters</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #ECF0E9; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Study Parameters</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Carousels analyzed</span>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#CAD0C6;text-transform:uppercase;letter-spacing:0.06em;">Carousels analyzed</span>
                     
                 </div>
-                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">10K</div>
-                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                <div style="font-family:Plus Jakarta Sans;font-size:30px;font-weight:900;color:#649B3F;line-height:1;">10K</div>
+                <div style="width:100%;height:3px;background:#649B3F20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#649B3F;border-radius:999px;"></div>
                 </div>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Brands studied</span>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#CAD0C6;text-transform:uppercase;letter-spacing:0.06em;">Brands studied</span>
                     
                 </div>
-                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">500</div>
-                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                <div style="font-family:Plus Jakarta Sans;font-size:30px;font-weight:900;color:#649B3F;line-height:1;">500</div>
+                <div style="width:100%;height:3px;background:#649B3F20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#649B3F;border-radius:999px;"></div>
                 </div>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Data collection</span>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#CAD0C6;text-transform:uppercase;letter-spacing:0.06em;">Data collection</span>
                     
                 </div>
-                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">6mo</div>
-                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                <div style="font-family:Plus Jakarta Sans;font-size:30px;font-weight:900;color:#649B3F;line-height:1;">6mo</div>
+                <div style="width:100%;height:3px;background:#649B3F20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#649B3F;border-radius:999px;"></div>
                 </div>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #273122;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Confidence level</span>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#CAD0C6;text-transform:uppercase;letter-spacing:0.06em;">Confidence level</span>
                     
                 </div>
-                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">95%</div>
-                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                <div style="font-family:Plus Jakarta Sans;font-size:30px;font-weight:900;color:#649B3F;line-height:1;">95%</div>
+                <div style="width:100%;height:3px;background:#649B3F20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#649B3F;border-radius:999px;"></div>
                 </div>
             </div></div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#CAD0C6;margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
         </div>
             </div>
         </div>
@@ -953,19 +953,19 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #477C1D15 0px, transparent 50%), radial-gradient(at 80% 0%, #8850A210 0px, transparent 50%), radial-gradient(at 0% 50%, #8BC46812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Performance by Category</h2>
-            <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;overflow:hidden;box-sizing:border-box;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Performance by Category</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C6CDC3;border-radius:0;overflow:hidden;box-sizing:border-box;">
                 <table style="width:100%;border-collapse:collapse;">
-                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Content Type</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Avg Completion</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Avg Saves</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Shares/1K</th></tr></thead>
-                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-weight:800;color:#0A0B0F;">Data-heavy</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">72%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">8.3%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">4.1</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-weight:800;color:#0A0B0F;">Story-driven</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">84%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">12.1%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">7.8</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">Mixed (arc + data)</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">91%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">15.4%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">9.2</span></td></tr></tbody>
+                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Plus Jakarta Sans;font-size:10.5px;font-weight:900;color:#090C08;background:#477C1D18;border-bottom:1px solid #C6CDC3;text-transform:uppercase;letter-spacing:0.06em;">Content Type</th><th style="padding:10px 14px;text-align:left;font-family:Plus Jakarta Sans;font-size:10.5px;font-weight:900;color:#090C08;background:#477C1D18;border-bottom:1px solid #C6CDC3;text-transform:uppercase;letter-spacing:0.06em;">Avg Completion</th><th style="padding:10px 14px;text-align:left;font-family:Plus Jakarta Sans;font-size:10.5px;font-weight:900;color:#090C08;background:#477C1D18;border-bottom:1px solid #C6CDC3;text-transform:uppercase;letter-spacing:0.06em;">Avg Saves</th><th style="padding:10px 14px;text-align:left;font-family:Plus Jakarta Sans;font-size:10.5px;font-weight:900;color:#090C08;background:#477C1D18;border-bottom:1px solid #C6CDC3;text-transform:uppercase;letter-spacing:0.06em;">Shares/1K</th></tr></thead>
+                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-weight:800;color:#090C08;">Data-heavy</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">72%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">8.3%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;color:#3F443C;">4.1</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-weight:800;color:#090C08;">Story-driven</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">84%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">12.1%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;color:#3F443C;">7.8</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">Mixed (arc + data)</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">91%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">15.4%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C6CDC318;"><span style="font-family:Plus Jakarta Sans;color:#3F443C;">9.2</span></td></tr></tbody>
                 </table>
             </div>
-            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
+            <p style="font-family:Plus Jakarta Sans;font-size:10.5px;color:#3F443C;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
         </div>
             </div>
         </div>
@@ -989,10 +989,10 @@ body {
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="pointer-events: none; top: -80px; border-radius: 50%; width: 320px; position: absolute; background: #5E5FE0; height: 320px; left: -80px; opacity: 0.07"></div><div style="right: -40px; left: auto; border-radius: 4px; top: 60%; position: absolute; width: 120px; height: 120px; pointer-events: none; background: #937000; transform: rotate(60deg); opacity: 0.05"></div></div>
+            <div style="opacity: 0.04; inset: 0; position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; background: #477C1D; top: -80px; pointer-events: none; width: 320px; opacity: 0.07; border-radius: 50%; height: 320px; left: -80px"></div><div style="pointer-events: none; right: -40px; width: 120px; top: 60%; left: auto; height: 120px; transform: rotate(60deg); opacity: 0.05; position: absolute; background: #8850A2; border-radius: 4px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:DM Sans;font-size:10px;font-weight:800;color:#767CFF;background:#767CFF18;border:1px solid #767CFF40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #EDEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Want the Full Dataset?</span><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Complete methodology, raw data, and interactive dashboard.</p><a href="https://slideforge.dev/research" style="display: inline-block; padding: 16px 40px; background: #A2ACFF; color: #010105; font-family: DM Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #3A2EAD40; letter-spacing: 0.02em; margin: 0 0 14px;">Download Report</a><div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;"><div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#649B3F;background:#649B3F18;border:1px solid #649B3F40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #ECF0E9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 31px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 12px; display: block; letter-spacing: -0.02em">Want the Full Dataset?</span><p style="font-family:Plus Jakarta Sans;font-size:12px;color:#CAD0C6;line-height:1.45;margin:0 0 20px;max-width:320px;text-align:center;opacity:0.85;">Complete methodology, raw data, and interactive dashboard.</p><a href="https://slideforge.dev/research" style="display: inline-block; padding: 16px 40px; background: #8BC468; color: #010200; font-family: Plus Jakarta Sans; font-size: 16px; font-weight: 600; border-radius: 9999px; text-decoration: none; box-shadow: 0 4px 14px #1D500040; letter-spacing: 0.02em; margin: 0 0 14px;">Download Report</a><div style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#CAD0C6;margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">

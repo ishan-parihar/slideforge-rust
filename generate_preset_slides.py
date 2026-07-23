@@ -453,9 +453,14 @@ def preset_content(preset_id):
             # before_after_story
             {"title": "The Real Cost", "before": {"label": "Manual Process", "description": "12 hours per carousel × 4 carousels/week × $75/hr = $18,000/month in design labor"}, "after": {"label": "Nexus Pipeline", "description": "4 minutes per carousel × 4 carousels/week × $0 = effectively free, with better consistency"}, "metric": "$18K/mo", "metric_label": "Saved in Design Costs"},
             # comparison
-            {"title": "Side by Side", "left": {"label": "Manual Design", "items": ["Hours per slide", "Inconsistent branding", "Stakeholder bottleneck", "Format breaks on export"]}, "right": {"label": "Nexus Composition", "items": ["Seconds per slide", "Locked design system", "One-click export", "Pixel-perfect every time"]}},
+            {"title": "Side by Side", "columns": ["Feature", "Manual Design", "Nexus Composition"], "rows": [
+                ["Time per slide", "Hours", "Seconds"],
+                ["Branding", "Inconsistent", "Locked system"],
+                ["Export", "Format breaks", "Pixel-perfect"],
+                ["Stakeholders", "Bottleneck", "One-click"],
+            ]},
             # image_comparison
-            {"title": "Visual Difference", "before": {"label": "Before", "image_url": I[4], "description": "Stock template, off-brand colors, inconsistent typography"}, "after": {"label": "After", "image_url": I[5], "description": "On-brand composition, consistent system, professional polish"}},
+            {"title": "Visual Difference", "before_image": I[4], "after_image": I[5], "before_label": "Before", "after_label": "After", "description": "Stock template vs on-brand composition"},
             # list (nexus)
             {"title": "The Nexus Way", "items": [
                 "Write one sentence: 'Launch carousel for our new API product.'",
@@ -659,7 +664,7 @@ def preset_content(preset_id):
                 {"icon": "🪞", "title": "Identity Framing", "description": "People don't buy products. They buy the person they become."},
             ]},
             # radar_chart
-            {"title": "Technique Mastery Profile", "axes": [
+            {"title": "Technique Mastery Profile", "data": [
                 {"label": "Pattern Interrupt", "value": 85},
                 {"label": "Anchoring", "value": 92},
                 {"label": "Commitment", "value": 78},
