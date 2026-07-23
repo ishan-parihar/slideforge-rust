@@ -575,10 +575,15 @@ def preset_content(preset_id):
         return [
             # feature
             {"icon": "🧬", "title": "The Composition Engine", "description": "Nexus doesn't pick slides randomly. It composes — selecting each slide type based on the emotional position in the narrative arc, the content density of the brief, and the target audience's cognitive load budget.", "number": "01"},
-             # definition
-            {"term": "Slide Composition", "phonetic": "/slaɪd kəm-pə-zi-shən/", "definition": "The algorithmic selection and sequencing of slide types to create an emotionally coherent narrative. Unlike templating, composition adapts to the content, not the other way around.", "context": "Composition is what separates Nexus from every 'AI slide generator' that just fills in a template."},
             # split_features
-            {"title": "Nexus vs Traditional Tools", "left": {"title": "Nexus", "features": ["47 slide types", "Emotional arc engine", "Dynamic typography", "Pool-based composition"]}, "right": {"title": "Templates", "features": ["5 fixed layouts", "Fill-in-the-blank", "Static sizing", "One structure per template"]}},
+            {"title": "Nexus vs Traditional Tools", "features": [
+                {"icon": "🧬", "title": "Nexus", "description": "47 slide types, emotional arc engine, dynamic typography, pool-based composition"},
+                {"icon": "📐", "title": "Templates", "description": "5 fixed layouts, fill-in-the-blank, static sizing, one structure per template"},
+                {"icon": "⚡", "title": "Speed", "description": "60 seconds vs 12 hours per carousel"},
+                {"icon": "🎨", "title": "Consistency", "description": "Locked design system vs manual alignment"},
+            ]},
+            # definition
+            {"term": "Slide Composition", "phonetic": "/slaɪd kəm-pə-zi-shən/", "definition": "The algorithmic selection and sequencing of slide types to create an emotionally coherent narrative. Unlike templating, composition adapts to the content, not the other way around.", "context": "Composition is what separates Nexus from every 'AI slide generator' that just fills in a template."},
             # image_callout
             {"image_url": I[5], "callouts": [{"label": "Dynamic font scaling", "description": "Text sizes adjust based on content density — dense slides get smaller type, sparse slides breathe", "x": 30, "y": 40}, {"label": "Theme token system", "description": "Material Design 3 tonal palette with per-preset color overrides", "x": 70, "y": 60}], "description": "Every visual element is computed, not hardcoded."},
             # process_map
@@ -612,12 +617,6 @@ def preset_content(preset_id):
             # 5
             {"image_url": I[4], "callouts": [{"label": "Principle #5: Liking", "description": "People say yes to those they like. Similarity, compliments, and cooperation build the liking bridge.", "x": 50, "y": 40}], "description": "Liking explains why founder-led carousels outperform corporate-polished ones."},
              {"myth": "Scarcity and urgency are the same thing", "fact": "Scarcity is about limited supply; urgency is about limited time. Combined, they create the most powerful persuasion force in marketing.", "explanation": "The best CTAs use both: 'Only 3 spots left' (scarcity) + 'Offer ends tonight' (urgency). Together they're exponentially more effective."},
-            # faq
-            {"title": "Common Questions", "items": [
-                {"question": "Which principle should I start with?", "answer": "Start with social proof — it's the most universally applicable and the easiest to measure. Add scarcity once you have proof of value."},
-                {"question": "Can I use multiple principles in one carousel?", "answer": "Yes, but assign one primary principle per slide. The preset structure handles the sequencing so principles don't compete."},
-                {"question": "How do I measure which principles work?", "answer": "Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta."},
-            ]},
             # process_map
             {"title": "Apply the Principles", "steps": [
                 {"icon": "🔍", "title": "Audit", "description": "Map which principles your current content uses (and which it ignores)"},
@@ -631,6 +630,12 @@ def preset_content(preset_id):
                 {"step": "Map principles to slide types", "description": "Social proof → testimonial. Authority → case_study. Scarcity → cta."},
                 {"step": "Generate with a preset", "description": "Let the emotional arc handle the principle sequencing"},
                 {"step": "A/B test principle emphasis", "description": "Same content, different principle focus. Measure the delta."},
+            ]},
+            # faq
+            {"title": "Common Questions", "questions": [
+                {"question": "Which principle should I start with?", "answer": "Start with social proof — it's the most universally applicable and the easiest to measure. Add scarcity once you have proof of value."},
+                {"question": "Can I use multiple principles in one carousel?", "answer": "Yes, but assign one primary principle per slide. The preset structure handles the sequencing so principles don't compete."},
+                {"question": "How do I measure which principles work?", "answer": "Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta."},
             ]},
             # cta
             {"headline": "Engineer Your Next Campaign", "button_text": "Start with a Preset", "button_url": "https://slideforge.dev/presets", "subtext": "28 presets, each built on proven persuasion architecture."},
@@ -679,13 +684,7 @@ def preset_content(preset_id):
             {"quote": "In the beginner's mind there are many possibilities, but in the expert's mind there are few.", "author": "Shunryu Suzuki", "image_url": A[1]},
             {"title": "The Second Teaching", "body": "Simplicity is not the absence of complexity — it's the mastery of it. The most profound ideas can be expressed in one slide. If you need ten slides to explain something, you haven't understood it yet."},
             {"quote": "The only true wisdom is in knowing you know nothing.", "author": "Socrates", "image_url": A[2]},
-             {"title": "The Third Teaching", "body": "Humility opens the door to understanding. When you present wisdom, don't position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them."},
-            # text_columns
-            {"title": "Three Modes of Transmission", "columns": [
-                {"heading": "Spoken", "body": "Words carry intention. The teacher's voice shapes how wisdom lands — not just what is said, but how it is offered."},
-                {"heading": "Written", "body": "Text endures. Written wisdom survives the session, the teacher, and the era. It becomes a reference the student returns to."},
-                {"heading": "Lived", "body": "The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission."},
-            ]},
+            {"title": "The Third Teaching", "body": "Humility opens the door to understanding. When you present wisdom, don't position yourself as the expert — position yourself as the fellow seeker. The audience learns more from someone walking beside them than someone standing above them."},
             {"quote": "We are not human beings having a spiritual experience. We are spiritual beings having a human experience.", "author": "Pierre Teilhard de Chardin", "image_url": A[3]},
             {"title": "The Fourth Teaching", "body": "Every communication is an act of service. You're not performing knowledge — you're offering it. The difference is in the energy. Service invites. Performance demands. Choose service."},
             {"quote": "The wound is the place where the Light enters you.", "author": "Rumi", "image_url": A[4]},
@@ -699,6 +698,12 @@ def preset_content(preset_id):
             ]},
             # callout
             {"title": "The Transmission Is Complete When", "text": "The audience doesn't remember your words — they remember their own realization. That's when teaching becomes transformation."},
+            # text_columns
+            {"title": "Three Modes of Transmission", "columns": [
+                {"heading": "Spoken", "body": "Words carry intention. The teacher's voice shapes how wisdom lands — not just what is said, but how it is offered."},
+                {"heading": "Written", "body": "Text endures. Written wisdom survives the session, the teacher, and the era. It becomes a reference the student returns to."},
+                {"heading": "Lived", "body": "The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission."},
+            ]},
             # cta
             {"headline": "Continue the Practice", "button_text": "Explore More Teachings", "button_url": "https://slideforge.dev/wisdom", "subtext": "A growing library of wisdom transmission presets and examples."},
         ]
