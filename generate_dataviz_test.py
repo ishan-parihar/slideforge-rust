@@ -256,17 +256,11 @@ SLIDES = [
          ["Export", "PNG", "PNG + PDF", "All"],
          ["Support", "Community", "Email", "Dedicated"]]}},
 
-    {"slide_type": "split_features", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Architecture Pillars", "features": [
-         {"title": "Compile Pipeline", "description": "Sub-10ms deterministic slide rendering via Rust native binary with zero runtime dependencies."},
-         {"title": "Validation Engine", "description": "Runtime overflow detection catches text clipping before export — never in production HTML."},
-         {"title": "Token System", "description": "Design tokens govern typography, spacing, and color across all 47 slide types uniformly."}]}},
-
-    {"slide_type": "text_columns", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Technical Specifications", "columns": [
-         {"heading": "Rendering", "text": "Native Rust binary, sub-10ms per slide, 420×525 base composition exported to target aspect ratios."},
-         {"heading": "Validation", "description": "Runtime text-overflow detection, dynamic font scaling, overflow:hidden only on outermost container."},
-         {"heading": "Export", "text": "Headless Chromium PNG export, PDF rasterization, carousel HTML output with embedded tokens."}]}},
+{"slide_type": "split_features", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
+      "params": {"title": "Architecture Pillars", "features": [
+          {"title": "Compile Pipeline", "description": "Sub-10ms deterministic slide rendering via Rust native binary with zero runtime dependencies."},
+          {"title": "Validation Engine", "description": "Runtime overflow detection catches text clipping before export — never in production HTML."},
+          {"title": "Token System", "description": "Design tokens govern typography, spacing, and color across all 47 slide types uniformly."}]}},
 
     # ═══ SECTION: Image + Metric Composites ═══
     {"section": "SECTION 6 — Image + Metric Composites"},
