@@ -213,6 +213,62 @@ pub fn slide_base(
     )
 }
 
+/// Hero slide base without overflow:hidden on slide-content to allow glass container blur to extend beyond bounds.
+pub fn hero_slide_base(
+    content_html: &str,
+    tokens: &DesignTokens,
+    bg_style: &str,
+    decorations: bool,
+    padding: &str,
+    justify: &str,
+) -> String {
+    let is_dark = is_dark_bg(bg_style);
+    let bg_var = if is_dark {
+        "var(--surface-dark)"
+    } else {
+        "var(--surface-light)"
+    };
+
+    let bg = {
+        let raw = slide_background(tokens, bg_style, None);
+        if !is_dark && bg_style == "light" {
+            let mesh = tokens.gradients.get("mesh").cloned().unwrap_or_default();
+            if !mesh.is_empty() {
+                format!("{}, {}", mesh, raw)
+            } else {
+                raw
+            }
+        } else {
+            raw
+        }
+    };
+
+    let shapes = if decorations {
+        build_shapes(tokens, bg_style)
+    } else {
+        String::new()
+    };
+
+    let mut noise_style = noise_overlay(0.04);
+    noise_style.insert("z-index".to_string(), "1".to_string());
+    let noise_css = noise_style
+        .iter()
+        .map(|(k, v)| format!("{}: {}", k, v))
+        .collect::<Vec<_>>()
+        .join("; ");
+
+    format!(
+        r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
+            <div style="{}"></div>
+            {}
+            <div class="slide-content" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;">
+                {}
+            </div>
+        </div>"#,
+        bg, bg_var, noise_css, shapes, padding, justify, content_html
+    )
+}
+
 pub fn centered_layout(
     content_html: &str,
     tokens: &DesignTokens,
@@ -307,7 +363,7 @@ pub fn hero_layout(
         "center"
     }; // slide_base flex align needs center to keep vertically centered
     // Reduced padding from 80px to 60px to give more room for glass container + blur
-    slide_base(
+    hero_slide_base(
         content_html,
         tokens,
         bg_style,
