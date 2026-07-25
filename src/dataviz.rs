@@ -408,8 +408,8 @@ pub fn render_svg_scatter_plot(
         let label = item
             .get("label")
             .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| format!("{:.0},{:.0}", x, y));
 
         x_vals.push(x);
         y_vals.push(y);

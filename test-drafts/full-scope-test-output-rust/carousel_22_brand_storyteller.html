@@ -47,15 +47,15 @@
   --gradient-hero: linear-gradient(135deg, #040101 0%, #9B003E30 50%, #040101 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #040101CC;
-  --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #3B282C40;
-  --glass-frosted-bg: #FFF1F4E6;
-  --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #D0C3C630;
-  --glass-light-bg: #FFF1F4CC;
   --glass-light-blur: 12px;
+  --glass-light-bg: #FFF1F4CC;
   --glass-light-border: 1px solid #D0C3C640;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #040101CC;
+  --glass-dark-border: 1px solid #3B282C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF1F4E6;
+  --glass-frosted-border: 1px solid #D0C3C630;
   --font-heading: 'Plus Jakarta Sans', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
@@ -417,32 +417,38 @@ body {
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--dark"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D11E6715 0px, transparent 50%), radial-gradient(at 80% 0%, #00998410 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA2D512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; position: absolute"></div>
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:48px 36px 56px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
-                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 16px;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Platform Benefits" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);" />
-                <div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 50%, rgba(0,0,0,0.75) 100%);z-index:2;"></div>
-            </div></div>
-                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
-                    <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Benefits</h2>
-                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:14px;display:flex;gap:12px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="width:26px;height:26px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;flex-shrink:0;">✦</div>
-                <div style="min-width:0;">
-                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:800;color:#F5ECEE;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Sub-100ms Edge Latency</h3>
-                    <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CACC;margin:0;line-height:1.45;">Distributed content networks serving assets globally.</p>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Annual Revenue Growth (donut)</h2>
+            <div style="display:flex;align-items:center;gap:24px;width:100%;margin-top:20px;justify-content:center;">
+                <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#FF538D 0.0deg 41.9deg, #D7CACC 41.9deg 108.3deg, #F59E0B 108.3deg 204.5deg, #10B981 204.5deg 360.0deg);position:relative;">
+                    <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:var(--surface-dark, #010105);left:30px;top:30px;z-index:2;"></div>
                 </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #3B282C;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:14px;display:flex;gap:12px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="width:26px;height:26px;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);background:#FF538D;color:white;display:flex;align-items:center;justify-content:center;font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;flex-shrink:0;">→</div>
-                <div style="min-width:0;">
-                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:800;color:#F5ECEE;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Intelligent Centering</h3>
-                    <p style="font-family:Plus Jakarta Sans;font-size:12px;color:#D7CACC;margin:0;line-height:1.45;">Automatically validates flexbox align and vertical centering parameters.</p>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:var(--space-1);font-family:Plus Jakarta Sans;font-size:11px;color:#F5ECEE;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#FF538D;"></div>
+                    <span style="flex:1;">Q1</span>
+                    <strong>11.7%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Plus Jakarta Sans;font-size:11px;color:#F5ECEE;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#D7CACC;"></div>
+                    <span style="flex:1;">Q2</span>
+                    <strong>18.4%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Plus Jakarta Sans;font-size:11px;color:#F5ECEE;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#F59E0B;"></div>
+                    <span style="flex:1;">Q3</span>
+                    <strong>26.7%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Plus Jakarta Sans;font-size:11px;color:#F5ECEE;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#10B981;"></div>
+                    <span style="flex:1;">Q4</span>
+                    <strong>43.2%</strong>
                 </div>
-            </div></div>
                 </div>
             </div>
+            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#D7CACC;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Projected growth rates across all corporate verticals.</p>
+        </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -463,35 +469,48 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark has-bg-image"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475');background-size: cover; background-position: center;opacity:0.32;z-index:0;filter: grayscale(42%) sepia(12%) hue-rotate(178deg) saturate(1.08) contrast(1.08) brightness(1.12);"></div><div style="position:absolute;inset:0;background:radial-gradient(circle, transparent 40%, rgba(0,0,0,0.60) 100%);z-index:1;"></div>
-            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1"></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Verified Performance Growth</h2><div style="display:flex;gap:var(--space-1);margin-top:16px;overflow:hidden;align-items:stretch;"><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">API Reliability</div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">99.99%</div>
-                            
-                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Slides Generated</div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">12.8M</div>
-                            
-                        </div><div style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:16px 12px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                            <div style="font-size:10px;color:#D7CACC;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Customer Rating</div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:25px;font-weight:700;color:#D11E67;line-height:1;">4.8/5</div>
-                            
-                        </div></div>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Monthly Active Users</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F5ECEE;line-height:1;margin-bottom:6px;text-align:center;">1200</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:38.7%;min-height:8px;background:#FF538D;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D7CACC;margin-top:6px;text-align:center;max-width:100%;">Jan</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F5ECEE;line-height:1;margin-bottom:6px;text-align:center;">1850</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:59.7%;min-height:8px;background:#FF538D;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D7CACC;margin-top:6px;text-align:center;max-width:100%;">Feb</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F5ECEE;line-height:1;margin-bottom:6px;text-align:center;">2700</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:87.1%;min-height:8px;background:#FF538D;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D7CACC;margin-top:6px;text-align:center;max-width:100%;">Mar</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                    <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#F5ECEE;line-height:1;margin-bottom:6px;text-align:center;">3100</div>
+                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                        <div style="width:70%;height:100.0%;min-height:8px;background:#FF538D;border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#D7CACC;margin-top:6px;text-align:center;max-width:100%;">Apr</span>
+                </div></div><p style="font-family:Plus Jakarta Sans;font-size:10px;color:#D7CACC;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">Growth trajectory across product launch phases</p>
+        </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
     <div class="slide__overlay-top">
-      <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">NexusAI</span>
-      <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Rust Scope Test: 22</span>
+      <span class="overlay__brand">NexusAI</span>
+      <span class="overlay__topic">Rust Scope Test: 22</span>
     </div>
     <div class="slide__overlay-bottom">
-      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">https://nexusai.io</span>
-      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#nexusai</span>
+      <span class="overlay__url">https://nexusai.io</span>
+      <span class="overlay__hashtags">#nexusai</span>
     </div>
   </div>
   <div class="breadcrumb-progress">
@@ -503,15 +522,29 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; background: var(--texture-grain); z-index: 1; pointer-events: none"></div>
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D11E6715 0px, transparent 50%), radial-gradient(at 80% 0%, #00998410 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA2D512 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
-            <span style="background: linear-gradient(135deg, #FFFFFF 0%, #F5ECEE 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 16px; display: block; letter-spacing: -0.02em">Announcing the Next Generation of AI Analytics</span>
-            <div style="width: 60px; height: 3.5px; background: #F54884; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px #F5488440;"></div>
-            <p style="font-family:Plus Jakarta Sans;font-size:15px;color:#D7CACC;margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">Unifying design system definitions across Rust and Python engines.</p>
-        </div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #F5ECEE; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Core Offerings</h2><div style="margin-top:12px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#D11E67;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">1</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#F5ECEE;line-height:1.25;">Automated Workflows</div>
+                            <div style="font-size:13px;color:#D7CACC;margin-top:2px;line-height:1.35;">Saves 10+ hours per week of manual labor</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#D11E67;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">2</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#F5ECEE;line-height:1.25;">Visual Insights</div>
+                            <div style="font-size:13px;color:#D7CACC;margin-top:2px;line-height:1.35;">Interactive data visualization on any screen size</div>
+                        </div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#D11E67;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">3</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#F5ECEE;line-height:1.25;">Multi-channel Export</div>
+                            <div style="font-size:13px;color:#D7CACC;margin-top:2px;line-height:1.35;">Deploy to LinkedIn, TikTok, and Instagram instantly</div>
+                        </div>
+                    </div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -533,37 +566,23 @@ body {
     </svg>
   </div></div>
 <div class="slide slide--dark"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain)"></div>
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Key Performance Indicators</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);margin-top:16px;width:100%;box-sizing:border-box;"><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Slides Generated</span>
-                <div style="display:flex;align-items:baseline;">
-                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">12.8M</span>
-                    <span style="font-size:10px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+24%</span>
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+            <div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:#10B981;opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>
+            <div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">🛡️</div>
+            <div style="-webkit-backdrop-filter: blur(12px); border: 1px solid #3B282C40; backdrop-filter: blur(12px); border-radius: 16px; background: #040101CC; border-left: 6px solid #10B981;padding:36px 32px;box-shadow: 0 8px 32px -4px #10B9811f, 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);width:100%;box-sizing:border-box;position:relative;z-index:2;">
+                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
+                    <div style="width:44px;height:44px;min-width:44px;border-radius:50%;background:#10B9811a;color:#10B981;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);">🛡️</div>
+                    <div>
+                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#10B981;margin-bottom:4px;display:block;">success</span>
+                        <h2 style="font-family:Plus Jakarta Sans;font-size:20px;font-weight:800;color:#F5ECEE;margin:0;line-height:1.2;">System Alert</h2>
+                    </div>
                 </div>
-            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">API Uptime</span>
-                <div style="display:flex;align-items:baseline;">
-                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">99.99%</span>
-                    <span style="font-size:10px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.01%</span>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">User Rating</span>
-                <div style="display:flex;align-items:baseline;">
-                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">4.8/5</span>
-                    <span style="font-size:10px;font-weight:700;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:6px;">+0.3</span>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:var(--space-2);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;">
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:600;color:#D7CACC;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Avg Render Time</span>
-                <div style="display:flex;align-items:baseline;">
-                    <span style="font-family:Plus Jakarta Sans;font-size:24px;font-weight:800;color:#F5ECEE;">180ms</span>
-                    <span style="font-size:10px;font-weight:700;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:6px;">-15ms</span>
-                </div>
-            </div></div>
+                <p style="font-family:Plus Jakarta Sans;font-size:16px;line-height:1.65;color:#D7CACC;margin:0;overflow-wrap:break-word;word-break:break-word;">Enable duotone cool filters on dark slides to maximize aesthetic impact.</p>
+            </div>
         </div>
             </div>
         </div>

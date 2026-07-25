@@ -3954,12 +3954,12 @@ fn progress_rings_slide(
             r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
                 <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient({0} 0deg {1:.0}deg, {2} {1:.0}deg 360deg);display:flex;align-items:center;justify-content:center;">
                     <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:{3};z-index:2;display:flex;align-items:center;justify-content:center;">
-                        <span style="font-family:{4};font-size:16px;font-weight:700;color:{5};">{1:.0}%</span>
+                         <span style="font-family:{4};font-size:16px;font-weight:700;color:{5};">{9:.0}%</span>
                     </div>
                 </div>
                 <span style="font-family:{6};font-size:11px;font-weight:600;color:{7};margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">{8}</span>
             </div>"#,
-            ring_color, deg, track_color, inner_bg, tokens.heading_font, colors.text_primary, tokens.body_font, colors.text_secondary, escape_html(lbl)
+            ring_color, deg, track_color, inner_bg, tokens.heading_font, colors.text_primary, tokens.body_font, colors.text_secondary, escape_html(lbl), val
         )
     }).collect();
 
@@ -4691,7 +4691,11 @@ fn text_columns_slide(
 
     let cols: Vec<String> = columns.iter().enumerate().map(|(idx, c)| {
         let heading = c.get("heading").and_then(|v| v.as_str()).unwrap_or("");
-        let body = c.get("body").and_then(|v| v.as_str()).unwrap_or("");
+            let body = c.get("body")
+                .or_else(|| c.get("text"))
+                .or_else(|| c.get("description"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
         let tag = if idx == 0 { "⚡ High Speed" } else { "🛡️ 100% Precision" };
         format!(
             r#"<div style="flex:1;min-width:0;background:{};border:{};border-top:3px solid {};border-radius:{};padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
@@ -6127,16 +6131,23 @@ pub fn dispatch_slide(
                 img_opacity,
             ))
         }
-        "gauge" => Ok(gauge_slide(
-            tokens,
-            f("value", 0.0) as f64,
-            &s("label"),
-            &s("title"),
-            bg_style,
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
+        "gauge" => {
+            // Try numeric first, then parse string values like "72"
+            let gauge_val = p.get("value")
+                .and_then(|v| v.as_f64())
+                .or_else(|| p.get("value").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                .unwrap_or(0.0);
+            Ok(gauge_slide(
+                tokens,
+                gauge_val,
+                &s("label"),
+                &s("title"),
+                bg_style,
+                theme,
+                &bg_img,
+                img_opacity,
+            ))
+        }
         "radar_chart" => {
             let data = p
                 .get("data")

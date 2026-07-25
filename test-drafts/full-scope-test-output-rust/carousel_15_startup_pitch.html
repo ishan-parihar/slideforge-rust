@@ -47,15 +47,15 @@
   --gradient-hero: linear-gradient(135deg, #000303 0%, #00515330 50%, #000303 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #000303CC;
-  --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #1B333340;
-  --glass-frosted-bg: #EAF9F8E6;
-  --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #BDCACA30;
-  --glass-light-bg: #EAF9F8CC;
   --glass-light-blur: 12px;
+  --glass-light-bg: #EAF9F8CC;
   --glass-light-border: 1px solid #BDCACA40;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000303CC;
+  --glass-dark-border: 1px solid #1B333340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #EAF9F8E6;
+  --glass-frosted-border: 1px solid #BDCACA30;
   --font-heading: 'Plus Jakarta Sans', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
@@ -410,18 +410,39 @@ body {
   </div>
 <div class="carousel-viewport">
 <div class="carousel-track" id="carouselTrack">
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007C7E15 0px, transparent 50%), radial-gradient(at 80% 0%, #9A555910 0px, transparent 50%), radial-gradient(at 0% 50%, #67C7C812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0"></div>
+<div class="slide slide--gradient"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain); pointer-events: none; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:rgba(0,0,0,0.02);border:1px solid #BDCACA33;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:16px;padding:var(--space-3) 20px;text-align:center;width:100%;box-sizing:border-box;">
-            <span style="font-family:Plus Jakarta Sans;font-size:52px;font-weight:900;color:#007C7E;margin:0;line-height:1;">89.2%</span>
-            <h3 style="font-family:Plus Jakarta Sans;font-size:15px;font-weight:600;color:#070C0D;margin:var(--space-1) 0 6px;line-height:1.2;">System Health</h3>
-            <span style="font-family:Plus Jakarta Sans;font-size:11px;font-weight:600;color:#10B981;display:block;margin-bottom:8px;">↑ Stable</span>
-            <div style="margin:var(--space-2) auto;display:flex;justify-content:center;"><svg width="280" height="40" viewBox="0 0 280 40"><polyline points="0.0,17.2 40.0,14.8 80.0,12.7 120.0,10.2 160.0,11.3 200.0,9.2 240.0,8.1 280.0,8.8" fill="none" stroke="#007C7E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#394545;margin:0;line-height:1.4;">Last 8 measurements</p>
-        </div></div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;"><h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #E7F1F1; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Core Architecture Principles</h2><div style="display:flex;gap:12px;width:100%;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #1B3333;border-top:3px solid #7BDADC;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#7BDADC;background:#7BDADC18;padding:2px 6px;border-radius:4px;">01 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#E7F1F1;margin:0 0 6px;line-height:1.2;">Performance</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#C3D1D1;line-height:1.45;margin:0;">Sub-100ms render times via native compilation.</p>
+                </div>
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#7BDADC;background:#7BDADC15;padding:3px 8px;border-radius:999px;width:fit-content;">⚡ High Speed</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #1B3333;border-top:3px solid #7BDADC;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#7BDADC;background:#7BDADC18;padding:2px 6px;border-radius:4px;">02 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#E7F1F1;margin:0 0 6px;line-height:1.2;">Parity</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#C3D1D1;line-height:1.45;margin:0;">Pixel-perfect alignment with Python reference.</p>
+                </div>
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#7BDADC;background:#7BDADC15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.05);border:1px solid #1B3333;border-top:3px solid #7BDADC;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:900;color:#7BDADC;background:#7BDADC18;padding:2px 6px;border-radius:4px;">03 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Plus Jakarta Sans;font-size:14px;font-weight:900;color:#E7F1F1;margin:0 0 6px;line-height:1.2;">Scalability</h3>
+                    <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#C3D1D1;line-height:1.45;margin:0;">Handles thousands of slides without degradation.</p>
+                </div>
+                <div style="font-family:Plus Jakarta Sans;font-size:9.5px;font-weight:800;color:#7BDADC;background:#7BDADC15;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+            </div></div></div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -442,21 +463,14 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--mesh"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
+<div class="slide slide--gradient"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #070C0D; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Annual Revenue Growth (line)</h2>
-            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
-            <line x1="40" y1="110.0" x2="305" y2="110.0" stroke="#BDCACA55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="114.0" font-size="9px" fill="#394545" text-anchor="end" font-weight="600">24.0</text><line x1="40" y1="62.5" x2="305" y2="62.5" stroke="#BDCACA55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="66.5" font-size="9px" fill="#394545" text-anchor="end" font-weight="600">56.5</text><line x1="40" y1="15.0" x2="305" y2="15.0" stroke="#BDCACA55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="19.0" font-size="9px" fill="#394545" text-anchor="end" font-weight="600">89.0</text>
-            
-            <path d="M 40.0 110.0 L 128.3 89.5 L 216.7 64.7 L 305.0 15.0 " stroke="#007C7E" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="40.0" cy="110.0" r="4" fill="#007C7E" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="89.5" r="4" fill="#007C7E" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="64.7" r="4" fill="#007C7E" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="15.0" r="4" fill="#007C7E" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" />
-            <text x="40.0" y="126" font-size="9px" fill="#394545" text-anchor="middle">Q1</text><text x="128.3" y="126" font-size="9px" fill="#394545" text-anchor="middle">Q2</text><text x="216.7" y="126" font-size="9px" fill="#394545" text-anchor="middle">Q3</text><text x="305.0" y="126" font-size="9px" fill="#394545" text-anchor="middle">Q4</text>
-        </svg></div>
-            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#394545;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Projected growth rates across all corporate verticals.</p>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#E7F1F1;margin:0 0 16px;line-height:1.2;">Principles of Aesthetic Layouts</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#C3D1D1;margin:0 0 12px;line-height:1.6;">Aesthetics are a primary developer criteria. Using generic colors or raw gray backgrounds results in amateur layouts.</p><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#C3D1D1;margin:0 0 12px;line-height:1.6;">Always leverage duotone gradients, fine noise textures, and micro-interactions.</p></div>
         </div>
             </div>
         </div>
@@ -478,43 +492,29 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--dark has-bg-image"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');background-size: cover; background-position: center;opacity:0.31;z-index:0;"></div><div style="position:absolute;inset:0;background:rgba(0,0,0,0.30);z-index:1;"></div>
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; z-index: 1; pointer-events: none"></div>
-            
-            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #E7F1F1; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Core Architecture Principles</h2><div style="display:flex;gap:var(--space-3);width:100%;margin-top:var(--space-2);overflow:hidden;"><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #E7F1F1; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Performance</h2><div style="font-size:var(--text-sm);color:#C3D1D1;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #E7F1F1; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Parity</h2><div style="font-size:var(--text-sm);color:#C3D1D1;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div><div style="flex:1;min-width:0;overflow:visible;padding-bottom:var(--space-1);"><h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #E7F1F1; margin: 0 0 var(--space-1); text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Scalability</h2><div style="font-size:var(--text-sm);color:#C3D1D1;line-height:1.6;overflow-wrap:break-word;word-break:break-word;"></div></div></div>
-            </div>
-        </div>
-</div>  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">NexusAI</span>
-      <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Rust Scope Test: 15</span>
-    </div>
-    <div class="slide__overlay-bottom">
-      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">https://nexusai.io</span>
-      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#nexusai #startup_pitch</span>
-    </div>
-  </div>
-  <div class="breadcrumb-progress">
-    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
-  </div>
-  <div class="swipe-arrow">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18"/>
-    </svg>
-  </div></div>
-<div class="slide slide--light"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007C7E15 0px, transparent 50%), radial-gradient(at 80% 0%, #9A555910 0px, transparent 50%), radial-gradient(at 0% 50%, #67C7C812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; opacity: 0.04"></div>
+<div class="slide slide--mesh"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Feature Comparison</h2><table style="width:100%;border-collapse:collapse;margin-top:12px;">
-            <thead><tr></tr></thead>
-            <tbody><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Slides/mo</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">50</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">500</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Unlimited</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:transparent;border-bottom:1px solid #BDCACA20;">Export</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:transparent;border-bottom:1px solid #BDCACA20;">PNG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:transparent;border-bottom:1px solid #BDCACA20;">PNG + SVG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:transparent;border-bottom:1px solid #BDCACA20;">All Formats</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Support</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Community</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Email</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#070C0D;background:#BDCACA15;border-bottom:1px solid #BDCACA20;">Priority</td></tr></tbody>
-        </table>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Conversion Funnel</h2>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;"><div style="width:100%;background:#007C7E;opacity:1.00;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Visitors</span>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:white;">10000</strong>
+                </div><div style="text-align:center;font-size:10px;color:#007C7E99;margin:2px 0;font-weight:bold;">↓</div><div style="width:44%;background:#007C7E;opacity:0.85;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Signups</span>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:white;">3500</strong>
+                </div><div style="text-align:center;font-size:10px;color:#007C7E99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#070C0D;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Activated</span>
+                    <div style="width:30%;background:#007C7E;opacity:0.70;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#070C0D;flex:1;">1800</strong>
+                </div><div style="text-align:center;font-size:10px;color:#007C7E99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#070C0D;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Subscribed</span>
+                    <div style="width:22%;background:#007C7E;opacity:0.55;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#070C0D;flex:1;">890</strong>
+                </div></div>
+            
         </div>
             </div>
         </div>
@@ -526,6 +526,37 @@ body {
     <div class="slide__overlay-bottom">
       <span class="overlay__url">https://nexusai.io</span>
       <span class="overlay__hashtags">#nexusai #startup_pitch</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light has-bg-image"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #007C7E15 0px, transparent 50%), radial-gradient(at 80% 0%, #9A555910 0px, transparent 50%), radial-gradient(at 0% 50%, #67C7C812 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa');background-size: cover; background-position: center;opacity:0.18;z-index:0;filter: contrast(1.02) brightness(1.02);"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.50));z-index:1;"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
+            <span style="background: linear-gradient(135deg, #070C0D 0%, #394545 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.08; text-align: center; margin: 0 0 16px; display: block; letter-spacing: -0.02em">Announcing the Next Generation of AI Analytics</span>
+            <div style="width: 60px; height: 3.5px; background: #007C7E; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px #007C7E40;"></div>
+            <p style="font-family:Plus Jakarta Sans;font-size:15px;color:#394545;margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">Unifying design system definitions across Rust and Python engines.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">NexusAI</span>
+      <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Rust Scope Test: 15</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">https://nexusai.io</span>
+      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#nexusai #startup_pitch</span>
     </div>
   </div>
   <div class="breadcrumb-progress">

@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 525px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+}
+
+:root {
+  --primary: #5E5FE0;
+  --primary-light: #A2ACFF;
+  --primary-dark: #3A2EAD;
+  --surface-light: #F2F4FF;
+  --surface-dark: #010105;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #EDEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C5C7D1;
+  --border-dark: #2A2C3D;
+  --accent: #937000;
+  --secondary: #686FA5;
+  --tertiary: #A2538E;
+  --gradient: linear-gradient(165deg, #010105 0%, #3A2EAD 60%, #010105 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #5E5FE040;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #F2F4FF 0%, #5E5FE008 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%);
+  --gradient-hero: linear-gradient(135deg, #010105 0%, #3A2EAD30 50%, #010105 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #F2F4FFCC;
+  --glass-light-border: 1px solid #C5C7D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #010105CC;
+  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #F2F4FFE6;
+  --glass-frosted-border: 1px solid #C5C7D130;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text-display-size: 31px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 25px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 20px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 13px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 10px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 10px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 25px;
+  --text-2xl: 31px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
+}
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; background: #f0f0f0;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
+
+.slide {
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slide--full-bleed { overflow: hidden; }
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
+   The inner div (gradient + noise + shapes) is stretched to fill the slide,
+   while content stays at designed 420×525 composition dimensions.
+   The .slide element's overflow:hidden clips at the final slide boundary. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-composition > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+  overflow: hidden !important;
+}
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
+.slide--full-bleed .slide-content {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Light/mesh slides need the mesh gradient on .slide too */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
+}
+
+.slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F115 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+
+.slide--dark, .slide--gradient, .slide--hero {
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
+}
+
+.slide-layout {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
+}
+.slide-layout--center { justify-content: center; }
+
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
+.grid-2 > * { flex: 1; min-width: 0; }
+
+.serif { font-family: var(--font-heading, serif); }
+.sans { font-family: var(--font-body, sans-serif); }
+
+.display-text {
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.heading-text {
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.body-text {
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
+  text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
+}
+.caption-text {
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
+  text-wrap: pretty; overflow-wrap: break-word;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.slide--dark .text-gradient, .slide--gradient .text-gradient, .slide--hero .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.card {
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
+  background: var(--surface-light, #F3F5FC);
+  border: 1px solid var(--border-light, #C4C7D1);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: break-word; word-break: break-word;
+}
+.slide--dark .card, .slide--gradient .card, .slide--hero .card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dark, #2A2D3D);
+  box-shadow: var(--shadow-md);
+}
+
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-lg);
+}
+.slide--light .glass, .slide--mesh .glass {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.badge {
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
+}
+.slide--light .badge, .slide--mesh .badge {
+  background: var(--primary)15; color: var(--primary);
+  border: 1px solid var(--primary)30;
+}
+.slide--dark .badge, .slide--gradient .badge, .slide--hero .badge {
+  background: var(--text-on-dark)15; color: var(--text-on-dark);
+  border: 1px solid var(--text-on-dark)30;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-decoration: none;
+  box-shadow: var(--shadow-md); transition: transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.slide--light .btn, .slide--mesh .btn {
+  background: var(--primary); color: #FFFFFF;
+}
+.slide--dark .btn, .slide--gradient .btn, .slide--hero .btn {
+  background: var(--surface-light); color: var(--primary-dark);
+}
+
+.icon-box {
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
+}
+.slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
+.slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
+.timeline-number {
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
+}
+.timeline-content { flex: 1; }
+
+.callout {
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
+  border-radius: var(--radius-md, 8px); border: 1px solid transparent;
+}
+.callout--warning {
+  background: rgba(255, 165, 0, 0.1); border-color: var(--status-warning, #FFA500);
+}
+.callout--info {
+  background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
+}
+
+.breadcrumb-progress {
+  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
+  display: flex; align-items: center; gap: 6px;
+  z-index: 50;
+}
+.breadcrumb-chip {
+  height: 2px; flex: 1; border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
+.slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
+.slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
+.breadcrumb-chip.active {
+  height: 3px; flex: 2.2;
+}
+.slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
+.slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.swipe-arrow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  z-index: 50;
+}
+.slide--light .swipe-arrow, .slide--mesh .swipe-arrow { background: linear-gradient(to right, transparent, rgba(0,0,0,0.06)); }
+.slide--dark .swipe-arrow, .slide--gradient .swipe-arrow, .slide--hero .swipe-arrow { background: linear-gradient(to right, transparent, rgba(255,255,255,0.08)); }
+.swipe-arrow svg { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
+.slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
+
+.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
+.slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
+.slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
+.slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
+.slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
+.slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
+.slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
+.slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+
+            :root {
+                --font-heading: 'Playfair Display', Georgia, serif;
+                --font-body: 'Inter', system-ui, sans-serif;
+                --radius-lg: 8px;
+                --radius-md: 6px;
+            }
+            .slide--light, .slide--mesh { --surface-light: #F8F6F3; }
+            .slide--dark, .slide--hero { --surface-dark: #0A0A0F; }
+            .overlay__brand {
+                font-family: var(--font-heading), Georgia, serif !important;
+                font-style: normal !important;
+                text-transform: none !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                opacity: 0.9 !important;
+            }
+            .overlay__topic, .overlay__url, .overlay__hashtags {
+                font-family: var(--font-body), sans-serif !important;
+                font-style: normal !important;
+                text-transform: uppercase !important;
+                font-size: 11.5px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12em !important;
+                opacity: 0.75 !important;
+            }
+        
+.ig-frame {
+  width: var(--slide-width); background: #fff; border-radius: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--primary, #0B0A0F);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+.ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-subtitle { font-size: 11px; color: #8e8e8e; }
+.ig-dots { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
+.ig-dot { width: 6px; height: 6px; border-radius: 50%; background: #d8d8d8; transition: background 0.2s; }
+.ig-dot.active { background: #262626; }
+.ig-actions { display: flex; gap: 14px; padding: 8px 14px; }
+.ig-actions svg { width: 22px; height: 22px; stroke: #262626; fill: none; stroke-width: 1.8; cursor: pointer; }
+.ig-actions svg:hover { opacity: 0.6; }
+.ig-actions svg.bookmark { margin-left: auto; }
+.ig-caption { padding: 0 14px 12px; font-size: 12px; line-height: 1.45; color: #262626; }
+.ig-caption strong { font-weight: 600; }
+.ig-caption .timestamp { color: #8e8e8e; font-size: 11px; margin-top: 4px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+    <div class="ig-frame">
+  <div class="ig-header">
+    <div class="ig-avatar">S</div>
+    <div>
+      <div class="ig-handle">@slideforge</div>
+      <div class="ig-subtitle">Carousel</div>
+    </div>
+  </div>
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; position: absolute; z-index: 1; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Key Metrics</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Compile Latency</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">10ms</div>
+                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Unit Tests Passing</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">85+</div>
+                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Slide Types</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">47</div>
+                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.06em;">Token Compliance</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#767CFF;line-height:1;">100%</div>
+                <div style="width:100%;height:3px;background:#767CFF20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#767CFF;border-radius:999px;"></div>
+                </div>
+            </div></div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Revenue Performance</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;"><div style="background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#40424B;text-transform:uppercase;letter-spacing:0.06em;">ARR</span>
+                    <span style="font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 6px;border-radius:4px;margin-left:auto;">+32% YoY</span>
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#5E5FE0;line-height:1;">$2.4M</div>
+                <div style="width:100%;height:3px;background:#5E5FE020;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#5E5FE0;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#40424B;text-transform:uppercase;letter-spacing:0.06em;">Active Teams</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#5E5FE0;line-height:1;">1,200</div>
+                <div style="width:100%;height:3px;background:#5E5FE020;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#5E5FE0;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#40424B;text-transform:uppercase;letter-spacing:0.06em;">Retention Rate</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#5E5FE0;line-height:1;">94%</div>
+                <div style="width:100%;height:3px;background:#5E5FE020;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#5E5FE0;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:800;color:#40424B;text-transform:uppercase;letter-spacing:0.06em;">NPS Score</span>
+                    
+                </div>
+                <div style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#5E5FE0;line-height:1;">4.8★</div>
+                <div style="width:100%;height:3px;background:#5E5FE020;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:75%;height:100%;background:#5E5FE0;border-radius:999px;"></div>
+                </div>
+            </div></div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; z-index: 1; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: center; letter-spacing: -0.015em; overflow-wrap: break-word">CPU Utilization</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;padding:20px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;">
+                <div style="width:100%;max-width:240px;height:120px;margin:0 auto;display:flex;justify-content:center;"><svg width="100%" height="115px" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#2A2C3D44" stroke-width="12" stroke-linecap="round" />
+            
+            <!-- Foreground Filled Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#7478FC" stroke-width="12" stroke-linecap="round"
+                  stroke-dasharray="163.36" stroke-dashoffset="45.74" opacity="0.9" />
+                  
+            <!-- Central Metric Value -->
+            <text x="100.0" y="74.0" font-size="26px" fill="#EDEEF5" font-weight="900" text-anchor="middle">72.0%</text>
+            <text x="100.0" y="98.0" font-size="9px" font-weight="700" fill="#CBCDD8" text-anchor="middle" letter-spacing="0.04em">TARGET: 100%</text>
+        </svg></div>
+                <div style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: CURRENT SERVER LOAD ACROSS ALL WORKER NODES.</div>
+            </div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); z-index: 1; pointer-events: none; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:72px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: center; letter-spacing: -0.015em; overflow-wrap: break-word">Code Coverage</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;padding:20px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;">
+                <div style="width:100%;max-width:240px;height:120px;margin:0 auto;display:flex;justify-content:center;"><svg width="100%" height="115px" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#C5C7D144" stroke-width="12" stroke-linecap="round" />
+            
+            <!-- Foreground Filled Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#5B5CDD" stroke-width="12" stroke-linecap="round"
+                  stroke-dasharray="163.36" stroke-dashoffset="17.97" opacity="0.9" />
+                  
+            <!-- Central Metric Value -->
+            <text x="100.0" y="74.0" font-size="26px" fill="#0A0B0F" font-weight="900" text-anchor="middle">89.0%</text>
+            <text x="100.0" y="98.0" font-size="9px" font-weight="700" fill="#40424B" text-anchor="middle" letter-spacing="0.04em">TARGET: 100%</text>
+        </svg></div>
+                <div style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: TEST COVERAGE ACROSS ALL MODULES.</div>
+            </div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">System Performance</h2><div style="display:flex;gap:var(--space-2);flex-wrap:wrap;width:100%;margin-top:16px;box-sizing:border-box;"><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">P50 Latency</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">10ms</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">P99 Latency</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">24ms</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Uptime</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">99.9%</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#CBCDD8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">P999 Latency</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">47ms</div>
+                            
+                        </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">User Growth</h2><div style="display:flex;gap:var(--space-2);flex-wrap:wrap;width:100%;margin-top:16px;box-sizing:border-box;"><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:#F2F4FF;border:1px solid #C5C7D125;border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">New Users</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">12K</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:#F2F4FF;border:1px solid #C5C7D125;border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">MoM Growth</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">3.2x</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:#F2F4FF;border:1px solid #C5C7D125;border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Activation</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">85%</div>
+                            
+                        </div><div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:#F2F4FF;border:1px solid #C5C7D125;border-radius:10px;padding:var(--space-1);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                            <div style="font-size:10px;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Day-7 Retention</div>
+                            <div style="font-family:Playfair Display;font-size:20px;font-weight:700;color:#5E5FE0;line-height:1;">42%</div>
+                            
+                        </div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04; position: absolute; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Sprint Goal Completion</h2>
+            <div style="display:flex;gap:24px;width:100%;margin-top:24px;justify-content:center;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#767CFF 0deg 306deg, rgba(255,255,255,0.08) 306deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#1a1a2e;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#EDEEF5;">85%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Frontend</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#767CFF 0deg 259deg, rgba(255,255,255,0.08) 259deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#1a1a2e;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#EDEEF5;">72%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Backend</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#767CFF 0deg 338deg, rgba(255,255,255,0.08) 338deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#1a1a2e;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#EDEEF5;">94%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#CBCDD8;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">DevOps</span>
+            </div></div>
+            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">Current sprint velocity tracking across all workstreams.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; z-index: 1; inset: 0; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Annual OKR Progress</h2>
+            <div style="display:flex;gap:24px;width:100%;margin-top:24px;justify-content:center;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#5E5FE0 0deg 281deg, rgba(0,0,0,0.06) 281deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#0A0B0F;">78%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#40424B;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Revenue</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#5E5FE0 0deg 234deg, rgba(0,0,0,0.06) 234deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#0A0B0F;">65%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#40424B;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Growth</span>
+            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:var(--space-12);">
+                <div style="position:relative;width:90px;height:90px;border-radius:50%;background:conic-gradient(#5E5FE0 0deg 331deg, rgba(0,0,0,0.06) 331deg 360deg);display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;width:70px;height:70px;border-radius:50%;background:#ffffff;z-index:2;display:flex;align-items:center;justify-content:center;">
+                         <span style="font-family:Playfair Display;font-size:16px;font-weight:700;color:#0A0B0F;">92%</span>
+                    </div>
+                </div>
+                <span style="font-family:DM Sans;font-size:11px;font-weight:600;color:#40424B;margin-top:12px;text-align:center;text-transform:uppercase;letter-spacing:0.04em;">Retention</span>
+            </div></div>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">Company-wide objective key results tracking.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Monthly Active Users</h2>
+            <div style="width:100%;margin-top:16px;"><div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                        <span>Jan</span>
+                        <strong style="color:#767CFF;">1200</strong>
+                    </div>
+                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
+                        <div style="width:22.7%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div><div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                        <span>Feb</span>
+                        <strong style="color:#937000;">1800</strong>
+                    </div>
+                    <div style="width:100%;height:12px;background:#93700022;border-radius:6px;overflow:hidden;">
+                        <div style="width:34.1%;min-width:8px;height:100%;background:#937000;border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div><div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                        <span>Mar</span>
+                        <strong style="color:#5E5FE0;">2400</strong>
+                    </div>
+                    <div style="width:100%;height:12px;background:#5E5FE022;border-radius:6px;overflow:hidden;">
+                        <div style="width:45.5%;min-width:8px;height:100%;background:#5E5FE0;border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div><div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                        <span>Apr</span>
+                        <strong style="color:#CBCDD8;">3100</strong>
+                    </div>
+                    <div style="width:100%;height:12px;background:#CBCDD822;border-radius:6px;overflow:hidden;">
+                        <div style="width:58.7%;min-width:8px;height:100%;background:#CBCDD8;border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div><div style="margin-bottom:16px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;font-family:DM Sans;font-size:12px;font-weight:600;color:#EDEEF5;margin-bottom:6px;">
+                        <span>May</span>
+                        <strong style="color:#767CFF;">3800</strong>
+                    </div>
+                    <div style="width:100%;height:12px;background:#767CFF22;border-radius:6px;overflow:hidden;">
+                        <div style="width:72.0%;min-width:8px;height:100%;background:#767CFF;border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div></div>
+            <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">MAU grew 340% year-over-year, with strongest adoption in enterprise segment.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; inset: 0; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Performance Over Time</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            
+            <g transform="translate(0, 4)"><g transform="translate(0,0)"><rect x="85.3" y="10" width="9" height="4" rx="1" fill="#5E5FE0" /><text x="97.3" y="14.5" font-size="9px" font-weight="700" fill="#40424B" font-family="sans-serif">Latency</text><rect x="150.7" y="10" width="9" height="4" rx="1" fill="#FF8C6B" /><text x="162.7" y="14.5" font-size="9px" font-weight="700" fill="#40424B" font-family="sans-serif">Throughput</text></g></g>
+            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">35.0</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">97.5</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#C5C7D155" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#40424B" text-anchor="end" font-weight="600">160.0</text>
+            
+            <path d="M 40.0 58.4 L 128.3 81.7 L 216.7 102.2 L 305.0 108.0 " stroke="#5E5FE0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" /><path d="M 40.0 105.1 L 128.3 90.5 L 216.7 64.2 L 305.0 35.0 " stroke="#FF8C6B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="58.4" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="81.7" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="102.2" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="108.0" r="3.5" fill="#5E5FE0" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="40.0" cy="105.1" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="128.3" cy="90.5" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="216.7" cy="64.2" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" /><circle cx="305.0" cy="35.0" r="3.5" fill="#FF8C6B" stroke="var(--surface-light, #F3F5FC)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q1</text><text x="128.3" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q2</text><text x="216.7" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q3</text><text x="305.0" y="126" font-size="9px" fill="#40424B" text-anchor="middle">Q4</text>
+        </svg></div>
+            <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">P99 latency dropped 71% while throughput increased 4x.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Revenue Trajectory</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="chart_area_grad_0" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#7478FC" stop-opacity="0.18" />
+                        <stop offset="100%" stop-color="#7478FC" stop-opacity="0.0" />
+                    </linearGradient><linearGradient id="chart_area_grad_1" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#FF8C6B" stop-opacity="0.18" />
+                        <stop offset="100%" stop-color="#FF8C6B" stop-opacity="0.0" />
+                    </linearGradient></defs>
+            <g transform="translate(0, 4)"><g transform="translate(0,0)"><rect x="101.7" y="10" width="9" height="4" rx="1" fill="#7478FC" /><text x="113.7" y="14.5" font-size="9px" font-weight="700" fill="#CBCDD8" font-family="sans-serif">MRR</text><rect x="146.7" y="10" width="9" height="4" rx="1" fill="#FF8C6B" /><text x="158.7" y="14.5" font-size="9px" font-weight="700" fill="#CBCDD8" font-family="sans-serif">Expenses</text></g></g>
+            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">600.0</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">1500.0</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#2A2C3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">2400.0</text>
+            <path d="M 40.0 108.0 L 40.0 99.9 L 128.3 83.7 L 216.7 67.4 L 305.0 35.0 L 305.0 108.0 Z " fill="url(#chart_area_grad_0)" /><path d="M 40.0 108.0 L 40.0 108.0 L 128.3 101.9 L 216.7 95.8 L 305.0 87.7 L 305.0 108.0 Z " fill="url(#chart_area_grad_1)" />
+            <path d="M 40.0 99.9 L 128.3 83.7 L 216.7 67.4 L 305.0 35.0 " stroke="#7478FC" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" /><path d="M 40.0 108.0 L 128.3 101.9 L 216.7 95.8 L 305.0 87.7 " stroke="#FF8C6B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="99.9" r="3.5" fill="#7478FC" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="83.7" r="3.5" fill="#7478FC" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="67.4" r="3.5" fill="#7478FC" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="35.0" r="3.5" fill="#7478FC" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="40.0" cy="108.0" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="101.9" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="95.8" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="87.7" r="3.5" fill="#FF8C6B" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Jan</text><text x="128.3" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Apr</text><text x="216.7" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Jul</text><text x="305.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Oct</text>
+        </svg></div>
+            <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Monthly recurring revenue crossed $2M milestone in Q4.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; position: absolute; pointer-events: none; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Market Share Distribution</h2>
+            <div style="display:flex;align-items:center;gap:24px;width:100%;margin-top:20px;justify-content:center;">
+                <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#5E5FE0 0.0deg 122.4deg, #40424B 122.4deg 201.6deg, #F59E0B 201.6deg 266.4deg, #10B981 266.4deg 360.0deg);position:relative;">
+                    <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:var(--surface-light, #F3F5FC);left:30px;top:30px;z-index:2;"></div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:var(--space-1);font-family:DM Sans;font-size:11px;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#5E5FE0;"></div>
+                    <span style="flex:1;">SlideForge</span>
+                    <strong>34.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:DM Sans;font-size:11px;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#40424B;"></div>
+                    <span style="flex:1;">Competitor A</span>
+                    <strong>22.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:DM Sans;font-size:11px;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#F59E0B;"></div>
+                    <span style="flex:1;">Competitor B</span>
+                    <strong>18.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:DM Sans;font-size:11px;color:#0A0B0F;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#10B981;"></div>
+                    <span style="flex:1;">Others</span>
+                    <strong>26.0%</strong>
+                </div>
+                </div>
+            </div>
+            <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">SlideForge commands 34% of the AI-powered presentation tool market.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Quarterly Revenue by Sector</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">85</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:65.4%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">60</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:46.2%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">45</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:34.6%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;max-width:100%;">Q1</span>
+                        <div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">92</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:70.8%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">68</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:52.3%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">50</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:38.5%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;max-width:100%;">Q2</span>
+                        <div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">110</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:84.6%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">75</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:57.7%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">58</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:44.6%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;max-width:100%;">Q3</span>
+                        <div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:0px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">130</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:100.0%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">88</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:67.7%;min-height:4px;background:#FF8C6B;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#EDEEF5;line-height:1;text-align:center;">70</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:23%;height:53.8%;min-height:4px;background:#3ECFA0;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin-top:6px;text-align:center;max-width:100%;">Q4</span>
+                        
+                    </div></div><div style="display:flex;justify-content:center;gap:12px;margin-top:6px;"><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#767CFF;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Tech</span>
+                    </div><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#FF8C6B;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Health</span>
+                    </div><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#3ECFA0;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#CBCDD8;">Finance</span>
+                    </div></div><p style="font-family:DM Sans;font-size:10px;color:#CBCDD8;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">Tech and Health sectors drive 70% of total quarterly revenue.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Feature Adoption Rates</h2><div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">65</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:70%;height:83.3%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;max-width:100%;">CLI</span>
+                        
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">78</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:70%;height:100.0%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;max-width:100%;">MCP</span>
+                        
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">52</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:70%;height:66.7%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;max-width:100%;">Export</span>
+                        
+                    </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:2px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                <div style="font-family:DM Sans;font-size:8px;font-weight:800;color:#0A0B0F;line-height:1;text-align:center;">41</div>
+                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                    <div style="width:70%;height:52.6%;min-height:4px;background:#767CFF;border-radius:3px 3px 0 0;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-family:DM Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;max-width:100%;">Themes</span>
+                        
+                    </div></div><div style="display:flex;justify-content:center;gap:12px;margin-top:6px;"><div style="display:flex;align-items:center;gap:4px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:#767CFF;flex-shrink:0;"></div>
+                        <span style="font-family:DM Sans;font-size:8px;color:#40424B;">Adoption</span>
+                    </div></div><p style="font-family:DM Sans;font-size:10px;color:#40424B;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">MCP integration saw fastest adoption at 78% in first quarter.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Version Performance Comparison</h2><div style="width:100%;margin-top:20px;">
+            <div style="font-family:DM Sans;font-size:11px;font-weight:800;color:#7478FC;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">P99 Latency (ms)</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:DM Sans;font-size:10px;color:#EDEEF5;font-weight:700;line-height:1.2;">
+                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">v2.0 (Legacy)</span>
+                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">v3.0 (Current)</span>
+            </div>
+            <div style="width:100%;height:16px;background:#2A2C3D30;border-radius:8px;overflow:hidden;display:flex;">
+                <div style="width:83.3%;height:100%;background:#7478FC;border-radius:8px 0 0 8px;"></div>
+                <div style="width:16.7%;height:100%;background:#CBCDD8;border-radius:0 8px 8px 0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:Playfair Display;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:#7478FC;text-align:left;white-space:nowrap;flex-shrink:0;">120 P99 Latency (ms)</span>
+                <span style="color:#CBCDD8;text-align:right;white-space:nowrap;flex-shrink:0;">24 P99 Latency (ms)</span>
+            </div>
+        </div><p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">v3.0 delivers 5x latency reduction under peak concurrent load.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04; position: absolute; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Cloud Provider Benchmark</h2><div style="width:100%;margin-top:20px;">
+            <div style="font-family:DM Sans;font-size:11px;font-weight:800;color:#5B5CDD;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">Cold Start (ms)</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:DM Sans;font-size:10px;color:#0A0B0F;font-weight:700;line-height:1.2;">
+                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">AWS Lambda</span>
+                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">GCP Cloud Run</span>
+            </div>
+            <div style="width:100%;height:16px;background:#C5C7D130;border-radius:8px;overflow:hidden;display:flex;">
+                <div style="width:36.0%;height:100%;background:#5B5CDD;border-radius:8px 0 0 8px;"></div>
+                <div style="width:64.0%;height:100%;background:#40424B;border-radius:0 8px 8px 0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:Playfair Display;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:#5B5CDD;text-align:left;white-space:nowrap;flex-shrink:0;">180 Cold Start (ms)</span>
+                <span style="color:#40424B;text-align:right;white-space:nowrap;flex-shrink:0;">320 Cold Start (ms)</span>
+            </div>
+        </div><p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">AWS leads in cold start performance; GCP in sustained throughput.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">User Conversion Funnel</h2>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;"><div style="width:100%;background:#767CFF;opacity:1.00;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Impressions</span>
+                    <strong style="font-family:DM Sans;font-size:12px;color:white;">100000</strong>
+                </div><div style="text-align:center;font-size:10px;color:#767CFF99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#EDEEF5;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Sign-ups</span>
+                    <div style="width:27%;background:#767CFF;opacity:0.85;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#EDEEF5;flex:1;">15000</strong>
+                </div><div style="text-align:center;font-size:10px;color:#767CFF99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#EDEEF5;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Activated</span>
+                    <div style="width:22%;background:#767CFF;opacity:0.70;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#EDEEF5;flex:1;">8500</strong>
+                </div><div style="text-align:center;font-size:10px;color:#767CFF99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#EDEEF5;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Subscribed</span>
+                    <div style="width:17%;background:#767CFF;opacity:0.55;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#EDEEF5;flex:1;">2400</strong>
+                </div></div>
+            <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:12px 0 0;line-height:1.4;text-align:center;width:100%;opacity:0.85;">2.4% overall conversion rate from impression to paid subscriber.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Sales Pipeline</h2>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;"><div style="width:100%;background:#5E5FE0;opacity:1.00;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Leads</span>
+                    <strong style="font-family:DM Sans;font-size:12px;color:white;">5000</strong>
+                </div><div style="text-align:center;font-size:10px;color:#5E5FE099;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Qualified</span>
+                    <div style="width:35%;background:#5E5FE0;opacity:0.85;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#0A0B0F;flex:1;">1200</strong>
+                </div><div style="text-align:center;font-size:10px;color:#5E5FE099;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Demo</span>
+                    <div style="width:25%;background:#5E5FE0;opacity:0.70;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#0A0B0F;flex:1;">600</strong>
+                </div><div style="text-align:center;font-size:10px;color:#5E5FE099;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Proposal</span>
+                    <div style="width:19%;background:#5E5FE0;opacity:0.55;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#0A0B0F;flex:1;">280</strong>
+                </div><div style="text-align:center;font-size:10px;color:#5E5FE099;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:DM Sans;font-size:10px;font-weight:700;color:#0A0B0F;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Closed Won</span>
+                    <div style="width:16%;background:#5E5FE0;opacity:0.40;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:DM Sans;font-size:12px;color:#0A0B0F;flex:1;">95</strong>
+                </div></div>
+            <p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:12px 0 0;line-height:1.4;text-align:center;width:100%;opacity:0.85;">Lead-to-close conversion across 6-month pipeline window.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; opacity: 0.04; inset: 0; background: var(--texture-grain); position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Team Skill Assessment</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="160.0,84.0 175.2,95.1 169.4,112.9 150.6,112.9 144.8,95.1" fill="none" stroke="#2A2C3D33" stroke-width="1" /><polygon points="160.0,68.0 190.4,90.1 178.8,125.9 141.2,125.9 129.6,90.1" fill="none" stroke="#2A2C3D33" stroke-width="1" /><polygon points="160.0,52.0 205.7,85.2 188.2,138.8 131.8,138.8 114.3,85.2" fill="none" stroke="#2A2C3D33" stroke-width="1" /><polygon points="160.0,36.0 220.9,80.2 197.6,151.8 122.4,151.8 99.1,80.2" fill="none" stroke="#2A2C3D33" stroke-width="1" /><polygon points="160.0,20.0 236.1,75.3 207.0,164.7 113.0,164.7 83.9,75.3" fill="none" stroke="#2A2C3D33" stroke-width="1" />
+            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#2A2C3D33" stroke-width="1" /><text x="160.0" y="13.0" font-size="10px" font-weight="700" fill="#EDEEF5" text-anchor="middle">Frontend (90)</text><line x1="160" y1="100" x2="236.1" y2="75.3" stroke="#2A2C3D33" stroke-width="1" /><text x="251.4" y="75.2" font-size="10px" font-weight="700" fill="#EDEEF5" text-anchor="start">Backend (85)</text><line x1="160" y1="100" x2="207.0" y2="164.7" stroke="#2A2C3D33" stroke-width="1" /><text x="217.3" y="175.8" font-size="10px" font-weight="700" fill="#EDEEF5" text-anchor="start">DevOps (78)</text><line x1="160" y1="100" x2="113.0" y2="164.7" stroke="#2A2C3D33" stroke-width="1" /><text x="102.7" y="175.8" font-size="10px" font-weight="700" fill="#EDEEF5" text-anchor="end">Security (92)</text><line x1="160" y1="100" x2="83.9" y2="75.3" stroke="#2A2C3D33" stroke-width="1" /><text x="68.6" y="75.2" font-size="10px" font-weight="700" fill="#EDEEF5" text-anchor="end">Testing (88)</text>
+            <polygon points="160.0,21.7 230.3,77.2 199.9,154.9 113.0,164.7 87.2,76.4" fill="#767CFF" fill-opacity="0.25" stroke="#767CFF" stroke-width="2" />
+            <circle cx="160.0" cy="21.7" r="4" fill="#767CFF" stroke="#ffffff" stroke-width="1.5" /><circle cx="230.3" cy="77.2" r="4" fill="#767CFF" stroke="#ffffff" stroke-width="1.5" /><circle cx="199.9" cy="154.9" r="4" fill="#767CFF" stroke="#ffffff" stroke-width="1.5" /><circle cx="113.0" cy="164.7" r="4" fill="#767CFF" stroke="#ffffff" stroke-width="1.5" /><circle cx="87.2" cy="76.4" r="4" fill="#767CFF" stroke="#ffffff" stroke-width="1.5" />
+        </svg></div><p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">Cross-functional competency mapping across engineering teams.</p></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Playfair Display; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Product Competitiveness</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="160.0,84.0 175.2,95.1 169.4,112.9 150.6,112.9 144.8,95.1" fill="none" stroke="#C5C7D133" stroke-width="1" /><polygon points="160.0,68.0 190.4,90.1 178.8,125.9 141.2,125.9 129.6,90.1" fill="none" stroke="#C5C7D133" stroke-width="1" /><polygon points="160.0,52.0 205.7,85.2 188.2,138.8 131.8,138.8 114.3,85.2" fill="none" stroke="#C5C7D133" stroke-width="1" /><polygon points="160.0,36.0 220.9,80.2 197.6,151.8 122.4,151.8 99.1,80.2" fill="none" stroke="#C5C7D133" stroke-width="1" /><polygon points="160.0,20.0 236.1,75.3 207.0,164.7 113.0,164.7 83.9,75.3" fill="none" stroke="#C5C7D133" stroke-width="1" />
+            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#C5C7D133" stroke-width="1" /><text x="160.0" y="13.0" font-size="10px" font-weight="700" fill="#0A0B0F" text-anchor="middle">Speed (95)</text><line x1="160" y1="100" x2="236.1" y2="75.3" stroke="#C5C7D133" stroke-width="1" /><text x="251.4" y="75.2" font-size="10px" font-weight="700" fill="#0A0B0F" text-anchor="start">UX (82)</text><line x1="160" y1="100" x2="207.0" y2="164.7" stroke="#C5C7D133" stroke-width="1" /><text x="217.3" y="175.8" font-size="10px" font-weight="700" fill="#0A0B0F" text-anchor="start">Pricing (90)</text><line x1="160" y1="100" x2="113.0" y2="164.7" stroke="#C5C7D133" stroke-width="1" /><text x="102.7" y="175.8" font-size="10px" font-weight="700" fill="#0A0B0F" text-anchor="end">Ecosystem (75)</text><line x1="160" y1="100" x2="83.9" y2="75.3" stroke="#C5C7D133" stroke-width="1" /><text x="68.6" y="75.2" font-size="10px" font-weight="700" fill="#0A0B0F" text-anchor="end">Support (88)</text>
+            <polygon points="160.0,20.0 225.7,78.7 204.5,161.3 122.9,151.1 89.5,77.1" fill="#5E5FE0" fill-opacity="0.25" stroke="#5E5FE0" stroke-width="2" />
+            <circle cx="160.0" cy="20.0" r="4" fill="#5E5FE0" stroke="#ffffff" stroke-width="1.5" /><circle cx="225.7" cy="78.7" r="4" fill="#5E5FE0" stroke="#ffffff" stroke-width="1.5" /><circle cx="204.5" cy="161.3" r="4" fill="#5E5FE0" stroke="#ffffff" stroke-width="1.5" /><circle cx="122.9" cy="151.1" r="4" fill="#5E5FE0" stroke="#ffffff" stroke-width="1.5" /><circle cx="89.5" cy="77.1" r="4" fill="#5E5FE0" stroke="#ffffff" stroke-width="1.5" />
+        </svg></div><p style="font-family:DM Sans;font-size:11px;color:#40424B;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">SlideForge vs industry benchmarks across key dimensions.</p></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Complexity vs Latency</h2>
+            <div style="width:100%;height:195px;border-radius:0;overflow:hidden;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><svg width="100%" height="185px" viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="147.0" x2="296" y2="147.0" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="150.0" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">2.1</text><line x1="50" y1="87.5" x2="296" y2="87.5" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="90.5" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">8.3</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="end">14.5</text><line x1="50.0" y1="28" x2="50.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">100</text><line x1="173.0" y1="28" x2="173.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">950</text><line x1="296.0" y1="28" x2="296.0" y2="147" stroke="#2A2C3D44" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="161" font-size="8.5px" font-weight="600" fill="#CBCDD8" text-anchor="middle">1800</text>
+            <path d="M 72.0 129.0 L 89.8 120.3 L 119.5 108.2 L 155.2 90.8 L 202.7 68.1 L 274.0 46.0" fill="none" stroke="#767CFF" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <g>
+                <circle cx="72.0" cy="129.0" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="113.5" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">100,2</text>
+            </g><g>
+                <circle cx="89.8" cy="120.3" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="89.8" y="104.8" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">250,3</text>
+            </g><g>
+                <circle cx="119.5" cy="108.2" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="119.5" y="92.8" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">500,5</text>
+            </g><g>
+                <circle cx="155.2" cy="90.8" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="155.2" y="75.3" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">800,8</text>
+            </g><g>
+                <circle cx="202.7" cy="68.1" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="202.7" y="52.6" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">1200,11</text>
+            </g><g>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#767CFF" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#EDEEF5" text-anchor="middle" font-weight="800">1800,14</text>
+            </g>
+            <text x="173" y="183" font-size="9px" font-weight="800" fill="#CBCDD8" text-anchor="middle" letter-spacing="0.05em">Slide Complexity (chars)</text>
+            <text x="50" y="14" font-size="9px" font-weight="800" fill="#CBCDD8" text-anchor="start" letter-spacing="0.05em">Render Time (ms)</text>
+        </svg></div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; z-index: 1; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Price vs Performance</h2>
+            <div style="width:100%;height:195px;border-radius:0;overflow:hidden;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><svg width="100%" height="185px" viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="147.0" x2="296" y2="147.0" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="150.0" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">100.0</text><line x1="50" y1="87.5" x2="296" y2="87.5" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="90.5" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">7550.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">15000.0</text><line x1="50.0" y1="28" x2="50.0" y2="147" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="161" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">0</text><line x1="173.0" y1="28" x2="173.0" y2="147" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="161" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">250</text><line x1="296.0" y1="28" x2="296.0" y2="147" stroke="#C5C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="161" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">499</text>
+            <path d="M 72.0 129.0 L 83.7 126.8 L 112.1 118.4 L 193.0 85.0 L 274.0 46.0" fill="none" stroke="#5E5FE0" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <g>
+                <circle cx="72.0" cy="129.0" r="11.5" fill="#5E5FE0" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="113.5" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">0,100</text>
+            </g><g>
+                <circle cx="83.7" cy="126.8" r="11.5" fill="#5E5FE0" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="83.7" y="111.3" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">29,500</text>
+            </g><g>
+                <circle cx="112.1" cy="118.4" r="11.5" fill="#5E5FE0" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="112.1" y="102.9" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">99,2000</text>
+            </g><g>
+                <circle cx="193.0" cy="85.0" r="11.5" fill="#5E5FE0" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="193.0" y="69.5" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">299,8000</text>
+            </g><g>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#5E5FE0" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">499,15000</text>
+            </g>
+            <text x="173" y="183" font-size="9px" font-weight="800" fill="#40424B" text-anchor="middle" letter-spacing="0.05em">Monthly Cost ($)</text>
+            <text x="50" y="14" font-size="9px" font-weight="800" fill="#40424B" text-anchor="start" letter-spacing="0.05em">Slides Generated</text>
+        </svg></div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Performance Benchmarks</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #2A2C3D;border-radius:0;overflow:hidden;box-sizing:border-box;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#EDEEF5;background:#767CFF18;border-bottom:1px solid #2A2C3D;text-transform:uppercase;letter-spacing:0.06em;">Metric</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#EDEEF5;background:#767CFF18;border-bottom:1px solid #2A2C3D;text-transform:uppercase;letter-spacing:0.06em;">v2.0</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#EDEEF5;background:#767CFF18;border-bottom:1px solid #2A2C3D;text-transform:uppercase;letter-spacing:0.06em;">v3.0</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#EDEEF5;background:#767CFF18;border-bottom:1px solid #2A2C3D;text-transform:uppercase;letter-spacing:0.06em;">Δ</th></tr></thead>
+                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-weight:800;color:#EDEEF5;">Compilation</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">45ms</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">8ms</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">5.6x</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-weight:800;color:#EDEEF5;">Memory</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">120MB</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">24MB</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">5.0x</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">PNG Export</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">1.2s</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">0.3s</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">4.0x</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-weight:800;color:#EDEEF5;">Carousel Gen</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">2.8s</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:DM Sans;color:#CBCDD8;">0.4s</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2C3D18;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">7.0x</span></td></tr></tbody>
+                </table>
+            </div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Feature Comparison Matrix</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-radius:0;overflow:hidden;box-sizing:border-box;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Feature</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Free</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Pro</th><th style="padding:10px 14px;text-align:left;font-family:Playfair Display;font-size:10.5px;font-weight:900;color:#0A0B0F;background:#5E5FE018;border-bottom:1px solid #C5C7D1;text-transform:uppercase;letter-spacing:0.06em;">Enterprise</th></tr></thead>
+                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-weight:800;color:#0A0B0F;">Slides/mo</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">50</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Unlimited</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Unlimited</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-weight:800;color:#0A0B0F;">Themes</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">3</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">15</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Custom</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">Export</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">PNG</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">PNG + PDF</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">All</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:Playfair Display;font-weight:800;color:#0A0B0F;">Support</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Community</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Email</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #C5C7D118;"><span style="font-family:DM Sans;color:#40424B;">Dedicated</span></td></tr></tbody>
+                </table>
+            </div>
+            <p style="font-family:DM Sans;font-size:10.5px;color:#40424B;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
+        </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:48px 36px 56px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Architecture Pillars" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div></div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:8px;">
+                    <h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #EDEEF5; margin: 0 0 6px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Architecture Pillars</h2>
+                    <div style="display:flex;flex-direction:column;gap:6px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:DM Sans;font-size:12px;font-weight:800;color:#EDEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Compile Pipeline</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.45;">Sub-10ms deterministic slide rendering via Rust native binary with zero runtime dependencies.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:DM Sans;font-size:12px;font-weight:800;color:#EDEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Validation Engine</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.45;">Runtime overflow detection catches text clipping before export — never in production HTML.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2C3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:DM Sans;font-size:12px;font-weight:800;color:#EDEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Token System</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#CBCDD8;margin:0;line-height:1.45;">Design tokens govern typography, spacing, and color across all 47 slide types uniformly.</p>
+                </div>
+            </div></div>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;"><h2 style="font-family: Playfair Display; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Technical Specifications</h2><div style="display:flex;gap:12px;width:100%;"><div style="flex:1;min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-top:3px solid #5E5FE0;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">01 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#0A0B0F;margin:0 0 6px;line-height:1.2;">Rendering</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#40424B;line-height:1.45;margin:0;">Native Rust binary, sub-10ms per slide, 420×525 base composition exported to target aspect ratios.</p>
+                </div>
+                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#5E5FE0;background:#5E5FE015;padding:3px 8px;border-radius:999px;width:fit-content;">⚡ High Speed</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-top:3px solid #5E5FE0;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">02 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#0A0B0F;margin:0 0 6px;line-height:1.2;">Validation</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#40424B;line-height:1.45;margin:0;">Runtime text-overflow detection, dynamic font scaling, overflow:hidden only on outermost container.</p>
+                </div>
+                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#5E5FE0;background:#5E5FE015;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+            </div><div style="flex:1;min-width:0;background:rgba(255,255,255,0.92);border:1px solid #C5C7D1;border-top:3px solid #5E5FE0;border-radius:0;padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:Playfair Display;font-size:10px;font-weight:900;color:#5E5FE0;background:#5E5FE018;padding:2px 6px;border-radius:4px;">03 PILLAR</span>
+                    </div>
+                    <h3 style="font-family:Playfair Display;font-size:14px;font-weight:900;color:#0A0B0F;margin:0 0 6px;line-height:1.2;">Export</h3>
+                    <p style="font-family:DM Sans;font-size:11px;color:#40424B;line-height:1.45;margin:0;">Headless Chromium PNG export, PDF rasterization, carousel HTML output with embedded tokens.</p>
+                </div>
+                <div style="font-family:Playfair Display;font-size:9.5px;font-weight:800;color:#5E5FE0;background:#5E5FE015;padding:3px 8px;border-radius:999px;width:fit-content;">🛡️ 100% Precision</div>
+            </div></div></div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--dark"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain); pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;height:100%;align-items:center;">
+                    <div style="position:relative;width:100%;height:100%;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600" alt="YoY Revenue Growth" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div>
+                    <div style="display:flex;flex-direction:column;justify-content:center;text-align:left;">
+            <span style="font-family:Playfair Display;font-size:48px;font-weight:800;color:#767CFF;margin:0 0 4px;line-height:1;">340%</span>
+            <span style="font-family:DM Sans;font-size:var(--text-sm);font-weight:600;color:#EDEEF5;margin:0 0 8px;line-height:1.2;text-transform:uppercase;letter-spacing:0.05em;">YoY Revenue Growth</span>
+            <p style="font-family:DM Sans;font-size:12px;color:#CBCDD8;margin:0;line-height:1.4;">Enterprise adoption drove record expansion in Q4 2024.</p>
+        </div>
+                </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div><div class="breadcrumb-chip "></div>
+  </div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div>
+<div class="slide slide--light"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5E5FE015 0px, transparent 50%), radial-gradient(at 80% 0%, #93700010 0px, transparent 50%), radial-gradient(at 0% 50%, #A2ACFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; position: absolute; inset: 0; z-index: 1; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;height:100%;align-items:center;">
+                    <div style="position:relative;width:100%;height:100%;border-radius: 0;-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600" alt="Compilation Speedup" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.02) brightness(1.02);" />
+                
+            </div>
+                    <div style="display:flex;flex-direction:column;justify-content:center;text-align:left;">
+            <span style="font-family:Playfair Display;font-size:48px;font-weight:800;color:#5E5FE0;margin:0 0 4px;line-height:1;">5.6x</span>
+            <span style="font-family:DM Sans;font-size:var(--text-sm);font-weight:600;color:#0A0B0F;margin:0 0 8px;line-height:1.2;text-transform:uppercase;letter-spacing:0.05em;">Compilation Speedup</span>
+            <p style="font-family:DM Sans;font-size:12px;color:#40424B;margin:0;line-height:1.4;">Rust native compiler delivers dramatic performance gains.</p>
+        </div>
+                </div>
+            </div>
+        </div>
+</div>  <div class="slide__overlay">
+    <div class="slide__overlay-top">
+      <span class="overlay__brand">SLIDEFORGE</span>
+      <span class="overlay__topic">DATAVIZ AUDIT</span>
+    </div>
+    <div class="slide__overlay-bottom">
+      <span class="overlay__url">slideforge.dev</span>
+      <span class="overlay__hashtags">#rust #slides</span>
+    </div>
+  </div>
+  <div class="breadcrumb-progress">
+    <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+  </div>
+</div>
+
+</div>
+</div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-actions">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="ig-caption">
+    <strong>@slideforge</strong> Swipe through for the full breakdown
+    <span class="timestamp">2 hours ago</span>
+  </div>
+</div>
+  </div>
+</div>
+
+
+<script>
+(function() {
+  const track = document.getElementById('carouselTrack');
+  const dots = document.querySelectorAll('.ig-dot');
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  const total = 28;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    track.style.transform = `translateX(${-current * 420}px)`;
+    if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; track.style.transition = 'none'; });
+  track.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; track.style.transition = 'none'; }, { passive: true });
+
+  function endDrag(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - x;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+    else goTo(current);
+  }
+
+  track.addEventListener('mouseup', (e) => endDrag(e.clientX));
+  track.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientX));
+  track.addEventListener('mouseleave', (e) => { if (isDragging) endDrag(e.clientX); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

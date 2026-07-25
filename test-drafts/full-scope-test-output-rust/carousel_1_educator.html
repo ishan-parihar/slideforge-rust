@@ -47,15 +47,15 @@
   --gradient-hero: linear-gradient(135deg, #010105 0%, #3828B330 50%, #010105 100%);
   --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  --glass-dark-bg: #010105CC;
-  --glass-dark-blur: 12px;
-  --glass-dark-border: 1px solid #2A2D3D40;
-  --glass-frosted-bg: #F2F4FFE6;
-  --glass-frosted-blur: 20px;
-  --glass-frosted-border: 1px solid #C4C7D130;
-  --glass-light-bg: #F2F4FFCC;
   --glass-light-blur: 12px;
+  --glass-light-bg: #F2F4FFCC;
   --glass-light-border: 1px solid #C4C7D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #010105CC;
+  --glass-dark-border: 1px solid #2A2D3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #F2F4FFE6;
+  --glass-frosted-border: 1px solid #C4C7D130;
   --font-heading: 'Plus Jakarta Sans', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --text-display-size: 31px;
@@ -412,26 +412,26 @@ body {
 <div class="carousel-track" id="carouselTrack">
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Core Offerings</h2><div style="margin-top:16px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">1</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Automated Workflows</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Saves 10+ hours per week of manual labor</div>
+                <h2 style="font-family: Plus Jakarta Sans; font-size: 25px; font-weight: 600; line-height: 1.12; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Platform Core Offerings</h2><div style="margin-top:12px;"><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#5B5CE7;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">1</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#0A0B0F;line-height:1.25;">Automated Workflows</div>
+                            <div style="font-size:13px;color:#40424B;margin-top:2px;line-height:1.35;">Saves 10+ hours per week of manual labor</div>
                         </div>
-                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">2</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Visual Insights</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Interactive data visualization on any screen size</div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#5B5CE7;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">2</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#0A0B0F;line-height:1.25;">Visual Insights</div>
+                            <div style="font-size:13px;color:#40424B;margin-top:2px;line-height:1.35;">Interactive data visualization on any screen size</div>
                         </div>
-                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;">
-                        <span style="color:#5B5CE7;font-weight:700;margin-right:12px;font-size:var(--text-sm);">3</span>
-                        <div>
-                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:500;color:#0A0B0F;">Multi-channel Export</div>
-                            <div style="font-size:13px;color:#40424B;margin-top:4px;">Deploy to LinkedIn, TikTok, and Instagram instantly</div>
+                    </div><div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:4px;">
+                        <span style="color:#5B5CE7;font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">3</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-family:Plus Jakarta Sans;font-size:16px;font-weight:600;color:#0A0B0F;line-height:1.25;">Multi-channel Export</div>
+                            <div style="font-size:13px;color:#40424B;margin-top:2px;line-height:1.35;">Deploy to LinkedIn, TikTok, and Instagram instantly</div>
                         </div>
                     </div></div>
             </div>
@@ -456,15 +456,32 @@ body {
   </div></div>
 <div class="slide slide--light"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #5B5CE715 0px, transparent 50%), radial-gradient(at 80% 0%, #966D0010 0px, transparent 50%), radial-gradient(at 0% 50%, #9EAAFF12 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
+            <div style="position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;justify-content:center;align-items:center;"><div style="background:#F2F4FF;border:1px solid #C4C7D133;box-shadow:0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);border-radius:0;padding:var(--space-4) 24px;text-align:center;width:100%;box-sizing:border-box;">
-            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-display-size, 52px);font-weight:900;color:#5B5CE7;margin:0;line-height:1;">$48.2K</span>
-            <h3 style="font-family:Plus Jakarta Sans;font-size:var(--text-base);font-weight:600;color:#0A0B0F;margin:var(--space-1) 0 6px;line-height:1.2;">Average MRR Growth</h3>
-            <span style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);font-weight:600;color:#10B981;display:block;margin-bottom:8px;">↑ 42% monthly increase</span>
-            <p style="font-family:Plus Jakarta Sans;font-size:var(--text-sm);color:#40424B;margin:0;line-height:1.4;">Audited by SlideForge financial tracking core</p>
-        </div></div>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: #0A0B0F; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Annual Revenue Growth (scatter)</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="92.0" x2="296" y2="92.0" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="95.0" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">25.0</text><line x1="50" y1="60.0" x2="296" y2="60.0" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="63.0" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">60.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="end">95.0</text><line x1="50.0" y1="28" x2="50.0" y2="92" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="106" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">10</text><line x1="173.0" y1="28" x2="173.0" y2="92" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="106" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">45</text><line x1="296.0" y1="28" x2="296.0" y2="92" stroke="#C4C7D144" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="106" font-size="8.5px" font-weight="600" fill="#40424B" text-anchor="middle">80</text>
+            <path d="M 72.0 74.0 L 100.9 66.0 L 158.6 56.8 L 274.0 46.0" fill="none" stroke="#5B5CE7" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <g>
+                <circle cx="72.0" cy="74.0" r="7.0" fill="#5B5CE7" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="63.0" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">Alpha</text>
+            </g><g>
+                <circle cx="100.9" cy="66.0" r="8.3" fill="#5B5CE7" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="100.9" y="53.7" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">Beta</text>
+            </g><g>
+                <circle cx="158.6" cy="56.8" r="9.3" fill="#5B5CE7" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="158.6" y="43.5" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">Gamma</text>
+            </g><g>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#5B5CE7" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#0A0B0F" text-anchor="middle" font-weight="800">Delta</text>
+            </g>
+            
+            
+        </svg></div>
+            <p style="font-family:Plus Jakarta Sans;font-size:11px;color:#40424B;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Projected growth rates across all corporate verticals.</p>
+        </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
@@ -485,48 +502,41 @@ body {
       <path d="M9 6L15 12L9 18"/>
     </svg>
   </div></div>
-<div class="slide slide--mesh"><div class="slide-composition">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+<div class="slide slide--dark has-bg-image"><div class="slide-composition">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475');background-size: cover; background-position: center;opacity:0.25;z-index:0;filter: contrast(1.06) brightness(1.06);-webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, black 90%, transparent 100%);"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.60));z-index:1;"></div>
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Monthly Active Users</h2><div style="display:flex;gap:var(--space-1);width:100%;height:142px;margin-top:16px;overflow:hidden;"><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">1200</div>
-                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:38.7%;min-height:8px;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Jan</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">1850</div>
-                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:59.7%;min-height:8px;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Feb</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">2700</div>
-                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:87.1%;min-height:8px;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Mar</span>
-            </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                <div style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:800;color:#0A0B0F;line-height:1;margin-bottom:6px;text-align:center;">3100</div>
-                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                    <div style="width:70%;height:100.0%;min-height:8px;background:#5B5CE7;border-radius:4px 4px 0 0;"></div>
-                </div>
-                <span style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin-top:6px;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Apr</span>
-            </div></div><p style="font-family:Plus Jakarta Sans;font-size:10px;color:#40424B;margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">Growth trajectory across product launch phases</p>
+            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Conversion Funnel</h2>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;"><div style="width:100%;background:#7379FF;opacity:1.00;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Visitors</span>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:white;">10000</strong>
+                </div><div style="text-align:center;font-size:10px;color:#7379FF99;margin:2px 0;font-weight:bold;">↓</div><div style="width:44%;background:#7379FF;opacity:0.85;border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">Signups</span>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:white;">3500</strong>
+                </div><div style="text-align:center;font-size:10px;color:#7379FF99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#ECEEF5;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Activated</span>
+                    <div style="width:30%;background:#7379FF;opacity:0.70;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#ECEEF5;flex:1;">1800</strong>
+                </div><div style="text-align:center;font-size:10px;color:#7379FF99;margin:2px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:Plus Jakarta Sans;font-size:10px;font-weight:700;color:#ECEEF5;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Subscribed</span>
+                    <div style="width:22%;background:#7379FF;opacity:0.55;border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:Plus Jakarta Sans;font-size:12px;color:#ECEEF5;flex:1;">890</strong>
+                </div></div>
+            
         </div>
             </div>
         </div>
 </div>  <div class="slide__overlay">
     <div class="slide__overlay-top">
-      <span class="overlay__brand">NexusAI</span>
-      <span class="overlay__topic">Rust Scope Test: 1</span>
+      <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">NexusAI</span>
+      <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Rust Scope Test: 1</span>
     </div>
     <div class="slide__overlay-bottom">
-      <span class="overlay__url">https://nexusai.io</span>
-      <span class="overlay__hashtags">#nexusai #educator</span>
+      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">https://nexusai.io</span>
+      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#nexusai #educator</span>
     </div>
   </div>
   <div class="breadcrumb-progress">
@@ -539,14 +549,12 @@ body {
   </div></div>
 <div class="slide slide--mesh"><div class="slide-composition">
 <div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:80px var(--space-6) 80px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Plus Jakarta Sans; font-size: 20px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Feature Comparison</h2><table style="width:100%;border-collapse:collapse;margin-top:12px;">
-            <thead><tr></tr></thead>
-            <tbody><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Slides/mo</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">50</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">500</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Unlimited</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">Export</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">PNG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">PNG + SVG</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:transparent;border-bottom:1px solid #C4C7D120;">All Formats</td></tr><tr><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Support</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Community</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Email</td><td style="padding:8px 12px;font-family:Plus Jakarta Sans;font-size:11px;color:#0A0B0F;background:#C4C7D115;border-bottom:1px solid #C4C7D120;">Priority</td></tr></tbody>
-        </table>
+            <div class="slide-content" style="position:relative;z-index:10;padding:80px 48px var(--space-12);display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;overflow:hidden;">
+                <div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
+            <h2 style="font-family:Plus Jakarta Sans;font-size:22px;font-weight:700;color:#0A0B0F;margin:0 0 16px;line-height:1.2;">Principles of Aesthetic Layouts</h2>
+            <div style="margin-top:4px;"><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Aesthetics are a primary developer criteria. Using generic colors or raw gray backgrounds results in amateur layouts.</p><p style="font-family:Plus Jakarta Sans;font-size:14px;color:#40424B;margin:0 0 12px;line-height:1.6;">Always leverage duotone gradients, fine noise textures, and micro-interactions.</p></div>
         </div>
             </div>
         </div>
