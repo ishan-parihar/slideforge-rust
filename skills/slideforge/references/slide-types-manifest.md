@@ -44,7 +44,6 @@ These slides render charts, gauges, tables, and metric indicators:
 | `metric_grid` | `title`, `metrics` | `variant` | 2x2 grid of key performance metrics |
 | `comparison_bars` | `title`, `comparison` | `description`, `variant` | Direct comparison between two values |
 | `progress_rings` | `title`, `items` | `description`, `variant` | concentric circular progress loops |
-| `metric_card` | `value`, `label` | `trend`, `context`, `variant` | Prominent metric card |
 | `stat_row` | `title`, `stats` | `variant` | Row of 3 key statistics |
 
 ---

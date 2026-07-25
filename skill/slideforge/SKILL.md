@@ -7,7 +7,7 @@ description: >-
   visual content. Also use when the user mentions "carousel", "slide deck",
   "Instagram post", "TikTok content", "slide generator", or wants to generate
   HTML slides with design validation. SlideForge supports 47 slide types across
-  6 categories (Text, Data Viz, Metrics, Story, Image, Conversion), 6 brand
+  6 categories (Text, Data Viz, Story, Image, Conversion), 6 brand
   archetypes, 6 visual themes, and 4 aspect ratios with a build-time validator
   that catches layout, contrast, and composition issues.
 ---
@@ -182,9 +182,6 @@ MCP configuration for Claude Desktop, Cursor, etc.:
 
 ### Conversion (1 type)
 `qr_destination`
-
-### Metrics (1 type)
-`metric_card`
 
 ## Key Parameters
 

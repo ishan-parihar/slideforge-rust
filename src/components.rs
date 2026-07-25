@@ -475,7 +475,7 @@ fn get_glass_container(tokens: &DesignTokens, is_dark: bool) -> (String, String)
             .unwrap_or_else(|| "var(--radius-md)".to_string());
         (
             format!(
-                r#"<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:{};padding:var(--space-8);">"#,
+                r#"<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:{};padding:var(--space-8);margin-bottom:12px;">"#,
                 radius
             ),
             "</div>".to_string(),

@@ -306,12 +306,13 @@ pub fn hero_layout(
     } else {
         "center"
     }; // slide_base flex align needs center to keep vertically centered
+    // Reduced padding from 80px to 60px to give more room for glass container + blur
     slide_base(
         content_html,
         tokens,
         bg_style,
         decorations,
-        "80px var(--space-6) 80px",
+        "60px var(--space-6) 60px",
         justify_val,
     )
 }
