@@ -102,39 +102,8 @@ SLIDES = [
     {"slide_type": "cta", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"headline": "Join the Community", "button_text": "View on GitHub", "subheadline": "Contribute, report issues, request features.", "secondary_text": "100+ stars · Active development"}},
 
-    # ═══ SECTION: Comparison & Stats ═══
-    {"section": "SECTION 2 — Comparison & Stats"},
-
-    {"slide_type": "comparison", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Before vs After", "columns": ["v2.0 (Legacy)", "v3.0 (Current)"], "rows": [
-         ["Compile Time", "45ms", "8ms"],
-         ["Memory", "120MB", "24MB"],
-         ["PNG Export", "1.2s", "0.3s"]
-     ], "variant": "table"}},
-
-    {"slide_type": "comparison", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Cloud Benchmark", "columns": ["AWS Lambda", "GCP Cloud Run"], "rows": [
-         ["Cold Start", "180ms", "320ms"],
-         ["Cost/1M req", "$0.20", "$0.40"],
-         ["Max Memory", "10GB", "32GB"]
-     ], "variant": "table"}},
-
-    {"slide_type": "stat_row", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "System Performance", "stats": [
-         {"value": "10ms", "label": "P50 Latency"},
-         {"value": "24ms", "label": "P99 Latency"},
-         {"value": "99.9%", "label": "Uptime"}
-     ]}},
-
-    {"slide_type": "stat_row", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "User Growth", "stats": [
-         {"value": "12K", "label": "New Users"},
-         {"value": "3.2x", "label": "MoM Growth"},
-         {"value": "85%", "label": "Activation"}
-     ]}},
-
     # ═══ SECTION: Structured Content ═══
-    {"section": "SECTION 3 — Structured Content"},
+    {"section": "SECTION 2 — Structured Content"},
 
     {"slide_type": "timeline", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Release Milestones", "steps": [
@@ -174,7 +143,7 @@ SLIDES = [
 
     {"slide_type": "grid_cards", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Slide Categories", "cards": [
-         {"title": "Text & Layout", "description": "16 types for copy, structure, and emphasis", "icon": "📝"},
+         {"title": "Text & Layout", "description": "13 types for copy, structure, and emphasis", "icon": "📝"},
          {"title": "Data Viz", "description": "11 types for charts, gauges, and metrics", "icon": "📊"},
          {"title": "Story", "description": "10 types for narrative flows", "icon": "📖"},
          {"title": "Image", "description": "8 types for visual compositions", "icon": "🖼️"}
@@ -201,24 +170,10 @@ SLIDES = [
      "params": {"title": "Validation Philosophy", "body": "Our validator catches layout issues at build time: text overflow, contrast violations, clipped content, and composition errors. It runs on the rendered HTML, not the source — what you validate is what you ship.", "variant": "default"}},
 
     {"slide_type": "section_divider", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Text & Layout", "kicker": "SECTION", "subtitle": "16 slide types for copy, structure, and emphasis", "variant": "default"}},
+     "params": {"title": "Text & Layout", "kicker": "SECTION", "subtitle": "13 slide types for copy, structure, and emphasis", "variant": "default"}},
 
     {"slide_type": "section_divider", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "End of Audit", "kicker": "COMPLETE", "subtitle": "All 16 text/layout types rendered in both themes", "variant": "default"}},
-
-    {"slide_type": "text_columns", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Technical Specifications", "columns": [
-         {"heading": "Rendering", "body": "Native Rust binary, sub-10ms per slide, 420×525 base composition exported to target aspect ratios."},
-         {"heading": "Validation", "body": "Runtime text-overflow detection, dynamic font scaling, overflow:hidden only on outermost container."},
-         {"heading": "Export", "body": "Headless Chromium PNG export, PDF rasterization, carousel HTML output with embedded tokens."}
-     ]}},
-
-    {"slide_type": "text_columns", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Platform Targets", "columns": [
-         {"heading": "Instagram", "body": "4:5 portrait, 1:1 square, 9:16 story/reels — all from same composition."},
-         {"heading": "LinkedIn", "body": "4:5 landscape, 1:1 square — professional themes, CTA-optimized."},
-         {"heading": "TikTok", "body": "9:16 vertical — bold themes, high-contrast for feed retention."}
-     ]}},
+     "params": {"title": "End of Audit", "kicker": "COMPLETE", "subtitle": "All 13 text/layout types rendered in both themes", "variant": "default"}},
 ]
 
 
