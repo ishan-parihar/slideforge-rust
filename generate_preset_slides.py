@@ -439,7 +439,7 @@ def preset_content(preset_id):
     # Arc: Frustration → Clarity → Hope → Conviction
     elif preset_id == "contrast_demonstration":
         return [
-            # headline_subheadline
+            # hero
             {"headline": "Manual Design vs. Nexus Composition", "subheadline": "Same goal. Radically different outcomes."},
             # list (manual)
             {"title": "The Manual Way", "items": [

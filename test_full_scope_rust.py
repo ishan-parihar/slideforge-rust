@@ -45,10 +45,6 @@ SLIDE_CONTENT = {
     "grid_cards": [
         {"title": "Platform Capabilities", "cards": [{"icon": "🤖", "title": "AI Models", "description": "Custom LLMs"}, {"icon": "📊", "title": "Analytics", "description": "Visual reports"}, {"icon": "🔒", "title": "Security", "description": "Role-based access"}]},
     ],
-    "headline_subheadline": [
-        {"headline": "The Next Chapter", "subheadline": "Announcing our $20M Series B funding round."},
-        {"headline": "A New Way to Build", "subheadline": "Clean code interfaces for modern teams."},
-    ],
     "definition": [
         {"term": "Responsive Web Design", "definition": "An approach to web design that makes web pages render well on a variety of devices and window or screen sizes.", "context": "Front-end Development"},
     ],

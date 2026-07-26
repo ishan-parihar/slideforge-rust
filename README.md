@@ -91,7 +91,7 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.):
 
 | Category | Types |
 |----------|-------|
-| **Text & Layout** | hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, headline_subheadline, definition, text_block, section_divider, text_columns |
+| **Text & Layout** | hero, feature, list, quote, cta, comparison, stat_row, timeline, callout, split_features, grid_cards, definition, text_block, section_divider, text_columns |
 | **Data Visualization** | chart, scatter_plot, gauge, radar_chart, column_chart, table, metric_sparkline, funnel_chart, metric_grid, comparison_bars, progress_rings |
 | **Story** | problem_solution, myth_fact, case_study_result, testimonial_avatar, before_after_story, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map |
 | **Image** | image_caption, image_headline, image_quote, image_callout, image_stat, image_gallery, image_collage, image_comparison |

@@ -37,7 +37,6 @@
         "hero",
         "image_headline",
         "section_divider",
-        "headline_subheadline",
         "image_caption"
       ],
       "narrative": [
@@ -1416,14 +1415,14 @@
         {
           "slot": "opening_hook",
           "required": true,
-          "slide_type": "headline_subheadline",
-          "theme": "bold",
-          "bg_style": "dark",
-          "archetype": "thought_leader",
-          "params_template": {
-            "headline": "{{contrast_headline}}",
-            "subheadline": "{{contrast_subheadline}}"
-          }
+           "slide_type": "hero",
+           "theme": "bold",
+           "bg_style": "dark",
+           "archetype": "thought_leader",
+           "params_template": {
+             "headline": "{{contrast_headline}}",
+             "subheadline": "{{contrast_subheadline}}"
+           }
         },
         {
           "slot": "option_a_record",
@@ -1518,7 +1517,7 @@
       "arc_structure": {
         "hook": {
           "types": [
-            "headline_subheadline"
+            "hero"
           ],
           "pool": [],
           "count": {

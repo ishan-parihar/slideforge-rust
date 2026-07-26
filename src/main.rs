@@ -1095,7 +1095,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "callout",
         "split_features",
         "grid_cards",
-        "headline_subheadline",
         "definition",
         "text_block",
         // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
@@ -1311,11 +1310,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                         {"icon": "📈", "title": "Real-time Metrics", "description": "Live reporting pipelines directly fed from Excel sheets."},
                         {"icon": "🎨", "title": "Aesthetic Presets", "description": "Polished responsive cards mapped dynamically to typography scale."}
                     ],
-                    "bg_style": rand_bg
-                }),
-                "headline_subheadline" => json!({
-                    "headline": format!("Announcing the Next Generation of {}", topic),
-                    "subheadline": "Unifying design system definitions across Rust and Python engines.",
                     "bg_style": rand_bg
                 }),
                 "definition" => json!({

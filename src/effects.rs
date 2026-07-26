@@ -8,15 +8,14 @@ pub fn glass_surface(
 ) -> HashMap<String, String> {
     let mut map = HashMap::new();
 
-    // Default glass properties if the key doesn't exist
-    let (bg, blur, border) = match variant {
-        "dark" => ("#010105CC", "12px", "1px solid #2A2D3D40"),
-        "frosted" => ("#F2F4FFE6", "20px", "1px solid #C4C7D130"),
-        _ => ("#F2F4FFCC", "12px", "1px solid #C4C7D140"), // light
+    // Glass backdrop-filter removed per design directive — retain bg/border only
+    let (bg, border) = match variant {
+        "dark" => ("#010105CC", "1px solid #2A2D3D40"),
+        "frosted" => ("#F2F4FFE6", "1px solid #C4C7D130"),
+        _ => ("#F2F4FFCC", "1px solid #C4C7D140"),
     };
 
     let mut glass_bg = bg.to_string();
-    let mut glass_blur = blur.to_string();
     let mut glass_border = border.to_string();
 
     if let Some(glass_obj) = tokens.glass.as_object() {
@@ -24,9 +23,6 @@ pub fn glass_surface(
             if let Some(v_obj) = v.as_object() {
                 if let Some(b) = v_obj.get("bg").and_then(|x| x.as_str()) {
                     glass_bg = b.to_string();
-                }
-                if let Some(bl) = v_obj.get("blur").and_then(|x| x.as_str()) {
-                    glass_blur = bl.to_string();
                 }
                 if let Some(bo) = v_obj.get("border").and_then(|x| x.as_str()) {
                     glass_border = bo.to_string();
@@ -36,14 +32,6 @@ pub fn glass_surface(
     }
 
     map.insert("background".to_string(), glass_bg);
-    map.insert(
-        "backdrop-filter".to_string(),
-        format!("blur({})", glass_blur),
-    );
-    map.insert(
-        "-webkit-backdrop-filter".to_string(),
-        format!("blur({})", glass_blur),
-    );
     map.insert("border".to_string(), glass_border);
     map.insert("border-radius".to_string(), border_radius.to_string());
     map

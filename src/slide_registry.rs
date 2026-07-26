@@ -162,15 +162,6 @@ pub fn get_registry() -> Value {
             "layout_family": "feature",
             "best_for": ["features", "use-cases", "categories", "team"]
         },
-        "headline_subheadline": {
-            "description": "Bold headline paired with a subheadline for emphasis",
-            "required_params": ["headline", "subheadline"],
-            "optional_params": ["badge", "text_align", "background_color", "variant"],
-            "variants": ["centered", "left-aligned", "large", "minimal"],
-            "default_variant": "centered",
-            "layout_family": "hero",
-            "best_for": ["opening", "section-intro", "key-message"]
-        },
         "definition": {
             "description": "Term definition with phonetic pronunciation and supporting context",
             "required_params": ["term", "definition", "phonetic"],
@@ -716,7 +707,6 @@ mod tests {
             "definition",
             "feature",
             "grid_cards",
-            "headline_subheadline",
             "hero",
             "list",
             // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings

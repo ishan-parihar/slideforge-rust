@@ -188,12 +188,6 @@ SLIDES = [
          {"title": "Dark", "description": "Dark-mode-first, glassmorphism", "icon": "🌙"}
      ], "cols": 2}},
 
-    {"slide_type": "headline_subheadline", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"headline": "SlideForge", "subheadline": "Rust-native carousel slide generator", "variant": "centered"}},
-
-    {"slide_type": "headline_subheadline", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"headline": "47 Slide Types", "subheadline": "One binary. Zero dependencies. Production ready.", "variant": "centered"}},
-
     {"slide_type": "definition", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"term": "Design Tokens", "definition": "Centralized design decisions (colors, spacing, typography, radii) encoded as platform-agnostic values that compile to CSS custom properties.", "phonetic": "deh-ZINE TOH-kens", "context": "SlideForge uses tokens for all 47 slide types.", "variant": "card"}},
 

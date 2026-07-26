@@ -168,8 +168,8 @@ MCP configuration for Claude Desktop, Cursor, etc.:
 
 ## Slide Type Catalog
 
-### Text & Layout (16 types)
-`hero`, `feature`, `list`, `quote`, `cta`, `comparison`, `stat_row`, `timeline`, `callout`, `split_features`, `grid_cards`, `headline_subheadline`, `definition`, `text_block`, `section_divider`, `text_columns`
+### Text & Layout (15 types)
+`hero`, `feature`, `list`, `quote`, `cta`, `comparison`, `stat_row`, `timeline`, `callout`, `split_features`, `grid_cards`, `definition`, `text_block`, `section_divider`, `text_columns`
 
 ### Data Visualization (11 types)
 `chart`, `scatter_plot`, `gauge`, `radar_chart`, `column_chart`, `table`, `metric_sparkline`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings`

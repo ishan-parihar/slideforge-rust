@@ -35,7 +35,6 @@ configure_design → generate_slide(s) → render_carousel → export_carousel_s
 | `callout` | Highlighted callout card | `title`, `text` |
 | `split_features` | Two-column feature list | `title`, `features` |
 | `grid_cards` | Grid of icon+title+desc cards | `title`, `cards` |
-| `headline_subheadline` | Large headline + body | `headline`, `subheadline` |
 | `definition` | Term definition style | `term`, `definition` |
 | `text_block` | Title + paragraph body | `title`, `body` |
 

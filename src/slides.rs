@@ -202,17 +202,6 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-.glass {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: var(--shadow-lg);
-}
-.slide--light .glass, .slide--mesh .glass {
-  background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(0,0,0,0.06);
-}
-
 .badge {
   display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
   border-radius: var(--radius-pill, 9999px); text-transform: uppercase;

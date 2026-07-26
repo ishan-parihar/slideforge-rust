@@ -465,24 +465,9 @@ pub fn render_themed_image(
 // Internal helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Returns (open_tag, close_tag) for a glass container on dark slides.
-fn get_glass_container(tokens: &DesignTokens, is_dark: bool) -> (String, String) {
-    if is_dark {
-        let radius = tokens
-            .radii
-            .get("md")
-            .cloned()
-            .unwrap_or_else(|| "var(--radius-md)".to_string());
-        (
-            format!(
-                r#"<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);border-radius:{};padding:var(--space-8);margin-bottom:12px;">"#,
-                radius
-            ),
-            "</div>".to_string(),
-        )
-    } else {
-        (String::new(), String::new())
-    }
+/// Returns empty tags — glass container removed per design directive.
+fn get_glass_container(_tokens: &DesignTokens, _is_dark: bool) -> (String, String) {
+    (String::new(), String::new())
 }
 
 /// Card styling tuple: (card_bg, card_border, card_blur) for dark/light contexts.
@@ -491,7 +476,7 @@ fn card_styles(tokens: &DesignTokens, is_dark: bool) -> (String, String, String)
         (
             "rgba(255,255,255,0.04)".to_string(),
             "1px solid rgba(255,255,255,0.08)".to_string(),
-            "backdrop-filter:var(--glass-dark-blur);-webkit-backdrop-filter:var(--glass-dark-blur);".to_string(),
+            String::new(),
         )
     } else {
         (
@@ -813,25 +798,6 @@ pub fn hero_slide(
     };
 
     let (gc, gx) = get_glass_container(tokens, is_dark);
-
-    // For light hero slides with a background image, use a light glass
-    // container so text has a backing and passes contrast validation.
-    let (gc, gx) = if !is_dark && !background_image.is_empty() && gc.is_empty() {
-        let radius = tokens
-            .radii
-            .get("md")
-            .cloned()
-            .unwrap_or_else(|| "var(--radius-md)".to_string());
-        (
-            format!(
-                r#"<div style="background:rgba(255,255,255,0.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.06);border-radius:{};padding:var(--space-6);box-shadow:var(--shadow-lg);">"#,
-                radius
-            ),
-            "</div>".to_string(),
-        )
-    } else {
-        (gc, gx)
-    };
 
     let effective_variant = variant;
 
@@ -2700,7 +2666,7 @@ pub fn grid_cards_slide(
         (
             "rgba(255,255,255,0.04)".to_string(),
             "1px solid rgba(255,255,255,0.08)".to_string(),
-            "backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);".to_string(),
+            String::new(),
         )
     } else {
         (
@@ -3210,84 +3176,7 @@ pub fn grid_cards_slide(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 12. headline_subheadline_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Big display heading + body text, centred or left-aligned.
-pub fn headline_subheadline_slide(
-    tokens: &DesignTokens,
-    headline: &str,
-    subheadline: &str,
-    bg_style: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let gradient_colors = if is_dark {
-        ("#FFFFFF", colors.text_primary.as_str())
-    } else {
-        (colors.text_primary.as_str(), colors.text_secondary.as_str())
-    };
-
-    let heading_html = heading_block(
-        headline,
-        tokens,
-        "display",
-        None,
-        true,
-        Some((gradient_colors.0, gradient_colors.1)),
-        "center",
-        "0 0 16px",
-        true,
-    );
-
-    let decor_html = format!(
-        r#"<div style="width: 60px; height: 3.5px; background: {}; margin: 24px auto; border-radius: 2px; box-shadow: 0 2px 10px {}40;"></div>"#,
-        colors.primary, colors.primary
-    );
-
-    let sub_html = if !subheadline.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:15px;color:{};margin:0;line-height:1.6;font-weight:400;text-wrap:balance;text-shadow:0 1px 2px rgba(0,0,0,0.05);">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(subheadline)
-        )
-    } else {
-        String::new()
-    };
-
-    let content = format!(
-        r#"<div style="text-align: center; max-width: 500px; margin: 0 auto; width:100%; position:relative; z-index:3;">
-            {}
-            {}
-            {}
-        </div>"#,
-        heading_html, decor_html, sub_html
-    );
-
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "80px 48px 80px",
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": "center",
-        "theme": theme
-    })
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 13. definition_slide
+// 12. definition_slide
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Term + definition layout (glossary-style).
@@ -6065,15 +5954,6 @@ pub fn dispatch_slide(
                 &s("padding"),
             ))
         }
-        "headline_subheadline" => Ok(headline_subheadline_slide(
-            tokens,
-            &s("headline"),
-            &s("subheadline"),
-            bg_style,
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
         "definition" => Ok(definition_slide(
             tokens,
             &s("term"),

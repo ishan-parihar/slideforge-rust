@@ -18,7 +18,6 @@ These slides focus on structuring copywriting, headings, bullets, quotes, and la
 | `callout` | `title`, `text` | `icon`, `icon_color`, `variant` | Warning, note, tips cards |
 | `split_features` | `title`, `features` | `variant`, `background_color` | Two column feature listings |
 | `grid_cards` | `title`, `cards` | `variant`, `cols` | 3-4 feature cards in a grid |
-| `headline_subheadline` | `headline` | `subheadline`, `variant` | Minimal text emphasis |
 | `definition` | `term`, `definition` | `context`, `variant` | Educational terms or glossary entries |
 | `text_block` | `title`, `body` | `variant` | Simple paragraph content |
 | `section_divider` | `title` | `kicker`, `subtitle`, `variant` | Slide deck chapter openers |

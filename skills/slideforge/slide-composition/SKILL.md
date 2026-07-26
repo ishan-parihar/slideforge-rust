@@ -13,7 +13,7 @@ To view templates, mandatory parameters, and specific layout limits, read the re
 
 ### 1. [Text & Layouts](file:///home/ishanp/.agents/skills/slideforge/slide-composition/text-layouts/SKILL.md)
 - **When to descend:** Your content consists of textual headers, lists, quotes, buttons, definitions, or callout blocks.
-- **Includes slide types:** `hero`, `feature`, `list`, `quote`, `cta`, `callout`, `split_features`, `grid_cards`, `headline_subheadline`, `definition`, `text_block`, `section_divider`, `text_columns`, `timeline`.
+- **Includes slide types:** `hero`, `feature`, `list`, `quote`, `cta`, `callout`, `split_features`, `grid_cards`, `definition`, `text_block`, `section_divider`, `text_columns`, `timeline`.
 
 ### 2. [Data Visualization](file:///home/ishanp/.agents/skills/slideforge/slide-composition/data-viz/SKILL.md)
 - **When to descend:** You need to show quantitative metrics, numeric comparisons, tables, charts, progress status, or sparklines.
