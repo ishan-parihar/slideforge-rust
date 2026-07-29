@@ -1733,13 +1733,7 @@ pub fn comparison_slide(
     let (card_title_fs, card_val_fs, card_header_fs, card_padding, gap) = if effective_variant == "cards" {
         if row_count >= 4 {
             // Many rows - aggressive scaling
-            if total_content_len > 200 {
-                (body_fs - 2, body_fs - 2, caption_fs - 2, "10px 14px", "6px")
-            } else if total_content_len > 150 {
-                (body_fs - 1, body_fs - 1, caption_fs - 1, "12px 16px", "8px")
-            } else {
-                (body_fs, body_fs, caption_fs, "12px 16px", "8px")
-            }
+            (body_fs - 2, body_fs - 2, caption_fs - 2, "10px 14px", "6px")
         } else if row_count >= 3 {
             // Medium number of rows
             if total_content_len > 150 {
@@ -1761,10 +1755,10 @@ pub fn comparison_slide(
         (body_fs, body_fs, caption_fs, "12px 16px", "10px")
     };
     
-    // Dynamic padding based on content density for cards variant
-    let content_padding = if effective_variant == "cards" && (row_count >= 4 || total_content_len > 200) {
-        "48px var(--space-6) 48px"
-    } else if effective_variant == "cards" && (row_count >= 3 || total_content_len > 150) {
+    // Dynamic padding based on content density for cards variant - more aggressive for 4+ rows
+    let content_padding = if effective_variant == "cards" && row_count >= 4 {
+        "40px var(--space-6) 40px"
+    } else if effective_variant == "cards" && row_count >= 3 {
         "60px var(--space-6) 60px"
     } else {
         "80px var(--space-6) 80px"
@@ -5066,13 +5060,7 @@ pub fn checklist_action_plan_slide(
     // Dynamic scaling based on item count and content length
     let (item_fs, num_fs, card_padding, gap, heading_fs) = if item_count >= 6 {
         // Many items - aggressive scaling
-        if total_content_len > 200 {
-            (caption_fs - 2, 10, "8px 12px", "6px", body_fs - 1)
-        } else if total_content_len > 150 {
-            (caption_fs - 1, 11, "10px 12px", "8px", body_fs)
-        } else {
-            (caption_fs, 12, "10px 12px", "8px", body_fs)
-        }
+        (caption_fs - 2, 10, "8px 12px", "6px", body_fs - 1)
     } else if item_count >= 4 {
         // Medium number of items
         if total_content_len > 150 {
@@ -5091,9 +5079,9 @@ pub fn checklist_action_plan_slide(
         }
     };
     
-    // Dynamic padding based on content density
-    let content_padding = if item_count >= 6 || total_content_len > 200 {
-        "48px var(--space-6) 48px"
+    // Dynamic padding based on content density - more aggressive for 6+ items
+    let content_padding = if item_count >= 6 {
+        "40px var(--space-6) 40px"
     } else if item_count >= 4 {
         "60px var(--space-6) 60px"
     } else {
@@ -5201,13 +5189,7 @@ pub fn pricing_plan_slide(
     // Dynamic scaling based on plan count and content length
     let (price_fs, name_fs, feature_fs, card_padding, button_fs, heading_fs) = if plan_count == 3 {
         // 3 plans - aggressive scaling
-        if total_content_len > 200 {
-            (body_fs - 2, caption_fs - 1, caption_fs - 2, "10px 12px 8px", caption_fs - 1, body_fs - 1)
-        } else if total_content_len > 150 {
-            (body_fs - 1, caption_fs, caption_fs - 1, "12px 14px 10px", caption_fs, body_fs)
-        } else {
-            (body_fs, caption_fs, caption_fs, "12px 14px 10px", caption_fs, body_fs)
-        }
+        (body_fs - 2, caption_fs - 1, caption_fs - 2, "10px 12px 8px", caption_fs - 1, body_fs - 1)
     } else if plan_count == 2 {
         // 2 plans - moderate scaling
         if total_content_len > 150 {
@@ -5226,9 +5208,9 @@ pub fn pricing_plan_slide(
         }
     };
     
-    // Dynamic padding based on content density
-    let content_padding = if plan_count == 3 || total_content_len > 200 {
-        "48px var(--space-6) 48px"
+    // Dynamic padding based on content density - more aggressive for 3 plans
+    let content_padding = if plan_count == 3 {
+        "40px var(--space-6) 40px"
     } else if plan_count == 2 {
         "60px var(--space-6) 60px"
     } else {
@@ -5545,14 +5527,8 @@ pub fn process_map_slide(
     
     // Dynamic scaling based on step count and content length
     let (title_fs, desc_fs, num_fs, card_padding, gap) = if step_count >= 6 {
-        // Many steps - aggressive scaling
-        if total_content_len > 180 {
-            (body_fs - 2, caption_fs - 1, 12, "12px 12px 10px", "8px")
-        } else if total_content_len > 150 {
-            (body_fs - 1, caption_fs, 12, "12px 14px 10px", "8px")
-        } else {
-            (body_fs - 1, caption_fs, 12, "12px 14px 10px", "8px")
-        }
+        // Many steps - aggressive scaling - forced for testing
+        (body_fs - 2, caption_fs - 1, 11, "10px 12px 8px", "6px")
     } else if step_count >= 4 {
         // Medium number of steps
         if total_content_len > 150 {
@@ -5576,9 +5552,9 @@ pub fn process_map_slide(
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
     
-    // Dynamic padding based on content density
-    let content_padding = if step_count >= 6 || total_content_len > 180 {
-        "48px var(--space-6) 48px"
+    // Dynamic padding based on content density - more aggressive for 6+ steps
+    let content_padding = if step_count >= 6 {
+        "40px var(--space-6) 40px"
     } else if step_count >= 4 {
         "60px var(--space-6) 60px"
     } else {
