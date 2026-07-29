@@ -1728,12 +1728,46 @@ pub fn comparison_slide(
         0
     };
     
-    let (card_title_fs, card_val_fs, card_header_fs) = if total_content_len > 400 {
-        (body_fs - 1, body_fs - 1, caption_fs - 1)
-    } else if total_content_len < 200 {
-        (body_fs + 1, body_fs + 1, caption_fs + 1)
+    let row_count = rows.len();
+    
+    let (card_title_fs, card_val_fs, card_header_fs, card_padding, gap) = if effective_variant == "cards" {
+        if row_count >= 4 {
+            // Many rows - aggressive scaling
+            if total_content_len > 200 {
+                (body_fs - 2, body_fs - 2, caption_fs - 2, "10px 14px", "6px")
+            } else if total_content_len > 150 {
+                (body_fs - 1, body_fs - 1, caption_fs - 1, "12px 16px", "8px")
+            } else {
+                (body_fs, body_fs, caption_fs, "12px 16px", "8px")
+            }
+        } else if row_count >= 3 {
+            // Medium number of rows
+            if total_content_len > 150 {
+                (body_fs - 1, body_fs - 1, caption_fs - 1, "12px 16px", "8px")
+            } else if total_content_len < 100 {
+                (body_fs + 1, body_fs + 1, caption_fs + 1, "14px 16px", "10px")
+            } else {
+                (body_fs, body_fs, caption_fs, "12px 16px", "10px")
+            }
+        } else {
+            // Few rows - can use larger fonts
+            if total_content_len < 80 {
+                (body_fs + 2, body_fs + 2, caption_fs + 2, "16px 18px", "12px")
+            } else {
+                (body_fs + 1, body_fs + 1, caption_fs + 1, "14px 16px", "10px")
+            }
+        }
     } else {
-        (body_fs, body_fs, caption_fs)
+        (body_fs, body_fs, caption_fs, "12px 16px", "10px")
+    };
+    
+    // Dynamic padding based on content density for cards variant
+    let content_padding = if effective_variant == "cards" && (row_count >= 4 || total_content_len > 200) {
+        "48px var(--space-6) 48px"
+    } else if effective_variant == "cards" && (row_count >= 3 || total_content_len > 150) {
+        "60px var(--space-6) 60px"
+    } else {
+        "80px var(--space-6) 80px"
     };
 
     let content = if columns.is_empty() {
@@ -1767,11 +1801,11 @@ pub fn comparison_slide(
                     ));
                 }
                 cards_html.push_str(&format!(
-                    r#"<div style="background:{};border:{};{}border-radius:{};padding:12px 16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                    r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:{}px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
                         <div style="font-family:{};font-size:{}px;font-weight:600;color:{};margin-bottom:8px;">{}</div>
                         <div style="display:flex;gap:8px;">{}</div>
                     </div>"#,
-                    card_bg, card_border, card_blur, radius_md,
+                    card_bg, card_border, card_blur, radius_md, card_padding, gap,
                     tokens.body_font, card_title_fs, colors.text_primary, escape_html(label),
                     values_html
                 ));
@@ -1915,7 +1949,7 @@ pub fn comparison_slide(
         tokens,
         bg_style,
         false,
-        "80px var(--space-6) 80px",
+        if effective_variant == "cards" { content_padding } else { "80px var(--space-6) 80px" },
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -5018,22 +5052,52 @@ pub fn checklist_action_plan_slide(
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
     
-    // Dynamic scaling based on content length
+    // Calculate item count and total content for aggressive scaling
+    let item_count = items.len();
     let total_content_len: usize = items.iter().take(6).map(|item| {
         let label = if item.is_string() {
             item.as_str().unwrap_or("").to_string()
         } else {
-            simple_text(item, &["label", "title", "task", "step", "description"])
+            simple_text(item, &["label", "title", "task", "step", "description", "text"])
         };
         label.len()
     }).sum();
     
-    let (item_fs, num_fs) = if total_content_len > 300 {
-        (caption_fs - 1, 11)
-    } else if total_content_len < 150 {
-        (caption_fs + 1, 13)
+    // Dynamic scaling based on item count and content length
+    let (item_fs, num_fs, card_padding, gap, heading_fs) = if item_count >= 6 {
+        // Many items - aggressive scaling
+        if total_content_len > 200 {
+            (caption_fs - 2, 10, "8px 12px", "6px", body_fs - 1)
+        } else if total_content_len > 150 {
+            (caption_fs - 1, 11, "10px 12px", "8px", body_fs)
+        } else {
+            (caption_fs, 12, "10px 12px", "8px", body_fs)
+        }
+    } else if item_count >= 4 {
+        // Medium number of items
+        if total_content_len > 150 {
+            (caption_fs - 1, 11, "10px 12px", "8px", body_fs)
+        } else if total_content_len < 80 {
+            (caption_fs + 1, 13, "12px 14px", "10px", body_fs + 1)
+        } else {
+            (caption_fs, 12, "12px 14px", "10px", body_fs)
+        }
     } else {
-        (caption_fs, 12)
+        // Few items - can use larger fonts
+        if total_content_len < 60 {
+            (caption_fs + 2, 14, "14px 16px", "12px", body_fs + 2)
+        } else {
+            (caption_fs + 1, 13, "14px 16px", "12px", body_fs + 1)
+        }
+    };
+    
+    // Dynamic padding based on content density
+    let content_padding = if item_count >= 6 || total_content_len > 200 {
+        "48px var(--space-6) 48px"
+    } else if item_count >= 4 {
+        "60px var(--space-6) 60px"
+    } else {
+        "72px 44px"
     };
     
     let rows = items
@@ -5044,16 +5108,17 @@ pub fn checklist_action_plan_slide(
             let label = if item.is_string() {
                 item.as_str().unwrap_or("").to_string()
             } else {
-                simple_text(item, &["label", "title", "task", "step", "description"])
+                simple_text(item, &["label", "title", "task", "step", "description", "text"])
             };
             format!(
-                r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:var(--space-1) 14px;">
+                r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:{};">
                     <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:800;flex-shrink:0;">{}</div>
                     <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1.45;">{}</div>
                 </div>"#,
                 card_bg,
                 colors.border,
                 radius,
+                card_padding,
                 colors.primary,
                 tokens.body_font,
                 num_fs,
@@ -5067,13 +5132,15 @@ pub fn checklist_action_plan_slide(
         .collect::<Vec<_>>()
         .join("");
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0;">{}</h2><div style="display:flex;flex-direction:column;gap:10px;">{}</div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;"><h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;">{}</h2><div style="display:flex;flex-direction:column;gap:{}px;">{}</div></div>"#,
         tokens.heading_font,
+        heading_fs,
         colors.text_primary,
         escape_html(title),
+        gap,
         rows
     );
-    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, content_padding, "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "checklist_action_plan", "theme": theme})
 }
@@ -5119,6 +5186,54 @@ pub fn pricing_plan_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let radius = current_component_radius(tokens, "card");
     let plan_count = plans.len().min(3).max(1);
+    
+    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
+    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
+    
+    // Calculate total content and plan count for aggressive scaling
+    let total_content_len: usize = plans.iter().take(3).map(|plan| {
+        let name = simple_text(plan, &["name", "title"]);
+        let features_arr = plan.get("features").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+        let features_len: usize = features_arr.iter().map(|f| f.as_str().unwrap_or("").len()).sum();
+        name.len() + features_len
+    }).sum();
+
+    // Dynamic scaling based on plan count and content length
+    let (price_fs, name_fs, feature_fs, card_padding, button_fs, heading_fs) = if plan_count == 3 {
+        // 3 plans - aggressive scaling
+        if total_content_len > 200 {
+            (body_fs - 2, caption_fs - 1, caption_fs - 2, "10px 12px 8px", caption_fs - 1, body_fs - 1)
+        } else if total_content_len > 150 {
+            (body_fs - 1, caption_fs, caption_fs - 1, "12px 14px 10px", caption_fs, body_fs)
+        } else {
+            (body_fs, caption_fs, caption_fs, "12px 14px 10px", caption_fs, body_fs)
+        }
+    } else if plan_count == 2 {
+        // 2 plans - moderate scaling
+        if total_content_len > 150 {
+            (body_fs - 1, caption_fs, caption_fs - 1, "12px 14px 10px", caption_fs, body_fs)
+        } else if total_content_len < 100 {
+            (body_fs + 1, caption_fs + 1, caption_fs + 1, "14px 16px 12px", caption_fs + 1, body_fs + 1)
+        } else {
+            (body_fs, caption_fs, caption_fs, "14px 16px 12px", caption_fs, body_fs)
+        }
+    } else {
+        // 1 plan - can use larger fonts
+        if total_content_len < 80 {
+            (body_fs + 2, caption_fs + 2, caption_fs + 2, "16px 18px 14px", caption_fs + 2, body_fs + 2)
+        } else {
+            (body_fs + 1, caption_fs + 1, caption_fs + 1, "14px 16px 12px", caption_fs + 1, body_fs + 1)
+        }
+    };
+    
+    // Dynamic padding based on content density
+    let content_padding = if plan_count == 3 || total_content_len > 200 {
+        "48px var(--space-6) 48px"
+    } else if plan_count == 2 {
+        "60px var(--space-6) 60px"
+    } else {
+        "72px 44px"
+    };
 
     let cards: Vec<String> = plans
         .iter()
@@ -5140,12 +5255,11 @@ pub fn pricing_plan_slide(
                 let text = f.as_str().unwrap_or("");
                 if !text.is_empty() {
                     features_html.push_str(&format!(
-                        r#"<li style="display:flex;align-items:center;gap:6px;font-family:{};font-size:10.5px;color:{};line-height:1.3;margin-bottom:4px;">
-                            <span style="color:{};font-weight:900;font-size:11px;">✓</span> {}
+                        r#"<li style="display:flex;align-items:center;gap:6px;font-family:{};font-size:{}px;color:{};line-height:1.3;margin-bottom:4px;">
+                            <span style="color:{};font-weight:900;font-size:{}px;">✓</span> {}
                         </li>"#,
-                        tokens.body_font,
-                        colors.text_primary,
-                        colors.primary,
+                        tokens.body_font, feature_fs, colors.text_primary,
+                        colors.primary, feature_fs + 1,
                         escape_html(text)
                     ));
                 }
@@ -5176,30 +5290,34 @@ pub fn pricing_plan_slide(
             let cta_text = if is_featured { "Upgrade Now" } else { "Get Started" };
 
             format!(
-                r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:{};">
+                r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:{};">
                     {}
                     <div>
-                        <div style="font-family:{};font-size:11px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">{}</div>
+                        <div style="font-family:{};font-size:{}px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">{}</div>
                         <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
-                            <span style="font-family:{};font-size:24px;font-weight:900;color:{};line-height:1;">{}</span>
-                            <span style="font-family:{};font-size:10px;color:{};">{}</span>
+                            <span style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1;">{}</span>
+                            <span style="font-family:{};font-size:{}px;color:{};">{}</span>
                         </div>
                         {}
                     </div>
-                    <div style="margin-top:10px;padding:6px 0;background:{};color:{};border-radius:{};text-align:center;font-family:{};font-size:10.5px;font-weight:800;">{}</div>
+                    <div style="margin-top:10px;padding:6px 0;background:{};color:{};border-radius:{};text-align:center;font-family:{};font-size:{}px;font-weight:800;">{}</div>
                 </div>"#,
                 card_bg,
                 card_border,
                 radius,
+                card_padding,
                 shadow,
                 badge_html,
                 tokens.heading_font,
+                name_fs,
                 colors.text_secondary,
                 escape_html(&name),
                 tokens.heading_font,
+                price_fs,
                 colors.text_primary,
                 escape_html(&price),
                 tokens.body_font,
+                caption_fs,
                 colors.text_secondary,
                 escape_html(&period),
                 features_html,
@@ -5207,6 +5325,7 @@ pub fn pricing_plan_slide(
                 if is_featured { &colors.button_text } else { &colors.text_primary },
                 current_component_radius(tokens, "button"),
                 tokens.heading_font,
+                button_fs,
                 cta_text
             )
         })
@@ -5221,10 +5340,11 @@ pub fn pricing_plan_slide(
 
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
-            <h2 style="font-family:{};font-size:26px;font-weight:900;color:{};margin:0;line-height:1.1;">{}</h2>
+            <h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;line-height:1.1;">{}</h2>
             {}
         </div>"#,
         tokens.heading_font,
+        heading_fs,
         colors.text_primary,
         escape_html(title),
         plan_grid
@@ -5234,7 +5354,7 @@ pub fn pricing_plan_slide(
         tokens,
         bg_style,
         false,
-        "72px 44px",
+        content_padding,
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
@@ -5415,39 +5535,69 @@ pub fn process_map_slide(
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
     
-    // Dynamic scaling based on content length
+    // Calculate total content and step count for more aggressive scaling
+    let step_count = steps.len();
     let total_content_len: usize = steps.iter().map(|step| {
-        let step_title = simple_text(step, &["title", "number"]);
+        let step_title = simple_text(step, &["label", "title", "number"]);
         let step_desc = simple_text(step, &["description", "caption"]);
         step_title.len() + step_desc.len()
     }).sum();
     
-    let (title_fs, desc_fs, num_fs) = if total_content_len > 300 {
-        (body_fs - 1, caption_fs - 1, 12)
-    } else if total_content_len < 150 {
-        (body_fs + 1, caption_fs + 1, 14)
+    // Dynamic scaling based on step count and content length
+    let (title_fs, desc_fs, num_fs, card_padding, gap) = if step_count >= 6 {
+        // Many steps - aggressive scaling
+        if total_content_len > 180 {
+            (body_fs - 2, caption_fs - 1, 12, "12px 12px 10px", "8px")
+        } else if total_content_len > 150 {
+            (body_fs - 1, caption_fs, 12, "12px 14px 10px", "8px")
+        } else {
+            (body_fs - 1, caption_fs, 12, "12px 14px 10px", "8px")
+        }
+    } else if step_count >= 4 {
+        // Medium number of steps
+        if total_content_len > 150 {
+            (body_fs - 2, caption_fs - 1, 12, "12px 14px 10px", "8px")
+        } else if total_content_len < 80 {
+            (body_fs, caption_fs + 1, 13, "14px 14px 12px", "10px")
+        } else {
+            (body_fs, caption_fs, 13, "14px 14px 12px", "10px")
+        }
     } else {
-        (body_fs, caption_fs, 13)
+        // Few steps - can use larger fonts
+        if total_content_len < 60 {
+            (body_fs + 1, caption_fs + 1, 14, "16px 16px 14px", "12px")
+        } else {
+            (body_fs, caption_fs, 13, "14px 14px 12px", "10px")
+        }
     };
     
     let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
+    
+    // Dynamic padding based on content density
+    let content_padding = if step_count >= 6 || total_content_len > 180 {
+        "48px var(--space-6) 48px"
+    } else if step_count >= 4 {
+        "60px var(--space-6) 60px"
+    } else {
+        "72px 44px"
+    };
 
     let rows: String = steps.iter().enumerate().map(|(idx, step)| {
-        let step_title = simple_text(step, &["title", "number"]);
+        let step_title = simple_text(step, &["label", "title", "number"]);
         let step_desc = simple_text(step, &["description", "caption"]);
         let num_str = format!("0{}", idx + 1);
         format!(
-            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;align-items:center;gap:12px;">
                 <div style="width:34px;height:34px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>
                 <div style="flex:1;min-width:0;">
                     <div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:2px;">{}</div>
                     <div style="font-family:{};font-size:{}px;color:{};line-height:1.4;overflow-wrap:break-word;">{}</div>
                 </div>
             </div>"#,
-            card_bg, border, radius,
+            card_bg, border, radius, card_padding,
             colors.primary, colors.button_text, tokens.heading_font, num_fs, num_str,
             tokens.heading_font, title_fs, colors.text_primary, escape_html(&step_title),
             tokens.body_font, desc_fs, colors.text_secondary, escape_html(&step_desc)
@@ -5457,12 +5607,12 @@ pub fn process_map_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="display:flex;flex-direction:column;gap:10px;width:100%;">{}</div>
+            <div style="display:flex;flex-direction:column;gap:{}px;width:100%;">{}</div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>"#,
-        heading, rows, tokens.body_font, colors.text_secondary
+        heading, gap, rows, tokens.body_font, colors.text_secondary
     );
-    let html = hero_layout(&content, tokens, bg_style, false, "left");
+    let html = slide_base(&content, tokens, bg_style, false, content_padding, "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({"html": html, "background": bg_style, "variant": "process_map", "theme": theme})
 }
