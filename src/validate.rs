@@ -1714,6 +1714,61 @@ pub fn validate_design(html: &str) -> ValidationReport {
         Regex::new(r#"(?s)\.breadcrumb-chip(?:\.active)?[^{]*\{[^}]*height\s*:\s*([0-9.]+)px"#)
             .unwrap();
 
+    // New: Header/footer overflow detection
+    // Check if slide-content content overflows the 420x525 composition bounds
+    const COMP_HEIGHT: f32 = 525.0;
+    const HEADER_HEIGHT: f32 = 60.0;  // Estimated header space
+    const FOOTER_HEIGHT: f32 = 60.0;  // Estimated footer space
+    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT;
+
+    for (idx, slide_html) in slides.iter().enumerate() {
+        // Extract slide-content padding
+        let padding_re = Regex::new(r#"padding:\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))"#).unwrap();
+        let content_padding_top = padding_re.captures(slide_html)
+            .and_then(|cap| cap.get(1))
+            .and_then(|m| m.as_str().parse::<f32>().ok())
+            .unwrap_or(60.0); // Default padding
+        let content_padding_bottom = padding_re.captures(slide_html)
+            .and_then(|cap| cap.get(3))
+            .and_then(|m| m.as_str().parse::<f32>().ok())
+            .unwrap_or(60.0); // Default padding
+
+        // Calculate available content height
+        let available_height = SAFE_CONTENT_HEIGHT - content_padding_top - content_padding_bottom;
+
+        // Check for multi-item layouts that commonly overflow
+        let multi_item_indicators = [
+            ("process_map", 6, "steps"),
+            ("checklist_action_plan", 6, "items"), 
+            ("comparison", 4, "rows"),
+            ("pricing_plan", 3, "plans"),
+        ];
+
+        for (slide_type, threshold, item_name) in multi_item_indicators {
+            if slide_html.contains(slide_type) {
+                // Count items by looking for sequential numbers 
+                let item_count = (1..=threshold + 2).filter(|i| slide_html.contains(&format!("0{:02}", i))).count().max(1);
+                
+                if item_count >= threshold {
+                    let estimated_item_height = item_count as f32 * 50.0; // Rough estimate per item
+                    if estimated_item_height > available_height {
+                        issues.push(DesignIssue {
+                            slide: idx + 1,
+                            r#type: format!("{}_overflow", slide_type).to_string(),
+                            severity: "error".to_string(),
+                            detail: format!("{} slide with {} {} items overflows composition bounds. Estimated content height: {}px, available: {}px", 
+                                         slide_type, item_count, item_name, estimated_item_height, available_height),
+                            message: format!("The {} layout with {} items exceeds the safe composition height of {}px (420x525 total minus header/footer/padding).", 
+                                         slide_type, item_count, SAFE_CONTENT_HEIGHT),
+                            suggestion: format!("Implement dynamic scaling for {} slides with {}+ {} items: reduce padding, font sizes, and gaps to fit within {}px available space.", 
+                                         slide_type, threshold, item_name, available_height),
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     // Check for multiple competing CTAs or buttons in the slide array
     let mut cta_slides = Vec::new();
     for (idx, slide_html) in slides.iter().enumerate() {

@@ -1731,35 +1731,65 @@ pub fn comparison_slide(
     let row_count = rows.len();
     
     let (card_title_fs, card_val_fs, card_header_fs, card_padding, gap) = if effective_variant == "cards" {
-        if row_count >= 4 {
-            // Many rows - aggressive scaling
-            (body_fs - 2, body_fs - 2, caption_fs - 2, "10px 14px", "6px")
+        // Calculate actual content requirements
+        const COMP_HEIGHT: f32 = 525.0;
+        const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
+        const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+        
+        // Estimate required height: title + rows + gaps
+        let title_height = 37.0; // 25px font + 12px margin
+        let row_height_estimate = if row_count >= 4 {
+            35.0 // aggressive: 14px title + 14px value + 7px padding
         } else if row_count >= 3 {
-            // Medium number of rows
-            if total_content_len > 150 {
-                (body_fs - 1, body_fs - 1, caption_fs - 1, "12px 16px", "8px")
-            } else if total_content_len < 100 {
-                (body_fs + 1, body_fs + 1, caption_fs + 1, "14px 16px", "10px")
-            } else {
-                (body_fs, body_fs, caption_fs, "12px 16px", "10px")
-            }
+            42.0 // medium: 16px title + 16px value + 10px padding
         } else {
-            // Few rows - can use larger fonts
-            if total_content_len < 80 {
-                (body_fs + 2, body_fs + 2, caption_fs + 2, "16px 18px", "12px")
-            } else {
-                (body_fs + 1, body_fs + 1, caption_fs + 1, "14px 16px", "10px")
-            }
+            48.0 // standard: 18px title + 18px value + 12px padding
+        };
+        let gap_estimate = if row_count >= 4 { 6.0 } else if row_count >= 3 { 10.0 } else { 12.0 };
+        let estimated_content_height = title_height + (row_count as f32 * row_height_estimate) + ((row_count - 1) as f32 * gap_estimate);
+        
+        // Calculate required padding to fit within safe content height
+        let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
+        let content_padding = if total_padding_needed < 40.0 {
+            "32px var(--space-6) 32px" // Very aggressive
+        } else if total_padding_needed < 60.0 {
+            "40px var(--space-6) 40px" // Aggressive
+        } else if total_padding_needed < 80.0 {
+            "50px var(--space-6) 50px" // Moderate
+        } else {
+            "80px var(--space-6) 80px" // Standard
+        };
+        
+        // Scale fonts based on how tight the fit is
+        let scaling_factor = (estimated_content_height / SAFE_CONTENT_HEIGHT).min(1.2);
+        let base_title_fs = body_fs + 1;
+        let base_val_fs = body_fs + 1;
+        let base_header_fs = caption_fs + 1;
+        
+        if scaling_factor > 1.1 {
+            // Very tight fit - aggressive scaling
+            ((base_title_fs as f32 * 0.8) as i32, (base_val_fs as f32 * 0.8) as i32, (base_header_fs as f32 * 0.85) as i32, "8px 10px", "4px")
+        } else if scaling_factor > 1.0 {
+            // Tight fit - moderate scaling
+            ((base_title_fs as f32 * 0.9) as i32, (base_val_fs as f32 * 0.9) as i32, (base_header_fs as f32 * 0.9) as i32, "10px 12px", "6px")
+        } else {
+            // Normal fit - standard sizing
+            (base_title_fs, base_val_fs, base_header_fs, "12px 16px", "10px")
         }
     } else {
         (body_fs, body_fs, caption_fs, "12px 16px", "10px")
     };
     
-    // Dynamic padding based on content density for cards variant - more aggressive for 4+ rows
-    let content_padding = if effective_variant == "cards" && row_count >= 4 {
-        "40px var(--space-6) 40px"
-    } else if effective_variant == "cards" && row_count >= 3 {
-        "60px var(--space-6) 60px"
+    // Add content_padding for cards variant (calculated above)
+    let content_padding = if effective_variant == "cards" {
+        // Already calculated above
+        if row_count >= 4 {
+            "32px var(--space-6) 32px"
+        } else if row_count >= 3 {
+            "40px var(--space-6) 40px"
+        } else {
+            "50px var(--space-6) 50px"
+        }
     } else {
         "80px var(--space-6) 80px"
     };
@@ -5057,35 +5087,60 @@ pub fn checklist_action_plan_slide(
         label.len()
     }).sum();
     
-    // Dynamic scaling based on item count and content length
-    let (item_fs, num_fs, card_padding, gap, heading_fs) = if item_count >= 6 {
-        // Many items - aggressive scaling
-        (caption_fs - 2, 10, "8px 12px", "6px", body_fs - 1)
+    // Calculate total content and item count for dynamic scaling
+    let item_count = items.len();
+    let total_content_len: usize = items.iter().map(|item| {
+        let label = if item.is_string() {
+            item.as_str().unwrap_or("").to_string()
+        } else {
+            simple_text(item, &["label", "title", "task", "step", "description", "text"])
+        };
+        label.len()
+    }).sum();
+    
+    // Calculate actual content requirements
+    const COMP_HEIGHT: f32 = 525.0;
+    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
+    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    
+    // Estimate required height: title + items + gaps
+    let title_height = 30.0; // 16px font + 14px margin
+    let item_height_estimate = if item_count >= 6 {
+        28.0 // aggressive: 11px text + 8px padding + 9px number
     } else if item_count >= 4 {
-        // Medium number of items
-        if total_content_len > 150 {
-            (caption_fs - 1, 11, "10px 12px", "8px", body_fs)
-        } else if total_content_len < 80 {
-            (caption_fs + 1, 13, "12px 14px", "10px", body_fs + 1)
-        } else {
-            (caption_fs, 12, "12px 14px", "10px", body_fs)
-        }
+        32.0 // medium: 12px text + 10px padding + 10px number
     } else {
-        // Few items - can use larger fonts
-        if total_content_len < 60 {
-            (caption_fs + 2, 14, "14px 16px", "12px", body_fs + 2)
-        } else {
-            (caption_fs + 1, 13, "14px 16px", "12px", body_fs + 1)
-        }
+        38.0 // standard: 13px text + 12px padding + 13px number
+    };
+    let gap_estimate = if item_count >= 6 { 4.0 } else if item_count >= 4 { 6.0 } else { 8.0 };
+    let estimated_content_height = title_height + (item_count as f32 * item_height_estimate) + ((item_count - 1) as f32 * gap_estimate);
+    
+    // Calculate required padding to fit within safe content height
+    let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
+    let content_padding = if total_padding_needed < 40.0 {
+        "32px var(--space-6) 32px" // Very aggressive
+    } else if total_padding_needed < 60.0 {
+        "40px var(--space-6) 40px" // Aggressive
+    } else if total_padding_needed < 80.0 {
+        "50px var(--space-6) 50px" // Moderate
+    } else {
+        "72px 44px" // Standard
     };
     
-    // Dynamic padding based on content density - more aggressive for 6+ items
-    let content_padding = if item_count >= 6 {
-        "40px var(--space-6) 40px"
-    } else if item_count >= 4 {
-        "60px var(--space-6) 60px"
+    // Scale fonts based on how tight the fit is
+    let scaling_factor = (estimated_content_height / SAFE_CONTENT_HEIGHT).min(1.2);
+    let base_item_fs = caption_fs + 1;
+    let base_num_fs = 12;
+    
+    let (item_fs, num_fs, card_padding, gap, heading_fs) = if scaling_factor > 1.1 {
+        // Very tight fit - aggressive scaling
+        ((base_item_fs as f32 * 0.8) as i32, 9, "6px 10px", "4px", body_fs - 1)
+    } else if scaling_factor > 1.0 {
+        // Tight fit - moderate scaling
+        ((base_item_fs as f32 * 0.9) as i32, 10, "8px 12px", "6px", body_fs)
     } else {
-        "72px 44px"
+        // Normal fit - standard sizing
+        (base_item_fs, base_num_fs, "12px 14px", "8px", body_fs + 1)
     };
     
     let rows = items
@@ -5186,35 +5241,54 @@ pub fn pricing_plan_slide(
         name.len() + features_len
     }).sum();
 
-    // Dynamic scaling based on plan count and content length
-    let (price_fs, name_fs, feature_fs, card_padding, button_fs, heading_fs) = if plan_count == 3 {
-        // 3 plans - aggressive scaling
-        (body_fs - 2, caption_fs - 1, caption_fs - 2, "10px 12px 8px", caption_fs - 1, body_fs - 1)
+    let plan_count = plans.len();
+    
+    // Calculate actual content requirements
+    const COMP_HEIGHT: f32 = 525.0;
+    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
+    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    
+    // Estimate required height: title + plans + gaps
+    let title_height = 30.0; // 15px font + 15px margin
+    let plan_height_estimate = if plan_count == 3 {
+        95.0 // aggressive: 12px name + 14px price + 10px header + 8px x 4 features + 8px footer + 25px padding
     } else if plan_count == 2 {
-        // 2 plans - moderate scaling
-        if total_content_len > 150 {
-            (body_fs - 1, caption_fs, caption_fs - 1, "12px 14px 10px", caption_fs, body_fs)
-        } else if total_content_len < 100 {
-            (body_fs + 1, caption_fs + 1, caption_fs + 1, "14px 16px 12px", caption_fs + 1, body_fs + 1)
-        } else {
-            (body_fs, caption_fs, caption_fs, "14px 16px 12px", caption_fs, body_fs)
-        }
+        110.0 // medium: 14px name + 16px price + 12px header + 10px x 4 features + 10px footer + 28px padding
     } else {
-        // 1 plan - can use larger fonts
-        if total_content_len < 80 {
-            (body_fs + 2, caption_fs + 2, caption_fs + 2, "16px 18px 14px", caption_fs + 2, body_fs + 2)
-        } else {
-            (body_fs + 1, caption_fs + 1, caption_fs + 1, "14px 16px 12px", caption_fs + 1, body_fs + 1)
-        }
+        130.0 // standard: 16px name + 18px price + 14px header + 12px x 4 features + 12px footer + 30px padding
+    };
+    let gap_estimate = if plan_count == 3 { 12.0 } else if plan_count == 2 { 16.0 } else { 20.0 };
+    let estimated_content_height = title_height + (plan_count as f32 * plan_height_estimate) + ((plan_count - 1) as f32 * gap_estimate);
+    
+    // Calculate required padding to fit within safe content height
+    let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
+    let content_padding = if total_padding_needed < 40.0 {
+        "32px var(--space-6) 32px" // Very aggressive
+    } else if total_padding_needed < 60.0 {
+        "40px var(--space-6) 40px" // Aggressive
+    } else if total_padding_needed < 80.0 {
+        "50px var(--space-6) 50px" // Moderate
+    } else {
+        "72px 44px" // Standard
     };
     
-    // Dynamic padding based on content density - more aggressive for 3 plans
-    let content_padding = if plan_count == 3 {
-        "40px var(--space-6) 40px"
-    } else if plan_count == 2 {
-        "60px var(--space-6) 60px"
+    // Scale fonts based on how tight the fit is
+    let scaling_factor = (estimated_content_height / SAFE_CONTENT_HEIGHT).min(1.2);
+    let base_price_fs = body_fs + 2;
+    let base_name_fs = caption_fs + 2;
+    let base_feature_fs = caption_fs + 2;
+    let base_button_fs = caption_fs + 2;
+    let base_heading_fs = body_fs + 1;
+    
+    let (price_fs, name_fs, feature_fs, card_padding, button_fs, heading_fs) = if scaling_factor > 1.1 {
+        // Very tight fit - aggressive scaling
+        ((base_price_fs as f32 * 0.8) as i32, (base_name_fs as f32 * 0.8) as i32, (base_feature_fs as f32 * 0.75) as i32, "8px 10px 6px", (base_button_fs as f32 * 0.8) as i32, (base_heading_fs as f32 * 0.9) as i32)
+    } else if scaling_factor > 1.0 {
+        // Tight fit - moderate scaling
+        ((base_price_fs as f32 * 0.9) as i32, (base_name_fs as f32 * 0.9) as i32, (base_feature_fs as f32 * 0.85) as i32, "10px 12px 8px", (base_button_fs as f32 * 0.9) as i32, (base_heading_fs as f32 * 0.95) as i32)
     } else {
-        "72px 44px"
+        // Normal fit - standard sizing
+        (base_price_fs, base_name_fs, base_feature_fs, "14px 16px 12px", base_button_fs, base_heading_fs)
     };
 
     let cards: Vec<String> = plans
@@ -5517,7 +5591,7 @@ pub fn process_map_slide(
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
     
-    // Calculate total content and step count for more aggressive scaling
+    // Calculate total content and step count for dynamic scaling
     let step_count = steps.len();
     let total_content_len: usize = steps.iter().map(|step| {
         let step_title = simple_text(step, &["label", "title", "number"]);
@@ -5525,41 +5599,56 @@ pub fn process_map_slide(
         step_title.len() + step_desc.len()
     }).sum();
     
-    // Dynamic scaling based on step count and content length
-    let (title_fs, desc_fs, num_fs, card_padding, gap) = if step_count >= 6 {
-        // Many steps - aggressive scaling
-        (body_fs - 2, caption_fs - 1, 11, "10px 12px 8px", "6px")
+    // Calculate actual content requirements
+    const COMP_HEIGHT: f32 = 525.0;
+    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
+    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    
+    // Estimate required height: title + items + gaps
+    let title_height = 37.0; // 25px font + 12px margin
+    let item_height_estimate = if step_count >= 6 {
+        45.0 // 17px title + 14px desc + 14px padding
     } else if step_count >= 4 {
-        // Medium number of steps
-        if total_content_len > 150 {
-            (body_fs - 2, caption_fs - 1, 12, "12px 14px 10px", "8px")
-        } else if total_content_len < 80 {
-            (body_fs, caption_fs + 1, 13, "14px 14px 12px", "10px")
-        } else {
-            (body_fs, caption_fs, 13, "14px 14px 12px", "10px")
-        }
+        52.0 // 18px title + 16px desc + 18px padding
     } else {
-        // Few steps - can use larger fonts
-        if total_content_len < 60 {
-            (body_fs + 1, caption_fs + 1, 14, "16px 16px 14px", "12px")
-        } else {
-            (body_fs, caption_fs, 13, "14px 14px 12px", "10px")
-        }
+        60.0 // 20px title + 18px desc + 22px padding
+    };
+    let gap_estimate = if step_count >= 6 { 10.0 } else if step_count >= 4 { 12.0 } else { 14.0 };
+    let estimated_content_height = title_height + (step_count as f32 * item_height_estimate) + ((step_count - 1) as f32 * gap_estimate);
+    
+    // Calculate required padding to fit within safe content height
+    let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
+    let content_padding = if total_padding_needed < 40.0 {
+        "24px var(--space-6) 24px" // Very aggressive
+    } else if total_padding_needed < 60.0 {
+        "32px var(--space-6) 32px" // Aggressive
+    } else if total_padding_needed < 80.0 {
+        "48px var(--space-6) 48px" // Moderate
+    } else {
+        "60px var(--space-6) 60px" // Standard
+    };
+    
+    // Scale fonts based on how tight the fit is
+    let scaling_factor = (estimated_content_height / SAFE_CONTENT_HEIGHT).min(1.2);
+    let base_title_fs = body_fs + 1;
+    let base_desc_fs = caption_fs + 1;
+    let base_num_fs = 13;
+    
+    let (title_fs, desc_fs, num_fs, card_padding, gap) = if scaling_factor > 1.1 {
+        // Very tight fit - aggressive scaling
+        ((base_title_fs as f32 * 0.8) as i32, (base_desc_fs as f32 * 0.85) as i32, 10, "8px 10px 6px", "4px")
+    } else if scaling_factor > 1.0 {
+        // Tight fit - moderate scaling
+        ((base_title_fs as f32 * 0.9) as i32, (base_desc_fs as f32 * 0.9) as i32, 11, "10px 12px 8px", "6px")
+    } else {
+        // Normal fit - standard sizing
+        (base_title_fs, base_desc_fs, base_num_fs, "14px 14px 12px", "10px")
     };
     
     let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
-    
-    // Dynamic padding based on content density - more aggressive for 6+ steps
-    let content_padding = if step_count >= 6 {
-        "40px var(--space-6) 40px"
-    } else if step_count >= 4 {
-        "60px var(--space-6) 60px"
-    } else {
-        "72px 44px"
-    };
 
     let rows: String = steps.iter().enumerate().map(|(idx, step)| {
         let step_title = simple_text(step, &["label", "title", "number"]);
@@ -5581,12 +5670,12 @@ pub fn process_map_slide(
     }).collect();
 
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:{}px;">
             {}
             <div style="display:flex;flex-direction:column;gap:{}px;width:100%;">{}</div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>"#,
-        heading, gap, rows, tokens.body_font, colors.text_secondary
+        gap, heading, gap, rows, tokens.body_font, colors.text_secondary
     );
     let html = slide_base(&content, tokens, bg_style, false, content_padding, "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
