@@ -1720,6 +1720,21 @@ pub fn comparison_slide(
 
     let effective_variant = variant;
     let num_cols = columns.len().max(1);
+    
+    // Dynamic scaling based on content length for cards variant
+    let total_content_len: usize = if effective_variant == "cards" {
+        rows.iter().map(|row| row.iter().map(|s| s.len()).sum::<usize>()).sum()
+    } else {
+        0
+    };
+    
+    let (card_title_fs, card_val_fs, card_header_fs) = if total_content_len > 400 {
+        (body_fs - 1, body_fs - 1, caption_fs - 1)
+    } else if total_content_len < 200 {
+        (body_fs + 1, body_fs + 1, caption_fs + 1)
+    } else {
+        (body_fs, body_fs, caption_fs)
+    };
 
     let content = if columns.is_empty() {
         // Fallback: render title + empty state
@@ -1747,8 +1762,8 @@ pub fn comparison_slide(
                             <div style="font-family:{};font-size:{}px;font-weight:600;color:{};">{}</div>
                             <div style="font-family:{};font-size:{}px;color:{};margin-top:2px;">{}</div>
                         </div>"#,
-                        tokens.heading_font, caption_fs, colors.text_secondary, escape_html(col_name),
-                        tokens.body_font, body_fs, val_color, escape_html(val)
+                        tokens.heading_font, card_header_fs, colors.text_secondary, escape_html(col_name),
+                        tokens.body_font, card_val_fs, val_color, escape_html(val)
                     ));
                 }
                 cards_html.push_str(&format!(
@@ -1757,7 +1772,7 @@ pub fn comparison_slide(
                         <div style="display:flex;gap:8px;">{}</div>
                     </div>"#,
                     card_bg, card_border, card_blur, radius_md,
-                    tokens.body_font, body_fs, colors.text_primary, escape_html(label),
+                    tokens.body_font, card_title_fs, colors.text_primary, escape_html(label),
                     values_html
                 ));
             }
@@ -4902,8 +4917,8 @@ pub fn myth_fact_slide(
     let content = match effective_variant {
         "debunk" => {
             let myth_html = format!(
-                r#"<div style="background:{};border:{};border-radius:{};padding:{};margin-bottom:12px;box-shadow:{};position:relative;flex-shrink:0;">
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.6;line-height:1.35;">{}</div>
+                r#"<div style="background:{};border:{};border-radius:{};padding:{};margin-bottom:12px;box-shadow:{};position:relative;flex-shrink:0;min-width:0;">
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:2px;opacity:0.6;line-height:1.35;overflow-wrap:break-word;">{}</div>
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.12em;text-transform:uppercase;background:{};padding:4px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,0.12);">MYTH</div>
                 </div>"#,
                 card_bg, card_border, radius_md, dynamic_padding, shadow_sm,
@@ -4912,9 +4927,9 @@ pub fn myth_fact_slide(
                 tokens.heading_font, colors.button_text, colors.primary,
             );
             let fact_html = format!(
-                r#"<div style="background:{};border-left:4px solid {};border:{};border-left-width:4px;border-radius:{};padding:{};box-shadow:{};flex-shrink:0;">
+                r#"<div style="background:{};border-left:4px solid {};border:{};border-left-width:4px;border-radius:{};padding:{};box-shadow:{};flex-shrink:0;min-width:0;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">FACT</div>
-                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.35;">{}</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.35;overflow-wrap:break-word;">{}</div>
                 </div>"#,
                 card_bg, colors.primary, card_border, radius_md, dynamic_padding, shadow_sm,
                 tokens.heading_font, colors.primary,
@@ -4922,24 +4937,24 @@ pub fn myth_fact_slide(
             );
             let explanation_html = if !explanation.is_empty() {
                 format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:14px;line-height:1.45;">{}</div>"#,
+                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:14px;line-height:1.45;overflow-wrap:break-word;">{}</div>"#,
                     tokens.body_font, caption_fs, colors.text_secondary, escape_html(explanation)
                 )
             } else {
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;">{}<div style="display:flex;flex-direction:column;width:100%;">{}{}{}</div></div>"#,
+                r#"<div style="width:100%;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;">{}{}{}</div></div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
         _ => {
             // split (default) — myth and fact side by side
             let myth_html = format!(
-                r#"<div style="flex:1;min-width:0;">
+                r#"<div style="flex:1;min-width:0;flex-shrink:1;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
-                    <div style="background:{};border:{};border-radius:{};padding:{};box-shadow:{};height:100%;box-sizing:border-box;">
-                        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;">{}</div>
+                    <div style="background:{};border:{};border-radius:{};padding:{};box-shadow:{};box-sizing:border-box;">
+                        <div style="font-family:{};font-size:{}px;font-weight:500;color:{};line-height:1.4;text-decoration:line-through;text-decoration-color:{};text-decoration-thickness:1.5px;opacity:0.6;overflow-wrap:break-word;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, colors.text_secondary,
@@ -4948,10 +4963,10 @@ pub fn myth_fact_slide(
                 escape_html(myth),
             );
             let fact_html = format!(
-                r#"<div style="flex:1;min-width:0;">
+                r#"<div style="flex:1;min-width:0;flex-shrink:1;">
                     <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
-                    <div style="background:{};border:{};border-left-width:4px;border-left-color:{};border-radius:{};padding:{};box-shadow:{};height:100%;box-sizing:border-box;">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;">{}</div>
+                    <div style="background:{};border:{};border-left-width:4px;border-left-color:{};border-radius:{};padding:{};box-shadow:{};box-sizing:border-box;">
+                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.4;overflow-wrap:break-word;">{}</div>
                     </div>
                 </div>"#,
                 tokens.heading_font, colors.primary,
@@ -4967,7 +4982,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;">{}{}</div>{}</div>"#,
+                r#"<div style="width:100%;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;">{}{}</div>{}</div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
@@ -4999,6 +5014,28 @@ pub fn checklist_action_plan_slide(
     } else {
         "rgba(255,255,255,0.92)"
     };
+    
+    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
+    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
+    
+    // Dynamic scaling based on content length
+    let total_content_len: usize = items.iter().take(6).map(|item| {
+        let label = if item.is_string() {
+            item.as_str().unwrap_or("").to_string()
+        } else {
+            simple_text(item, &["label", "title", "task", "step", "description"])
+        };
+        label.len()
+    }).sum();
+    
+    let (item_fs, num_fs) = if total_content_len > 300 {
+        (caption_fs - 1, 11)
+    } else if total_content_len < 150 {
+        (caption_fs + 1, 13)
+    } else {
+        (caption_fs, 12)
+    };
+    
     let rows = items
         .iter()
         .take(6)
@@ -5011,16 +5048,18 @@ pub fn checklist_action_plan_slide(
             };
             format!(
                 r#"<div style="display:flex;gap:var(--space-1);align-items:flex-start;background:{};border:1px solid {};border-radius:{};padding:var(--space-1) 14px;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:12px;font-weight:800;flex-shrink:0;">{}</div>
-                    <div style="font-family:{};font-size:var(--text-sm);font-weight:700;color:{};line-height:1.45;">{}</div>
+                    <div style="width:24px;height:24px;border-radius:50%;background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:800;flex-shrink:0;">{}</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1.45;">{}</div>
                 </div>"#,
                 card_bg,
                 colors.border,
                 radius,
                 colors.primary,
                 tokens.body_font,
+                num_fs,
                 idx + 1,
                 tokens.body_font,
+                item_fs,
                 colors.text_primary,
                 escape_html(&label)
             )
@@ -5373,6 +5412,24 @@ pub fn process_map_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
+    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
+    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
+    
+    // Dynamic scaling based on content length
+    let total_content_len: usize = steps.iter().map(|step| {
+        let step_title = simple_text(step, &["title", "number"]);
+        let step_desc = simple_text(step, &["description", "caption"]);
+        step_title.len() + step_desc.len()
+    }).sum();
+    
+    let (title_fs, desc_fs, num_fs) = if total_content_len > 300 {
+        (body_fs - 1, caption_fs - 1, 12)
+    } else if total_content_len < 150 {
+        (body_fs + 1, caption_fs + 1, 14)
+    } else {
+        (body_fs, caption_fs, 13)
+    };
+    
     let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
@@ -5384,16 +5441,16 @@ pub fn process_map_slide(
         let num_str = format!("0{}", idx + 1);
         format!(
             r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:14px 14px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:13px;font-weight:900;flex-shrink:0;">{}</div>
+                <div style="width:34px;height:34px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-family:{};font-size:13px;font-weight:800;color:{};margin-bottom:2px;">{}</div>
-                    <div style="font-family:{};font-size:11px;color:{};line-height:1.4;">{}</div>
+                    <div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:2px;">{}</div>
+                    <div style="font-family:{};font-size:{}px;color:{};line-height:1.4;overflow-wrap:break-word;">{}</div>
                 </div>
             </div>"#,
             card_bg, border, radius,
-            colors.primary, colors.button_text, tokens.heading_font, num_str,
-            tokens.heading_font, colors.text_primary, escape_html(&step_title),
-            tokens.body_font, colors.text_secondary, escape_html(&step_desc)
+            colors.primary, colors.button_text, tokens.heading_font, num_fs, num_str,
+            tokens.heading_font, title_fs, colors.text_primary, escape_html(&step_title),
+            tokens.body_font, desc_fs, colors.text_secondary, escape_html(&step_desc)
         )
     }).collect();
 
