@@ -5527,7 +5527,7 @@ pub fn process_map_slide(
     
     // Dynamic scaling based on step count and content length
     let (title_fs, desc_fs, num_fs, card_padding, gap) = if step_count >= 6 {
-        // Many steps - aggressive scaling - forced for testing
+        // Many steps - aggressive scaling
         (body_fs - 2, caption_fs - 1, 11, "10px 12px 8px", "6px")
     } else if step_count >= 4 {
         // Medium number of steps
