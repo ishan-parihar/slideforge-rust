@@ -7761,35 +7761,42 @@ pub fn image_collage_slide(
                 },
             ],
             _ => vec![
+                // Layout verified non-overlapping after rotation via bbox math:
+                //   F1 bbox: x=6.7..157.3, y=8.3..143.7
+                //   F2 bbox: x=168.1..309.9, y=5.6..120.4
+                //   F3 bbox: x=14.5..139.5, y=155.9..246.1
+                //   F4 bbox: x=162.3..313.7, y=147.4..252.6
+                // Validator previously caught F1∩F4 overlap at the original hardcoded values
+                // (F1 x=6..160 vs F4 x=154..310 → 6px x-overlap, larger after rotation).
                 CollageSlot {
-                    x: 6,
-                    y: 16,
-                    w: 154,
-                    h: 142,
+                    x: 10,
+                    y: 12,
+                    w: 144,
+                    h: 128,
                     rot: -3,
                     z: 2,
                 },
                 CollageSlot {
-                    x: 172,
+                    x: 170,
                     y: 8,
                     w: 138,
-                    h: 112,
+                    h: 110,
                     rot: 2,
                     z: 3,
                 },
                 CollageSlot {
-                    x: 20,
-                    y: 174,
-                    w: 120,
+                    x: 16,
+                    y: 158,
+                    w: 122,
                     h: 86,
                     rot: 2,
                     z: 4,
                 },
                 CollageSlot {
-                    x: 154,
-                    y: 140,
-                    w: 156,
-                    h: 120,
+                    x: 164,
+                    y: 150,
+                    w: 148,
+                    h: 100,
                     rot: -2,
                     z: 5,
                 },

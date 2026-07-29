@@ -1069,21 +1069,52 @@ mod tests {
 
     #[test]
     fn test_validate_design_flags_grid_cards_overflow_risk() {
+        // 6 cards × 500 chars each = 3000 chars total — exceeds the 2500-char grid
+        // container budget enforced in validate_design. The validator must flag this
+        // even though the renderer's very_dense scaling tier can fit ~600 chars per
+        // card in some variants; the universal ceiling exists because compact/masonry
+        // variants cannot absorb that mass.
         let html = format!(
             r#"<div class="slide bg-light">
-                <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;width:100%;margin-top:16px;">
+                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;width:100%;margin-top:16px;">
                     <div style="padding:24px;"><h3>Card 1</h3><p>{}</p></div>
                     <div style="padding:24px;"><h3>Card 2</h3><p>{}</p></div>
                     <div style="padding:24px;"><h3>Card 3</h3><p>{}</p></div>
                     <div style="padding:24px;"><h3>Card 4</h3><p>{}</p></div>
+                    <div style="padding:24px;"><h3>Card 5</h3><p>{}</p></div>
+                    <div style="padding:24px;"><h3>Card 6</h3><p>{}</p></div>
                 </div>
             </div>"#,
-            "a".repeat(250), "b".repeat(250), "c".repeat(250), "d".repeat(250)
+            "a".repeat(500), "b".repeat(500), "c".repeat(500),
+            "d".repeat(500), "e".repeat(500), "f".repeat(500)
         );
         let report = validate_design(&html);
         assert!(
             report.issues.iter().any(|i| i.r#type == "grid_cards_overflow_risk"),
             "should flag grid cards overflow risk when total text mass in grid exceeds threshold"
+        );
+    }
+
+    #[test]
+    fn test_validate_design_does_not_flag_grid_when_text_outside_grid_exceeds_threshold() {
+        // Regression: the grid text-mass budget must scope to the grid container, NOT the
+        // whole slide. Titles/eyebrows/captions outside the grid are not part of the
+        // overflow surface and must not trip the threshold. If they do, every preset with
+        // a hero title + a 2x2 grid produces a false positive.
+        let html = r#"<div class="slide bg-light">
+            <h1 style="font-size:31px;">A really long product headline that adds tons of characters and would push the slide-wide total past the grid threshold.</h1>
+            <p style="font-size:16px;">And a long subtitle / eyebrow that adds even more characters to the slide-wide total.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="padding:24px;"><h3>Card 1</h3><p>short</p></div>
+                <div style="padding:24px;"><h3>Card 2</h3><p>short</p></div>
+                <div style="padding:24px;"><h3>Card 3</h3><p>short</p></div>
+                <div style="padding:24px;"><h3>Card 4</h3><p>short</p></div>
+            </div>
+        </div>"#;
+        let report = validate_design(html);
+        assert!(
+            !report.issues.iter().any(|i| i.r#type == "grid_cards_overflow_risk"),
+            "grid overflow check must scope text to the grid container, not the whole slide"
         );
     }
 
@@ -1657,6 +1688,129 @@ fn slide_has_slide_level_clip(slide_html: &str) -> bool {
     has_full_bleed && has_overflow_hidden_css
 }
 
+/// Sum the text length captured by `text_tag_re` strictly inside the FIRST grid container
+/// (i.e. an element that uses `display:grid` / `grid-template-columns`). Walks back from the
+/// first `grid-template-columns` occurrence to its containing `<div ...>` opening tag, then
+/// pairs balanced `<div>` opens/closes to extract that grid's HTML substring. Titles, eyebrows,
+/// captions and slide-level chrome outside the grid are intentionally excluded so the threshold
+/// reflects the actual overflow surface, not the whole slide.
+///
+/// Falls back to the slide-wide total if no balanced grid container can be identified
+/// (e.g. nested grid containers that re-open immediately, or pathological HTML).
+fn grid_container_text_len(slide_html: &str, text_tag_re: &regex::Regex) -> usize {
+    let grid_idx = slide_html.find("grid-template-columns").or_else(|| slide_html.find("display:grid"));
+    let Some(grid_idx) = grid_idx else {
+        return 0;
+    };
+    // Walk backward to the opening <div ...> that begins the grid container.
+    // We require the start of <div ... > at depth 0 — i.e. unmatched open at this level.
+    let bytes = slide_html.as_bytes();
+    let mut depth: i32 = 0;
+    let mut open_start: Option<usize> = None;
+    let mut i = grid_idx;
+    loop {
+        // Find the previous <div ...> or </div> boundary at or before i
+        let prev_close = slide_html[..i].rfind("</div>");
+        let prev_open = slide_html[..i].rfind("<div");
+        match (prev_close, prev_open) {
+            (Some(c), Some(o)) if o > c => {
+                // <div ...> is more recent than </div> at this level
+                // Check if this <div is at depth 0 (i.e. we have depth unmatched closes since)
+                if depth == 0 {
+                    open_start = Some(o);
+                    break;
+                } else {
+                    depth -= 1;
+                    i = o;
+                }
+            }
+            (Some(c), _) => {
+                depth += 1;
+                i = c;
+            }
+            (None, Some(o)) => {
+                if depth == 0 {
+                    open_start = Some(o);
+                    break;
+                } else {
+                    depth -= 1;
+                    i = o;
+                }
+            }
+            (None, None) => break,
+        }
+        if i == 0 {
+            break;
+        }
+    }
+    let Some(open_start) = open_start else {
+        // Could not balance — fall back to slide-wide total to preserve the old behavior
+        // in pathological cases, but log via the issue's own fallback path.
+        return text_tag_re
+            .captures_iter(slide_html)
+            .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
+            .sum();
+    };
+    // Walk forward from open_start to find the matching </div> for the grid container.
+    let open_end_rel = slide_html[open_start..].find('>').map(|p| open_start + p + 1);
+    let Some(open_end) = open_end_rel else {
+        return 0;
+    };
+    // depth starts at 1 after consuming the opening tag
+    let mut depth: i32 = 1;
+    let mut j = open_end;
+    while j < bytes.len() {
+        // Use simple substring matching for performance.
+        let remaining = &slide_html[j..];
+        let next_open = remaining.find("<div");
+        let next_close = remaining.find("</div>");
+        match (next_open, next_close) {
+            (Some(o), Some(c)) if o < c => {
+                // Make sure it's an actual <div ...> tag (not e.g. <divider>).
+                let abs = j + o;
+                let after = slide_html.as_bytes().get(abs + 4).copied();
+                let is_div_tag = matches!(after, Some(b' ') | Some(b'>') | Some(b'\t') | Some(b'\n') | Some(b'\r'));
+                if is_div_tag {
+                    depth += 1;
+                    j = abs + 4;
+                } else {
+                    j = abs + 4;
+                }
+            }
+            (_, Some(c)) => {
+                depth -= 1;
+                let abs = j + c;
+                if depth == 0 {
+                    let grid_end = abs + "</div>".len();
+                    let grid_html = &slide_html[open_start..grid_end];
+                    return text_tag_re
+                        .captures_iter(grid_html)
+                        .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
+                        .sum();
+                }
+                j = abs + "</div>".len();
+            }
+            (Some(o), None) => {
+                let abs = j + o;
+                let after = slide_html.as_bytes().get(abs + 4).copied();
+                let is_div_tag = matches!(after, Some(b' ') | Some(b'>') | Some(b'\t') | Some(b'\n') | Some(b'\r'));
+                if is_div_tag {
+                    depth += 1;
+                    j = abs + 4;
+                } else {
+                    j = abs + 4;
+                }
+            }
+            (None, None) => break,
+        }
+    }
+    // Could not balance — fall back
+    text_tag_re
+        .captures_iter(slide_html)
+        .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
+        .sum()
+}
+
 pub fn validate_design(html: &str) -> ValidationReport {
     let mut issues = Vec::new();
 
@@ -2221,16 +2375,23 @@ pub fn validate_design(html: &str) -> ValidationReport {
         }
 
         if slide_html.contains("grid-template-columns") || slide_html.contains("display:grid") {
-            let total_grid_text_len: usize = text_tag_re
-                .captures_iter(slide_html)
-                .map(|cap| cap.get(3).map(|m| m.as_str().trim().len()).unwrap_or(0))
-                .sum();
-            if total_grid_text_len > 650 {
+            // Scope the text-mass budget to the grid container only; titles/eyebrows/captions
+            // outside the grid are not part of the overflow surface and must not be counted.
+            // Threshold tracks the renderer's dynamic-scaling tier model in `grid_cards_slide`:
+            // the densest variants (`2-col`/`4-col` with very_dense scaling) absorb up to ~600
+            // chars per card; 4 cards in that tier top out at ~2400 chars and still render
+            // inside the 405px safe content height. We set the validator ceiling at 2500 chars
+            // — a small margin above the maximum observed safe composition.
+            // Per directive #1638 the validator must share the renderer's model rather than
+            // blocking compositions the dynamic-scaling pipeline can already place safely.
+            let grid_text_len = grid_container_text_len(slide_html, &text_tag_re);
+            const GRID_TEXT_BUDGET: usize = 2500;
+            if grid_text_len > GRID_TEXT_BUDGET {
                 issues.push(DesignIssue {
                     slide: slide_num,
                     r#type: "grid_cards_overflow_risk".to_string(),
                     severity: "error".to_string(),
-                    detail: format!("Grid container contains {} total characters of text.", total_grid_text_len),
+                    detail: format!("Grid container contains {} total characters of text.", grid_text_len),
                     message: "Excessive text mass inside card grid creates unacceptable vertical overflow.".to_string(),
                     suggestion: "Reduce card text content or use compact/list-dense layout variant to fit within card bounds.".to_string(),
                 });
