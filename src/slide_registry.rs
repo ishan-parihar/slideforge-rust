@@ -88,42 +88,41 @@ pub fn get_registry() -> Value {
             }
         },
         "comparison": {
-            "description": "Side-by-side comparison grid (e.g. Before/After, Plan A vs Plan B)",
-            "required_params": ["title", "columns", "rows"],
-            "optional_params": ["highlight_column", "show_checkmarks", "footer_note", "variant"],
-            "variants": ["table", "cards", "vs-split", "feature-matrix"],
+            // comparison slide type retired: all 4 variants (cards, vs-split, feature-matrix,
+            // table) overlap with before_after_story / table / pricing_plan. The legacy
+            // dispatch slot still routes "comparison" JSON through before_after_story for
+            // backwards compatibility with existing catalogs and tokens.
+            "description": "DEPRECATED: routes to before_after_story. Use before_after_story, table, or pricing_plan instead.",
+            "required_params": ["title"],
+            "optional_params": ["columns", "rows", "before", "after", "metric"],
+            "variants": [],
             "default_variant": "table",
             "layout_family": "data",
-            "best_for": ["comparison", "pricing", "features"],
+            "best_for": [],
             "example": {
                 "title": "Free vs Pro",
-                "columns": ["Free", "Pro"],
-                "rows": [
-                    ["Slides per month", "5", "Unlimited"],
-                    ["Custom typography", "—", "✓"],
-                    ["Brand presets", "1", "Unlimited"]
-                ],
-                "highlight_column": 1,
-                "variant": "table"
+                "before": "Limited plan: 5 slides/mo, 1 preset",
+                "after": "Pro plan: unlimited slides, all presets"
             }
         },
         "stat_row": {
-            "description": "Grid of key statistics or metrics",
-            "required_params": ["stats"],
-            "optional_params": ["title", "columns", "show_icons", "variant"],
-            "variants": ["grid", "row", "cards", "minimal", "dark"],
+            // stat_row retired: overlapped with metric_grid (both are N-stat grids with the
+            // same shape). The legacy dispatch slot still routes "stat_row" JSON through
+            // metric_grid for backwards compatibility (stats → metrics key rename).
+            "description": "DEPRECATED: routes to metric_grid. Use metric_grid instead.",
+            "required_params": ["title", "metrics"],
+            "optional_params": ["variant"],
+            "variants": [],
             "default_variant": "grid",
             "layout_family": "data",
-            "best_for": ["data", "proof-points", "results"],
+            "best_for": [],
             "example": {
                 "title": "By the numbers",
-                "stats": [
+                "metrics": [
                     {"label": "Active decks", "value": "12k+"},
                     {"label": "Avg render time", "value": "11s"},
                     {"label": "Failure rate", "value": "0.4%"}
-                ],
-                "columns": 3,
-                "variant": "grid"
+                ]
             }
         },
         "timeline": {
@@ -439,7 +438,7 @@ pub fn get_registry() -> Value {
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
-            "best_for": ["metrics", "kpi", "dashboard"]
+            "best_for": ["data", "metrics", "kpi", "dashboard"]
         },
         "funnel_chart": {
             "description": "Funnel chart showing conversion stages with decreasing values",
@@ -784,7 +783,8 @@ mod tests {
     fn test_get_slide_types_for_context_data() {
         let types = get_slide_types_for_context("data");
         assert!(types.contains(&"chart".to_string()));
-        assert!(types.contains(&"stat_row".to_string()));
+        // stat_row retired; metric_grid is the canonical N-stat grid for data context.
+        assert!(types.contains(&"metric_grid".to_string()));
     }
 
     #[test]

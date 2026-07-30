@@ -1670,569 +1670,9 @@ pub fn cta_slide(
     })
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 6. comparison_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Side-by-side comparison grid.
-///
-/// Variants: `default` (horizontal CSS grid) | `stacked` | `horizontal` (chips)
-pub fn comparison_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    columns: Vec<String>,
-    rows: Vec<Vec<String>>,
-    highlight_column: Option<usize>,
-    show_checkmarks: bool,
-    bg_style: &str,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-
-    let (gc, gx) = get_glass_container(tokens, is_dark);
-
-    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
-    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    let radius_sm = tokens
-        .radii
-        .get("sm")
-        .cloned()
-        .unwrap_or_else(|| "6px".to_string());
-    let radius_md = current_component_radius(tokens, "card");
-    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
-
-    let effective_variant = variant;
-    let num_cols = columns.len().max(1);
-    
-    // Dynamic scaling based on content length for cards variant
-    let total_content_len: usize = if effective_variant == "cards" {
-        rows.iter().map(|row| row.iter().map(|s| s.len()).sum::<usize>()).sum()
-    } else {
-        0
-    };
-    
-    let row_count = rows.len();
-    
-    let (card_title_fs, card_val_fs, card_header_fs, card_padding, gap, content_padding) = if effective_variant == "cards" {
-        // Calculate actual content requirements
-        const COMP_HEIGHT: f32 = 525.0;
-        const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
-        const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
-        
-        // Estimate required height: title + rows + gaps
-        let title_height = 37.0; // 25px font + 12px margin
-        let row_height_estimate = if row_count >= 4 {
-            55.0 // 14px title + 14px value + 12px padding + 15px gap
-        } else if row_count >= 3 {
-            65.0 // 16px title + 16px value + 14px padding + 19px gap
-        } else {
-            75.0 // 18px title + 18px value + 16px padding + 23px gap
-        };
-        let gap_estimate = if row_count >= 4 { 12.0 } else if row_count >= 3 { 16.0 } else { 20.0 };
-        let estimated_content_height = title_height + (row_count as f32 * row_height_estimate) + ((row_count - 1) as f32 * gap_estimate);
-        
-        // Calculate required padding to fit within safe content height
-        let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
-        let effective_content_padding = if total_padding_needed < 40.0 {
-            "16px var(--space-6) 16px" // Very aggressive
-        } else if total_padding_needed < 60.0 {
-            "24px var(--space-6) 24px" // Aggressive
-        } else if total_padding_needed < 80.0 {
-            "40px var(--space-6) 40px" // Moderate
-        } else {
-            "80px var(--space-6) 80px" // Standard
-        };
-        
-        // Scale fonts based on how tight the fit is
-        let space_usage = estimated_content_height / SAFE_CONTENT_HEIGHT; // 0.0 to 1.0+
-        let base_title_fs = body_fs + 1;
-        let base_val_fs = body_fs + 1;
-        let base_header_fs = caption_fs + 1;
-        
-        if space_usage > 0.85 {
-            // Very tight fit - aggressive scaling
-            ((base_title_fs as f32 * 0.75) as i32, (base_val_fs as f32 * 0.75) as i32, (base_header_fs as f32 * 0.75) as i32, "8px 10px", 4, effective_content_padding)
-        } else if space_usage > 0.75 {
-            // Tight fit - moderate scaling
-            ((base_title_fs as f32 * 0.85) as i32, (base_val_fs as f32 * 0.85) as i32, (base_header_fs as f32 * 0.85) as i32, "10px 12px", 6, effective_content_padding)
-        } else {
-            // Normal fit - standard sizing
-            (base_title_fs, base_val_fs, base_header_fs, "12px 16px", 10, effective_content_padding)
-        }
-    } else {
-        (body_fs, body_fs, caption_fs, "12px 16px", 10, "80px var(--space-6) 80px")
-    };
-
-    let content = if columns.is_empty() {
-        // Fallback: render title + empty state
-        format!(
-            "{}{}<div style=\"font-family:{};font-size:{}px;color:{};text-align:center;padding:var(--space-6);\">No columns provided.</div>{}",
-            gc, heading, tokens.body_font, body_fs, colors.text_secondary, gx
-        )
-    } else { match effective_variant {
-        "cards" => {
-            // Each row rendered as a card with column values side-by-side
-            let mut cards_html = String::new();
-            for row in &rows {
-                let label = row.first().map(|s| s.as_str()).unwrap_or("");
-                let mut values_html = String::new();
-                for (ci, col_name) in columns.iter().enumerate() {
-                    let val = row.get(ci + 1).map(|s| s.as_str()).unwrap_or("");
-                    let is_highlighted = highlight_column == Some(ci);
-                    let val_color = if is_highlighted {
-                        tokens.primary.clone()
-                    } else {
-                        colors.text_primary.clone()
-                    };
-                    values_html.push_str(&format!(
-                        r#"<div style="flex:1;text-align:center;">
-                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};">{}</div>
-                            <div style="font-family:{};font-size:{}px;color:{};margin-top:2px;">{}</div>
-                        </div>"#,
-                        tokens.heading_font, card_header_fs, colors.text_secondary, escape_html(col_name),
-                        tokens.body_font, card_val_fs, val_color, escape_html(val)
-                    ));
-                }
-                cards_html.push_str(&format!(
-                    r#"<div style="background:{};border:{};{}border-radius:{};padding:{};margin-bottom:{}px;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};margin-bottom:8px;">{}</div>
-                        <div style="display:flex;gap:{}px;">{}</div>
-                    </div>"#,
-                    card_bg, card_border, card_blur, radius_md, card_padding, gap,
-                    tokens.body_font, card_title_fs, colors.text_primary, escape_html(label),
-                    gap, values_html
-                ));
-            }
-            format!("{}{}<div style=\"margin-top:12px;\">{}</div>{}", gc, heading, cards_html, gx)
-        }
-        "vs-split" => {
-            // Two-column split: left column = first data column, right column = second data column
-            let col_a = columns.get(0).map(|s| s.as_str()).unwrap_or("");
-            let col_b = columns.get(1).map(|s| s.as_str()).unwrap_or("");
-            let mut left_rows = String::new();
-            let mut right_rows = String::new();
-            for row in &rows {
-                let label = row.first().map(|s| s.as_str()).unwrap_or("");
-                let val_a = row.get(1).map(|s| s.as_str()).unwrap_or("");
-                let val_b = row.get(2).map(|s| s.as_str()).unwrap_or("");
-                left_rows.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:8px 0;border-bottom:1px solid {}20;">{}<div style=\"font-weight:600;margin-top:2px;\">{}</div></div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label), escape_html(val_a)
-                ));
-                right_rows.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:8px 0;border-bottom:1px solid {}20;">{}<div style=\"font-weight:600;margin-top:2px;\">{}</div></div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label), escape_html(val_b)
-                ));
-            }
-            let left_label_color = if is_dark { "#FFFFFF".to_string() } else { tokens.primary.clone() };
-            let right_label_color = colors.text_secondary.clone();
-            format!(
-                r#"{}{}<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin-top:16px;">
-                    <div><div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:8px;border-bottom:2px solid {};margin-bottom:4px;">{}</div>{}</div>
-                    <div><div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding-bottom:8px;border-bottom:2px solid {};margin-bottom:4px;">{}</div>{}</div>
-                </div>{}"#,
-                gc, heading,
-                tokens.heading_font, title_fs, left_label_color, tokens.primary, escape_html(col_a), left_rows,
-                tokens.heading_font, title_fs, right_label_color, tokens.border_light, escape_html(col_b), right_rows,
-                gx
-            )
-        }
-        "feature-matrix" => {
-            // Grid with checkmarks and feature labels
-            let mut grid_rows = String::new();
-            // Header row
-            let mut header_cells = String::from(&format!(
-                r#"<div style="font-family:{};font-size:{}px;font-weight:600;color:{};padding:10px 12px;text-align:left;">Feature</div>"#,
-                tokens.heading_font, caption_fs, colors.text_secondary
-            ));
-            for (ci, col) in columns.iter().enumerate() {
-                let is_hl = highlight_column == Some(ci);
-                let hdr_color = if is_hl { tokens.primary.clone() } else { colors.text_secondary.clone() };
-                header_cells.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding:10px 12px;text-align:center;">{}</div>"#,
-                    tokens.heading_font, caption_fs, hdr_color, escape_html(col)
-                ));
-            }
-            grid_rows.push_str(&format!(
-                r#"<div style="display:contents;">{}</div>"#, header_cells
-            ));
-            // Data rows
-            for row in &rows {
-                let label = row.first().map(|s| s.as_str()).unwrap_or("");
-                let mut cells = format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};padding:10px 12px;border-top:1px solid {}20;text-align:left;">{}</div>"#,
-                    tokens.body_font, body_fs, colors.text_primary, tokens.border_light, escape_html(label)
-                );
-                for (ci, _) in columns.iter().enumerate() {
-                    let val = row.get(ci + 1).map(|s| s.as_str()).unwrap_or("");
-                    let is_hl = highlight_column == Some(ci);
-                    let display_val = if show_checkmarks && (val == "✓" || val == "✔") {
-                        format!(r#"<span style="color:{};font-size:18px;font-weight:700;">✓</span>"#, tokens.primary)
-                    } else if show_checkmarks && (val == "—" || val == "-") {
-                        format!(r#"<span style="color:{};font-size:14px;">—</span>"#, colors.text_secondary)
-                    } else {
-                        let cell_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
-                        format!(r#"<span style="color:{};">{}</span>"#, cell_color, escape_html(val))
-                    };
-                    cells.push_str(&format!(
-                        r#"<div style="font-family:{};font-size:{}px;padding:10px 12px;border-top:1px solid {}20;text-align:center;font-weight:500;">{}</div>"#,
-                        tokens.body_font, body_fs, tokens.border_light, display_val
-                    ));
-                }
-                grid_rows.push_str(&format!(
-                    r#"<div style="display:contents;">{}</div>"#, cells
-                ));
-            }
-            format!(
-                r#"{}{}<div style="display:grid;grid-template-columns:{};margin-top:16px;width:100%;box-sizing:border-box;">
-                    {}
-                </div>{}"#,
-                gc, heading,
-                format!("auto {}", "1fr ".repeat(num_cols.saturating_sub(1).max(1))),
-                grid_rows, gx
-            )
-        }
-        _ => {
-            // table (default) — clean data table with header row
-            let mut grid_rows = String::new();
-            // Header
-            let mut header_cells = String::new();
-            for (ci, col) in columns.iter().enumerate() {
-                let is_hl = highlight_column == Some(ci);
-                let hdr_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
-                let border_bottom = if is_hl { format!("border-bottom:2px solid {}", tokens.primary) } else { "border-bottom:1px solid".to_string() };
-                header_cells.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};padding:12px 16px;{} {}20;display:flex;align-items:center;min-height:42px;box-sizing:border-box;">{}</div>"#,
-                    tokens.heading_font, title_fs, hdr_color, border_bottom, tokens.border_light, escape_html(col)
-                ));
-            }
-            grid_rows.push_str(&header_cells);
-            // Data rows
-            for row in &rows {
-                for ci in 0..num_cols {
-                    let val = row.get(ci).map(|s| s.as_str()).unwrap_or("");
-                    let is_hl = highlight_column == Some(ci);
-                    let cell_color = if is_hl { tokens.primary.clone() } else { colors.text_primary.clone() };
-                    let display_val = if show_checkmarks && (val == "✓" || val == "✔") {
-                        format!(r#"<span style="color:{};font-size:16px;font-weight:700;">✓</span>"#, tokens.primary)
-                    } else if show_checkmarks && (val == "—" || val == "-") {
-                        format!(r#"<span style="color:{};">—</span>"#, colors.text_secondary)
-                    } else {
-                        escape_html(val)
-                    };
-                    grid_rows.push_str(&format!(
-                        r#"<div style="font-family:{};font-size:{}px;color:{};padding:12px 16px;border-bottom:1px solid {}20;display:flex;align-items:center;min-height:42px;box-sizing:border-box;">{}</div>"#,
-                        tokens.body_font, body_fs, cell_color, tokens.border_light, display_val
-                    ));
-                }
-            }
-            format!(
-                r#"{}{}<div style="display:grid;grid-template-columns:{};margin-top:16px;width:100%;box-sizing:border-box;align-items:stretch;">
-                    {}
-                </div>{}"#,
-                gc, heading,
-                "1fr ".repeat(num_cols.max(1)),
-                grid_rows,                gx
-            )
-        }
-    } };
-
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        content_padding,
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 7. stat_row_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Grid of key statistics.
-///
-/// Variants: `auto` (default) | `compact` | `expanded` | `horizontal`
-///
-/// Each stat in `stats` is a JSON object with optional keys `value`, `label`, `sub`.
-pub fn stat_row_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    stats: Vec<Value>,
-    bg_style: &str,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-
-    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
-
-    let micro_fs = tokens
-        .type_scale
-        .get("micro")
-        .map(|s| s.font_size)
-        .unwrap_or(10);
-    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
-    let headline_fs = tokens.type_scale.get("headline").unwrap().font_size;
-    let display_fs = tokens.type_scale.get("display").unwrap().font_size;
-    let radius_md = tokens
-        .radii
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "var(--space-1)".to_string());
-    let radius_sm = tokens
-        .radii
-        .get("sm")
-        .cloned()
-        .unwrap_or_else(|| "6px".to_string());
-    let shadow_sm = tokens
-        .shadows
-        .get("sm")
-        .cloned()
-        .unwrap_or_else(|| "none".to_string());
-    let shadow_md = tokens
-        .shadows
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "none".to_string());
-
-    let label_color = if is_dark {
-        &colors.text_secondary
-    } else {
-        &colors.text_primary
-    };
-
-    let effective_variant = variant;
-
-    let grid = match effective_variant {
-        "horizontal" => {
-            let mut g = format!(
-                r#"<div style="display:flex;gap:var(--space-2);margin-top:16px;overflow:hidden;">"#
-            );
-            for item in &stats {
-                let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-                let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                let sub = item.get("sub").and_then(|v| v.as_str()).unwrap_or("");
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:4px;">{}</div>"#,
-                        micro_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                g.push_str(&format!(
-                    r#"<div style="flex:1;text-align:center;padding:var(--space-1);background:{};border:{};{}border-radius:{};">
-                        <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
-                        <div style="font-size:{}px;color:{};margin-top:6px;">{}</div>
-                        {}
-                    </div>"#,
-                    card_bg, card_border, card_blur, radius_md,
-                    tokens.heading_font, headline_fs, tokens.primary, escape_html(val),
-                    caption_fs, colors.text_secondary, escape_html(label),
-                    sub_html
-                ));
-            }
-            g.push_str("</div>");
-            g
-        }
-        "compact" => {
-            let mut g =
-                format!(r#"<div style="display:flex;gap:var(--space-1);margin-top:12px;">"#);
-            for item in &stats {
-                let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-                let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                let sub = item.get("sub").and_then(|v| v.as_str()).unwrap_or("");
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:2px;">{}</div>"#,
-                        micro_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                g.push_str(&format!(
-                    r#"<div style="flex:1;padding:var(--space-1) var(--space-2);background:{};border:{};{}border-radius:{};text-align:center;">
-                        <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
-                        <div style="font-size:{}px;color:{};margin-top:4px;">{}</div>
-                        {}
-                    </div>"#,
-                    card_bg, card_border, card_blur, radius_sm,
-                    tokens.heading_font, title_fs, tokens.primary, escape_html(val),
-                    micro_fs, colors.text_secondary, escape_html(label),
-                    sub_html
-                ));
-            }
-            g.push_str("</div>");
-            g
-        }
-        "expanded" => {
-            let mut g =
-                format!(r#"<div style="display:flex;gap:var(--space-2);margin-top:20px;">"#);
-            for item in &stats {
-                let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-                let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                let sub = item.get("sub").and_then(|v| v.as_str()).unwrap_or("");
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:8px;">{}</div>"#,
-                        caption_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                g.push_str(&format!(
-                    r#"<div style="flex:1;background:{};border:{};{}border-radius:{};padding:var(--space-3) 20px;box-shadow:{};text-align:center;">
-                        <div style="font-size:{}px;color:{};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">{}</div>
-                        <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
-                        {}
-                    </div>"#,
-                    card_bg, card_border, card_blur, radius_md, shadow_md,
-                    caption_fs, colors.text_secondary, escape_html(label),
-                    tokens.heading_font, display_fs, tokens.primary, escape_html(val),
-                    sub_html
-                ));
-            }
-            g.push_str("</div>");
-            g
-        }
-        _ => {
-            // auto
-            if stats.len() <= 3 {
-                let mut g = format!(
-                    r#"<div style="display:flex;gap:var(--space-1);margin-top:16px;overflow:hidden;align-items:stretch;">"#
-                );
-                for item in &stats {
-                    let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-                    let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                    let sub = item.get("sub").and_then(|v| v.as_str()).unwrap_or("");
-                    let sub_html = if !sub.is_empty() {
-                        format!(
-                            r#"<div style="font-size:{}px;color:{};margin-top:4px;">{}</div>"#,
-                            micro_fs,
-                            colors.text_secondary,
-                            escape_html(sub)
-                        )
-                    } else {
-                        String::new()
-                    };
-                    g.push_str(&format!(
-                        r#"<div style="flex:1;background:{};border:{};{}border-radius:{};padding:16px 12px;box-shadow:{};">
-                            <div style="font-size:{}px;color:{};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">{}</div>
-                            <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
-                            {}
-                        </div>"#,
-                        card_bg, card_border, card_blur, radius_md, shadow_sm,
-                        micro_fs, label_color, escape_html(label),
-                        tokens.heading_font, headline_fs, tokens.primary, escape_html(val),
-                        sub_html
-                    ));
-                }
-                g.push_str("</div>");
-                g
-            } else {
-                let mut g = format!(
-                    r#"<div style="display:flex;gap:var(--space-2);flex-wrap:wrap;width:100%;margin-top:16px;box-sizing:border-box;">"#
-                );
-                for item in &stats {
-                    let val = item.get("value").and_then(|v| v.as_str()).unwrap_or("");
-                    let label = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                    let sub = item.get("sub").and_then(|v| v.as_str()).unwrap_or("");
-                    let sub_html = if !sub.is_empty() {
-                        format!(
-                            r#"<div style="font-size:{}px;color:{};margin-top:4px;">{}</div>"#,
-                            micro_fs,
-                            colors.text_secondary,
-                            escape_html(sub)
-                        )
-                    } else {
-                        String::new()
-                    };
-                    g.push_str(&format!(
-                        r#"<div style="width:calc(50% - 8px);box-sizing:border-box;min-width:120px;background:{};border:{};{}border-radius:{};padding:var(--space-1);box-shadow:{};">
-                            <div style="font-size:{}px;color:{};text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">{}</div>
-                            <div style="font-family:{};font-size:{}px;font-weight:700;color:{};line-height:1;">{}</div>
-                            {}
-                        </div>"#,
-                        card_bg, card_border, card_blur, radius_md, shadow_sm,
-                        micro_fs, label_color, escape_html(label),
-                        tokens.heading_font, title_fs, tokens.primary, escape_html(val),
-                        sub_html
-                    ));
-                }
-                g.push_str("</div>");
-                g
-            }
-        }
-    };
-
-    let content = format!("{}{}", heading, grid);
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "80px var(--space-6) 80px",
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 8. timeline_slide
+// 7. timeline_slide
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Vertical process timeline.
@@ -3598,6 +3038,188 @@ pub fn chart_slide(
             ));
         }
         chart_html = format!(r#"<div style="width:100%;margin-top:16px;">{}</div>"#, bars);
+    } else if chart_type == "bar_vertical" || chart_type == "column" {
+        // Vertical column chart — single-series or grouped via `series` field.
+        // Replaces the retired `column_chart_slide`. Detects `series: [{name, value}]`
+        // entries for grouped/multi-series layout; falls back to flat single-series.
+        let series_colors = [
+            "#767CFF", "#FF8C6B", "#3ECFA0", "#FFB84D", "#E879A8", "#5BB5F0",
+        ];
+
+        let is_grouped = data.iter().any(|item| {
+            item.get("series")
+                .and_then(|v| v.as_array())
+                .map(|arr| !arr.is_empty())
+                .unwrap_or(false)
+        });
+
+        if is_grouped {
+            // Multi-series grouped columns (replaces column_chart grouped path).
+            let global_max: f64 = data
+                .iter()
+                .filter_map(|item| item.get("series")?.as_array())
+                .flatten()
+                .filter_map(|s| s.get("value")?.as_f64())
+                .fold(0.0f64, f64::max)
+                .max(1.0);
+
+            let num_series = data
+                .first()
+                .and_then(|item| item.get("series")?.as_array())
+                .map(|arr| arr.len())
+                .unwrap_or(1);
+            let bar_inner_pct = (70.0 / num_series as f64).max(20.0);
+            let gap_px = if num_series > 2 { 0 } else { 2 };
+
+            let categories: String = data
+                .iter()
+                .enumerate()
+                .map(|(ci, item)| {
+                    let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
+                    let series = item
+                        .get("series")
+                        .and_then(|v| v.as_array())
+                        .cloned()
+                        .unwrap_or_default();
+
+                    let inner_bars: String = series
+                        .iter()
+                        .enumerate()
+                        .map(|(si, sv)| {
+                            let val = sv.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0);
+                            let pct = (val / global_max) * 100.0;
+                            let col = series_colors[si % series_colors.len()];
+                            let val_display = if val >= 1000.0 {
+                                format!("{:.0}", val)
+                            } else if val == val.floor() {
+                                format!("{:.0}", val)
+                            } else {
+                                format!("{:.1}", val)
+                            };
+                            format!(
+                                r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
+                                    <div style="font-family:{};font-size:8px;font-weight:800;color:{};line-height:1;text-align:center;">{}</div>
+                                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                        <div style="width:{:.0}%;height:{:.1}%;min-height:4px;background:{};border-radius:3px 3px 0 0;"></div>
+                                    </div>
+                                </div>"#,
+                                tokens.body_font,
+                                colors.text_primary,
+                                val_display,
+                                bar_inner_pct,
+                                pct,
+                                col
+                            )
+                        })
+                        .collect();
+
+                    let separator_html = if num_series > 1 && ci < data.len() - 1 {
+                        r#"<div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>"#
+                    } else {
+                        ""
+                    };
+                    format!(
+                        r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
+                            <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">{}</div>
+                            <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
+                            {}
+                        </div>"#,
+                        gap_px,
+                        inner_bars,
+                        tokens.body_font,
+                        colors.text_secondary,
+                        escape_html(lbl),
+                        separator_html
+                    )
+                })
+                .collect();
+
+            let legend_items: String = data
+                .first()
+                .and_then(|item| item.get("series")?.as_array())
+                .cloned()
+                .unwrap_or_default()
+                .iter()
+                .enumerate()
+                .map(|(si, sv)| {
+                    let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
+                    let col = series_colors[si % series_colors.len()];
+                    format!(
+                        r#"<div style="display:flex;align-items:center;gap:4px;">
+                            <div style="width:8px;height:8px;border-radius:2px;background:{};flex-shrink:0;"></div>
+                            <span style="font-family:{};font-size:8px;color:{};">{}</span>
+                        </div>"#,
+                        col, tokens.body_font, colors.text_secondary, escape_html(name)
+                    )
+                })
+                .collect();
+
+            let legend_html = if !legend_items.is_empty() {
+                format!(
+                    r#"<div style="display:flex;justify-content:center;gap:12px;margin-top:6px;">{}</div>"#,
+                    legend_items
+                )
+            } else {
+                String::new()
+            };
+
+            chart_html = format!(
+                r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>{}"#,
+                categories, legend_html
+            );
+        } else {
+            // Single-series flat columns.
+            let vals: Vec<f64> = data
+                .iter()
+                .map(|item| {
+                    item.get("value")
+                        .and_then(|v| {
+                            v.as_f64()
+                                .or_else(|| v.as_str().and_then(|s| s.parse::<f64>().ok()))
+                        })
+                        .unwrap_or(0.0)
+                })
+                .collect();
+            let max_val = vals.iter().copied().fold(0.0, f64::max).max(1.0);
+
+            let bars: String = data
+                .iter()
+                .zip(vals.iter())
+                .map(|(item, val)| {
+                    let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
+                    let pct = (val / max_val) * 100.0;
+                    let val_display = if *val >= 1000.0 {
+                        format!("{:.0}", val)
+                    } else if *val == val.floor() {
+                        format!("{:.0}", val)
+                    } else {
+                        format!("{:.1}", val)
+                    };
+                    format!(
+                        r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
+                            <div style="font-family:{};font-size:10px;font-weight:800;color:{};line-height:1;margin-bottom:6px;text-align:center;">{}</div>
+                            <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
+                                <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
+                            </div>
+                            <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
+                        </div>"#,
+                        tokens.body_font,
+                        colors.text_primary,
+                        val_display,
+                        pct,
+                        colors.primary,
+                        tokens.body_font,
+                        colors.text_secondary,
+                        escape_html(lbl)
+                    )
+                })
+                .collect();
+
+            chart_html = format!(
+                r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
+                bars
+            );
+        }
     } else if chart_type == "pie" || chart_type == "donut" {
         let colors_list = vec![
             colors.primary.as_str(),
@@ -4386,231 +4008,9 @@ fn metric_sparkline_slide(
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
 
-fn column_chart_slide(
-    tokens: &DesignTokens,
-    data: Vec<Value>,
-    title: &str,
-    _caption: &str,
-    bg_style: &str,
-    theme: &str,
-    bg_img: &str,
-    img_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-    let heading = heading_block(title, tokens, "title", None, true, None, "left", "0", false);
-
-    // Detect multi-series: each item has a "series" array [{name, value}]
-    let is_grouped = data.iter().any(|item| {
-        item.get("series")
-            .and_then(|v| v.as_array())
-            .map(|arr| !arr.is_empty())
-            .unwrap_or(false)
-    });
-
-    // Palette for grouped columns — warm-editorial accents that contrast well
-    let series_colors = [
-        "#767CFF", // indigo-violet
-        "#FF8C6B", // warm coral
-        "#3ECFA0", // teal mint
-        "#FFB84D", // amber gold
-        "#E879A8", // rose pink
-        "#5BB5F0", // sky blue
-    ];
-
-    let chart_html = if is_grouped {
-        // ── Multi-series grouped columns ──────────────────────────────
-        // Find global max across all series values for height normalisation.
-        let global_max: f64 = data
-            .iter()
-            .filter_map(|item| item.get("series")?.as_array())
-            .flatten()
-            .filter_map(|s| s.get("value")?.as_f64())
-            .fold(0.0f64, f64::max)
-            .max(1.0);
-
-        let num_series = data
-            .first()
-            .and_then(|item| item.get("series")?.as_array())
-            .map(|arr| arr.len())
-            .unwrap_or(1);
-        // Each inner bar is proportionally narrower; min 20% so they stay visible
-        let bar_inner_pct = (70.0 / num_series as f64).max(20.0);
-        // Tighter intra-group gap so bars within a category are visually clustered
-        let gap_px = if num_series > 2 { 0 } else { 2 };
-
-        let num_categories = data.len();
-        let categories: String = data
-            .iter()
-            .enumerate()
-            .map(|(ci, item)| {
-                let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-                let series = item
-                    .get("series")
-                    .and_then(|v| v.as_array())
-                    .cloned()
-                    .unwrap_or_default();
-
-                // Render each series value as a side-by-side bar
-                let inner_bars: String = series
-                    .iter()
-                    .enumerate()
-                    .map(|(si, sv)| {
-                        let val = sv
-                            .get("value")
-                            .and_then(|v| v.as_f64())
-                            .unwrap_or(0.0);
-                        let pct = (val / global_max) * 100.0;
-                        let col = series_colors[si % series_colors.len()];
-                        let val_display = if val >= 1000.0 {
-                            format!("{:.0}", val)
-                        } else if val == val.floor() {
-                            format!("{:.0}", val)
-                        } else {
-                            format!("{:.1}", val)
-                        };
-                        format!(
-                            r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;gap:2px;">
-                                <div style="font-family:{};font-size:8px;font-weight:800;color:{};line-height:1;text-align:center;">{}</div>
-                                <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                                    <div style="width:{:.0}%;height:{:.1}%;min-height:4px;background:{};border-radius:3px 3px 0 0;"></div>
-                                </div>
-                            </div>"#,
-                            tokens.body_font,
-                            colors.text_primary,
-                            val_display,
-                            bar_inner_pct,
-                            pct,
-                            col
-                        )
-                    })
-                    .collect();
-
-                let separator_html = if num_series > 1 && ci < num_categories - 1 {
-                    r#"<div style="position:absolute;right:-8px;transform:translateX(50%);top:0;bottom:18px;width:1px;background:rgba(128,128,128,0.22);"></div>"#
-                } else {
-                    ""
-                };
-                format!(
-                    r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;position:relative;">
-                        <div style="display:flex;align-items:flex-end;justify-content:center;width:100%;height:104px;gap:{}px;">
-                            {}
-                        </div>
-                        <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
-                        {}
-                    </div>"#,
-                    gap_px,
-                    inner_bars,
-                    tokens.body_font,
-                    colors.text_secondary,
-                    escape_html(lbl),
-                    separator_html
-                )
-            })
-            .collect();
-
-        // Legend row
-        let legend_items: String = data
-            .first()
-            .and_then(|item| item.get("series")?.as_array())
-            .cloned()
-            .unwrap_or_default()
-            .iter()
-            .enumerate()
-            .map(|(si, sv)| {
-                let name = sv.get("name").and_then(|v| v.as_str()).unwrap_or("");
-                let col = series_colors[si % series_colors.len()];
-                format!(
-                    r#"<div style="display:flex;align-items:center;gap:4px;">
-                        <div style="width:8px;height:8px;border-radius:2px;background:{};flex-shrink:0;"></div>
-                        <span style="font-family:{};font-size:8px;color:{};">{}</span>
-                    </div>"#,
-                    col,
-                    tokens.body_font,
-                    colors.text_secondary,
-                    escape_html(name)
-                )
-            })
-            .collect();
-
-        let legend_html = if !legend_items.is_empty() {
-            format!(
-                r#"<div style="display:flex;justify-content:center;gap:12px;margin-top:6px;">{}</div>"#,
-                legend_items
-            )
-        } else {
-            String::new()
-        };
-
-        format!(
-            r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>{}"#,
-                    categories,
-                    legend_html
-                )
-    } else {
-        // ── Single-series flat columns (backward-compatible) ───────────
-        let vals: Vec<f64> = data
-            .iter()
-            .map(|item| item.get("value").and_then(|v| v.as_f64()).unwrap_or(0.0))
-            .collect();
-        let max_val = vals.iter().copied().fold(0.0, f64::max).max(1.0);
-
-        let bars: String = data.iter().zip(vals.iter()).map(|(item, val)| {
-            let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
-            let pct = (val / max_val) * 100.0;
-            let val_display = if *val >= 1000.0 {
-                format!("{:.0}", val)
-            } else if *val == val.floor() {
-                format!("{:.0}", val)
-            } else {
-                format!("{:.1}", val)
-            };
-            format!(
-                r#"<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-                    <div style="font-family:{};font-size:10px;font-weight:800;color:{};line-height:1;margin-bottom:6px;text-align:center;">{}</div>
-                    <div style="width:100%;height:104px;display:flex;align-items:flex-end;justify-content:center;">
-                        <div style="width:70%;height:{:.1}%;min-height:8px;background:{};border-radius:4px 4px 0 0;"></div>
-                    </div>
-                    <span style="font-family:{};font-size:10px;color:{};margin-top:6px;text-align:center;max-width:100%;">{}</span>
-                </div>"#,
-                tokens.body_font,
-                colors.text_primary,
-                val_display,
-                pct,
-                colors.primary,
-                tokens.body_font,
-                colors.text_secondary,
-                escape_html(lbl)
-            )
-        }).collect();
-
-        format!(
-            r#"<div style="display:flex;gap:var(--space-3);width:100%;height:142px;margin-top:16px;overflow:hidden;">{}</div>"#,
-            bars
-        )
-    };
-
-    let caption_html = if !_caption.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:10px;color:{};margin:var(--space-1) 0 0;line-height:1.4;text-align:center;width:100%;">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(_caption)
-        )
-    } else {
-        String::new()
-    };
-
-    let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            {}{}{}
-        </div>"#,
-        heading, chart_html, caption_html
-    );
-    let html = hero_layout(&content, tokens, bg_style, false, "center");
-    let html = inject_background_image(html, bg_img, img_opacity, is_dark);
-    json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
-}
+// column_chart_slide removed: vertical bar rendering now lives inside chart_slide
+// via chart_type="bar_vertical". The legacy dispatch slot still routes "column_chart"
+// JSON through chart_slide for backwards compatibility.
 
 fn text_columns_slide(
     tokens: &DesignTokens,
@@ -5089,14 +4489,18 @@ pub fn checklist_action_plan_slide(
     const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
     const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
     
-    // Estimate required height: title + items + gaps
-    let title_height = 30.0; // 16px font + 14px margin
+    // Estimate required height: title + items + gaps.
+    // Empirical card heights derived from rendered geometry (per directive #1774):
+    //  - 6+ items: ~48px each (11px text + 14px padding + 9px number + 14px flex)
+    //  - 4-5 items: ~54px each (12px text + 16px padding + 10px number + 16px flex)
+    //  - 1-3 items: ~62px each (13px text + 18px padding + 13px number + 18px flex)
+    let title_height = 30.0;
     let item_height_estimate = if item_count >= 6 {
-        38.0 // 11px text + 8px padding + 9px number + 10px gap
+        48.0
     } else if item_count >= 4 {
-        44.0 // 12px text + 10px padding + 10px number + 12px gap
+        54.0
     } else {
-        50.0 // 13px text + 12px padding + 13px number + 12px gap
+        62.0
     };
     let gap_estimate = if item_count >= 6 { 4.0 } else if item_count >= 4 { 6.0 } else { 8.0 };
     let estimated_content_height = title_height + (item_count as f32 * item_height_estimate) + ((item_count - 1) as f32 * gap_estimate);
@@ -6088,6 +5492,10 @@ pub fn dispatch_slide(
             img_opacity,
         )),
         "comparison" => {
+            // comparison removed (all 4 variants: cards, vs-split, feature-matrix, table).
+            // Redirect legacy callers to before_after_story which is the closest semantic
+            // equivalent (A vs B framing). First row of `rows` becomes (before, after);
+            // remaining row content goes into a metric/label fallback.
             let columns: Vec<String> = p
                 .get("columns")
                 .and_then(|v| v.as_array())
@@ -6111,34 +5519,52 @@ pub fn dispatch_slide(
                         .collect()
                 })
                 .unwrap_or_default();
-            let highlight_column = p.get("highlight_column").and_then(|v| v.as_u64()).map(|n| n as usize);
-            let show_checkmarks = p.get("show_checkmarks").and_then(|v| v.as_bool()).unwrap_or(false);
-            Ok(comparison_slide(
+            let before = rows
+                .first()
+                .and_then(|r| r.first().cloned())
+                .unwrap_or_default();
+            let after = rows
+                .first()
+                .and_then(|r| r.get(1).cloned())
+                .unwrap_or_default();
+            let metric = s("metric");
+            let metric_label = s("metric_label");
+            let _ = (columns, rows); // consumed for shape
+            Ok(before_after_story_slide(
                 tokens,
                 &s("title"),
-                columns,
-                rows,
-                highlight_column,
-                show_checkmarks,
+                &before,
+                &after,
+                &metric,
+                &metric_label,
                 bg_style,
-                &s("variant").if_empty("table"),
                 theme,
                 &bg_img,
                 img_opacity,
             ))
         }
         "stat_row" => {
-            let stats = p
-                .get("stats")
+            // stat_row removed (folded into metric_grid which has the same N-stat grid
+            // semantics). Route legacy callers to metric_grid so existing JSON keeps working.
+            let mut params = p.clone();
+            if let Some(obj) = params.as_object_mut() {
+                // Rename `stats` → `metrics` if needed; metric_grid expects metrics: [{value,label,trend?}]
+                if !obj.contains_key("metrics") {
+                    if let Some(stats) = obj.remove("stats") {
+                        obj.insert("metrics".to_string(), stats);
+                    }
+                }
+            }
+            let metrics = params
+                .get("metrics")
                 .and_then(|v| v.as_array())
                 .cloned()
                 .unwrap_or_default();
-            Ok(stat_row_slide(
+            Ok(metric_grid_slide(
                 tokens,
+                metrics,
                 &s("title"),
-                stats,
                 bg_style,
-                &s("variant").if_empty("auto"),
                 theme,
                 &bg_img,
                 img_opacity,
@@ -6436,13 +5862,16 @@ pub fn dispatch_slide(
             img_opacity,
         )),
         "column_chart" => {
+            // column_chart removed (merged into chart_slide chart_type="bar_vertical")
+            // Route to chart_slide for backwards compatibility with existing callers.
             let data = p
                 .get("data")
                 .and_then(|v| v.as_array())
                 .cloned()
                 .unwrap_or_default();
-            Ok(column_chart_slide(
+            Ok(chart_slide(
                 tokens,
+                "bar_vertical",
                 data,
                 &s("title"),
                 &s("caption"),
@@ -8271,225 +7700,6 @@ mod tests {
     }
 
     #[test]
-    fn test_column_chart_renders_values_and_varied_bar_heights() {
-        let tokens = derive_palette(
-            "#0066FF",
-            "professional",
-            16,
-            1.25,
-            "warm-editorial",
-            "",
-            None,
-            None,
-            None,
-        )
-        .unwrap();
-
-        let res = column_chart_slide(
-            &tokens,
-            vec![
-                json!({"label": "Jan", "value": 1200.0}),
-                json!({"label": "Feb", "value": 1850.0}),
-                json!({"label": "Mar", "value": 2700.0}),
-            ],
-            "Monthly Active Users",
-            "Growth trajectory",
-            "light",
-            "minimal",
-            "",
-            0.4,
-        );
-        let html = res["html"].as_str().unwrap();
-        assert!(html.contains(">1200<"));
-        assert!(html.contains(">1850<"));
-        assert!(html.contains(">2700<"));
-        assert!(html.contains("height:44.4%"));
-        assert!(html.contains("height:68.5%"));
-        assert!(html.contains("height:100.0%"));
-    }
-
-    #[test]
-    fn test_dispatch_comparison_bars_accepts_metrics_array() {
-        let tokens = derive_palette(
-            "#0066FF",
-            "professional",
-            16,
-            1.25,
-            "warm-editorial",
-            "",
-            None,
-            None,
-            None,
-        )
-        .unwrap();
-        let params = json!({
-            "title": "Performance Comparison",
-            "metrics": [
-                {"name": "Latency", "left_value": 120.0, "right_value": 45.0, "left_label": "Legacy", "right_label": "New"}
-            ]
-        });
-
-        let res = dispatch_slide(
-            "comparison_bars",
-            &tokens,
-            &params,
-            "light",
-            "minimal",
-            "data_analyst",
-        )
-        .unwrap();
-        let html = res["html"].as_str().unwrap();
-        assert!(html.contains("Legacy"));
-        assert!(html.contains("New"));
-        assert!(html.contains(">120<"));
-        assert!(html.contains(">45<"));
-        assert!(html.contains("width:72.7%"));
-        assert!(html.contains("width:27.3%"));
-    }
-
-    #[test]
-    fn test_column_chart_renders_grouped_series() {
-        let tokens = derive_palette(
-            "#0066FF",
-            "professional",
-            16,
-            1.25,
-            "warm-editorial",
-            "",
-            None,
-            None,
-            None,
-        )
-        .unwrap();
-
-        let res = column_chart_slide(
-            &tokens,
-            vec![
-                json!({
-                    "label": "1970",
-                    "series": [
-                        {"name": "Men", "value": 58.0},
-                        {"name": "Women", "value": 42.0}
-                    ]
-                }),
-                json!({
-                    "label": "1980",
-                    "series": [
-                        {"name": "Men", "value": 53.0},
-                        {"name": "Women", "value": 47.0}
-                    ]
-                }),
-                json!({
-                    "label": "1990",
-                    "series": [
-                        {"name": "Men", "value": 48.0},
-                        {"name": "Women", "value": 52.0}
-                    ]
-                }),
-            ],
-            "Workforce Composition",
-            "Percentage by gender",
-            "light",
-            "minimal",
-            "",
-            0.4,
-        );
-        let html = res["html"].as_str().unwrap();
-        // Category labels present
-        assert!(html.contains("1970"));
-        assert!(html.contains("1980"));
-        assert!(html.contains("1990"));
-        // Series legend names present
-        assert!(html.contains("Men"));
-        assert!(html.contains("Women"));
-        // Series colors used (indigo-violet for Men, warm coral for Women)
-        assert!(html.contains("#767CFF"));
-        assert!(html.contains("#FF8C6B"));
-        // Global max is 58 → Women@1970 = 42/58 = 72.4%
-        assert!(html.contains("height:72.4%"));
-        // Men@1970 = 58/58 = 100.0%
-        assert!(html.contains("height:100.0%"));
-        // Women@1980 = 47/58 = 81.0%
-        assert!(html.contains("height:81.0%"));
-    }
-
-    #[test]
-    fn test_column_chart_single_series_backward_compatible() {
-        let tokens = derive_palette(
-            "#0066FF",
-            "professional",
-            16,
-            1.25,
-            "warm-editorial",
-            "",
-            None,
-            None,
-            None,
-        )
-        .unwrap();
-
-        // Flat data without series — must still work exactly as before
-        let res = column_chart_slide(
-            &tokens,
-            vec![
-                json!({"label": "Jan", "value": 1200.0}),
-                json!({"label": "Feb", "value": 1850.0}),
-                json!({"label": "Mar", "value": 2700.0}),
-            ],
-            "Monthly Active Users",
-            "Growth trajectory",
-            "light",
-            "minimal",
-            "",
-            0.4,
-        );
-        let html = res["html"].as_str().unwrap();
-        assert!(!html.is_empty(), "single-series should produce non-empty HTML");
-        // Verify the data values appear in the rendered bars
-        assert!(html.contains(">1200<"), "should render value 1200");
-        assert!(html.contains(">1850<"), "should render value 1850");
-        assert!(html.contains(">2700<"), "should render value 2700");
-        // Verify the chart does NOT use the grouped multi-series path
-        // (no Men/Women legend entries, no grouped-series class)
-        assert!(!html.contains("Men"), "single-series should NOT contain series legend entries");
-        assert!(!html.contains("Women"), "single-series should NOT contain series legend entries");
-    }
-
-    #[test]
-    fn test_column_chart_grouped_separator_is_not_on_outer_edge() {
-        let tokens = derive_palette(
-            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
-        ).unwrap();
-
-        let res = column_chart_slide(
-            &tokens,
-            vec![
-                json!({
-                    "label": "2020",
-                    "series": [{"name": "Tech", "value": 45}, {"name": "Health", "value": 30}]
-                }),
-                json!({
-                    "label": "2022",
-                    "series": [{"name": "Tech", "value": 52}, {"name": "Health", "value": 35}]
-                }),
-            ],
-            "Employment by Sector",
-            "",
-            "dark",
-            "bold",
-            "",
-            0.4,
-        );
-        let html = res["html"].as_str().unwrap();
-        assert!(
-            html.contains("position:relative") && html.contains("position:absolute"),
-            "grouped column separator should use absolute positioning, not outer border-right"
-        );
-        assert!(
-            !html.contains("border-right:1px solid rgba(128,128,128,0.15);margin-right:-0.5px;"),
-            "outer category wrapper must not have border-right"
-        );
-    }
 
     #[test]
     fn test_myth_fact_debunk_uses_title_scale_heading() {

@@ -1089,8 +1089,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "list",
         "quote",
         "cta",
-        "comparison",
-        "stat_row",
+        "before_after_story", // comparison retired → routed here
+        "metric_grid",        // stat_row retired → routed here
         "timeline",
         "callout",
         "split_features",
@@ -1104,7 +1104,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "metric_grid",
         "funnel_chart",
         "table",
-        "column_chart",
+        // column_chart retired → routed through chart(bar_vertical)
+        "chart", // (covered above; vertical-bar covered via chart_type=bar_vertical)
         "text_columns",
         "qr_destination",
     ];
@@ -1221,7 +1222,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             let hero_variants = ["centered", "left-aligned", "split"];
             let feature_variants = ["stacked", "icon-left", "icon-right", "minimal"];
             let list_variants = ["bullet", "numbered", "checklist", "icon-list", "two-column"];
-            let chart_types = ["bar", "pie", "donut", "line", "area", "scatter"];
+            let chart_types = ["bar", "bar_vertical", "pie", "donut", "line", "area", "scatter"];
 
             let params = match *st {
                 "hero" => json!({
@@ -1262,17 +1263,17 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     "role": "Lead Architect",
                     "bg_style": rand_bg
                 }),
-                "comparison" => json!({
+                "before_after_story" => json!({
                     "title": "Traditional vs Modern Workflows",
-                    "left_label": "Legacy Approach",
-                    "right_label": "SlideForge Engine",
-                    "left_items": ["Manual assets stitching", "Broken layouts and centering", "No visual theme consistency"],
-                    "right_items": ["Atomic layout validation", "Stunning responsive templates", "Guaranteed design system parity"],
+                    "before": "Legacy Approach: Manual assets stitching, broken layouts, no theme consistency",
+                    "after": "SlideForge Engine: Atomic layout validation, stunning responsive templates",
+                    "metric": "10x",
+                    "metric_label": "Faster turnaround",
                     "bg_style": rand_bg
                 }),
-                "stat_row" => json!({
+                "metric_grid" => json!({
                     "title": "Verified Performance Growth",
-                    "stats": [
+                    "metrics": [
                         {"value": "99.99%", "label": "API Reliability"},
                         {"value": "12.8M", "label": "Slides Generated"},
                         {"value": "4.8/5", "label": "Customer Rating"}
@@ -1371,17 +1372,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     ],
                     "bg_style": rand_bg
                 }),
-                "column_chart" => json!({
-                    "title": "Monthly Active Users",
-                    "caption": "Growth trajectory across product launch phases",
-                    "data": [
-                        {"label": "Jan", "value": 1200.0},
-                        {"label": "Feb", "value": 1850.0},
-                        {"label": "Mar", "value": 2700.0},
-                        {"label": "Apr", "value": 3100.0}
-                    ],
-                    "bg_style": rand_bg
-                }),
+                // column_chart retired — vertical-bar covered by chart(chart_type=bar_vertical)
                 "text_columns" => json!({
                     "title": "Core Architecture Principles",
                     "columns": [

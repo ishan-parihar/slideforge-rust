@@ -1452,7 +1452,7 @@
           }
         },
         {
-          "slide_type": "comparison",
+          "slide_type": "before_after_story",
           "bg_style": "light"
         },
         {
@@ -1626,7 +1626,7 @@
           ]
         },
         {
-          "slide_type": "column_chart",
+          "slide_type": "chart",
           "bg_style": "light"
         },
         {
@@ -1669,7 +1669,7 @@
           }
         },
         {
-          "slide_type": "stat_row",
+          "slide_type": "metric_grid",
           "bg_style": "light"
         },
         {
@@ -3545,7 +3545,7 @@
           }
         },
         {
-          "slide_type": "stat_row",
+          "slide_type": "metric_grid",
           "bg_style": "light"
         },
         {

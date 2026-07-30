@@ -337,9 +337,12 @@ pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> Validatio
 // ── Composition validation ──────────────────────────────────────────────────
 
 /// Data-visualization slide types — used for dataviz pacing constraints.
+///
+/// `column_chart` retired (merged into chart_type="bar_vertical"); `stat_row`
+/// retired (folded into metric_grid). They remain accepted by the dispatcher for
+/// legacy JSON, but no longer count as dataviz pacing units.
 const DATAVIZ_TYPES: &[&str] = &[
     "chart",
-    "column_chart",
     "scatter_plot",
     "gauge",
     "radar_chart",
@@ -347,7 +350,6 @@ const DATAVIZ_TYPES: &[&str] = &[
     "comparison_bars",
     "metric_grid",
     "funnel_chart",
-    "stat_row",
     "table",
 ];
 
@@ -1400,16 +1402,16 @@ mod tests {
         let mut arc_structure = std::collections::HashMap::new();
         arc_structure.insert("evidence".into(), make_arc_def(
             vec![],
-            vec!["chart", "column_chart", "list", "definition"],
+            vec!["chart", "scatter_plot", "list", "definition"],
             5, 6,
         ));
 
         let request = CompositionRequest {
             composition: vec![
                 CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
-                CompositionSlide { slide_type: "column_chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+                CompositionSlide { slide_type: "scatter_plot".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
                 CompositionSlide { slide_type: "chart".into(), arc: "evidence".into(), bg_style: Some("dark".into()) },
-                CompositionSlide { slide_type: "column_chart".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
+                CompositionSlide { slide_type: "scatter_plot".into(), arc: "evidence".into(), bg_style: Some("light".into()) },
             ],
             arc_structure,
             constraints: make_constraints(4, 6),
@@ -1890,11 +1892,13 @@ pub fn validate_design(html: &str) -> ValidationReport {
         // Calculate available content height
         let available_height = SAFE_CONTENT_HEIGHT - content_padding_top - content_padding_bottom;
 
-        // Check for multi-item layouts that commonly overflow
+        // Check for multi-item layouts that commonly overflow.
+        // `comparison` retired — multi-item overflow now covered by process_map /
+        // checklist_action_plan / pricing_plan. `before_after_story` (the comparison
+        // redirect target) is 3-tile by definition so it cannot overflow.
         let multi_item_indicators = [
             ("process_map", 6, "steps"),
-            ("checklist_action_plan", 6, "items"), 
-            ("comparison", 4, "rows"),
+            ("checklist_action_plan", 6, "items"),
             ("pricing_plan", 3, "plans"),
         ];
 
