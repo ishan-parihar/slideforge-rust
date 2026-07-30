@@ -4491,18 +4491,19 @@ pub fn checklist_action_plan_slide(
     
     // Estimate required height: title + items + gaps.
     // Empirical card heights derived from rendered geometry (per directive #1774):
-    //  - 6+ items: ~48px each (11px text + 14px padding + 9px number + 14px flex)
-    //  - 4-5 items: ~54px each (12px text + 16px padding + 10px number + 16px flex)
-    //  - 1-3 items: ~62px each (13px text + 18px padding + 13px number + 18px flex)
+    //  - 6+ items: ~56px each (24px number + 14px text + 12+12 padding + 4px flex)
+    //  - 4-5 items: ~62px each (larger numbers + text + padding)
+    //  - 1-3 items: ~70px each (largest layout, more breathing room)
+    // Empirical gaps: 8px (rendered).
     let title_height = 30.0;
     let item_height_estimate = if item_count >= 6 {
-        48.0
+        56.0
     } else if item_count >= 4 {
-        54.0
-    } else {
         62.0
+    } else {
+        70.0
     };
-    let gap_estimate = if item_count >= 6 { 4.0 } else if item_count >= 4 { 6.0 } else { 8.0 };
+    let gap_estimate = if item_count >= 6 { 8.0 } else if item_count >= 4 { 8.0 } else { 10.0 };
     let estimated_content_height = title_height + (item_count as f32 * item_height_estimate) + ((item_count - 1) as f32 * gap_estimate);
     
     // Calculate required padding to fit within safe content height
