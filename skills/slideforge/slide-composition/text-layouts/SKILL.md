@@ -1,6 +1,6 @@
 ---
 name: text-layouts
-description: Use when constructing text-only slides such as hero, feature highlights, lists, timelines, callouts, and calls-to-action (CTA).
+description: Use when constructing text-only slides such as hero, quotes, split feature grids, definitions, text blocks, section dividers, and timelines.
 ---
 
 # SlideForge Text & Layouts
@@ -18,14 +18,15 @@ Grabs attention at the start of a carousel.
   - `badge` (string) — Small upper tag (e.g., "NEW", "CHAPTER 1").
   - `variant` (string) — `"centered"` or `"left-aligned"`.
 
-### 2. `list` (Structured Bullets)
-Best for presenting details or points.
+### 2. `split_features` (Feature Beat / Icon Grid)
+Highlights a single feature beat OR multiple feature cards (icon-grid variant).
 - **Required Parameters:**
-  - `title` (string) — Title of the list.
-  - `items` (array) — Array of objects, each containing:
-    - `title` (string, required) — Bullet heading.
-    - `description` (string, optional) — Short paragraph below bullet.
-- **Limits:** Max 5 list items to prevent vertical overflow.
+  - `title` (string) — Section title.
+  - `features` (array) — Each feature contains:
+    - `title` (string, required) — Feature heading.
+    - `description` (string, optional) — Short paragraph.
+    - `icon` (string, optional) — Emoji or Lucide icon name.
+- **Limits:** Max 6 features; icon-grid variant maxes at 4 columns.
 
 ### 3. `quote` (Testimonial / Highlight Quote)
 Emphasizes a key insight or client quote.
@@ -35,32 +36,47 @@ Emphasizes a key insight or client quote.
   - `author` (string) — Name of the speaker.
   - `role` (string) — Title or company of the speaker.
 
-### 4. `cta` (Call-To-Action / Final Slide)
-Converts attention at the end of the carousel.
-- **Required Parameters:**
-  - `headline` (string) — Conversion headline. Max 50 chars.
-  - `button_text` (string) — Action button label (e.g., "Try Free").
-- **Optional Parameters:**
-  - `button_url` (string) — URL destination link.
-  - `subtext` (string) — Micro-copy below button (e.g., "No card needed").
-
-### 5. `timeline` (Chronological Process)
+### 4. `timeline` (Chronological Process)
 Step-by-step sequential horizontal or vertical flow.
 - **Required Parameters:**
   - `title` (string) — Title of the timeline.
   - `steps` (array) — List of step objects:
     - `title` (string, required) — Step name.
     - `description` (string, required) — Step detail.
-- **Limits:** Max 4 steps.
+- **Limits:** Max 6 steps.
+
+### 5. `definition` (Term Glossary)
+Educational terms or glossary entries.
+- **Required Parameters:**
+  - `term` (string) — Term being defined.
+  - `definition` (string) — Definition body.
+- **Optional Parameters:**
+  - `context` (string) — Example or contextual note.
+  - `phonetic` (string) — Pronunciation guide.
+
+### 6. `text_block` (Paragraph Content)
+Simple paragraph content.
+- **Required Parameters:**
+  - `title` (string) — Title of the block.
+  - `body` (string) — Body text.
+- **Optional Parameters:**
+  - `variant` (string) — Visual variant.
+
+### 7. `section_divider` (Chapter Opener)
+Slide deck chapter openers.
+- **Required Parameters:**
+  - `title` (string) — Chapter title.
+- **Optional Parameters:**
+  - `kicker` (string) — Small upper tag.
+  - `subtitle` (string) — Subtitle.
 
 ---
 
 ## Actionable Constraints & Design Rules
 
-- [ ] **No Content Bloat:** Do not exceed character limits. SlideForge enforces hidden overflow; text will clip if it overflows the 420x525 base composition container.
+- [ ] **No Content Bloat:** Do not exceed character limits. The validator surfaces overflow as a compile-time error rather than silently clipping text.
 - [ ] **Paragraph Line Breaks:** For headings, use `\n` to manually break lines if a word wraps awkwardly.
-- [ ] **Icon Presence:** For the `callout` and `feature` slides, choose short emojis or simple Lucide icon names (e.g., "rocket", "shield", "check").
-- [ ] **Text Columns Width:** If using `text_columns`, limit to 2 or 3 columns max. Any more will make text illegibly narrow.
+- [ ] **Icon Presence:** For `split_features` slides, choose short emojis or simple Lucide icon names (e.g., "rocket", "shield", "check").
 
 ---
 
@@ -68,12 +84,13 @@ Step-by-step sequential horizontal or vertical flow.
 
 ```json
 {
-  "slide_type": "hero",
+  "slide_type": "split_features",
   "params": {
-    "headline": "Build Beautiful\nSlides with Code",
-    "subheadline": "A developer-friendly composition system",
-    "badge": "LAUNCH",
-    "variant": "centered"
+    "title": "Built for production",
+    "features": [
+      {"icon": "bolt", "title": "Fast", "description": "<10ms per slide"},
+      {"icon": "shield", "title": "Validated", "description": "Compile-time overflow check"}
+    ]
   }
 }
 ```

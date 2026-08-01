@@ -6,7 +6,7 @@ description: >-
   posts (Instagram, TikTok, LinkedIn), presentation decks, or any multi-slide
   visual content. Also use when the user mentions "carousel", "slide deck",
   "Instagram post", "TikTok content", "slide generator", or wants to generate
-  HTML slides with design validation. SlideForge supports 47 slide types across
+  HTML slides with design validation. SlideForge supports 36 slide types across
   6 categories (Text, Data Viz, Story, Image, Conversion), 6 brand
   archetypes, 6 visual themes, and 4 aspect ratios with a build-time validator
   that catches layout, contrast, and composition issues.
@@ -14,7 +14,7 @@ description: >-
 
 # SlideForge — Carousel Slide Generator
 
-SlideForge is a Rust-native CLI and MCP tool that generates production-quality HTML carousel slides. It produces validated, export-ready carousels across 47 slide types with a build-time quality gate.
+SlideForge is a Rust-native CLI and MCP tool that generates production-quality HTML carousel slides. It produces validated, export-ready carousels across 36 slide types with a build-time quality gate.
 
 ## When to Use This Skill
 
@@ -61,7 +61,7 @@ The tool is available as both a **CLI** (18 commands) and an **MCP server** (18 
 ### Discovery Commands
 
 ```bash
-slideforge list-slides                 # List all 47 slide types
+slideforge list-slides                 # List all 36 slide types
 slideforge list-themes                 # List 6 visual themes
 slideforge list-platforms              # List 9 export platforms
 slideforge list-archetypes             # List 6 brand archetypes
@@ -130,12 +130,12 @@ Input format (JSON):
   "composition": [
     {"slide_type": "hero", "arc": "hook"},
     {"slide_type": "problem_solution", "arc": "evidence"},
-    {"slide_type": "cta", "arc": "action"}
+    {"slide_type": "qr_destination", "arc": "action"}
   ],
   "arc_structure": {
     "hook": {"types": ["hero"], "pool": [], "count": {"min": 1, "max": 6}},
-    "evidence": {"types": [], "pool": ["problem_solution", "grid_cards"], "count": {"min": 4, "max": 6}},
-    "action": {"types": ["cta"], "pool": [], "count": {"min": 1, "max": 6}}
+    "evidence": {"types": [], "pool": ["problem_solution", "split_features"], "count": {"min": 4, "max": 6}},
+    "action": {"types": ["qr_destination"], "pool": [], "count": {"min": 1, "max": 6}}
   },
   "constraints": {
     "max_consecutive_dataviz": 2,
@@ -168,17 +168,17 @@ MCP configuration for Claude Desktop, Cursor, etc.:
 
 ## Slide Type Catalog
 
-### Text & Layout (15 types)
-`hero`, `feature`, `list`, `quote`, `cta`, `comparison`, `stat_row`, `timeline`, `callout`, `split_features`, `grid_cards`, `definition`, `text_block`, `section_divider`, `text_columns`
+### Text & Layout (7 types)
+`hero`, `quote`, `timeline`, `split_features`, `definition`, `text_block`, `section_divider`
 
-### Data Visualization (11 types)
-`chart`, `scatter_plot`, `gauge`, `radar_chart`, `column_chart`, `table`, `metric_sparkline`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings`
+### Data Visualization (9 types)
+`chart`, `scatter_plot`, `gauge`, `radar_chart`, `table`, `funnel_chart`, `metric_grid`, `comparison_bars`, `progress_rings`
 
 ### Story (10 types)
 `problem_solution`, `myth_fact`, `case_study_result`, `testimonial_avatar`, `before_after_story`, `logo_cloud`, `pricing_plan`, `checklist_action_plan`, `faq`, `process_map`
 
-### Image (8 types)
-`image_caption`, `image_headline`, `image_quote`, `image_callout`, `image_stat`, `image_gallery`, `image_collage`, `image_comparison`
+### Image (7 types)
+`image_caption`, `image_headline`, `image_quote`, `image_callout`, `image_gallery`, `image_collage`, `image_comparison`
 
 ### Conversion (1 type)
 `qr_destination`
@@ -246,10 +246,10 @@ slideforge configure-design "#6366F1" --output tokens.json
 # 2. Generate each slide (save to individual JSON files)
 slideforge generate-slide hero --tokens-file tokens.json \
   --params '{"headline":"Opening Hook"}' --output s1.json
-slideforge generate-slide feature --tokens-file tokens.json \
-  --params '{"title":"Key Feature","description":"Why it matters"}' --output s2.json
-slideforge generate-slide cta --tokens-file tokens.json \
-  --params '{"headline":"Get Started","button_text":"Try Now"}' --output s3.json
+slideforge generate-slide split_features --tokens-file tokens.json \
+  --params '{"title":"Key Features","features":[{"title":"Fast","description":"<10ms"}]}' --output s2.json
+slideforge generate-slide qr_destination --tokens-file tokens.json \
+  --params '{"heading":"Get Started","cta_text":"Try Now","destination_url":"https://example.com","short_url":"example.com"}' --output s3.json
 
 # 3. Combine into a slides array
 echo "[$(cat s1.json),$(cat s2.json),$(cat s3.json)]" > slides.json
@@ -332,16 +332,6 @@ The generation script reads from `docs/presets/campaign-presets.json` and writes
   "subheadline": "Supporting text",
   "badge": "NEW",
   "variant": "centered"
-}
-```
-
-### feature
-```json
-{
-  "title": "Feature name",
-  "description": "What it does",
-  "icon": "rocket",
-  "variant": "icon-top"
 }
 ```
 
@@ -450,7 +440,7 @@ All 19 CLI commands have matching MCP tools with identical parameters:
 | `generate_slide` | `generate-slide` | Generate a single slide |
 | `render_carousel` | `render-carousel` | Assemble slides into carousel |
 | `export_carousel_slides` | `export` | Export to PNGs |
-| `list_slide_types` | `list-slides` | List 47 slide types |
+| `list_slide_types` | `list-slides` | List 36 slide types |
 | `get_slide_type_info` | `slide-info` | Get slide schema |
 | `validate_layout` | `validate-layout` | Validate params |
 | `validate_design` | `validate-design` | Validate HTML |

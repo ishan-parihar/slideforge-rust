@@ -53,6 +53,28 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
     let info = match get_slide_type_info(slide_type) {
         Some(v) => v,
         None => {
+            // Retired 2026-07-30: surface an actionable migration message so
+            // agents see the type as removed rather than "unknown".
+            const REMOVED: &[&str] = &[
+                "feature", "list", "callout", "grid_cards",
+                "text_columns", "image_stat", "cta",
+            ];
+            if REMOVED.contains(&slide_type) {
+                let replacement = match slide_type {
+                    "feature" => "split_features (single-feature beat) or case_study_result",
+                    "list" => "checklist_action_plan (action list) or quote_slide",
+                    "callout" => "myth_fact (educational contrast) or image_callout",
+                    "grid_cards" => "split_features (2 cols) or case_study_result (results grid)",
+                    "text_columns" => "split_features (2 cols) or quote_slide",
+                    "image_stat" => "image_callout, image_caption, or metric_grid",
+                    "cta" => "qr_destination (the canonical closing CTA slide)",
+                    _ => "an appropriate alternative",
+                };
+                result.add_error(format!(
+                    "{slide_type} slide type has been removed. Use {replacement} instead."
+                ));
+                return result;
+            }
             let valid_types = crate::slide_registry::list_slide_types();
             result.add_error(format!(
                 "Unknown slide type: '{}'. Valid types: {}",
@@ -235,7 +257,9 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         }
 
     if slide_type == "cta" {
-        result.add_warning("A plain 'cta' slide with a web button will not be interactive on Instagram/TikTok carousels. Consider using 'qr_destination' for direct conversions, or framing as a 'Link in Bio' instruction.");
+        // cta slide type removed. Surface an actionable error so agents get
+        // explicit feedback instead of silent-empty renders.
+        result.add_error("cta slide type has been removed. Use qr_destination for the closing slide (deck-level marketing constraint: exactly one CTA, always final).");
     }
 
     result
@@ -279,11 +303,33 @@ pub fn validate_layout(
 ///
 /// Fixes applied:
 /// - `hero`  — missing `subheadline` → set to `""`
-/// - `list`  — `items` is empty array → insert a placeholder string
-/// - `cta`   — missing `button_text` → set to `"Learn More"`
+///
+/// Removed slide types (feature, list, callout, grid_cards, text_columns,
+/// image_stat, cta) surface an actionable error pointing the AI agent at the
+/// replacement type. No auto-fix is attempted for them.
 ///
 /// Returns a `ValidationResult` describing errors, warnings, and fixes.
 pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> ValidationResult {
+    // Removed slide types: surface an actionable error so the AI agent gets
+    // explicit feedback instead of silent-empty renders. No auto-fix attempted.
+    if matches!(slide_type, "feature" | "list" | "callout" | "grid_cards" | "text_columns" | "image_stat" | "cta") {
+        let replacement = match slide_type {
+            "feature" => "split_features (single-feature beat) or case_study_result",
+            "list" => "checklist_action_plan (action list) or quote_slide",
+            "callout" => "myth_fact (educational contrast) or image_callout",
+            "grid_cards" => "split_features (2 cols) or case_study_result (results grid)",
+            "text_columns" => "split_features (2 cols) or quote_slide",
+            "image_stat" => "image_callout, image_caption, or metric_grid",
+            "cta" => "qr_destination (the canonical closing CTA slide)",
+            _ => "an appropriate alternative",
+        };
+        let mut result = ValidationResult::default();
+        result.add_error(format!(
+            "{slide_type} slide type has been removed. Use {replacement} instead."
+        ));
+        return result;
+    }
+
     // First run the pure validation pass.
     let mut result = validate_slide_spec(slide_type, params);
 
@@ -298,23 +344,6 @@ pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> Validatio
             if !obj.contains_key("subheadline") {
                 obj.insert("subheadline".to_string(), json!(""));
                 result.add_fix("hero: added default empty 'subheadline'");
-            }
-        }
-        "list" => {
-            if let Some(Value::Array(items)) = obj.get("items") {
-                if items.is_empty() {
-                    obj.insert(
-                        "items".to_string(),
-                        json!(["Add your first list item here"]),
-                    );
-                    result.add_fix("list: replaced empty 'items' array with placeholder item");
-                }
-            }
-        }
-        "cta" => {
-            if !obj.contains_key("button_text") {
-                obj.insert("button_text".to_string(), json!("Learn More"));
-                result.add_fix("cta: set default 'button_text' to \"Learn More\"");
             }
         }
         // before_after_story, problem_solution, definition, checklist_action_plan:
@@ -638,20 +667,40 @@ mod tests {
     }
 
     #[test]
-    fn test_list_empty_items_errors() {
+    fn test_list_removed_surface_error() {
+        // list slide type was removed 2026-07-30 (redundant with
+        // checklist_action_plan). The validator must surface an actionable
+        // error pointing at the replacement type, not silently accept
+        // whatever empty-items content is provided.
         let params = json!({ "title": "My List", "items": [] });
         let r = validate_slide_spec("list", &params);
-        // Empty items array must be an error, not a silent warning.
         assert!(!r.valid);
-        assert!(r.errors.iter().any(|e| e.contains("items")));
+        assert!(r.errors.iter().any(|e| e.contains("removed")));
     }
 
     #[test]
-    fn test_cta_missing_button_text() {
+    fn test_cta_removed_surface_error() {
+        // cta slide type was removed 2026-07-30 (deck-level marketing constraint:
+        // exactly one closing CTA, now provided by qr_destination). The validator
+        // must surface an actionable error instead of silently dropping the slide.
         let params = json!({ "headline": "Get started today" });
         let r = validate_slide_spec("cta", &params);
         assert!(!r.valid);
-        assert!(r.errors.iter().any(|e| e.contains("button_text")));
+        assert!(r.errors.iter().any(|e| e.contains("removed")));
+    }
+
+    #[test]
+    fn test_removed_slide_types_surface_actionable_error() {
+        for removed in ["feature", "list", "callout", "grid_cards", "text_columns", "image_stat"] {
+            let mut params = json!({"title": "test"});
+            let r = validate_and_fix_slide(removed, &mut params);
+            assert!(!r.valid, "{removed} should be invalid");
+            assert!(
+                r.errors.iter().any(|e| e.contains("removed")),
+                "{removed} errors missing 'removed': {:?}",
+                r.errors
+            );
+        }
     }
 
     // ── validate_and_fix_slide ───────────────────────────────────────────────
@@ -666,22 +715,24 @@ mod tests {
     }
 
     #[test]
-    fn test_fix_list_placeholder_item() {
+    fn test_fix_list_does_not_placeholder() {
+        // list slide type was removed 2026-07-30 — the auto-fix that injected
+        // a placeholder item is gone. The validator must surface an actionable
+        // error and refrain from silently patching empty items arrays.
         let mut params = json!({ "title": "Steps", "items": [] });
         let r = validate_and_fix_slide("list", &mut params);
-        let items = params["items"].as_array().unwrap();
-        assert!(!items.is_empty());
-        assert!(r.fixes.iter().any(|f| f.contains("placeholder")));
+        assert!(!r.valid, "list must be invalid after 2026-07-30 purge");
+        assert!(!r.fixes.iter().any(|f| f.contains("placeholder")));
     }
 
     #[test]
     fn test_fix_cta_default_button_text() {
+        // cta auto-fix was removed 2026-07-30. The validator now surfaces
+        // an error and refrains from silently injecting "Learn More".
         let mut params = json!({ "headline": "Join us" });
         let r = validate_and_fix_slide("cta", &mut params);
-        assert_eq!(params["button_text"], "Learn More");
-        assert!(r.fixes.iter().any(|f| f.contains("button_text")));
-        // After fix, should be valid.
-        assert!(r.valid, "errors: {:?}", r.errors);
+        assert!(!r.valid, "cta must be invalid");
+        assert!(!r.fixes.iter().any(|f| f.contains("button_text")));
     }
 
     #[test]
@@ -1512,7 +1563,7 @@ fn style_has_unitless_dimension(style: &str) -> Option<String> {
             continue;
         };
         let trimmed = raw.trim();
-        if trimmed.parse::<f32>().is_ok() {
+        if trimmed.parse::<f32>().is_ok() && trimmed != "0" {
             return Some(format!("{property}:{trimmed}"));
         }
     }
@@ -2381,11 +2432,12 @@ pub fn validate_design(html: &str) -> ValidationReport {
         if slide_html.contains("grid-template-columns") || slide_html.contains("display:grid") {
             // Scope the text-mass budget to the grid container only; titles/eyebrows/captions
             // outside the grid are not part of the overflow surface and must not be counted.
-            // Threshold tracks the renderer's dynamic-scaling tier model in `grid_cards_slide`:
-            // the densest variants (`2-col`/`4-col` with very_dense scaling) absorb up to ~600
-            // chars per card; 4 cards in that tier top out at ~2400 chars and still render
-            // inside the 405px safe content height. We set the validator ceiling at 2500 chars
-            // — a small margin above the maximum observed safe composition.
+            // Threshold tracks the renderer's dynamic-scaling tier model — `grid_cards_slide`
+            // was retired 2026-07-30; the surviving N-card grids (`split_features`, `case_study_result`,
+            // `pricing_plan`) use the same `very_dense` scaling tiers and absorb up to ~600 chars
+            // per card. 4 cards in that tier top out at ~2400 chars and still render inside the
+            // 405px safe content height. Validator ceiling set at 2500 chars — a small margin above
+            // the maximum observed safe composition.
             // Per directive #1638 the validator must share the renderer's model rather than
             // blocking compositions the dynamic-scaling pipeline can already place safely.
             let grid_text_len = grid_container_text_len(slide_html, &text_tag_re);

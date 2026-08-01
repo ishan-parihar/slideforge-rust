@@ -19,40 +19,22 @@ pub fn get_registry() -> Value {
             }
         },
         "feature": {
-            "description": "Single-feature highlight with icon, title, and description",
-            "required_params": ["title", "description"],
-            "optional_params": ["icon", "icon_color", "badge", "image_url", "cta_text", "cta_url", "variant"],
-            "variants": ["icon-top", "icon-left", "icon-right", "image-split", "minimal"],
-            "default_variant": "icon-top",
-            "layout_family": "feature",
-            "best_for": ["features", "benefits", "product-details"],
-            "example": {
-                "title": "Lightning fast",
-                "description": "Generate a 10-slide carousel in under 12 seconds.",
-                "icon": "⚡",
-                "icon_color": "#FFB400",
-                "variant": "icon-top"
-            }
+            "description": "REMOVED: redundant with split_features for single-feature beats. Use split_features or case_study_result instead.",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "list": {
-            "description": "Bulleted or numbered list of items",
-            "required_params": ["title", "items"],
-            "optional_params": ["ordered", "icon", "icon_color", "columns", "show_numbers", "variant"],
-            "variants": ["bullet", "numbered", "checklist", "icon-list", "two-column"],
-            "default_variant": "bullet",
-            "layout_family": "list",
-            "best_for": ["features", "steps", "requirements", "comparison"],
-            "example": {
-                "title": "Why teams switch",
-                "items": [
-                    "Native Rust rendering pipeline",
-                    "MCP-native agent ergonomics",
-                    "Pixel-perfect typography control",
-                    "Validator-catch design regressions"
-                ],
-                "icon": "✓",
-                "variant": "checklist"
-            }
+            "description": "REMOVED: redundant with checklist_action_plan for action lists. Use checklist_action_plan or quote_slide for quoted step sequences.",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "quote": {
             "description": "Testimonial or pull-quote with optional attribution",
@@ -72,20 +54,13 @@ pub fn get_registry() -> Value {
             }
         },
         "cta": {
-            "description": "Call-to-action slide with button and supporting copy",
-            "required_params": ["headline", "button_text"],
-            "optional_params": ["subheadline", "button_url", "secondary_text", "background_color", "urgency_text", "variant"],
-            "variants": ["centered", "split", "banner", "minimal", "dark"],
-            "default_variant": "centered",
-            "layout_family": "cta",
-            "best_for": ["closing", "conversion", "next-step"],
-            "example": {
-                "headline": "Ready to ship your first deck?",
-                "subheadline": "Free for the first 100 creators.",
-                "button_text": "Start building",
-                "button_url": "https://example.com/signup",
-                "variant": "centered"
-            }
+            "description": "REMOVED: deck-level marketing constraint requires exactly one closing CTA which is now provided by qr_destination (with scannable QR for off-platform). On-platform CTAs belong on individual content slides, not as their own slide type.",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "comparison": {
             // comparison slide type retired: all 4 variants (cards, vs-split, feature-matrix,
@@ -135,13 +110,13 @@ pub fn get_registry() -> Value {
             "best_for": ["process", "roadmap", "journey", "steps"]
         },
         "callout": {
-            "description": "Highlighted callout card for emphasis or important notices",
-            "required_params": ["text"],
-            "optional_params": ["title", "icon", "color", "border_color", "variant"],
-            "variants": ["info", "warning", "success", "tip", "highlight"],
-            "default_variant": "highlight",
-            "layout_family": "callout",
-            "best_for": ["emphasis", "key-takeaway", "warning", "tip"]
+            "description": "REMOVED: redundant with myth_fact (for 'myth vs fact' callouts) and image_callout (for image-anchored callout boxes).",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "split_features": {
             "description": "Two-column feature list, often icon+text pairs side by side",
@@ -153,13 +128,13 @@ pub fn get_registry() -> Value {
             "best_for": ["features", "benefits", "product-overview"]
         },
         "grid_cards": {
-            "description": "Grid of cards each with icon, title, and description",
-            "required_params": ["title", "cards"],
-            "optional_params": ["columns", "card_style", "icon_color", "show_cta", "variant"],
-            "variants": ["2-col", "3-col", "4-col", "masonry", "minimal", "dense", "compact", "list-dense"],
-            "default_variant": "3-col",
-            "layout_family": "feature",
-            "best_for": ["features", "use-cases", "categories", "team"]
+            "description": "REMOVED: N-card grid is now produced by split_features (2 columns) or case_study_result (results grid).",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "definition": {
             "description": "Term definition with phonetic pronunciation and supporting context",
@@ -180,13 +155,13 @@ pub fn get_registry() -> Value {
             "best_for": ["content", "explanation", "narrative"]
         },
         "text_columns": {
-            "description": "Multi-column text layout for dense content",
-            "required_params": ["title", "columns"],
-            "optional_params": ["column_titles", "show_dividers", "variant"],
-            "variants": ["two-column", "three-column", "equal", "sidebar"],
-            "default_variant": "two-column",
-            "layout_family": "content",
-            "best_for": ["comparison", "content", "two-sides"]
+            "description": "REMOVED: redundant with split_features (2-column body content) and quote_slide (parallel quotes).",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "section_divider": {
             "description": "Chapter opener or section break with kicker, title, and subtitle",
@@ -334,13 +309,13 @@ pub fn get_registry() -> Value {
             "best_for": ["image", "diagram", "annotated"]
         },
         "image_stat": {
-            "description": "Image with prominent statistic overlay",
-            "required_params": ["image_url", "stat_value", "stat_label"],
-            "optional_params": ["description", "layout", "variant", "image_filter", "image_overlay", "image_frame", "image_mask", "image_position", "image_mix_blend", "image_opacity"],
-            "variants": ["image-left", "image-right", "image-top", "image-bottom"],
-            "default_variant": "image-left",
-            "layout_family": "image",
-            "best_for": ["image", "stat", "data"]
+            "description": "REMOVED: redundant with image_callout (image+text combos), image_caption (image+caption), or metric_grid (stat-heavy slides without image).",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "image_gallery": {
             "description": "Grid of 2-6 images in various layouts",
@@ -507,6 +482,16 @@ pub fn list_slide_types() -> Vec<String> {
 /// This makes the schema discoverable from a single call without requiring the
 /// caller to read the validator source.
 pub fn get_slide_type_info(slide_type: &str) -> Option<Value> {
+    // Retired 2026-07-30: surface a clear "removed" status so callers
+    // (validate_slide_spec, MCP get_slide_type_info) see the type as
+    // unavailable rather than receiving an empty stub entry.
+    const REMOVED: &[&str] = &[
+        "feature", "list", "callout", "grid_cards", "text_columns", "image_stat", "cta",
+    ];
+    if REMOVED.contains(&slide_type) {
+        return None;
+    }
+
     let registry = get_registry();
     let mut entry = registry
         .as_object()
@@ -737,6 +722,11 @@ mod tests {
             "qr_destination",
         ];
         for t in &expected {
+            // Removed slide types still appear in the registry as REMOVED stubs
+            // so the validator and dispatch can route redirects. After 2026-07-30
+            // purges: feature/list/callout/grid_cards/text_columns/image_stat/cta
+            // have only stub entries. This test asserts presence of those stubs
+            // (deprecated aliases) along with the live types.
             assert!(types.contains(&t.to_string()), "Missing type: {t}");
         }
     }
@@ -791,7 +781,9 @@ mod tests {
     fn test_get_slide_types_for_context_conversion_includes_qr() {
         let types = get_slide_types_for_context("conversion");
         assert!(types.contains(&"qr_destination".to_string()));
-        assert!(types.contains(&"cta".to_string()));
+        // cta was retired 2026-07-30 — qr_destination is the canonical
+        // conversion-context slide type now.
+        assert!(!types.contains(&"cta".to_string()), "cta must not appear after 2026-07-30 purge");
     }
 
     #[test]
@@ -816,8 +808,9 @@ mod tests {
     fn test_get_slide_type_info_includes_usage_hint() {
         // Every well-defined slide type must return a usage_hint string that
         // names its required and optional params. This is what makes the
-        // schema discoverable in a single tool call.
-        for slide_type in ["hero", "feature", "list", "quote", "cta", "qr_destination"] {
+        // schema discoverable in a single tool call. Retired types
+        // (feature, list, cta) are excluded — they return None.
+        for slide_type in ["hero", "quote", "qr_destination"] {
             let info = get_slide_type_info(slide_type)
                 .unwrap_or_else(|| panic!("type {slide_type} missing"));
             let hint = info["usage_hint"]

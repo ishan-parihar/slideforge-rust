@@ -1,6 +1,6 @@
 ---
 name: data-viz
-description: Use when constructing data visualization slides such as charts, tables, gauges, sparklines, metric grids, and progress rings.
+description: Use when constructing data visualization slides such as charts, tables, gauges, metric grids, and progress rings.
 ---
 
 # SlideForge Data Visualizations & Metrics
@@ -10,13 +10,15 @@ This leaf skill guides the composition of charts, tables, and metric indicators.
 ## Supported Slide Types & Schemas
 
 ### 1. `chart` (Data Graphs)
-Renders standard bar or line charts.
+Renders standard bar, line, or pie charts.
 - **Required Parameters:**
   - `chart_type` (string) — `"bar"`, `"line"`, or `"pie"`.
   - `title` (string) — Title of the chart.
   - `data` (array) — Data points list:
     - `label` (string, required) — X-axis or slice label.
     - `value` (number, required) — Y-axis value.
+- **Optional Parameters:**
+  - `variant` (string) — For `chart_type="bar"`, set to `"vertical"` to render a vertical/column chart instead of horizontal bars.
 - **Limits:** Max 5 data points.
 
 ### 2. `gauge` (Radial Progress)
@@ -27,17 +29,7 @@ Displays progress toward a single percentage goal.
 - **Optional Parameters:**
   - `title` (string) — Slide title.
 
-### 3. `metric_sparkline` (Metric + Trend Line)
-Shows a single metric with a mini trend chart.
-- **Required Parameters:**
-  - `value` (string) — Large prominent metric value (e.g., "$45K").
-  - `label` (string) — Label for the metric.
-  - `data` (array of numbers) — List of historical numbers for the sparkline chart.
-- **Optional Parameters:**
-  - `trend` (string) — Trend offset percentage (e.g., "+12%").
-  - `context` (string) — Text explanation.
-
-### 4. `progress_rings` (Multi-Rings)
+### 3. `progress_rings` (Multi-Rings)
 Renders concentric progress circles for multiple metrics.
 - **Required Parameters:**
   - `title` (string) — Slide title.
@@ -46,13 +38,57 @@ Renders concentric progress circles for multiple metrics.
     - `value` (number, required) — Value between `0` and `100`.
     - `color` (string, optional) — Custom hex color.
 
-### 5. `table` (Data Table)
+### 4. `table` (Data Table)
 Formats tabular columns and rows cleanly.
 - **Required Parameters:**
   - `title` (string) — Title.
   - `headers` (array of strings) — List of column headers.
   - `rows` (array of arrays of strings) — List of row values.
 - **Limits:** Max 4 columns and 5 rows to prevent layout overflow.
+
+### 5. `metric_grid` (2×2 Key Metrics Grid)
+Renders a 2x2 grid of prominent metrics.
+- **Required Parameters:**
+  - `title` (string) — Slide title.
+  - `metrics` (array) — 2-4 metric objects:
+    - `value` (string, required) — The headline number/string.
+    - `label` (string, required) — Metric label.
+    - `trend` (string, optional) — Optional trend delta (e.g. `"+12%"`).
+
+### 6. `funnel_chart` (Sales Funnel)
+Visualises sequential conversion steps.
+- **Required Parameters:**
+  - `title` (string) — Slide title.
+  - `steps` (array) — Each step contains:
+    - `label` (string, required) — Step name.
+    - `value` (number, required) — Step value.
+
+### 7. `scatter_plot` (Correlation Chart)
+Plots X/Y correlations.
+- **Required Parameters:**
+  - `title` (string) — Slide title.
+  - `data` (array) — Each point contains:
+    - `x` (number, required)
+    - `y` (number, required)
+    - `label` (string, optional)
+- **Optional Parameters:**
+  - `x_label`, `y_label` (string) — Axis labels.
+
+### 8. `radar_chart` (Multidimensional Comparison)
+Renders a radar/spider chart across multiple axes.
+- **Required Parameters:**
+  - `title` (string) — Slide title.
+  - `data` (array) — Axes + values per series:
+    - `axis` (string, required)
+    - `value` (number, required)
+
+### 9. `comparison_bars` (Side-by-Side Value Bars)
+Shows two values side-by-side as a paired bar comparison.
+- **Required Parameters:**
+  - `title` (string) — Slide title.
+  - `comparison` (object):
+    - `left_value`, `right_value` (number) — Pair of values.
+    - `left_label`, `right_label` (string) — Pair of labels.
 
 ---
 
@@ -72,6 +108,7 @@ Formats tabular columns and rows cleanly.
   "slide_type": "chart",
   "params": {
     "chart_type": "bar",
+    "variant": "vertical",
     "title": "Revenue Growth 2026",
     "data": [
       {"label": "Q1", "value": 40},

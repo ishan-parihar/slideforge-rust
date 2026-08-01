@@ -923,447 +923,7 @@ pub fn hero_slide(
     })
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 2. feature_slide
-// ─────────────────────────────────────────────────────────────────────────────
 
-/// Single-feature slide with icon, title, description, and optional stat number.
-///
-/// Variants: `stacked` (default) | `icon-left` | `icon-right` | `minimal`
-pub fn feature_slide(
-    tokens: &DesignTokens,
-    icon: &str,
-    title: &str,
-    description: &str,
-    number: &str,
-    bg_style: &str,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let (gc, gx) = get_glass_container(tokens, is_dark);
-
-    let stat_prefix = if !number.is_empty() {
-        format!(
-            r#"<span style="color:{};font-weight:800;margin-right:12px;font-family:{};">{}</span>"#,
-            colors.primary,
-            tokens.heading_font,
-            escape_html(number)
-        )
-    } else {
-        String::new()
-    };
-    let full_title = format!("{}{}", stat_prefix, escape_html(title));
-
-    let effective_variant = variant;
-    let padding = "var(--space-10) var(--space-6) var(--space-10)";
-    let justify = "center";
-
-    let html = match effective_variant {
-        "icon-left" => {
-            let icon_html = icon_block(
-                icon,
-                tokens,
-                Some(&colors.primary),
-                "var(--space-7)",
-                "var(--space-3)",
-                "0",
-            );
-            let title_html = heading_block(
-                &full_title,
-                tokens,
-                "headline",
-                Some(&colors.text_primary),
-                false,
-                None,
-                "left",
-                "0 0 var(--space-1)",
-                false,
-            );
-            let desc_html = text_block(
-                description,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "left",
-                None,
-                "0",
-            );
-            let content = format!(
-                r#"{}<div style="display:flex;align-items:center;gap:var(--space-3);"><div style="flex-shrink:0;">{}</div><div>{}{}</div></div>{}"#,
-                gc, icon_html, title_html, desc_html, gx
-            );
-            slide_base(&content, tokens, bg_style, false, padding, justify)
-        }
-        "icon-right" => {
-            let icon_html = icon_block(
-                icon,
-                tokens,
-                Some(&colors.primary),
-                "var(--space-7)",
-                "var(--space-3)",
-                "0",
-            );
-            let title_html = heading_block(
-                &full_title,
-                tokens,
-                "headline",
-                Some(&colors.text_primary),
-                false,
-                None,
-                "left",
-                "0 0 var(--space-1)",
-                false,
-            );
-            let desc_html = text_block(
-                description,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "left",
-                None,
-                "0",
-            );
-            let content = format!(
-                r#"{}<div style="display:flex;align-items:center;gap:var(--space-3);"><div>{}{}</div><div style="flex-shrink:0;">{}</div></div>{}"#,
-                gc, title_html, desc_html, icon_html, gx
-            );
-            slide_base(&content, tokens, bg_style, false, padding, justify)
-        }
-        "minimal" => {
-            let title_html = heading_block(
-                &full_title,
-                tokens,
-                "headline",
-                Some(&colors.text_primary),
-                false,
-                None,
-                "left",
-                "0 0 var(--space-1)",
-                false,
-            );
-            let desc_html = text_block(
-                description,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "left",
-                None,
-                "0",
-            );
-            let content = format!("{}{}{}{}", gc, title_html, desc_html, gx);
-            centered_layout(&content, tokens, bg_style, false, padding, justify)
-        }
-        _ => {
-            // stacked (default)
-            let icon_html = icon_block(
-                icon,
-                tokens,
-                Some(&colors.primary),
-                "var(--space-7)",
-                "var(--space-3)",
-                "0 0 16px",
-            );
-            let title_html = heading_block(
-                &full_title,
-                tokens,
-                "headline",
-                Some(&colors.text_primary),
-                false,
-                None,
-                "left",
-                "0 0 var(--space-1)",
-                false,
-            );
-            let desc_html = text_block(
-                description,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "left",
-                None,
-                "0",
-            );
-            let inner = format!("{}{}{}", icon_html, title_html, desc_html);
-            stack_layout(&inner, tokens, bg_style, "0", false, padding, justify)
-        }
-    };
-
-    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
-
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 3. list_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Bulleted or numbered list slide.
-///
-/// Variants: `bulleted` (default) | `numbered` | `card` | `grid`
-///
-/// Each item in `items` is a JSON object with optional keys `label`/`title` and `sub`/`description`.
-pub fn list_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    items: Vec<Value>,
-    bg_style: &str,
-    numbered: bool,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-
-    let (card_bg, card_border, card_blur) = card_styles(tokens, is_dark);
-    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
-    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    let radius_md = current_component_radius(tokens, "card");
-    let shadow_sm = tokens
-        .shadows
-        .get("sm")
-        .cloned()
-        .unwrap_or_else(|| "none".to_string());
-
-    let total_chars: usize = items.iter().map(|item| {
-        if item.is_string() {
-            item.as_str().unwrap_or("").len()
-        } else {
-            let l = item.get("label").or_else(|| item.get("title")).and_then(|v| v.as_str()).unwrap_or("").len();
-            let s = item.get("sub").or_else(|| item.get("description")).and_then(|v| v.as_str()).unwrap_or("").len();
-            l + s
-        }
-    }).sum();
-
-    let is_dense = items.len() >= 5 || total_chars > 220;
-    let label_fs = if is_dense { 12 } else { body_fs };
-    let sub_fs = if is_dense { 10 } else { caption_fs };
-    let item_margin = if is_dense { "6px" } else { "12px" };
-
-    let effective_variant = variant;
-
-    let content = match effective_variant {
-        "card" => {
-            let mut rows = String::new();
-            for (i, item) in items.iter().enumerate() {
-                let label = if item.is_string() {
-                    item.as_str().unwrap_or("")
-                } else {
-                    item.get("label")
-                        .or_else(|| item.get("title"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let sub = if item.is_string() {
-                    ""
-                } else {
-                    item.get("sub")
-                        .or_else(|| item.get("description"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let marker = if numbered {
-                    format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;">{}</span>"#,
-                        tokens.primary,
-                        i + 1
-                    )
-                } else {
-                    String::new()
-                };
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
-                        sub_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                rows.push_str(&format!(
-                    r#"<div style="background:{};border:{};{}border-radius:{};padding:8px 12px;margin-bottom:{};box-shadow:{};">
-                        <div style="display:flex;align-items:flex-start;gap:8px;">{}<div style="flex:1;min-width:0;">
-                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
-                            {}
-                        </div></div>
-                    </div>"#,
-                    card_bg, card_border, card_blur, radius_md, item_margin, shadow_sm,
-                    marker,
-                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
-                    sub_html
-                ));
-            }
-            format!("{}<div style=\"margin-top:12px;\">{}</div>", heading, rows)
-        }
-        "grid" => {
-            let mut rows = String::new();
-            for (i, item) in items.iter().enumerate() {
-                let label = if item.is_string() {
-                    item.as_str().unwrap_or("")
-                } else {
-                    item.get("label")
-                        .or_else(|| item.get("title"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let sub = if item.is_string() {
-                    ""
-                } else {
-                    item.get("sub")
-                        .or_else(|| item.get("description"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let marker = if numbered {
-                    format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:6px;font-size:12px;flex-shrink:0;">{}</span>"#,
-                        tokens.primary,
-                        i + 1
-                    )
-                } else {
-                    String::new()
-                };
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
-                        sub_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                rows.push_str(&format!(
-                    r#"<div style="width:calc(50% - 6px);margin-bottom:8px;">
-                        <div style="display:flex;align-items:flex-start;gap:6px;">{}<div style="flex:1;min-width:0;">
-                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
-                            {}
-                        </div></div>
-                    </div>"#,
-                    marker,
-                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
-                    sub_html
-                ));
-            }
-            format!(
-                r#"{}<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">{}</div>"#,
-                heading, rows
-            )
-        }
-        _ => {
-            // bulleted or numbered
-            let is_numbered = numbered || effective_variant == "numbered";
-            let mut rows = String::new();
-            for (i, item) in items.iter().enumerate() {
-                let label = if item.is_string() {
-                    item.as_str().unwrap_or("")
-                } else {
-                    item.get("label")
-                        .or_else(|| item.get("title"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let sub = if item.is_string() {
-                    ""
-                } else {
-                    item.get("sub")
-                        .or_else(|| item.get("description"))
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("")
-                };
-                let marker = if is_numbered {
-                    format!(
-                        r#"<span style="color:{};font-weight:700;margin-right:8px;font-size:12px;flex-shrink:0;line-height:1.3;">{}</span>"#,
-                        tokens.primary,
-                        i + 1
-                    )
-                } else {
-                    let bullet_char = if matches!(theme, "editorial" | "natural" | "vibrant") {
-                        "✦"
-                    } else {
-                        "▪"
-                    };
-                    format!(
-                        r#"<span style="color:{};margin-right:8px;font-size:11px;line-height:1.3;flex-shrink:0;">{}</span>"#,
-                        tokens.primary, bullet_char
-                    )
-                };
-                let sub_html = if !sub.is_empty() {
-                    format!(
-                        r#"<div style="font-size:{}px;color:{};margin-top:2px;line-height:1.35;">{}</div>"#,
-                        sub_fs,
-                        colors.text_secondary,
-                        escape_html(sub)
-                    )
-                } else {
-                    String::new()
-                };
-                rows.push_str(&format!(
-                    r#"<div style="display:flex;align-items:flex-start;margin-bottom:{};gap:4px;">
-                        {}
-                        <div style="flex:1;min-width:0;">
-                            <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
-                            {}
-                        </div>
-                    </div>"#,
-                    item_margin,
-                    marker,
-                    tokens.body_font, label_fs, colors.text_primary, escape_html(label),
-                    sub_html
-                ));
-            }
-            format!("{}<div style=\"margin-top:12px;\">{}</div>", heading, rows)
-        }
-    };
-
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "80px var(--space-6) 80px",
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 4. quote_slide
@@ -1529,333 +1089,6 @@ pub fn quote_slide(
         "html": html,
         "background": bg_style,
         "variant": effective_variant,
-        "theme": theme
-    })
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 5. cta_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Call-to-action slide with gradient headline and button.
-///
-/// Variants: `centered` (default) | `left` | `right` | `minimal`
-pub fn cta_slide(
-    tokens: &DesignTokens,
-    headline: &str,
-    button_text: &str,
-    button_url: &str,
-    subtext: &str,
-    bg_style: &str,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let (gc, gx) = get_glass_container(tokens, is_dark);
-
-    let gradient_colors = if is_dark {
-        ("#FFFFFF", colors.text_primary.as_str())
-    } else {
-        (colors.text_primary.as_str(), colors.text_secondary.as_str())
-    };
-
-    let effective_variant = variant;
-
-    let html = if effective_variant == "minimal" {
-        let headline_html = heading_block(
-            headline,
-            tokens,
-            "headline",
-            Some(&colors.text_primary),
-            false,
-            None,
-            "center",
-            "0 0 12px",
-            true,
-        );
-        let sub_html = if !subtext.is_empty() {
-            text_block(
-                subtext,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "center",
-                None,
-                "0 0 20px",
-            )
-        } else {
-            String::new()
-        };
-        let btn = button_block(
-            button_text,
-            button_url,
-            Some(tokens),
-            Some(&colors.button_bg),
-            Some(&colors.button_text),
-            "0",
-        );
-        let content = format!(
-            r#"{}<div style="text-align:center">{}{}{}</div>{}"#,
-            gc, headline_html, sub_html, btn, gx
-        );
-        centered_layout(
-            &content,
-            tokens,
-            bg_style,
-            false,
-            "80px 64px 80px",
-            "center",
-        )
-    } else {
-        let align = match effective_variant {
-            "left" => "left",
-            "right" => "right",
-            _ => "center",
-        };
-        let badge_tag = format!(
-            r#"<div style="font-family:{};font-size:10px;font-weight:800;color:{};background:{}18;border:1px solid {}40;padding:4px 12px;border-radius:20px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">⚡ PRESENTATION ENGINE</div>"#,
-            tokens.body_font, colors.primary, colors.primary, colors.primary
-        );
-        let headline_html = heading_block(
-            headline,
-            tokens,
-            "display",
-            None,
-            true,
-            Some((gradient_colors.0, gradient_colors.1)),
-            align,
-            "0 0 12px",
-            true,
-        );
-        let sub_html = if !subtext.is_empty() {
-            format!(
-                r#"<p style="font-family:{};font-size:12px;color:{};line-height:1.45;margin:0 0 20px;max-width:320px;text-align:{};opacity:0.85;">{}</p>"#,
-                tokens.body_font, colors.text_secondary, align, escape_html(subtext)
-            )
-        } else {
-            String::new()
-        };
-        let btn = button_block(
-            button_text,
-            button_url,
-            Some(tokens),
-            Some(&colors.button_bg),
-            Some(&colors.button_text),
-            "0 0 14px",
-        );
-        let url_tag = format!(
-            r#"<div style="font-family:{};font-size:11px;font-weight:600;color:{};margin-top:2px;opacity:0.85;letter-spacing:0.02em;">🔗 github.com/ishan-parihar/slideforge-rust</div>"#,
-            tokens.body_font, colors.text_secondary
-        );
-        let content = format!(
-            r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:{};width:100%;max-width:340px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
-            align, badge_tag, headline_html, sub_html, btn, url_tag
-        );
-        hero_layout(&content, tokens, bg_style, true, "center")
-    };
-
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
-
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 7. timeline_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Vertical process timeline.
-///
-/// Variants: `vertical` (default) | `horizontal` | `compact`
-///
-/// Each step in `steps` is a JSON object with `title` and `description`.
-pub fn timeline_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    steps: Vec<Value>,
-    bg_style: &str,
-    variant: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-    let radius = current_component_radius(tokens, "card");
-    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-    let border = format!("1px solid {}", colors.border);
-
-    let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
-        let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
-        let step_desc = step.get("description").and_then(|v| v.as_str()).unwrap_or("");
-        format!(
-            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
-                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
-                </div>
-                <p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.4;">{}</p>
-            </div>"#,
-            card_bg, border, radius,
-            tokens.heading_font, colors.primary, colors.primary, idx + 1,
-            tokens.heading_font, colors.text_primary, escape_html(step_title),
-            tokens.body_font, colors.text_secondary, escape_html(step_desc)
-        )
-    }).collect();
-
-    let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            {}
-            <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Chronological roadmap tracking SlideForge engine milestones from core compilation to headless PNG export.</p>
-        </div>"#,
-        heading, colors.primary, items_html, tokens.body_font, colors.text_secondary
-    );
-    let html = hero_layout(&content, tokens, bg_style, false, "left");
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({"html": html, "background": bg_style, "variant": variant, "theme": theme})
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 9. callout_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Highlighted callout card (info/warning/success/danger).
-///
-/// Variant selects accent colour: `info` | `warning` | `success` | `danger`
-pub fn callout_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    text: &str,
-    icon: &str,
-    variant: &str,
-    bg_style: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let (accent_color, _fill_color) = match variant {
-        "warning" => ("#F59E0B", "#F59E0B10"),
-        "success" => ("#10B981", "#10B98110"),
-        "danger" => ("#EF4444", "#EF444410"),
-        _ => (tokens.primary.as_str(), ""), // info — use primary
-    };
-
-    let glass_variant = if is_dark { "dark" } else { "light" };
-    let radius_lg = tokens
-        .radii
-        .get("lg")
-        .cloned()
-        .unwrap_or_else(|| "var(--space-1)".to_string());
-    let g_styles = glass_surface(tokens, glass_variant, &radius_lg);
-    let shadow_md = tokens
-        .shadows
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "none".to_string());
-
-    // Build callout glass style string and augment with left border
-    let callout_styles_str = {
-        let mut parts: Vec<String> = g_styles
-            .iter()
-            .map(|(k, v)| format!("{}: {}", k, v))
-            .collect();
-        parts.push(format!("border-left: 6px solid {}", accent_color));
-        parts.join("; ")
-    };
-
-    let body_fs = tokens.type_scale.get("body").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
-
-    let icon_box_style = format!(
-        "width:44px;height:44px;min-width:44px;border-radius:50%;background:{}1a;color:{};display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:inset 0 1px 3px rgba(255,255,255,0.1);",
-        accent_color, accent_color
-    );
-    let glow_style = format!(
-        "box-shadow: 0 8px 32px -4px {}1f, {};",
-        accent_color, shadow_md
-    );
-
-    let watermark_html = format!(
-        r#"<div style="position:absolute;right:var(--space-5);bottom:var(--space-4);font-size:240px;opacity:0.04;pointer-events:none;z-index:1;user-select:none;transform:rotate(12deg);line-height:1;font-family:system-ui;">{}</div>"#,
-        icon
-    );
-    let glow_orb = format!(
-        r#"<div style="position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:{};opacity:0.06;filter:blur(50px);-webkit-filter:blur(50px);pointer-events:none;z-index:1;"></div>"#,
-        accent_color
-    );
-
-    let content = format!(
-        r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
-            {}
-            {}
-            <div style="{};padding:36px 32px;{}width:100%;box-sizing:border-box;position:relative;z-index:2;">
-                <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px;">
-                    <div style="{}">{}</div>
-                    <div>
-                        <span style="font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:{};margin-bottom:4px;display:block;">{}</span>
-                        <h2 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h2>
-                    </div>
-                </div>
-                <p style="font-family:{};font-size:{}px;line-height:1.65;color:{};margin:0;overflow-wrap:break-word;word-break:break-word;">{}</p>
-            </div>
-        </div>"#,
-        glow_orb,
-        watermark_html,
-        callout_styles_str,
-        glow_style,
-        icon_box_style,
-        escape_html(icon),
-        accent_color,
-        escape_html(variant),
-        tokens.heading_font,
-        title_fs,
-        colors.text_primary,
-        escape_html(title),
-        tokens.body_font,
-        body_fs,
-        colors.text_secondary,
-        escape_html(text)
-    );
-
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "80px var(--space-6) 80px",
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": variant,
         "theme": theme
     })
 }
@@ -2122,656 +1355,6 @@ pub fn split_features_slide(
     })
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 11. grid_cards_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Card grid for features, services, or offerings.
-///
-/// Each card in `cards` is a JSON object with `icon`, `title`, `description`.
-pub fn grid_cards_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    cards: Vec<Value>,
-    bg_style: &str,
-    variant: &str,
-    background_image: &str,
-    image_opacity: f32,
-    theme: &str,
-    archetype: &str,
-    padding: &str,
-) -> Value {
-    let arch_preset = resolve_archetype_preset(archetype, "grid_cards");
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-    let heading = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-
-    let use_glass = arch_preset
-        .as_ref()
-        .map(|ap| ap.glass)
-        .unwrap_or(theme == "dark")
-        || is_dark;
-    let (card_bg, card_border, card_blur) = if use_glass {
-        (
-            "rgba(255,255,255,0.04)".to_string(),
-            "1px solid rgba(255,255,255,0.08)".to_string(),
-            String::new(),
-        )
-    } else {
-        (
-            tokens.surface_light.clone(),
-            format!("1px solid {}25", tokens.border_light),
-            String::new(),
-        )
-    };
-
-    let mut effective_variant = variant.to_string();
-    if let Some(ref ap) = arch_preset {
-        if !ap.variant.is_empty() && variant == "default" {
-            effective_variant = ap.variant.clone();
-        }
-    }
-
-    let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    let title_fs = tokens.type_scale.get("title").unwrap().font_size;
-    let radius_md = tokens
-        .radii
-        .get("md")
-        .cloned()
-        .unwrap_or_else(|| "var(--space-1)".to_string());
-    let shadow_sm = tokens
-        .shadows
-        .get("sm")
-        .cloned()
-        .unwrap_or_else(|| "none".to_string());
-
-    // Compute content mass metrics BEFORE the closure so they are in scope
-    let max_title_len = cards
-        .iter()
-        .map(|c| c.get("title").and_then(|v| v.as_str()).unwrap_or("").len())
-        .max()
-        .unwrap_or(0);
-    let max_desc_len = cards
-        .iter()
-        .map(|c| {
-            c.get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("")
-                .len()
-        })
-        .max()
-        .unwrap_or(0);
-    let total_chars: usize = cards.iter().map(|c| {
-        let t = c.get("title").and_then(|v| v.as_str()).unwrap_or("").len();
-        let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("").len();
-        t + d
-    }).sum();
-    let dense = total_chars > 240;
-    let very_dense = total_chars > 350;
-    let ultra_dense = total_chars > 500;
-
-    let render_single_card = |card: &Value,
-                              card_padding: &str,
-                              icon_size: u32,
-                              font_size_title: i32,
-                              font_size_caption: i32|
-     -> String {
-        let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-        let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-        let d = card
-            .get("description")
-            .and_then(|v| v.as_str())
-            .unwrap_or("");
-        // ponytail: render full description — validator owns overflow (directive #1288/#1303).
-        let desc_html = if !d.is_empty() {
-            format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.35;overflow-wrap:break-word;word-break:break-word;flex:1;min-height:0;">{}</p>"#,
-                tokens.body_font,
-                font_size_caption,
-                colors.text_secondary,
-                escape_html(d)
-            )
-        } else {
-            String::new()
-        };
-
-        let icon_color = card
-            .get("icon_color")
-            .and_then(|v| v.as_str())
-            .unwrap_or(&colors.primary);
-        let icon_html = crate::blocks::render_icon(ico, icon_color, icon_size);
-
-        format!(
-            r#"<div style="flex:1;min-width:0;min-height:0;background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
-                <div style="margin-bottom:4px;display:flex;align-items:center;flex-shrink:0;">{}</div>
-                <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 3px;line-height:1.25;overflow-wrap:break-word;word-break:break-word;">{}</h3>
-                {}
-            </div>"#,
-            card_bg,
-            card_border,
-            card_blur,
-            radius_md,
-            card_padding,
-            shadow_sm,
-            icon_html,
-            tokens.body_font,
-            font_size_title,
-            colors.text_primary,
-            escape_html(t),
-            desc_html
-        )
-    };
-
-    // max_title_len, max_desc_len, total_chars, dense, very_dense are computed above the closure
-
-    let card_html = if effective_variant == "2-col" {
-        let mut items_html = String::new();
-        let t_fs = if very_dense { title_fs - 4 } else if dense { title_fs - 2 } else if max_title_len > 15 { title_fs - 1 } else { title_fs };
-        let c_fs = if very_dense { caption_fs - 2 } else if dense { caption_fs - 1 } else if max_desc_len > 60 { caption_fs - 1 } else { caption_fs };
-        for card in cards.iter().take(2) {
-            items_html.push_str(&render_single_card(card, "24px 20px", 28, t_fs, c_fs));
-        }
-        format!(
-            r#"<div style="display:flex;gap:var(--space-2);width:100%;margin-top:16px;">{}</div>"#,
-            items_html
-        )
-    } else if effective_variant == "3-col" {
-        let mut items_html = String::new();
-        let t_fs = if max_title_len > 12 { 13 } else { 14 };
-        let c_fs = if max_desc_len > 40 { 10 } else { 11 };
-        let card_padding = if max_desc_len > 40 {
-            "12px 8px"
-        } else {
-            "16px 12px"
-        };
-        let icon_size = if max_desc_len > 40 { 18 } else { 20 };
-        for card in cards.iter().take(3) {
-            items_html.push_str(&render_single_card(
-                card,
-                card_padding,
-                icon_size,
-                t_fs,
-                c_fs,
-            ));
-        }
-        format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;margin-top:16px;">{}</div>"#,
-            items_html
-        )
-    } else if effective_variant == "4-col" {
-        let mut items_html = String::new();
-        let has_descriptions = cards.iter().any(|c| {
-            c.get("description")
-                .and_then(|v| v.as_str())
-                .map(|s| !s.is_empty())
-                .unwrap_or(false)
-        });
-        let (t_fs, c_fs, card_padding, icon_size) = if has_descriptions {
-            (
-                if max_title_len > 12 { 14 } else { 16 },
-                if max_desc_len > 50 { 11 } else { 12 },
-                "16px 14px",
-                22,
-            )
-        } else {
-            (if max_title_len > 10 { 11 } else { 12 }, 10, "10px 6px", 16)
-        };
-        for card in cards.iter().take(4) {
-            items_html.push_str(&render_single_card(
-                card,
-                card_padding,
-                icon_size,
-                t_fs,
-                c_fs,
-            ));
-        }
-        if has_descriptions {
-            format!(
-                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:14px;width:100%;margin-top:16px;">{}</div>"#,
-                items_html
-            )
-        } else {
-            format!(
-                r#"<div style="display:flex;gap:var(--space-1);width:100%;margin-top:16px;">{}</div>"#,
-                items_html
-            )
-        }
-    } else if effective_variant == "masonry" {
-        let mut items_html = String::new();
-        for (i, card) in cards.iter().take(4).enumerate() {
-            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d = card
-                .get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-            let width = if i < 2 {
-                "calc(50% - 8px)"
-            } else {
-                "calc(33.33% - 11px)"
-            };
-            let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.5;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
-                    tokens.body_font,
-                    caption_fs,
-                    colors.text_secondary,
-                    escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            let icon_color = card
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, 20);
-            items_html.push_str(&format!(
-                r#"<div style="width:{};background:{};border:{};{}border-radius:{};padding:16px;box-shadow:{};display:flex;flex-direction:column;box-sizing:border-box;">
-                    <div style="margin-bottom:8px;display:flex;align-items:center;">{}</div>
-                    <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0 0 6px;">{}</h3>
-                    {}
-                </div>"#,
-                width, card_bg, card_border, card_blur, radius_md, shadow_sm,
-                icon_html,
-                tokens.body_font, caption_fs, colors.text_primary, escape_html(t),
-                desc_html
-            ));
-        }
-        format!(
-            r#"<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:16px;width:100%;">{}</div>"#,
-            items_html
-        )
-    } else if effective_variant == "compact" {
-        // Compact variant: 6 items in 2x3 grid with numbered badges, tight spacing
-        let mut items_html = String::new();
-        for (i, card) in cards.iter().take(6).enumerate() {
-            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d = card
-                .get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-            let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.3;overflow-wrap:break-word;word-break:break-word;">{}</p>"#,
-                    tokens.body_font,
-                    colors.text_secondary,
-                    escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            let icon_color = card
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, 18);
-            let badge_num = (i + 1).to_string();
-            items_html.push_str(&format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:8px 10px;box-shadow:{};display:flex;flex-direction:column;min-width:0;box-sizing:border-box;">
-                    <div style="margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;width:100%;">
-                        <div style="display:flex;align-items:center;">{}</div>
-                        <div style="width:18px;height:18px;background:{};color:{};border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:{};font-size:9px;font-weight:800;flex-shrink:0;">{}</div>
-                    </div>
-                    <h3 style="font-family:{};font-size:11px;font-weight:600;color:{};margin:0 0 2px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">{}</h3>
-                    {}
-                </div>"#,
-                card_bg,
-                card_border,
-                card_blur,
-                radius_md,
-                shadow_sm,
-                icon_html,
-                colors.primary,
-                colors.button_text,
-                tokens.heading_font,
-                badge_num,
-                tokens.body_font,
-                colors.text_primary,
-                escape_html(t),
-                desc_html
-            ));
-        }
-        format!(
-            r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;margin-top:16px;">{}</div>"#,
-            items_html
-        )
-    } else if effective_variant == "list-dense" || effective_variant == "list" {
-        let mut items_html = String::new();
-        let card_count = cards.len().min(6);
-        let t_fs = if card_count >= 6 || ultra_dense { 11 } else if very_dense { 12 } else { 13 };
-        let c_fs = if card_count >= 6 || ultra_dense { 9 } else if very_dense { 10 } else { 10 };
-        let pad = if card_count >= 6 || ultra_dense { "4px 8px" } else if very_dense { "6px 8px" } else { "8px 10px" };
-        let ico_size = if card_count >= 6 || ultra_dense { 14 } else if very_dense { 16 } else { 18 };
-        let row_gap = if card_count >= 6 || ultra_dense { "4px" } else { "6px" };
-
-        for card in cards.iter().take(card_count) {
-            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
-            let icon_color = card.get("icon_color").and_then(|v| v.as_str()).unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, ico_size);
-            let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<div style="font-family:{};font-size:{}px;color:{};margin-top:1px;line-height:1.3;overflow-wrap:break-word;">{}</div>"#,
-                    tokens.body_font, c_fs, colors.text_secondary, escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            items_html.push_str(&format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:{};box-shadow:{};display:flex;align-items:flex-start;gap:8px;box-sizing:border-box;">
-                    <div style="flex-shrink:0;margin-top:2px;display:flex;align-items:center;">{}</div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-family:{};font-size:{}px;font-weight:600;color:{};line-height:1.25;">{}</div>
-                        {}
-                    </div>
-                </div>"#,
-                card_bg, card_border, card_blur, radius_md, pad, shadow_sm,
-                icon_html,
-                tokens.body_font, t_fs, colors.text_primary, escape_html(t),
-                desc_html
-            ));
-        }
-        format!(
-            r#"<div style="display:flex;flex-direction:column;gap:{};width:100%;margin-top:8px;">{}</div>"#,
-            row_gap, items_html
-        )
-    } else {
-        if cards.len() >= 4 {
-            let mut items_html = String::new();
-            let (t_fs4, c_fs4, pad4, ico4) = if max_desc_len > 120 || total_chars > 450 {
-                (10, 8, "4px 6px", 12)
-            } else if max_desc_len > 80 || total_chars > 300 {
-                (11, 8, "5px 7px", 14)
-            } else if max_desc_len > 50 || total_chars > 200 {
-                (11, 9, "6px 8px", 15)
-            } else {
-                (12, 10, "8px 10px", 16)
-            };
-            for card in cards.iter().take(4) {
-                items_html.push_str(&render_single_card(card, pad4, ico4, t_fs4, c_fs4));
-            }
-            format!(
-                r#"<div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:6px;width:100%;flex:1;min-height:0;margin-top:8px;">{}</div>"#,
-                items_html
-            )
-        } else if cards.len() == 3 {
-            let t_fs3 = if max_title_len > 12 { 13 } else { 14 };
-            let c_fs3 = if max_desc_len > 60 { 10 } else { 11 };
-            let pad3 = if max_desc_len > 60 { "10px 10px" } else { "12px 12px" };
-            let ico3 = if max_desc_len > 60 { 16 } else { 18 };
-            let mut items_html = String::new();
-            for card in cards.iter().take(3) {
-                items_html.push_str(&render_single_card(card, pad3, ico3, t_fs3, c_fs3));
-            }
-            format!(
-                r#"<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--space-2);width:100%;margin-top:16px;">{}</div>"#,
-                items_html
-            )
-        } else if cards.len() == 2 {
-            let card1 = &cards[0];
-            let card2 = &cards[1];
-
-            let ico1 = card1.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t1 = card1.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d1 = card1
-                .get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-            let desc1 = if !d1.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:var(--space-1) 0 0;line-height:1.5;">{}</p>"#,
-                    tokens.body_font,
-                    caption_fs,
-                    colors.text_secondary,
-                    escape_html(d1)
-                )
-            } else {
-                String::new()
-            };
-
-            let ico2 = card2.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t2 = card2.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d2 = card2
-                .get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-            let desc2 = if !d2.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:var(--space-1) 0 0;line-height:1.5;">{}</p>"#,
-                    tokens.body_font,
-                    caption_fs,
-                    colors.text_secondary,
-                    escape_html(d2)
-                )
-            } else {
-                String::new()
-            };
-
-            let icon_color1 = card1
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_color2 = card2
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-
-            let icon_html1 = crate::blocks::render_icon(ico1, icon_color1, 32);
-            let icon_html2 = crate::blocks::render_icon(ico2, icon_color2, 32);
-
-            format!(
-                r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);width:100%;margin-top:24px;">
-                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};display:flex;flex-direction:column;align-items:flex-start;">
-                        <div style="margin-bottom:var(--space-1);">{}</div>
-                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
-                        {}
-                    </div>
-                    <div style="background:{};border:{};{}border-radius:{};padding:var(--space-3);box-shadow:{};display:flex;flex-direction:column;align-items:flex-start;">
-                        <div style="margin-bottom:var(--space-1);">{}</div>
-                        <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
-                        {}
-                    </div>
-                </div>"#,
-                card_bg,
-                card_border,
-                card_blur,
-                radius_md,
-                shadow_sm,
-                icon_html1,
-                tokens.body_font,
-                title_fs,
-                colors.text_primary,
-                escape_html(t1),
-                desc1,
-                card_bg,
-                card_border,
-                card_blur,
-                radius_md,
-                shadow_sm,
-                icon_html2,
-                tokens.body_font,
-                title_fs,
-                colors.text_primary,
-                escape_html(t2),
-                desc2
-            )
-        } else if !cards.is_empty() {
-            let card = &cards[0];
-            let ico = card.get("icon").and_then(|v| v.as_str()).unwrap_or("⚡");
-            let t = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-            let d = card
-                .get("description")
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-            let desc_html = if !d.is_empty() {
-                format!(
-                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:var(--space-1) 0 0;line-height:1.5;">{}</p>"#,
-                    tokens.body_font,
-                    caption_fs,
-                    colors.text_secondary,
-                    escape_html(d)
-                )
-            } else {
-                String::new()
-            };
-            let icon_color = card
-                .get("icon_color")
-                .and_then(|v| v.as_str())
-                .unwrap_or(&colors.primary);
-            let icon_html = crate::blocks::render_icon(ico, icon_color, 32);
-            format!(
-                r#"<div style="background:{};border:{};{}border-radius:{};padding:var(--space-3) 20px;box-shadow:{};display:flex;flex-direction:column;width:100%;margin-top:16px;box-sizing:border-box;min-width:0;">
-                    <div style="margin-bottom:16px;display:flex;align-items:center;">{}</div>
-                    <h3 style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;">{}</h3>
-                    {}
-                </div>"#,
-                card_bg,
-                card_border,
-                card_blur,
-                radius_md,
-                shadow_sm,
-                icon_html,
-                tokens.body_font,
-                title_fs,
-                colors.text_primary,
-                escape_html(t),
-                desc_html
-            )
-        } else {
-            String::new()
-        }
-    };
-
-    let content = format!(
-        r#"<div style="width:100%;box-sizing:border-box;max-width:100%;overflow:hidden;">{}{}</div>"#,
-        heading, card_html
-    );
-    let padding_val = if padding.is_empty() {
-        "80px 48px 80px"
-    } else {
-        padding
-    };
-    let html = slide_base(&content, tokens, bg_style, false, padding_val, "center");
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": effective_variant,
-        "theme": theme
-    })
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 12. definition_slide
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Term + definition layout (glossary-style).
-/// `context` maps to the `category` field in the Python version.
-pub fn definition_slide(
-    tokens: &DesignTokens,
-    term: &str,
-    definition: &str,
-    phonetic: &str,
-    context: &str,
-    bg_style: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-    let radius = current_component_radius(tokens, "card");
-
-    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-    let border = format!("1px solid {}", colors.border);
-
-    let category_html = format!(
-        r#"<span style="font-family:{};font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:{};background:{}18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>"#,
-        tokens.heading_font,
-        colors.primary,
-        colors.primary
-    );
-
-    let term_html = format!(
-        r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
-        tokens.heading_font,
-        colors.text_primary,
-        escape_html(term)
-    );
-
-    let phonetic_html = if !phonetic.is_empty() {
-        format!(
-            r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">{}</div>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(phonetic)
-        )
-    } else {
-        String::new()
-    };
-
-    let def_html = format!(
-        r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;">{}</p>
-        </div>"#,
-        colors.primary,
-        tokens.body_font,
-        colors.text_primary,
-        escape_html(definition)
-    );
-
-    let ctx_html = if !context.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(context)
-        )
-    } else {
-        String::new()
-    };
-
-    let content = format!(
-        r#"<div style="width:100%;background:{};border:{};border-radius:{};padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
-            {}
-            {}
-            {}
-            {}
-            {}
-        </div>"#,
-        card_bg, border, radius,
-        category_html, term_html, phonetic_html, def_html, ctx_html
-    );
-
-    let html = slide_base(
-        &content,
-        tokens,
-        bg_style,
-        false,
-        "72px 44px",
-        "center",
-    );
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": "default",
-        "theme": theme
-    })
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 14. text_block_slide
@@ -4012,175 +2595,6 @@ fn metric_sparkline_slide(
 // via chart_type="bar_vertical". The legacy dispatch slot still routes "column_chart"
 // JSON through chart_slide for backwards compatibility.
 
-fn text_columns_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    columns: Vec<Value>,
-    bg_style: &str,
-    theme: &str,
-    bg_img: &str,
-    img_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let title_html = heading_block(
-        title,
-        tokens,
-        "headline",
-        Some(&colors.text_primary),
-        false,
-        None,
-        "left",
-        "0 0 12px",
-        true,
-    );
-    let radius = current_component_radius(tokens, "card");
-    let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-    let border = format!("1px solid {}", colors.border);
-
-    let cols: Vec<String> = columns.iter().enumerate().map(|(idx, c)| {
-        let heading = c.get("heading").and_then(|v| v.as_str()).unwrap_or("");
-            let body = c.get("body")
-                .or_else(|| c.get("text"))
-                .or_else(|| c.get("description"))
-                .and_then(|v| v.as_str())
-                .unwrap_or("");
-        let tag = if idx == 0 { "⚡ High Speed" } else { "🛡️ 100% Precision" };
-        format!(
-            r#"<div style="flex:1;min-width:0;background:{};border:{};border-top:3px solid {};border-radius:{};padding:16px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
-                <div>
-                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-                        <span style="font-family:{};font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">0{} PILLAR</span>
-                    </div>
-                    <h3 style="font-family:{};font-size:14px;font-weight:900;color:{};margin:0 0 6px;line-height:1.2;">{}</h3>
-                    <p style="font-family:{};font-size:11px;color:{};line-height:1.45;margin:0;">{}</p>
-                </div>
-                <div style="font-family:{};font-size:9.5px;font-weight:800;color:{};background:{}15;padding:3px 8px;border-radius:999px;width:fit-content;">{}</div>
-            </div>"#,
-            card_bg, border, colors.primary, radius,
-            tokens.heading_font, colors.primary, colors.primary, idx + 1,
-            tokens.heading_font, colors.text_primary, escape_html(heading),
-            tokens.body_font, colors.text_secondary, escape_html(body),
-            tokens.heading_font, colors.primary, colors.primary, tag
-        )
-    }).collect();
-
-    let columns_html = format!(
-        r#"<div style="display:flex;gap:12px;width:100%;">{}</div>"#,
-        cols.join("")
-    );
-    let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">{}{}</div>"#,
-        title_html, columns_html
-    );
-    let html = hero_layout(&content, tokens, bg_style, false, "left");
-    let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
-    json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
-}
-
-fn simple_text(v: &Value, keys: &[&str]) -> String {
-    // If the value itself is a plain string, return it directly
-    if let Some(s) = v.as_str() {
-        return s.to_string();
-    }
-    keys.iter()
-        .find_map(|key| v.get(*key).and_then(|x| x.as_str()))
-        .unwrap_or("")
-        .to_string()
-}
-
-fn visual_badge_html(
-    tokens: &DesignTokens,
-    colors: &crate::layouts::SlideColors,
-    item: &Value,
-    fallback: &str,
-    size: i32,
-) -> String {
-    let logo_url = item.get("logo_url").and_then(|v| v.as_str()).unwrap_or("");
-    let image_url = item
-        .get("image_url")
-        .or_else(|| item.get("brand_image"))
-        .and_then(|v| v.as_str())
-        .unwrap_or("");
-    let icon = item.get("icon").and_then(|v| v.as_str()).unwrap_or("");
-    let source = if !logo_url.is_empty() {
-        logo_url
-    } else {
-        image_url
-    };
-    if !source.is_empty() {
-        return format!(
-            r#"<div style="width:{}px;height:{}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="{}" alt="{}" style="max-width:{}px;max-height:{}px;width:auto;height:auto;object-fit:contain;display:block;"></div>"#,
-            size,
-            size,
-            source,
-            escape_html(fallback),
-            (size as f32 * 1.6) as i32,
-            size
-        );
-    }
-
-    let label = if !icon.is_empty() {
-        icon.to_string()
-    } else {
-        fallback.chars().next().unwrap_or('•').to_string()
-    };
-    format!(
-        r#"<div style="width:{}px;height:{}px;border-radius:{};background:{};color:white;display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>"#,
-        size,
-        size,
-        current_component_radius(tokens, "chip"),
-        colors.primary,
-        tokens.heading_font,
-        (size as f32 * 0.42) as i32,
-        escape_html(&label)
-    )
-}
-
-fn render_compact_items(
-    tokens: &DesignTokens,
-    colors: &crate::layouts::SlideColors,
-    items: &[Value],
-    title_keys: &[&str],
-    body_keys: &[&str],
-) -> String {
-    let radius = current_component_radius(tokens, "card");
-    let card_bg = if colors.is_dark {
-        "rgba(255,255,255,0.06)"
-    } else {
-        "rgba(255,255,255,0.92)"
-    };
-    items
-        .iter()
-        .take(4)
-        .enumerate()
-        .map(|(idx, item)| {
-            let title = simple_text(item, title_keys);
-            let body = simple_text(item, body_keys);
-            let visual = visual_badge_html(tokens, colors, item, &title, 28);
-            format!(
-                r#"<div style="background:{};border:1px solid {};border-radius:{};padding:var(--space-2) 16px;box-sizing:border-box;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">{}<div style="font-family:{};font-size:11px;font-weight:800;color:{};text-transform:uppercase;">{:02}</div></div>
-                    <div style="font-family:{};font-size:15px;font-weight:800;color:{};line-height:1.2;margin-bottom:5px;">{}</div>
-                    <div style="font-family:{};font-size:12px;color:{};line-height:1.45;">{}</div>
-                </div>"#,
-                card_bg,
-                colors.border,
-                radius,
-                visual,
-                tokens.body_font,
-                colors.primary,
-                idx + 1,
-                tokens.heading_font,
-                colors.text_primary,
-                escape_html(&title),
-                tokens.body_font,
-                colors.text_secondary,
-                escape_html(&body)
-            )
-        })
-        .collect::<Vec<_>>()
-        .join("")
-}
 
 pub fn section_divider_slide(
     tokens: &DesignTokens,
@@ -4305,6 +2719,210 @@ pub fn problem_solution_slide(
     let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "problem_solution", "theme": theme})
+}
+
+fn simple_text(v: &Value, keys: &[&str]) -> String {
+    if let Some(s) = v.as_str() {
+        return s.to_string();
+    }
+    keys.iter()
+        .find_map(|key| v.get(*key).and_then(|x| x.as_str()))
+        .unwrap_or("")
+        .to_string()
+}
+
+fn visual_badge_html(
+    tokens: &DesignTokens,
+    colors: &crate::layouts::SlideColors,
+    item: &Value,
+    fallback: &str,
+    size: i32,
+) -> String {
+    let logo_url = item.get("logo_url").and_then(|v| v.as_str()).unwrap_or("");
+    let image_url = item
+        .get("image_url")
+        .or_else(|| item.get("brand_image"))
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let icon = item.get("icon").and_then(|v| v.as_str()).unwrap_or("");
+    let source = if !logo_url.is_empty() {
+        logo_url
+    } else {
+        image_url
+    };
+    if !source.is_empty() {
+        return format!(
+            r#"<div style="width:{}px;height:{}px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="{}" alt="{}" style="max-width:{}px;max-height:{}px;width:auto;height:auto;object-fit:contain;display:block;"></div>"#,
+            size,
+            size,
+            source,
+            escape_html(fallback),
+            (size as f32 * 1.6) as i32,
+            size
+        );
+    }
+    let icon_text = if !icon.is_empty() { icon } else { fallback };
+    let bg = if colors.is_dark { "rgba(255,255,255,0.10)" } else { "rgba(0,0,0,0.06)" };
+    format!(
+        r#"<div style="width:{}px;height:{}px;border-radius:50%;background:{};display:flex;align-items:center;justify-content:center;font-size:{}px;font-weight:700;color:{};flex-shrink:0;">{}</div>"#,
+        size,
+        size,
+        bg,
+        (size as f32 * 0.45) as i32,
+        colors.text_primary,
+        escape_html(icon_text)
+    )
+}
+
+pub fn timeline_slide(
+    tokens: &DesignTokens,
+    title: &str,
+    steps: Vec<Value>,
+    bg_style: &str,
+    variant: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let heading = heading_block(
+        title,
+        tokens,
+        "headline",
+        Some(&colors.text_primary),
+        false,
+        None,
+        "left",
+        "0 0 12px",
+        true,
+    );
+    let radius = current_component_radius(tokens, "card");
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
+
+    let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
+        let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
+        let step_desc = step.get("description").and_then(|v| v.as_str()).unwrap_or("");
+        format!(
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
+                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+                </div>
+                <p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.4;">{}</p>
+            </div>"#,
+            card_bg, border, radius,
+            tokens.heading_font, colors.primary, colors.primary, idx + 1,
+            tokens.heading_font, colors.text_primary, escape_html(step_title),
+            tokens.body_font, colors.text_secondary, escape_html(step_desc)
+        )
+    }).collect();
+
+    let content = format!(
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            {}
+            <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
+            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Chronological roadmap tracking SlideForge engine milestones from core compilation to headless PNG export.</p>
+        </div>"#,
+        heading, colors.primary, items_html, tokens.body_font, colors.text_secondary
+    );
+    let html = hero_layout(&content, tokens, bg_style, false, "left");
+    let html = inject_background_image(html, background_image, image_opacity, is_dark);
+    json!({"html": html, "background": bg_style, "variant": variant, "theme": theme})
+}
+
+pub fn definition_slide(
+    tokens: &DesignTokens,
+    term: &str,
+    definition: &str,
+    phonetic: &str,
+    context: &str,
+    bg_style: &str,
+    theme: &str,
+    background_image: &str,
+    image_opacity: f32,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_dark = colors.is_dark;
+    let radius = current_component_radius(tokens, "card");
+
+    let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    let border = format!("1px solid {}", colors.border);
+
+    let category_html = format!(
+        r#"<span style="font-family:{};font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:{};background:{}18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>"#,
+        tokens.heading_font,
+        colors.primary,
+        colors.primary
+    );
+
+    let term_html = format!(
+        r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
+        tokens.heading_font,
+        colors.text_primary,
+        escape_html(term)
+    );
+
+    let phonetic_html = if !phonetic.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">{}</div>"#,
+            tokens.body_font,
+            colors.text_secondary,
+            escape_html(phonetic)
+        )
+    } else {
+        String::new()
+    };
+
+    let def_html = format!(
+        r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;">{}</p>
+        </div>"#,
+        colors.primary,
+        tokens.body_font,
+        colors.text_primary,
+        escape_html(definition)
+    );
+
+    let ctx_html = if !context.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
+            tokens.body_font,
+            colors.text_secondary,
+            escape_html(context)
+        )
+    } else {
+        String::new()
+    };
+
+    let content = format!(
+        r#"<div style="width:100%;background:{};border:{};border-radius:{};padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            {}
+            {}
+            {}
+            {}
+            {}
+        </div>"#,
+        card_bg, border, radius,
+        category_html, term_html, phonetic_html, def_html, ctx_html
+    );
+
+    let html = slide_base(
+        &content,
+        tokens,
+        bg_style,
+        false,
+        "72px 44px",
+        "center",
+    );
+    let html = inject_background_image(html, background_image, image_opacity, is_dark);
+    json!({
+        "html": html,
+        "background": bg_style,
+        "variant": "default",
+        "theme": theme
+    })
 }
 
 pub fn myth_fact_slide(
@@ -5439,53 +4057,11 @@ pub fn dispatch_slide(
             &bg_img,
             img_opacity,
         )),
-        "feature" => Ok(feature_slide(
-            tokens,
-            &s("icon"),
-            &s("title"),
-            &s("description"),
-            &s("number"),
-            bg_style,
-            &s("variant").if_empty("stacked"),
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
-        "list" => {
-            let items = p
-                .get("items")
-                .and_then(|v| v.as_array())
-                .cloned()
-                .unwrap_or_default();
-            Ok(list_slide(
-                tokens,
-                &s("title"),
-                items,
-                bg_style,
-                b("numbered", false),
-                &s("variant").if_empty("bulleted"),
-                theme,
-                &bg_img,
-                img_opacity,
-            ))
-        }
         "quote" => Ok(quote_slide(
             tokens,
             &s("quote"),
             &s("author"),
             &s("role"),
-            bg_style,
-            &s("variant").if_empty("centered"),
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
-        "cta" => Ok(cta_slide(
-            tokens,
-            &s("headline"),
-            &s("button_text").if_empty("Learn More"),
-            &s("button_url").if_empty("#"),
-            &s("subtext"),
             bg_style,
             &s("variant").if_empty("centered"),
             theme,
@@ -5588,17 +4164,6 @@ pub fn dispatch_slide(
                 img_opacity,
             ))
         }
-        "callout" => Ok(callout_slide(
-            tokens,
-            &s("title"),
-            &s("text"),
-            &s("icon").if_empty("💡"),
-            &s("variant").if_empty("info"),
-            bg_style,
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
         "split_features" => {
             let features = p
                 .get("features")
@@ -5626,17 +4191,9 @@ pub fn dispatch_slide(
                 .and_then(|v| v.as_array())
                 .cloned()
                 .unwrap_or_default();
-            Ok(grid_cards_slide(
-                tokens,
-                &s("title"),
-                cards,
-                bg_style,
-                &s("variant").if_empty("default"),
-                &bg_img,
-                img_opacity,
-                theme,
-                _archetype,
-                &s("padding"),
+            Err(format!(
+                "grid_cards slide type has been removed. Use split_features for 2-column feature lists or chart_slide with stat_row data for N-stat grids. Cards input was: {} items",
+                cards.len()
             ))
         }
         "definition" => Ok(definition_slide(
@@ -5736,14 +4293,9 @@ pub fn dispatch_slide(
                 .and_then(|v| v.as_array())
                 .cloned()
                 .unwrap_or_default();
-            Ok(text_columns_slide(
-                tokens,
-                &s("title"),
-                columns,
-                bg_style,
-                theme,
-                &bg_img,
-                img_opacity,
+            Err(format!(
+                "text_columns slide type has been removed. Use split_features for 2-column body content or quote_slide for parallel quotes. Columns input was: {} items",
+                columns.len()
             ))
         }
         "progress_rings" => {
@@ -6103,20 +4655,26 @@ pub fn dispatch_slide(
                 &s("padding"),
             ))
         }
-        "image_stat" => Ok(image_stat_slide(
-            tokens,
-            &s("image_url"),
-            &s("stat_value").if_empty(&s("value")),
-            &s("stat_label").if_empty(&s("label")),
-            &s("description"),
-            &s("layout").if_empty("image-left"),
-            bg_style,
-            &bg_img,
-            img_opacity,
-            theme,
-            _archetype,
-            &s("padding"),
-        )),
+        "image_stat" => Err(
+            "image_stat slide type has been removed. Use image_callout for image+text combos, image_caption for image+caption, or metric_grid for stat-heavy slides without image."
+                .to_string(),
+        ),
+        "feature" => Err(
+            "feature slide type has been removed. Use split_features for single-benefit slides or grid_cards — wait, grid_cards was also removed. Use split_features for single-feature or case_study_result for narrative beats."
+                .to_string(),
+        ),
+        "list" => Err(
+            "list slide type has been removed. Use checklist_action_plan for action lists or quote_slide for quoted step sequences."
+                .to_string(),
+        ),
+        "cta" => Err(
+            "cta slide type has been removed. Use qr_destination for the closing slide with QR code (the only CTA slide allowed by deck-level marketing constraints)."
+                .to_string(),
+        ),
+        "callout" => Err(
+            "callout slide type has been removed. Use myth_fact for 'myth vs fact' callouts or image_callout for image-anchored callout boxes."
+                .to_string(),
+        ),
         "image_gallery" => {
             let images = p
                 .get("images")
@@ -6599,132 +5157,6 @@ pub fn image_callout_slide(
         "html": html,
         "background": bg_style,
         "variant": "default",
-        "theme": theme,
-        "archetype": archetype
-    })
-}
-
-pub fn image_stat_slide(
-    tokens: &DesignTokens,
-    image_url: &str,
-    stat_value: &str,
-    stat_label: &str,
-    description: &str,
-    layout: &str,
-    bg_style: &str,
-    background_image: &str,
-    image_opacity: f32,
-    theme: &str,
-    archetype: &str,
-    padding: &str,
-) -> Value {
-    let mut treatment = resolve_current_image_treatment(theme, archetype);
-    if treatment.image_mask == "circle"
-        || treatment.image_frame == "organic"
-        || treatment.image_frame == "circle"
-        || treatment.image_frame == "pill"
-    {
-        treatment.image_mask = "none".to_string();
-        treatment.image_frame = "rounded".to_string();
-    }
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
-
-    let img_height = if layout == "image-left" || layout == "image-right" {
-        "100%"
-    } else {
-        "220px"
-    };
-
-    let img_html = render_themed_image(
-        image_url, tokens, &treatment, "100%", img_height, stat_label, is_dark,
-    );
-
-    let val_style = format!(
-        "font-family:{};font-size:48px;font-weight:800;color:{};margin:0 0 4px;line-height:1;",
-        tokens.heading_font, colors.primary
-    );
-    let lbl_style = format!(
-        "font-family:{};font-size:var(--text-sm);font-weight:600;color:{};margin:0 0 8px;line-height:1.2;text-transform:uppercase;letter-spacing:0.05em;",
-        tokens.body_font, colors.text_primary
-    );
-    let desc_style = format!(
-        "font-family:{};font-size:12px;color:{};margin:0;line-height:1.4;",
-        tokens.body_font, colors.text_secondary
-    );
-
-    let stat_html = format!(
-        r#"<div style="display:flex;flex-direction:column;justify-content:center;text-align:left;">
-            <span style="{}">{}</span>
-            <span style="{}">{}</span>
-            {}
-        </div>"#,
-        val_style,
-        escape_html(stat_value),
-        lbl_style,
-        escape_html(stat_label),
-        if !description.is_empty() {
-            format!(
-                r#"<p style="{}">{}</p>"#,
-                desc_style,
-                escape_html(description)
-            )
-        } else {
-            String::new()
-        }
-    );
-
-    let content = match layout {
-        "image-right" => {
-            format!(
-                r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;height:100%;align-items:center;">
-                    {}
-                    {}
-                </div>"#,
-                stat_html, img_html
-            )
-        }
-        "image-top" => {
-            format!(
-                r#"<div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%;height:100%;justify-content:center;">
-                    {}
-                    {}
-                </div>"#,
-                img_html, stat_html
-            )
-        }
-        "image-bottom" => {
-            format!(
-                r#"<div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%;height:100%;justify-content:center;">
-                    {}
-                    {}
-                </div>"#,
-                stat_html, img_html
-            )
-        }
-        _ => {
-            // image-left
-            format!(
-                r#"<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;height:100%;align-items:center;">
-                    {}
-                    {}
-                </div>"#,
-                img_html, stat_html
-            )
-        }
-    };
-
-    let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
-    } else {
-        padding
-    };
-    let html = slide_base(&content, tokens, bg_style, false, padding_val, "center");
-    let html = inject_background_image(html, background_image, image_opacity, is_dark);
-    json!({
-        "html": html,
-        "background": bg_style,
-        "variant": layout,
         "theme": theme,
         "archetype": archetype
     })
@@ -7730,30 +6162,32 @@ mod tests {
     }
 
     #[test]
-    fn test_grid_cards_ultra_dense_uses_smallest_font_sizes() {
+    fn test_grid_cards_removed_dispatch_errors() {
+        // grid_cards was retired 2026-07-30. The dispatch must surface a
+        // clear "removed" error rather than rendering an empty slide.
         let tokens = derive_palette(
             "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
         ).unwrap();
-
-        let cards = vec![
-            json!({"icon": "📊", "title": "Advanced Analytics Engine", "description": "Real-time data processing, predictive modeling, interactive dashboards that help organizations make data-driven decisions with unprecedented accuracy."}),
-            json!({"icon": "🔒", "title": "Enterprise Security Suite", "description": "Military-grade encryption, multi-factor authentication, role-based access control, audit logging, compliance monitoring for evolving threats."}),
-            json!({"icon": "🤝", "title": "Collaborative Workspace", "description": "Real-time document editing, video conferencing, project management, team communication channels for distributed teams."}),
-            json!({"icon": "⚡", "title": "API Gateway", "description": "RESTful and GraphQL APIs, webhook management, third-party service connectors, rate limiting, comprehensive developer docs."}),
-        ];
-        let params = json!({"title": "Detailed Platform Features", "cards": cards});
-        let res = dispatch_slide("grid_cards", &tokens, &params, "dark", "bold", "data_analyst").unwrap();
-        let html = res["html"].as_str().unwrap();
-        let default_title_fs = tokens.type_scale.get("title").unwrap().font_size;
+        let params = json!({
+            "title": "Should not render",
+            "cards": [
+                {"icon": "🔍", "title": "Card 1", "description": "Card 1 description"},
+            ]
+        });
+        let err = dispatch_slide("grid_cards", &tokens, &params, "light", "editorial", "educator")
+            .expect_err("grid_cards must error after 2026-07-30 purge");
         assert!(
-            !html.contains(&format!("font-size: {}px;font-weight: 600", default_title_fs)),
-            "ultra-dense 4-card grid should NOT use default title font-size ({}px)",
-            default_title_fs
+            err.to_string().contains("removed"),
+            "error must mention 'removed': {}",
+            err
         );
     }
 
     #[test]
-    fn test_grid_cards_list_dense_variant_renders_five_cards() {
+    fn test_split_features_dense_renders_all_features() {
+        // split_features absorbed the grid_cards list-dense visual contract —
+        // a multi-row list of icon+title+description beats. This test locks
+        // in that a 5-feature split_features slide renders every feature.
         let tokens = derive_palette(
             "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
         ).unwrap();
@@ -7761,7 +6195,7 @@ mod tests {
         let params = json!({
             "title": "Research Methodology",
             "variant": "list-dense",
-            "cards": [
+            "features": [
                 {"icon": "🔍", "title": "Literature Review", "description": "200+ papers analyzed"},
                 {"icon": "📋", "title": "Survey Design", "description": "2400 participants"},
                 {"icon": "🧪", "title": "Controlled Trials", "description": "Double-blind experiments"},
@@ -7769,13 +6203,14 @@ mod tests {
                 {"icon": "✅", "title": "Peer Review", "description": "External validation"},
             ]
         });
-        let res = dispatch_slide("grid_cards", &tokens, &params, "light", "editorial", "educator").unwrap();
+        let res = dispatch_slide("split_features", &tokens, &params, "light", "editorial", "educator")
+            .expect("split_features should accept list-dense features");
         let html = res["html"].as_str().unwrap();
-        assert!(html.contains("Literature Review"), "card 1 title missing");
-        assert!(html.contains("Survey Design"), "card 2 title missing");
-        assert!(html.contains("Controlled Trials"), "card 3 title missing");
-        assert!(html.contains("Statistical Modeling"), "card 4 title missing");
-        assert!(html.contains("Peer Review"), "card 5 title missing");
+        assert!(html.contains("Literature Review"), "feature 1 title missing");
+        assert!(html.contains("Survey Design"), "feature 2 title missing");
+        assert!(html.contains("Controlled Trials"), "feature 3 title missing");
+        assert!(html.contains("Statistical Modeling"), "feature 4 title missing");
+        assert!(html.contains("Peer Review"), "feature 5 title missing");
     }
 
     #[test]

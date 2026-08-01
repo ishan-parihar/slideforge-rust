@@ -51,6 +51,41 @@ Contrasts two screenshots or photos (e.g. before vs after).
   - `after_label` (string) — Defaults to "After".
   - `divider_style` (string) — `"solid"`, `"dashed"`, or `"arrow"`.
 
+### 4. `image_quote` (Quote over Image)
+Quote text overlaid on a background image.
+- **Required Parameters:**
+  - `image_url` (string) — Public URL or Base64 Data URI.
+  - `quote` (string) — Quote text.
+- **Optional Parameters:**
+  - `author`, `role` (string) — Attribution.
+
+### 5. `image_callout` (Image with Hot-Spot Callouts)
+Image with labeled callout pins.
+- **Required Parameters:**
+  - `image_url` (string) — Public URL or Base64 Data URI.
+  - `callouts` (array) — Each callout: `{label, x, y}`.
+- **Optional Parameters:**
+  - `description` (string) — Description body.
+  - `variant` (string) — Visual variant.
+
+### 6. `image_gallery` (Image Grid)
+Grid of 2-6 images.
+- **Required Parameters:**
+  - `images` (array) — Array of `{url}` or URL strings (2-6 entries).
+- **Optional Parameters:**
+  - `layout` (string) — Grid layout (e.g. `"4-grid"`, `"2-grid"`).
+  - `title` (string) — Gallery title.
+  - `section_caption` (string) — Caption block.
+
+### 7. `image_collage` (Creative Collection)
+Free-form scattered collection of images.
+- **Required Parameters:**
+  - `images` (array) — Array of `{url}` (2-6 entries).
+  - `title` (string) — Collage title.
+- **Optional Parameters:**
+  - `style` (string) — Visual style variant.
+  - `section_caption` (string) — Caption block.
+
 ---
 
 ## Styling Configurations

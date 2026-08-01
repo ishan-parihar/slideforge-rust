@@ -198,8 +198,8 @@ pub struct DesignSystemRequest {
 
 #[derive(Serialize, Deserialize, JsonSchema)]
 pub struct GenerateSlideRequest {
-    /// Slide type: hero, feature, list, quote, cta, before_after_story, timeline,
-    /// callout, split_features, grid_cards, definition, text_block, metric_grid, comparison_bars, gauge, progress_rings
+    /// Slide type: hero, quote, before_after_story, timeline,
+    /// split_features, definition, text_block, metric_grid, comparison_bars, gauge, progress_rings
     /// (deprecated: comparison, stat_row, column_chart — kept as aliases routing to before_after_story/metric_grid/chart)
     pub slide_type: String,
     pub primary_color: Option<String>,
@@ -716,7 +716,7 @@ impl Server {
     /// Generate HTML for a single slide using the configured session design.
     #[tool(
         name = "generate_slide",
-        description = "Generate HTML for a single slide. Supports 43 slide types across 5 categories: (1) Text & Layout: hero, feature, list, quote, cta, before_after_story, timeline, callout, split_features, grid_cards, definition, text_block, section_divider, text_columns. (2) Data Viz: chart (incl. chart_type=bar_vertical for columns), scatter_plot, gauge, radar_chart, table, funnel_chart, metric_grid, comparison_bars, progress_rings. (3) Story: problem_solution, myth_fact, case_study_result, testimonial_avatar, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map. (4) Image: image_caption, image_headline, image_quote, image_callout, image_stat, image_gallery, image_collage, image_comparison. (5) Conversion: qr_destination. Deprecated legacy aliases (still work, routed to better-fit types): comparison → before_after_story, stat_row → metric_grid, column_chart → chart(bar_vertical). Call list_slide_types for full details (required params, optional params, variants) and get_slide_type_info for a specific type's schema. Image URLs must be supplied by the caller in the image_url or background_image param — use embed_local_image to convert a local file to a data URI."
+        description = "Generate HTML for a single slide. Supports the surviving slide types after the 2026-07-30 11-type purge: (1) Text & Layout: hero, quote, before_after_story, timeline, split_features, definition, text_block, section_divider. (2) Data Viz: chart (incl. chart_type=bar_vertical for columns), scatter_plot, gauge, radar_chart, table, funnel_chart, metric_grid, comparison_bars, progress_rings. (3) Story: problem_solution, myth_fact, case_study_result, testimonial_avatar, logo_cloud, pricing_plan, checklist_action_plan, faq, process_map. (4) Image: image_caption, image_headline, image_quote, image_callout, image_gallery, image_collage, image_comparison. (5) Conversion: qr_destination. Deprecated legacy aliases (still work, routed to better-fit types): comparison → before_after_story, stat_row → metric_grid, column_chart → chart(bar_vertical), grid_cards → split_features, feature → split_features, list → split_features, callout → split_features, text_columns → split_features, image_stat → image_callout, cta → qr_destination. Removed types surface a clear error: feature, list, callout, grid_cards, text_columns, image_stat, cta. Call list_slide_types for full details (required params, optional params, variants) and get_slide_type_info for a specific type's schema. Image URLs must be supplied by the caller in the image_url or background_image param — use embed_local_image to convert a local file to a data URI."
     )]
     pub async fn generate_slide(
         &self,
@@ -873,92 +873,12 @@ impl Server {
         // Hardcoded char-limit validation for myth_fact was removed per #1288/#1289/#1291.
         // Dynamic overflow validation below derives limits from layout geometry.
 
-        // Dynamic overflow validation for grid_cards: derive limits from layout geometry
-        if slide_type == "grid_cards" {
-            if let Some(cards) = params.get("cards").and_then(|v| v.as_array()) {
-                let variant = params.get("variant").and_then(|v| v.as_str()).unwrap_or("");
-                let is_dense = variant == "dense";
-
-                // Layout constants derived from components.rs grid_cards_slide:
-                // Slide body: 525px - 80px top - 80px bottom = 365px
-                // Heading takes ~50px, so ~315px for grid content.
-                // Dense grid fixed height: 290px. 2x2 → each card 145px.
-                // Default (non-dense): flexible, but cards still constrained by grid.
-                let slide_body_h: f32 = 365.0;
-                let heading_h: f32 = 50.0;
-                let grid_h = if is_dense { 290.0 } else { slide_body_h - heading_h - 20.0 }; // 20px margin-top
-                let rows = if cards.len() <= 2 { 1 } else { 2 };
-                let card_h = grid_h / rows as f32;
-
-                // Card internal geometry:
-                // Padding: 10px top + 10px bottom (dense variant)
-                let card_pad_v: f32 = if is_dense { 20.0 } else { 32.0 };
-                // Icon area: ~24px (18px icon + 4px margin-bottom)
-                let icon_h: f32 = if is_dense { 24.0 } else { 28.0 };
-                // Title: font_size * line_height + margin
-                let title_fs: f32 = if is_dense { 13.0 } else { 16.0 };
-                let title_h = title_fs * 1.2 + 6.0; // line-height:1.2 + margin-bottom
-
-                let desc_area_h = card_h - card_pad_v - icon_h - title_h;
-
-                // Font size for description text
-                let desc_fs: f32 = if is_dense { 10.0 } else { 13.0 };
-                let line_h = 1.3;
-                let line_height_px = desc_fs * line_h;
-                let max_lines = (desc_area_h / line_height_px).floor() as usize;
-
-                // Card width for chars-per-line estimation:
-                // Slide width: 420px, padding: 24px each side → 372px content
-                // 2-col grid with 14px gap → (372 - 14) / 2 = 179px
-                let card_w: f32 = 179.0;
-                // Average char width ≈ 0.5 * font_size for body text
-                let avg_char_w = desc_fs * 0.5;
-                let chars_per_line = (card_w / avg_char_w).floor() as usize;
-                let max_desc_chars = max_lines * chars_per_line;
-
-                // Title: max 1 line in dense, 2 in default
-                let title_max_lines = if is_dense { 1 } else { 2 };
-                let title_chars_per_line = (card_w / (title_fs * 0.5)).floor() as usize;
-                let max_title_chars = title_max_lines * title_chars_per_line;
-
-                let mut errors: Vec<String> = Vec::new();
-                for (i, card) in cards.iter().enumerate() {
-                    let title = card.get("title").and_then(|v| v.as_str()).unwrap_or("");
-                    let desc = card.get("description").and_then(|v| v.as_str()).unwrap_or("");
-                    if title.len() > max_title_chars {
-                        errors.push(format!(
-                            "card[{}].title is {} chars (max ~{}): text will overflow card boundary",
-                            i, title.len(), max_title_chars
-                        ));
-                    }
-                    if desc.len() > max_desc_chars {
-                        errors.push(format!(
-                            "card[{}].description is {} chars (max ~{}): text will overflow card boundary",
-                            i, desc.len(), max_desc_chars
-                        ));
-                    }
-                }
-                if !errors.is_empty() {
-                    let error_msg = serde_json::json!({
-                        "error": "content_overflow",
-                        "errors": errors,
-                        "limits": {
-                            "title_max_chars": max_title_chars,
-                            "description_max_chars": max_desc_chars,
-                            "card_height_px": card_h.round(),
-                            "available_desc_height_px": desc_area_h.round(),
-                            "max_lines": max_lines,
-                            "variant": if is_dense { "dense" } else { "default" }
-                        },
-                        "hint": "Card content exceeds slide capacity. Limits are derived from the slide layout geometry (525px composition, card dimensions, font sizes). Content that exceeds limits is blocked, not truncated."
-                    });
-                    return Ok(Json(RawJson(serde_json::json!({
-                        "content": [{"type": "text", "text": error_msg.to_string()}],
-                        "isError": true
-                    }))));
-                }
-            }
-        }
+        // grid_cards removed 2026-07-30 — the dynamic-overflow geometry
+        // validator is no longer wired for that type. The general
+        // `grid_cards_overflow_risk` validator in validate.rs (which scopes
+        // text-mass to the grid container and uses a 2500-char ceiling) still
+        // covers the surviving N-card grids (split_features, case_study_result,
+        // pricing_plan).
 
         // Dynamic overflow validation for myth_fact: derive limits from layout geometry
         if slide_type == "myth_fact" {
@@ -1221,6 +1141,18 @@ impl Server {
         &self,
         Parameters(req): Parameters<SlideTypeInfoRequest>,
     ) -> Result<Json<RawJson>, ErrorData> {
+        // Removed 2026-07-30: surface a clear error so callers migrate off the
+        // retired types instead of receiving a generic "unknown" response.
+        let removed = ["feature", "list", "callout", "grid_cards", "text_columns", "image_stat", "cta"];
+        if removed.contains(&req.slide_type.as_str()) {
+            return Err(ErrorData::invalid_request(
+                format!(
+                    "Slide type '{}' was retired in the 2026-07-30 11-type purge. Use split_features / quote_slide / image_callout / qr_destination instead. See SLIDE_TYPE_AUDIT.md for migration mapping.",
+                    req.slide_type
+                ),
+                None,
+            ));
+        }
         match slide_registry::get_slide_type_info(&req.slide_type) {
             Some(info) => Ok(Json(RawJson(info))),
             None => Err(ErrorData::invalid_request(

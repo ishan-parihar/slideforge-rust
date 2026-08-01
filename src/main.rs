@@ -1085,16 +1085,13 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
 
     let slide_types = vec![
         "hero",
-        "feature",
-        "list",
+        // feature/list/callout/grid_cards/text_columns/image_stat/cta all
+        // removed 2026-07-30 — see SLIDE_TYPE_AUDIT.md.
         "quote",
-        "cta",
         "before_after_story", // comparison retired → routed here
         "metric_grid",        // stat_row retired → routed here
         "timeline",
-        "callout",
-        "split_features",
-        "grid_cards",
+        "split_features",     // grid_cards retired → split_features / case_study_result
         "definition",
         "text_block",
         // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
@@ -1106,7 +1103,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
         "table",
         // column_chart retired → routed through chart(bar_vertical)
         "chart", // (covered above; vertical-bar covered via chart_type=bar_vertical)
-        "text_columns",
         "qr_destination",
     ];
 
@@ -1232,31 +1228,6 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     "variant": hero_variants[rng.r#gen::<usize>() % hero_variants.len()],
                     "bg_style": rand_bg
                 }),
-                "cta" => json!({
-                    "headline": format!("Ready to Scale your {}?", topic),
-                    "button_text": "Launch Free Trial",
-                    "button_url": "https://slideforge.dev",
-                    "subtext": "No credit card required • Instant setup",
-                    "bg_style": rand_bg
-                }),
-                "feature" => json!({
-                    "icon": "⚡",
-                    "title": "Unmatched Performance",
-                    "description": "Engineered with optimized native system kernels.",
-                    "number": "12x",
-                    "variant": feature_variants[rng.r#gen::<usize>() % feature_variants.len()],
-                    "bg_style": rand_bg
-                }),
-                "list" => json!({
-                    "title": "Platform Core Offerings",
-                    "items": [
-                        {"title": "Automated Workflows", "description": "Saves 10+ hours per week of manual labor"},
-                        {"title": "Visual Insights", "description": "Interactive data visualization on any screen size"},
-                        {"title": "Multi-channel Export", "description": "Deploy to LinkedIn, TikTok, and Instagram instantly"}
-                    ],
-                    "variant": list_variants[rng.r#gen::<usize>() % list_variants.len()],
-                    "bg_style": rand_bg
-                }),
                 "quote" => json!({
                     "quote": "SlideForge has fundamentally changed our design turnaround. Parity is absolute.",
                     "author": "Marcus Aurelius",
@@ -1289,27 +1260,11 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     ],
                     "bg_style": rand_bg
                 }),
-                "callout" => json!({
-                    "title": "System Alert",
-                    "text": "Enable duotone cool filters on dark slides to maximize aesthetic impact.",
-                    "icon": "🛡️",
-                    "variant": "success",
-                    "bg_style": rand_bg
-                }),
                 "split_features" => json!({
                     "title": "Platform Benefits",
                     "features": [
                         {"title": "Sub-100ms Edge Latency", "description": "Distributed content networks serving assets globally."},
                         {"title": "Intelligent Centering", "description": "Automatically validates flexbox align and vertical centering parameters."}
-                    ],
-                    "bg_style": rand_bg
-                }),
-                "grid_cards" => json!({
-                    "title": "Advanced Capabilities",
-                    "cards": [
-                        {"icon": "🤖", "title": "Generative Agents", "description": "Autonomous subagents executing complex layout implementations."},
-                        {"icon": "📈", "title": "Real-time Metrics", "description": "Live reporting pipelines directly fed from Excel sheets."},
-                        {"icon": "🎨", "title": "Aesthetic Presets", "description": "Polished responsive cards mapped dynamically to typography scale."}
                     ],
                     "bg_style": rand_bg
                 }),
@@ -1373,15 +1328,8 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     "bg_style": rand_bg
                 }),
                 // column_chart retired — vertical-bar covered by chart(chart_type=bar_vertical)
-                "text_columns" => json!({
-                    "title": "Core Architecture Principles",
-                    "columns": [
-                        {"heading": "Performance", "text": "Sub-100ms render times via native compilation."},
-                        {"heading": "Parity", "text": "Pixel-perfect alignment with Python reference."},
-                        {"heading": "Scalability", "text": "Handles thousands of slides without degradation."}
-                    ],
-                    "bg_style": rand_bg
-                }),
+                // text_columns retired 2026-07-30 — covered by split_features / quote_slide
+                // image_stat retired 2026-07-30 — covered by image_callout / metric_grid
                 "qr_destination" => json!({
                     "destination_url": "https://nexusai.io/blog/agentic-slide-workflows",
                     "heading": "Read the full workflow",
