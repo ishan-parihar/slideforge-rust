@@ -431,3 +431,25 @@ pub fn get_slide_preset(archetype: &Archetype, slide_type: &str) -> ArchetypePre
         .cloned()
         .unwrap_or_else(default_preset)
 }
+
+/// Map an archetype's declared `default_bg_style` string to a real bg style
+/// supported by the renderer. The archetype catalog carries descriptive
+/// values (e.g. "clean_white", "neon_gradient") that are not renderer bg
+/// styles; this resolves them. Returns "" for unknown values so callers can
+/// fall back to their own default.
+pub fn archetype_bg_style(archetype: &str) -> &'static str {
+    let s: String = build_archetypes()
+        .into_iter()
+        .find(|a| a.name == archetype)
+        .map(|a| a.default_bg_style)
+        .unwrap_or_default();
+    match s.as_str() {
+        "clean_white" => "light",
+        "structured_light" => "light",
+        "dark_gradient" => "dark",
+        "vibrant_dark" => "dark",
+        "warm_gradient" => "gradient",
+        "neon_gradient" => "gradient",
+        _ => "",
+    }
+}

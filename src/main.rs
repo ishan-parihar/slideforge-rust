@@ -9,6 +9,7 @@ use indexmap::IndexMap;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng, rngs::StdRng};
 use serde_json::json;
+use styling::{Family, VariantOp};
 use std::fs;
 use std::path::Path;
 
@@ -24,6 +25,7 @@ mod mcp_server;
 mod platforms;
 mod slide_registry;
 mod slides;
+mod styling;
 mod validate;
 
 #[derive(Parser)]
@@ -79,6 +81,38 @@ enum Commands {
         /// Color palette preset (tonal_spot, vibrant, neutral, monochrome, expressive)
         #[arg(long, default_value = "tonal_spot")]
         preset: String,
+        /// Curated typology bundle (editorial, startup, technical, brutalist, luxury,
+        /// playful, vintage, data, nature, nightlife)
+        #[arg(long)]
+        typology: Option<String>,
+        /// Variant operators, comma-separated (polarity, energy, material)
+        #[arg(long)]
+        variant: Option<String>,
+        /// Color-scheme family (neutral, analogous, complementary, triadic,
+        /// split_complement, monochrome, duotone)
+        #[arg(long)]
+        color_scheme: Option<String>,
+        /// Surface treatment (flat, glass_light, glass_dark, frosted, outline, gradient_fill)
+        #[arg(long)]
+        surface: Option<String>,
+        /// Type scale tier (compact, standard, airy)
+        #[arg(long)]
+        type_tier: Option<String>,
+        /// Corner radius (sharp, moderate, soft, pill)
+        #[arg(long)]
+        radius: Option<String>,
+        /// Decoration level (none, subtle, medium, high)
+        #[arg(long)]
+        decoration: Option<String>,
+        /// Font weight (light, regular, medium, bold, extrabold)
+        #[arg(long)]
+        weight: Option<String>,
+        /// Text case (normal, uppercase, lowercase)
+        #[arg(long)]
+        text_case: Option<String>,
+        /// Letter tracking (tight, normal, wide)
+        #[arg(long)]
+        tracking: Option<String>,
         /// Output path for JSON tokens file
         #[arg(long, default_value = "design_tokens.json")]
         output: String,
@@ -133,6 +167,27 @@ enum Commands {
         /// Brand archetype (educator, thought_leader, startup_pitch, brand_storyteller, data_analyst, creator)
         #[arg(long)]
         archetype: Option<String>,
+        /// Curated typology bundle (editorial, startup, technical, brutalist, luxury, playful, vintage, data, nature, nightlife)
+        #[arg(long)]
+        typology: Option<String>,
+        /// Variant operators, comma-separated (polarity, energy, material)
+        #[arg(long)]
+        variant: Option<String>,
+        /// Color-scheme family (neutral, analogous, complementary, triadic, split_complement, monochrome, duotone)
+        #[arg(long)]
+        color_scheme: Option<String>,
+        /// Surface treatment (flat, glass_light, glass_dark, frosted, outline, gradient_fill)
+        #[arg(long)]
+        surface: Option<String>,
+        /// Type scale tier (compact, standard, airy)
+        #[arg(long)]
+        type_tier: Option<String>,
+        /// Corner radius (sharp, moderate, soft, pill)
+        #[arg(long)]
+        radius: Option<String>,
+        /// Decoration level (none, subtle, medium, high)
+        #[arg(long)]
+        decoration: Option<String>,
         /// Platform (instagram_portrait, tiktok_vertical, etc.)
         #[arg(long)]
         platform: Option<String>,
@@ -304,15 +359,88 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             primary,
             style,
             preset,
+            typology,
+            variant,
+            color_scheme,
+            surface,
+            type_tier,
+            radius,
+            decoration,
+            weight,
+            text_case,
+            tracking,
             output,
         }) => {
             println!("Generating design system for {}...", primary);
+            // Parse variant operators (comma-separated, e.g. polarity,energy)
+            let ops: Vec<VariantOp> = variant
+                .as_deref()
+                .map(|v| {
+                    v.split(',')
+                        .filter_map(|o| VariantOp::parse(o.trim()))
+                        .collect()
+                })
+                .unwrap_or_default();
+            // Parse color-scheme family override
+            let family_override = color_scheme.as_deref().and_then(Family::parse);
+            // Axis overrides — each explicit axis flag wins over the anchor
+            let mut overrides: Vec<(&str, &str)> = Vec::new();
+            if let Some(v) = surface.as_deref() {
+                overrides.push(("surface", v));
+            }
+            if let Some(v) = type_tier.as_deref() {
+                overrides.push(("type-tier", v));
+            }
+            if let Some(v) = radius.as_deref() {
+                overrides.push(("radius", v));
+            }
+            if let Some(v) = decoration.as_deref() {
+                overrides.push(("decoration", v));
+            }
+            if let Some(v) = weight.as_deref() {
+                overrides.push(("weight", v));
+            }
+            if let Some(v) = text_case.as_deref() {
+                overrides.push(("case", v));
+            }
+            if let Some(v) = tracking.as_deref() {
+                overrides.push(("tracking", v));
+            }
+            // Resolve the full axis set (anchor → operators → family → overrides)
+            let axes = styling::resolve_styling(
+                typology.as_deref().unwrap_or("editorial"),
+                &ops,
+                family_override,
+                &overrides,
+            )?;
+            // Explicit --style/--preset flags win over typology-derived values
+            let font = if axes.font.is_empty() { style.to_string() } else { axes.font };
+            let preset = if preset == "tonal_spot" {
+                axes.preset
+            } else {
+                preset.to_string()
+            };
+            let bg = axes.bg.clone();
+            let base = 16i32;
+            let ratio = axes.tier.ratio();
             let tokens = design_system::derive_palette(
-                primary, style, 16, 1.25, preset, "", None, None, None,
+                primary, &font, base, ratio, &preset, "", None, None, None,
             )?;
             let json = serde_json::to_string_pretty(&tokens)?;
             fs::write(output, json)?;
             println!("Design tokens saved to {}", output);
+            println!(
+                "Styling: typology={} family={:?} surface={:?} radius={:?} tier={:?} decor={:?} weight={:?} case={:?} tracking={:?}",
+                typology.as_deref().unwrap_or("editorial"),
+                axes.family,
+                axes.surface,
+                axes.radius,
+                axes.tier,
+                axes.decor,
+                axes.weight,
+                axes.case,
+                axes.tracking
+            );
         }
         Some(Commands::Export {
             html,
@@ -429,6 +557,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             preset,
             bg_style,
             archetype,
+            typology,
+            variant,
+            color_scheme,
+            surface,
+            type_tier,
+            radius,
+            decoration,
             platform,
             aspect_ratio,
             tokens_file,
@@ -444,6 +579,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 preset,
                 bg_style,
                 archetype,
+                typology,
+                variant,
+                color_scheme,
+                surface,
+                type_tier,
+                radius,
+                decoration,
                 platform,
                 aspect_ratio,
                 tokens_file,
@@ -772,6 +914,13 @@ fn cli_generate_slide(
     preset: &Option<String>,
     bg_style: &Option<String>,
     archetype: &Option<String>,
+    typology: &Option<String>,
+    variant: &Option<String>,
+    color_scheme: &Option<String>,
+    surface: &Option<String>,
+    type_tier: &Option<String>,
+    radius: &Option<String>,
+    decoration: &Option<String>,
     platform: &Option<String>,
     aspect_ratio: &Option<String>,
     tokens_file: &Option<String>,
@@ -782,6 +931,16 @@ fn cli_generate_slide(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let slide_type = slide_type.to_lowercase().replace('-', "_");
 
+    // Parse variant operators (comma-separated, e.g. polarity,energy, material)
+    let variant_ops: Vec<VariantOp> = variant
+        .as_deref()
+        .map(|v| {
+            v.split(',')
+                .filter_map(|o| VariantOp::parse(o.trim()))
+                .collect()
+        })
+        .unwrap_or_default();
+
     // Resolve tokens: either from --tokens-file or derive from --primary-color
     let (mut tokens, resolved_theme) = if let Some(tf) = tokens_file {
         let t = cli_load_tokens(tf)?;
@@ -791,32 +950,50 @@ fn cli_generate_slide(
             .as_deref()
             .ok_or("Either --primary-color or --tokens-file is required")?;
         let t = theme.as_deref().unwrap_or("editorial");
-        let style = match t {
-            "editorial" => "editorial",
-            "bold" => "bold",
-            "minimal" => "modern",
-            "dark" => "technical",
-            "vibrant" => "rounded",
-            "natural" => "warm",
-            _ => "modern",
+        // Typology takes precedence over theme: resolve the full axis set and
+        // use its font pairing as the derive style, its family as a palette
+        // override, and its type-tier scale values. `--theme` remains the
+        // legacy per-slide hue/bg shorthand.
+        let (style, t_eff, fam_key, scale_base, scale_ratio) = if let Some(typo) = typology.as_deref() {
+            let axes = styling::resolve_styling(typo, &variant_ops, color_scheme.as_deref().map(Family::parse).flatten(), &[])?;
+            (
+                axes.font.clone(),
+                t.to_string(),
+                axes.family.scheme_key().to_string(),
+                axes.tier.scale_base(),
+                axes.tier.scale_ratio(),
+            )
+        } else {
+            let style = match t {
+                "editorial" => "editorial",
+                "bold" => "bold",
+                "minimal" => "modern",
+                "dark" => "technical",
+                "vibrant" => "rounded",
+                "natural" => "warm",
+                _ => "modern",
+            };
+            (style.to_string(), t.to_string(), "neutral".to_string(), 16, 1.25)
         };
         let p = preset.as_deref().unwrap_or("tonal_spot");
         let plt = platform.as_deref().unwrap_or("instagram_portrait");
         let canvas = platforms::resolve_canvas(plt, aspect_ratio.as_deref())?;
+        let mut fam_overrides = IndexMap::new();
+        fam_overrides.insert("family".to_string(), fam_key);
         let tokens = design_system::derive_palette_with_canvas(
             primary,
-            style,
-            16,
-            1.25,
+            &style,
+            scale_base as i32,
+            scale_ratio,
             p,
-            t,
-            None,
+            &t_eff,
+            Some(&fam_overrides),
             None,
             None,
             canvas.width,
             canvas.height,
         )?;
-        (tokens, t.to_string())
+        (tokens, t_eff)
     };
 
     // Apply --override KEY=VALUE patches to the resolved tokens (single-value
@@ -825,8 +1002,16 @@ fn cli_generate_slide(
     let (overrides_applied, overrides_warnings) =
         cli_apply_token_overrides(&mut tokens, override_tokens);
 
-    let bg = bg_style.as_deref().unwrap_or("light");
+    let mut bg = bg_style.as_deref().unwrap_or("light").to_string();
     let arch = archetype.as_deref().unwrap_or("educator");
+
+    // P2a: honor archetype default_bg_style when caller didn't set bg explicitly
+    if bg_style.is_none() {
+        let arch_bg = crate::archetypes::archetype_bg_style(arch);
+        if !arch_bg.is_empty() {
+            bg = arch_bg.to_string();
+        }
+    }
 
     let params_json = cli_read_params(params, params_file)?;
 
@@ -851,7 +1036,7 @@ fn cli_generate_slide(
         &slide_type,
         &tokens,
         &params_json,
-        bg,
+        bg.as_str(),
         &resolved_theme,
         arch,
     )?;

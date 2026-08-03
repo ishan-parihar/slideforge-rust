@@ -44,6 +44,13 @@ pub struct ServerState {
     pub platform: String,
     pub aspect_ratio: String,
     pub bg_style: String,
+    pub typology: String,
+    pub variant_ops: String,
+    pub color_scheme: String,
+    pub surface: String,
+    pub type_tier: String,
+    pub radius: String,
+    pub decoration: String,
     pub validated: bool,
 }
 
@@ -72,6 +79,13 @@ impl Default for ServerState {
             platform: String::new(),
             aspect_ratio: String::new(),
             bg_style: String::new(),
+            typology: String::new(),
+            variant_ops: String::new(),
+            color_scheme: String::new(),
+            surface: String::new(),
+            type_tier: String::new(),
+            radius: String::new(),
+            decoration: String::new(),
             validated: false,
         }
     }
@@ -165,6 +179,13 @@ pub struct ConfigureDesignRequest {
     pub platform: Option<String>,
     pub aspect_ratio: Option<String>,
     pub bg_style: Option<String>,
+    pub typology: Option<String>,
+    pub variant: Option<String>,
+    pub color_scheme: Option<String>,
+    pub surface: Option<String>,
+    pub type_tier: Option<String>,
+    pub radius: Option<String>,
+    pub decoration: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -180,6 +201,12 @@ pub struct ConfigureDesignResponse {
     pub archetype: String,
     pub platform: String,
     pub aspect_ratio: String,
+    pub typology: String,
+    pub color_scheme: String,
+    pub surface: String,
+    pub type_tier: String,
+    pub radius: String,
+    pub decoration: String,
     pub contrast_report: IndexMap<String, design_system::ContrastReportItem>,
     pub message: String,
     pub platform_context: serde_json::Value,
@@ -543,16 +570,35 @@ impl Server {
             );
             return Err(ErrorData::invalid_request(msg, None));
         }
-        let style = match visual_theme.as_str() {
-            "editorial" => "editorial",
-            "bold" => "bold",
-            "minimal" => "modern",
-            "dark" => "technical",
-            "vibrant" => "rounded",
-            "natural" => "warm",
-            _ => req.font_style.as_deref().unwrap_or("modern"),
+        // Decoupled: an explicit font_style wins; visual_theme only supplies a
+        // fallback pairing when the agent gave none. Theme and font are now
+        // orthogonal axes.
+        let style = if let Some(fs) = req.font_style.as_deref().filter(|s| !s.is_empty()) {
+            fs.to_string()
+        } else {
+            match visual_theme.as_str() {
+                "editorial" => "editorial",
+                "bold" => "bold",
+                "minimal" => "modern",
+                "dark" => "technical",
+                "vibrant" => "rounded",
+                "natural" => "warm",
+                _ => "modern",
+            }
+            .to_string()
+        };
+        let valid_fonts = [
+            "editorial", "warm", "technical", "bold", "classic", "rounded", "modern",
+            "luxury", "vintage", "data", "nightlife",
+        ];
+        if !valid_fonts.contains(&style.as_str()) {
+            let msg = format!(
+                "Invalid font_style '{}'. Valid values: {}",
+                style,
+                valid_fonts.join(", ")
+            );
+            return Err(ErrorData::invalid_request(msg, None));
         }
-        .to_string();
         let preset = req
             .preset
             .clone()
@@ -580,6 +626,51 @@ impl Server {
         let type_scale_base = req.type_scale_base.unwrap_or(16);
         let type_scale_ratio = req.type_scale_ratio.unwrap_or(1.25);
 
+        // Typology: curated bundle — overrides font, family, surface, tier, radius, decor.
+        let mut family = String::new();
+        let mut surface = String::new();
+        let mut type_tier = String::new();
+        let mut radius = String::new();
+        let mut decoration = String::new();
+        let (typology, style, type_scale_base, type_scale_ratio) = if let Some(t) =
+            req.typology.as_deref().filter(|s| !s.is_empty())
+        {
+            let variant_ops: Vec<crate::styling::VariantOp> = req
+                .variant
+                .as_deref()
+                .unwrap_or("")
+                .split(',')
+                .filter_map(|o| crate::styling::VariantOp::parse(o.trim()))
+                .collect();
+            let axes = crate::styling::resolve_styling(
+                t,
+                &variant_ops,
+                req.color_scheme
+                    .as_deref()
+                    .map(crate::styling::Family::parse)
+                    .flatten(),
+                &[],
+            )
+            .map_err(|e| ErrorData::invalid_request(e, None))?;
+            family = axes.family.scheme_key().to_string();
+            surface = format!("{:?}", axes.surface).to_lowercase();
+            type_tier = format!("{:?}", axes.tier).to_lowercase();
+            radius = format!("{:?}", axes.radius).to_lowercase();
+            decoration = format!("{:?}", axes.decor).to_lowercase();
+            (t.to_string(), axes.font.clone(), axes.tier.scale_base() as i32, axes.tier.ratio())
+        } else {
+            let mut s = style.clone();
+            if let Some(fs) = req.font_style.as_deref().filter(|x| !x.is_empty()) {
+                s = fs.to_string();
+            }
+            (
+                String::new(),
+                s,
+                type_scale_base,
+                type_scale_ratio,
+            )
+        };
+
         // Resolve canvas for scaling
         let platform = req
             .platform
@@ -591,6 +682,13 @@ impl Server {
         let base_width = 420;
         let base_height = 525;
 
+        // Family axis rides the overrides map (P0b: color-scheme reaches token math)
+        let mut ov: IndexMap<String, String> = IndexMap::new();
+        if !family.is_empty() {
+            ov.insert("family".to_string(), family.clone());
+        }
+        let ov_ref = if ov.is_empty() { None } else { Some(&ov) };
+
         let tokens = design_system::derive_palette_with_canvas(
             &req.primary_color,
             &style,
@@ -598,7 +696,7 @@ impl Server {
             type_scale_ratio,
             &preset,
             &visual_theme,
-            None,
+            ov_ref,
             None,
             None,
             base_width,
@@ -635,6 +733,13 @@ impl Server {
         state.platform = canvas.platform.clone();
         state.aspect_ratio = canvas.aspect_ratio.clone();
         state.bg_style = req.bg_style.clone().unwrap_or_else(|| "light".to_string());
+        state.typology = typology.clone();
+        state.variant_ops = req.variant.clone().unwrap_or_default();
+        state.color_scheme = family.clone();
+        state.surface = surface.clone();
+        state.type_tier = type_tier.clone();
+        state.radius = radius.clone();
+        state.decoration = decoration.clone();
         state.validated = true;
 
         // Snapshot for persistence (state is locked; clone before unlock).
@@ -664,6 +769,12 @@ impl Server {
             archetype,
             platform: platform.clone(),
             aspect_ratio: aspect_ratio.clone(),
+            typology: snapshot.typology.clone(),
+            color_scheme: snapshot.color_scheme.clone(),
+            surface: snapshot.surface.clone(),
+            type_tier: snapshot.type_tier.clone(),
+            radius: snapshot.radius.clone(),
+            decoration: snapshot.decoration.clone(),
             contrast_report: tokens.contrast_report,
             message: "Design system configured. All subsequent calls will use this configuration."
                 .to_string(),
@@ -1697,6 +1808,13 @@ mod tests {
             platform: None,
             aspect_ratio: None,
             bg_style: None,
+            typology: None,
+            variant: None,
+            color_scheme: None,
+            surface: None,
+            type_tier: None,
+            radius: None,
+            decoration: None,
         };
 
         let _ = server

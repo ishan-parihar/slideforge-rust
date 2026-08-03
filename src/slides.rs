@@ -158,6 +158,7 @@ body {
 
 .serif { font-family: var(--font-heading, serif); }
 .sans { font-family: var(--font-body, sans-serif); }
+.mono { font-family: var(--font-heading, monospace); }
 
 .display-text {
   font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
@@ -688,8 +689,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "editorial" => {
             r#"
             :root {
-                --font-heading: 'Playfair Display', Georgia, serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 8px;
                 --radius-md: 6px;
             }
@@ -718,8 +717,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "bold" => {
             r#"
             :root {
-                --font-heading: 'Inter', system-ui, sans-serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 4px;
                 --radius-md: 4px;
                 --shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
@@ -748,8 +745,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "minimal" => {
             r#"
             :root {
-                --font-heading: 'Inter', system-ui, sans-serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 2px;
                 --radius-md: 2px;
                 --shadow-sm: none;
@@ -778,8 +773,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "dark" => {
             r#"
             :root {
-                --font-heading: 'Inter', system-ui, sans-serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 12px;
                 --radius-md: 10px;
             }
@@ -814,8 +807,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "vibrant" => {
             r#"
             :root {
-                --font-heading: 'Inter', system-ui, sans-serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 16px;
                 --radius-md: 12px;
             }
@@ -843,8 +834,6 @@ fn get_theme_css_overrides(theme: &str) -> &'static str {
         "natural" => {
             r#"
             :root {
-                --font-heading: 'Playfair Display', Georgia, serif;
-                --font-body: 'Inter', system-ui, sans-serif;
                 --radius-lg: 20px;
                 --radius-md: 16px;
             }

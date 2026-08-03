@@ -19,6 +19,7 @@ pub struct FontPairing {
     pub heading_class: String,
     pub body_class: String,
     pub style_description: String,
+    pub body_italic: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -381,6 +382,42 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
             "sans",
             "sans",
         ),
+        "luxury" => (
+            "Cormorant Garamond",
+            "DM Sans",
+            vec![400, 600],
+            vec![400, 500, 600],
+            "Luxury / editorial contrast",
+            "serif",
+            "sans",
+        ),
+        "vintage" => (
+            "DM Serif Display",
+            "Space Grotesk",
+            vec![400],
+            vec![400, 500],
+            "Vintage / retro-poster",
+            "serif",
+            "sans",
+        ),
+        "data" => (
+            "Space Grotesk",
+            "IBM Plex Mono",
+            vec![400, 600],
+            vec![400, 500],
+            "Data / terminal-clean",
+            "sans",
+            "mono",
+        ),
+        "nightlife" => (
+            "Plus Jakarta Sans",
+            "Playfair Display",
+            vec![700],
+            vec![400, 500, 600],
+            "Nightlife / editorial-glow",
+            "sans",
+            "serif",
+        ),
         _ => (
             "Plus Jakarta Sans",
             "Plus Jakarta Sans",
@@ -402,15 +439,24 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
             .join(",")
     )];
     if h_font != b_font {
-        heading_families.push(format!(
-            "{}:wght@{}",
-            b_font,
-            b_weights
-                .iter()
-                .map(|w| w.to_string())
-                .collect::<Vec<_>>()
-                .join(",")
-        ));
+        // Italic body (e.g. nightlife: Playfair Display italic) needs the ital axis.
+        let body_frag = if style_clean == "nightlife" {
+            format!(
+                "{}:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600",
+                b_font
+            )
+        } else {
+            format!(
+                "{}:wght@{}",
+                b_font,
+                b_weights
+                    .iter()
+                    .map(|w| w.to_string())
+                    .collect::<Vec<_>>()
+                    .join(",")
+            )
+        };
+        heading_families.push(body_frag);
     }
     let families = heading_families.join("&family=");
     let url = format!(
@@ -425,6 +471,7 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
         heading_class: h_class.to_string(),
         body_class: b_class.to_string(),
         style_description: desc.to_string(),
+        body_italic: style_clean == "nightlife",
     }
 }
 
@@ -551,6 +598,42 @@ pub fn derive_palette_with_canvas(
         }
         _ => {} // tonal_spot default
     };
+
+    // Color-scheme family (cross-cutting axis; rides the overrides map). Applied after
+    // preset so an explicit family wins on sec/tert geometry. `neutral` = today's default.
+    let family = overrides
+        .and_then(|o| o.get("family").map(|s| s.as_str()))
+        .unwrap_or("neutral");
+    match family {
+        "analogous" => {
+            sec_hue_offset = 25.0;
+            sec_chroma_scale = 0.44;
+            tert_hue_offset = 50.0;
+            tert_chroma_scale = 0.55;
+        }
+        "complementary" => {
+            sec_hue_offset = 180.0;
+            sec_chroma_scale = 0.44;
+            tert_hue_offset = 160.0;
+            tert_chroma_scale = 0.44;
+        }
+        "triadic" => {
+            sec_hue_offset = 120.0;
+            sec_chroma_scale = 0.44;
+            tert_hue_offset = 240.0;
+            tert_chroma_scale = 0.44;
+        }
+        "split-complement" => {
+            sec_hue_offset = 150.0;
+            sec_chroma_scale = 0.44;
+            tert_hue_offset = -30.0;
+            tert_chroma_scale = 0.50;
+        }
+        "monochrome" => {
+            is_mono = true;
+        }
+        _ => {} // neutral (and any unknown) preserve preset geometry
+    }
 
     let secondary = if let Some(sec) = secondary_hex {
         parse_hex(sec)?;
