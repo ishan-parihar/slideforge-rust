@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SlideForge — Randomized Styles Audit</title>
+<style>
+:root {
+  --bg: #0a0b10;
+  --surface: #14151c;
+  --surface-2: #1c1e27;
+  --border: #2a2c3d;
+  --text: #edeef5;
+  --text-dim: #9098a8;
+  --accent: #5e5fe0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, "Segoe UI", Inter, "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  padding: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.subtitle { color: var(--text-dim); margin-bottom: 24px; font-size: 14px; }
+.summary { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 32px; }
+.summary h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 12px; }
+.summary-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; }
+.summary-card .count { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); }
+.summary-card .label { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+.actions { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+.btn { padding: 8px 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s ease; }
+.btn:hover { background: var(--surface-2); border-color: var(--accent); }
+.btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+.category-section { margin-bottom: 40px; }
+.category-header { font-size: 20px; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between; align-items: baseline; }
+.category-header .meta { font-size: 13px; color: var(--text-dim); font-weight: 400; }
+.slide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.slide-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.15s ease; }
+.slide-card:hover { border-color: var(--accent); }
+.slide-thumb { width: 100%; aspect-ratio: 4/5; background: #000; display: block; object-fit: contain; }
+.slide-meta { padding: 12px 14px; border-top: 1px solid var(--border); }
+.slide-type { font-size: 14px; font-weight: 700; font-family: "JetBrains Mono", "SF Mono", Consolas, monospace; color: var(--text); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.slide-type .badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; background: rgba(94,95,224,0.18); color: #a8a9ff; text-transform: uppercase; letter-spacing: 0.04em; }
+.slide-variant { font-size: 11px; color: var(--text-dim); font-family: "JetBrains Mono", "SF Mono", Consolas, monospace; margin-bottom: 6px; }
+.slide-theme { font-size: 11px; color: var(--text-dim); display: flex; gap: 6px; align-items: center; margin-bottom: 2px; }
+.slide-details { font-size: 10px; color: var(--text-dim); opacity: 0.7; }
+.color-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+.filter-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+.filter-bar .label { color: var(--text-dim); font-size: 12px; margin-right: 4px; }
+.failure-notice { background: #2a1015; border: 1px solid #ef4444; border-radius: 8px; padding: 16px 20px; margin-bottom: 32px; color: #fca5a5; }
+.failure-notice strong { color: #ef4444; }
+</style>
+</head>
+<body>
+
+<h1>SlideForge — Randomized Styles Audit</h1>
+<p class="subtitle">
+  40 slides rendered with randomized font pairing × bg_style × visual theme × type_scale × primary color.
+  Each slide uses a different combination to stress-test the full style matrix.
+  Click any thumbnail to open the full PNG.
+</p>
+
+
+
+<div class="summary">
+  <h2>Style Matrix Coverage</h2>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="count">6/6</div>
+      <div class="label">Font pairings tested</div>
+    </div>
+    <div class="summary-card">
+      <div class="count">5/5</div>
+      <div class="label">BG styles tested</div>
+    </div>
+    <div class="summary-card">
+      <div class="count">6/6</div>
+      <div class="label">Visual themes tested</div>
+    </div>
+    <div class="summary-card">
+      <div class="count">10/10</div>
+      <div class="label">Primary colors tested</div>
+    </div>
+    <div class="summary-card">
+      <div class="count">40</div>
+      <div class="label">Total slides rendered</div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="label">Category:</span>
+  <button type="button" class="btn active" data-filter="all">All</button>
+  <button type="button" class="btn" data-filter="Openers & Hooks">Openers & Hooks</button><button type="button" class="btn" data-filter="Narrative & Story">Narrative & Story</button><button type="button" class="btn" data-filter="Social Proof & Trust">Social Proof & Trust</button><button type="button" class="btn" data-filter="Data & Metrics">Data & Metrics</button><button type="button" class="btn" data-filter="Structured Content">Structured Content</button><button type="button" class="btn" data-filter="Visual & Images">Visual & Images</button><button type="button" class="btn" data-filter="Call to Action">Call to Action</button>
+</div>
+
+<div id="catalog">
+
+<div class="category-section" data-category="Openers & Hooks">
+  <div class="category-header">
+    <span>Openers & Hooks</span>
+    <span class="meta">3 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_1.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_1.png" alt="hero (centered)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>hero</span>
+      <span class="badge">#1</span>
+    </div>
+    <div class="slide-variant">variant: centered</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#5E5FE0;"></span>
+      <span>editorial / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_2.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_2.png" alt="hero (split)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>hero</span>
+      <span class="badge">#2</span>
+    </div>
+    <div class="slide-variant">variant: split</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#E04040;"></span>
+      <span>bold / light</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_3.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_3.png" alt="hero (chapter)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>hero</span>
+      <span class="badge">#3</span>
+    </div>
+    <div class="slide-variant">variant: chapter</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#2D8F6F;"></span>
+      <span>minimal / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Narrative & Story">
+  <div class="category-header">
+    <span>Narrative & Story</span>
+    <span class="meta">4 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_4.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_4.png" alt="problem_solution (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>problem_solution</span>
+      <span class="badge">#4</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#D4831A;"></span>
+      <span>dark / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_5.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_5.png" alt="myth_fact (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>myth_fact</span>
+      <span class="badge">#5</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#8B5CF6;"></span>
+      <span>vibrant / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_6.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_6.png" alt="before_after_story (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>before_after_story</span>
+      <span class="badge">#6</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#0EA5E9;"></span>
+      <span>natural / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_7.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_7.png" alt="case_study_result (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>case_study_result</span>
+      <span class="badge">#7</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#DC2626;"></span>
+      <span>editorial / light</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Social Proof & Trust">
+  <div class="category-header">
+    <span>Social Proof & Trust</span>
+    <span class="meta">3 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_8.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_8.png" alt="testimonial_avatar (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>testimonial_avatar</span>
+      <span class="badge">#8</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#059669;"></span>
+      <span>bold / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_9.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_9.png" alt="logo_cloud (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>logo_cloud</span>
+      <span class="badge">#9</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#7C3AED;"></span>
+      <span>minimal / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_10.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_10.png" alt="quote (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>quote</span>
+      <span class="badge">#10</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#CA8A04;"></span>
+      <span>dark / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Data & Metrics">
+  <div class="category-header">
+    <span>Data & Metrics</span>
+    <span class="meta">12 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_11.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_11.png" alt="chart (bar)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>chart</span>
+      <span class="badge">#11</span>
+    </div>
+    <div class="slide-variant">variant: bar</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#5E5FE0;"></span>
+      <span>vibrant / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_12.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_12.png" alt="chart (pie)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>chart</span>
+      <span class="badge">#12</span>
+    </div>
+    <div class="slide-variant">variant: pie</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#E04040;"></span>
+      <span>natural / light</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_13.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_13.png" alt="chart (line)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>chart</span>
+      <span class="badge">#13</span>
+    </div>
+    <div class="slide-variant">variant: line</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#2D8F6F;"></span>
+      <span>editorial / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_14.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_14.png" alt="chart (vertical)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>chart</span>
+      <span class="badge">#14</span>
+    </div>
+    <div class="slide-variant">variant: vertical</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#D4831A;"></span>
+      <span>bold / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_15.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_15.png" alt="scatter_plot (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>scatter_plot</span>
+      <span class="badge">#15</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#8B5CF6;"></span>
+      <span>minimal / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_16.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_16.png" alt="gauge (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>gauge</span>
+      <span class="badge">#16</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#0EA5E9;"></span>
+      <span>dark / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_17.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_17.png" alt="radar_chart (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>radar_chart</span>
+      <span class="badge">#17</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#DC2626;"></span>
+      <span>vibrant / light</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_18.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_18.png" alt="table (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>table</span>
+      <span class="badge">#18</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#059669;"></span>
+      <span>natural / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_19.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_19.png" alt="metric_grid (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>metric_grid</span>
+      <span class="badge">#19</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#7C3AED;"></span>
+      <span>editorial / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_20.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_20.png" alt="progress_rings (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>progress_rings</span>
+      <span class="badge">#20</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#CA8A04;"></span>
+      <span>bold / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_21.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_21.png" alt="comparison_bars (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>comparison_bars</span>
+      <span class="badge">#21</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#5E5FE0;"></span>
+      <span>minimal / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_22.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_22.png" alt="funnel_chart (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>funnel_chart</span>
+      <span class="badge">#22</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#E04040;"></span>
+      <span>dark / light</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Structured Content">
+  <div class="category-header">
+    <span>Structured Content</span>
+    <span class="meta">7 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_23.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_23.png" alt="split_features (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>split_features</span>
+      <span class="badge">#23</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#2D8F6F;"></span>
+      <span>vibrant / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_24.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_24.png" alt="definition (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>definition</span>
+      <span class="badge">#24</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#D4831A;"></span>
+      <span>natural / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_25.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_25.png" alt="text_block (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>text_block</span>
+      <span class="badge">#25</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#8B5CF6;"></span>
+      <span>editorial / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_26.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_26.png" alt="process_map (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>process_map</span>
+      <span class="badge">#26</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#0EA5E9;"></span>
+      <span>bold / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_27.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_27.png" alt="timeline (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>timeline</span>
+      <span class="badge">#27</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#DC2626;"></span>
+      <span>minimal / light</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_28.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_28.png" alt="faq (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>faq</span>
+      <span class="badge">#28</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#059669;"></span>
+      <span>dark / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_29.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_29.png" alt="pricing_plan (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>pricing_plan</span>
+      <span class="badge">#29</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#7C3AED;"></span>
+      <span>vibrant / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Visual & Images">
+  <div class="category-header">
+    <span>Visual & Images</span>
+    <span class="meta">7 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_30.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_30.png" alt="image_caption (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_caption</span>
+      <span class="badge">#30</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#CA8A04;"></span>
+      <span>natural / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_31.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_31.png" alt="image_headline (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_headline</span>
+      <span class="badge">#31</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#5E5FE0;"></span>
+      <span>editorial / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_32.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_32.png" alt="image_quote (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_quote</span>
+      <span class="badge">#32</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#E04040;"></span>
+      <span>bold / light</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_33.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_33.png" alt="image_callout (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_callout</span>
+      <span class="badge">#33</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#2D8F6F;"></span>
+      <span>minimal / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_34.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_34.png" alt="image_gallery (4-grid)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_gallery</span>
+      <span class="badge">#34</span>
+    </div>
+    <div class="slide-variant">variant: 4-grid</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#D4831A;"></span>
+      <span>dark / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_35.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_35.png" alt="image_collage (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_collage</span>
+      <span class="badge">#35</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#8B5CF6;"></span>
+      <span>vibrant / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>classic</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_36.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_36.png" alt="image_comparison (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>image_comparison</span>
+      <span class="badge">#36</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#0EA5E9;"></span>
+      <span>natural / dark</span>
+    </div>
+    <div class="slide-details">
+      <span>rounded</span> · <span>data_analyst</span> · <span>tonal_spot</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="category-section" data-category="Call to Action">
+  <div class="category-header">
+    <span>Call to Action</span>
+    <span class="meta">4 examples</span>
+  </div>
+  <div class="slide-grid">
+    
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_37.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_37.png" alt="qr_destination (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>qr_destination</span>
+      <span class="badge">#37</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#DC2626;"></span>
+      <span>editorial / light</span>
+    </div>
+    <div class="slide-details">
+      <span>editorial</span> · <span>editorial</span> · <span>vibrant</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_38.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_38.png" alt="big_statement (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>big_statement</span>
+      <span class="badge">#38</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#059669;"></span>
+      <span>bold / gradient</span>
+    </div>
+    <div class="slide-details">
+      <span>warm</span> · <span>growth_strategist</span> · <span>neutral</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_39.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_39.png" alt="big_statement (stat)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>big_statement</span>
+      <span class="badge">#39</span>
+    </div>
+    <div class="slide-variant">variant: stat</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#7C3AED;"></span>
+      <span>minimal / mesh</span>
+    </div>
+    <div class="slide-details">
+      <span>technical</span> · <span>brand_designer</span> · <span>monochrome</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card" data-classification="none">
+  <a href="random_styles_exports/slide_40.png" target="_blank">
+    <img class="slide-thumb" src="random_styles_exports/slide_40.png" alt="comment_cta (default)" loading="lazy">
+  </a>
+  <div class="slide-meta">
+    <div class="slide-type">
+      <span>comment_cta</span>
+      <span class="badge">#40</span>
+    </div>
+    <div class="slide-variant">variant: default</div>
+    <div class="slide-theme">
+      <span class="color-dot" style="background:#CA8A04;"></span>
+      <span>dark / hero</span>
+    </div>
+    <div class="slide-details">
+      <span>bold</span> · <span>product_lead</span> · <span>expressive</span>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+</div>
+
+<script>
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.category-section').forEach(sec => {
+      sec.style.display = (filter === 'all' || sec.dataset.category === filter) ? '' : 'none';
+    });
+  });
+});
+</script>
+
+</body>
+</html>

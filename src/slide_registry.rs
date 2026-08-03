@@ -191,13 +191,13 @@ pub fn get_registry() -> Value {
             "best_for": ["education", "thought-leadership"]
         },
         "checklist_action_plan": {
-            "description": "Action checklist with numbered execution steps",
-            "required_params": ["title", "items"],
-            "optional_params": ["variant"],
-            "variants": ["numbered", "checklist"],
-            "default_variant": "numbered",
-            "layout_family": "process",
-            "best_for": ["how-to", "closing", "steps"]
+            "description": "REMOVED (2026-08). Use timeline for ordered steps, process_map for workflows, or split_features for action items.",
+            "required_params": ["_REMOVED"],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": "",
+            "layout_family": "",
+            "best_for": []
         },
         "case_study_result": {
             "description": "Case study with challenge, solution, and result proof points",
@@ -265,8 +265,8 @@ pub fn get_registry() -> Value {
         // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings instead
         "chart": {
             "description": "Data chart — bar, line, pie, donut, scatter, etc.",
-            "required_params": ["title", "chart_type", "data"],
-            "optional_params": ["x_label", "y_label", "legend", "colors", "show_values", "variant"],
+            "required_params": ["title", "chart_type", "data", "description"],
+            "optional_params": ["x_label", "y_label", "legend", "colors", "show_values", "variant", "caption"],
             "variants": ["bar", "line", "pie", "donut", "scatter", "area", "horizontal-bar"],
             "default_variant": "bar",
             "layout_family": "data",
@@ -361,6 +361,35 @@ pub fn get_registry() -> Value {
                 "variant": "full-conversion"
             }
         },
+        "big_statement": {
+            "description": "Single dominant focal element — massive text (default) or giant stat/number (stat). Movie poster / billboard style.",
+            "required_params": ["heading"],
+            "optional_params": ["body", "stat_value", "stat_label", "cta_text", "url", "background_image", "image_opacity"],
+            "variants": ["default", "stat"],
+            "default_variant": "default",
+            "layout_family": "conversion",
+            "best_for": ["conversion", "closing", "brand", "statement", "data", "metrics", "social_proof"],
+            "example": {
+                "heading": "Ship faster.",
+                "body": "The slide engine for Rust.",
+                "cta_text": "Get started"
+            }
+        },
+        "comment_cta": {
+            "description": "Comment-to-DM CTA — left-aligned headline + sub-headline + highlighted keyword instruction.",
+            "required_params": ["heading", "cta_text"],
+            "optional_params": ["sub_heading", "keyword", "background_image", "image_opacity"],
+            "variants": ["default"],
+            "default_variant": "default",
+            "layout_family": "conversion",
+            "best_for": ["conversion", "cta", "engagement", "dm", "social"],
+            "example": {
+                "heading": "Why you feel like you're not driving your own life",
+                "sub_heading": "Lost your direction? The whole map is in the episode.",
+                "cta_text": "Comment LISTEN and I'll DM you the link.",
+                "keyword": "LISTEN"
+            }
+        },
         "scatter_plot": {
             "description": "Scatter plot showing correlation between two variables with data points",
             "required_params": ["title", "data"],
@@ -381,7 +410,7 @@ pub fn get_registry() -> Value {
         },
         "radar_chart": {
             "description": "Radar/spider chart comparing multiple dimensions (e.g. skill assessment)",
-            "required_params": ["title", "data"],
+            "required_params": ["title", "data", "description"],
             "optional_params": ["variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",
@@ -390,8 +419,8 @@ pub fn get_registry() -> Value {
         },
         "progress_rings": {
             "description": "Multiple circular progress rings showing completion across workstreams",
-            "required_params": ["title", "items"],
-            "optional_params": ["description", "variant", "background_image", "image_opacity", "padding"],
+            "required_params": ["title", "items", "description"],
+            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
@@ -399,8 +428,8 @@ pub fn get_registry() -> Value {
         },
         "comparison_bars": {
             "description": "Side-by-side horizontal bars comparing two entities on a single metric",
-            "required_params": ["title", "comparison"],
-            "optional_params": ["description", "variant", "background_image", "image_opacity", "padding"],
+            "required_params": ["title", "comparison", "description"],
+            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
@@ -417,7 +446,7 @@ pub fn get_registry() -> Value {
         },
         "funnel_chart": {
             "description": "Funnel chart showing conversion stages with decreasing values",
-            "required_params": ["title", "steps"],
+            "required_params": ["title", "steps", "description"],
             "optional_params": ["variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",
@@ -435,7 +464,7 @@ pub fn get_registry() -> Value {
         },
         "column_chart": {
             "description": "Vertical bar chart with labels and values for categorical comparison. Supports both single-series (flat [{label, value}]) and multi-series grouped columns (nested [{label, series: [{name, value}]}]).",
-            "required_params": ["title", "data"],
+            "required_params": ["title", "data", "description"],
             "optional_params": ["caption", "variant", "background_image", "image_opacity", "padding"],
             "variants": ["default"],
             "default_variant": "default",

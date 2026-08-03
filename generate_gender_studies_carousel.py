@@ -359,14 +359,17 @@ def main():
     # Compile all slide definitions
     compiled_slides = []
     for idx, s in enumerate(slides):
-        print(f"Generating slide {idx+1}/20 ({s['slide_type']})...")
+        print(f"Generating slide {idx+1}/{len(slides)} ({s['slide_type']})...")
+        
+        p = dict(s["params"])
+
         cmd = [
             SLIDEFORGE_BIN, "generate-slide", s["slide_type"],
             "--tokens-file", TOKENS_FILE,
             "--theme", s["theme"],
             "--bg-style", s["bg_style"],
             "--archetype", s["archetype"],
-            "--params", json.dumps(s["params"])
+            "--params", json.dumps(p)
         ]
         slide_html = run_cmd(cmd)
         

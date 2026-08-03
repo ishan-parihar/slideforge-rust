@@ -47,8 +47,8 @@
         "before_after_story",
         "timeline",
         "process_map",
-        "checklist_action_plan",
-        "checklist_action_plan"
+        "timeline",
+        "timeline"
       ],
       "data": [
         "chart",
@@ -84,8 +84,8 @@
         "split_features",
         "split_features",
         "split_features",
-        "checklist_action_plan",
-        "checklist_action_plan"
+        "timeline",
+        "timeline"
       ],
       "closing": [
         "qr_destination",
@@ -1427,7 +1427,7 @@
         {
           "slot": "option_a_record",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "editorial",
           "bg_style": "dark",
           "archetype": "data_analyst",
@@ -1462,7 +1462,7 @@
         {
           "slot": "option_b_record",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "data_analyst",
@@ -1528,7 +1528,7 @@
         "evidence": {
           "types": [],
           "pool": [
-            "checklist_action_plan",
+            "timeline",
             "before_after_story",
             "comparison_bars",
             "testimonial_avatar",
@@ -1659,7 +1659,7 @@
         {
           "slot": "accountability_demand",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "bold",
           "bg_style": "light",
           "archetype": "thought_leader",
@@ -1707,7 +1707,7 @@
             "split_features",
             "chart",
             "image_callout",
-            "checklist_action_plan",
+            "timeline",
             "column_chart",
             "stat_row"
           ],
@@ -1831,7 +1831,7 @@
         {
           "slot": "checklist",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "bold",
           "bg_style": "light",
           "archetype": "educator",
@@ -1863,7 +1863,7 @@
             "section_divider",
             "text_block",
             "myth_fact",
-            "checklist_action_plan",
+            "timeline",
             "split_features",
             "faq"
           ],
@@ -2117,7 +2117,7 @@
         {
           "slot": "practice_checklist",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "educator",
@@ -2153,7 +2153,7 @@
             "image_callout",
             "myth_fact",
             "process_map",
-            "checklist_action_plan",
+            "timeline",
             "faq"
           ],
           "count": {
@@ -2388,7 +2388,7 @@
         {
           "slot": "practice",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "bold",
           "bg_style": "light",
           "archetype": "educator",
@@ -2436,7 +2436,7 @@
             "definition",
             "image_quote",
             "text_block",
-            "checklist_action_plan",
+            "timeline",
             "split_features",
             "split_features",
             "quote"
@@ -3017,7 +3017,7 @@
         {
           "slot": "agenda",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "editorial",
           "bg_style": "light",
           "archetype": "educator",
@@ -3089,7 +3089,7 @@
         "evidence": {
           "types": [],
           "pool": [
-            "checklist_action_plan",
+            "timeline",
             "image_quote",
             "split_features",
             "image_collage"
@@ -3523,7 +3523,7 @@
         {
           "slot": "the_demand",
           "required": true,
-          "slide_type": "checklist_action_plan",
+          "slide_type": "timeline",
           "theme": "bold",
           "bg_style": "light",
           "archetype": "thought_leader",
@@ -3582,7 +3582,7 @@
             "metric_grid",
             "image_callout",
             "chart",
-            "checklist_action_plan",
+            "timeline",
             "process_map",
             "funnel_chart",
             "stat_row",

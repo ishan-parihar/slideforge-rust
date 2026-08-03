@@ -1,3 +1,4 @@
+use crate::blocks::escape_html;
 use crate::design_system::{DesignTokens, contrast_ratio, get_contrast_safe_color};
 use crate::effects::{floating_shape, noise_overlay, slide_background};
 use std::collections::HashMap;

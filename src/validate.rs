@@ -57,17 +57,18 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
             // agents see the type as removed rather than "unknown".
             const REMOVED: &[&str] = &[
                 "feature", "list", "callout", "grid_cards",
-                "text_columns", "image_stat", "cta",
+                "text_columns", "image_stat", "cta", "checklist_action_plan",
             ];
             if REMOVED.contains(&slide_type) {
                 let replacement = match slide_type {
                     "feature" => "split_features (single-feature beat) or case_study_result",
-                    "list" => "checklist_action_plan (action list) or quote_slide",
+                    "list" => "timeline (ordered steps) or quote_slide",
                     "callout" => "myth_fact (educational contrast) or image_callout",
                     "grid_cards" => "split_features (2 cols) or case_study_result (results grid)",
                     "text_columns" => "split_features (2 cols) or quote_slide",
                     "image_stat" => "image_callout, image_caption, or metric_grid",
                     "cta" => "qr_destination (the canonical closing CTA slide)",
+                    "checklist_action_plan" => "timeline (ordered steps), process_map (workflows), or split_features (action items)",
                     _ => "an appropriate alternative",
                 };
                 result.add_error(format!(
@@ -312,14 +313,15 @@ pub fn validate_layout(
 pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> ValidationResult {
     // Removed slide types: surface an actionable error so the AI agent gets
     // explicit feedback instead of silent-empty renders. No auto-fix attempted.
-    if matches!(slide_type, "feature" | "list" | "callout" | "grid_cards" | "text_columns" | "image_stat" | "cta") {
+    if matches!(slide_type, "feature" | "list" | "callout" | "grid_cards" | "text_columns" | "image_stat" | "cta" | "checklist_action_plan") {
         let replacement = match slide_type {
             "feature" => "split_features (single-feature beat) or case_study_result",
-            "list" => "checklist_action_plan (action list) or quote_slide",
+            "list" => "timeline (ordered steps) or quote_slide",
             "callout" => "myth_fact (educational contrast) or image_callout",
             "grid_cards" => "split_features (2 cols) or case_study_result (results grid)",
             "text_columns" => "split_features (2 cols) or quote_slide",
             "image_stat" => "image_callout, image_caption, or metric_grid",
+            "checklist_action_plan" => "timeline (ordered steps), process_map (workflows), or split_features (action items)",
             "cta" => "qr_destination (the canonical closing CTA slide)",
             _ => "an appropriate alternative",
         };
@@ -346,7 +348,7 @@ pub fn validate_and_fix_slide(slide_type: &str, params: &mut Value) -> Validatio
                 result.add_fix("hero: added default empty 'subheadline'");
             }
         }
-        // before_after_story, problem_solution, definition, checklist_action_plan:
+        // before_after_story, problem_solution, definition:
         // NO auto-fix — missing/empty required params must produce hard errors
         // so the AI agent gets actionable feedback on which fields to fill.
         // Auto-filling with wrong-shaped placeholders silently produces empty tiles.
@@ -668,10 +670,9 @@ mod tests {
 
     #[test]
     fn test_list_removed_surface_error() {
-        // list slide type was removed 2026-07-30 (redundant with
-        // checklist_action_plan). The validator must surface an actionable
-        // error pointing at the replacement type, not silently accept
-        // whatever empty-items content is provided.
+        // list slide type was removed 2026-07-30. The validator must surface an actionable
+        // error pointing at the replacement type, not silently accept whatever empty-items
+        // content is provided.
         let params = json!({ "title": "My List", "items": [] });
         let r = validate_slide_spec("list", &params);
         assert!(!r.valid);
@@ -1050,6 +1051,34 @@ mod tests {
                 .iter()
                 .any(|issue| issue.r#type == "tiny_text")
         );
+    }
+
+    #[test]
+    fn test_validate_design_flags_hardcoded_low_alpha_text_bypass() {
+        let html = r#"
+            <div class="slide bg-dark">
+                <span style="color:rgba(255,255,255,0.6);">Low alpha white</span>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(report
+            .issues
+            .iter()
+            .any(|issue| issue.r#type == "hardcoded_rgba_text_bypass"));
+    }
+
+    #[test]
+    fn test_validate_design_flags_hardcoded_low_alpha_text_bypass_dark_text() {
+        let html = r#"
+            <div class="slide bg-light">
+                <span style="color:rgba(0,0,0,0.5);">Low alpha black</span>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(report
+            .issues
+            .iter()
+            .any(|issue| issue.r#type == "hardcoded_rgba_text_bypass"));
     }
 
     #[test]
@@ -1893,9 +1922,11 @@ pub fn validate_design(html: &str) -> ValidationReport {
 
     let slide_count = slides.len().max(1);
 
-    // Regex for text tags without backreferences
+    // Regex for text tags without backreferences — only leaf text elements
+    // (divs are skipped because they always wrap nested content and would
+    // double-flag inner rgba bypass patterns).
     let text_tag_re =
-        Regex::new(r#"(?s)<(p|h[1-6]|span|div)\s*([^>]*?)>(.*?)</(p|h[1-6]|span|div)>"#).unwrap();
+        Regex::new(r#"(?s)<(p|h[1-6]|span)\s*([^>]*?)>(.*?)</(p|h[1-6]|span)>"#).unwrap();
     let styled_text_re =
         Regex::new(r#"(?s)<(?:p|h[1-6]|span|div)\s+[^>]*style="([^"]*)"[^>]*>([^<]{1,})</"#)
             .unwrap();
@@ -1920,6 +1951,15 @@ pub fn validate_design(html: &str) -> ValidationReport {
     let tiny_progress_re =
         Regex::new(r#"(?s)\.breadcrumb-chip(?:\.active)?[^{]*\{[^}]*height\s*:\s*([0-9.]+)px"#)
             .unwrap();
+    // Hardcoded low-alpha rgba text colors that bypass the design-token
+    // system. `rgba(255,255,255,X<0.7)` white-text on dark bg and
+    // `rgba(0,0,0,X<0.7)` black-text on light bg collapse against textured
+    // backgrounds (mesh/gradient/hero) — the funnel_chart #22 and
+    // image_gallery #34 contrast bugs were both caused by these patterns.
+    let low_alpha_text_re = Regex::new(
+        r#"rgba\(\s*(?:255\s*,\s*255\s*,\s*255|0\s*,\s*0\s*,\s*0)\s*,\s*(0?\.[0-9]+|0)\s*\)"#,
+    )
+    .unwrap();
 
     // New: Header/footer overflow detection
     // Check if slide-content content overflows the 420x525 composition bounds
@@ -1944,12 +1984,11 @@ pub fn validate_design(html: &str) -> ValidationReport {
         let available_height = SAFE_CONTENT_HEIGHT - content_padding_top - content_padding_bottom;
 
         // Check for multi-item layouts that commonly overflow.
-        // `comparison` retired — multi-item overflow now covered by process_map /
-        // checklist_action_plan / pricing_plan. `before_after_story` (the comparison
+        // `comparison` and `checklist_action_plan` retired — multi-item overflow now
+        // covered by process_map / pricing_plan. `before_after_story` (the comparison
         // redirect target) is 3-tile by definition so it cannot overflow.
         let multi_item_indicators = [
             ("process_map", 6, "steps"),
-            ("checklist_action_plan", 6, "items"),
             ("pricing_plan", 3, "plans"),
         ];
 
@@ -2616,6 +2655,40 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     });
                 }
             }
+                        // Check for hardcoded low-alpha rgba text colors in any element's attributes
+            let mut is_text_bypass = false;
+            for part in style_str.split(';') {
+                let part = part.trim();
+                if part.starts_with("color:") || part.starts_with("border-color:") {
+                    if let Some(caps) = low_alpha_text_re.captures(part) {
+                        let alpha: f64 = caps
+                            .get(1)
+                            .and_then(|m| m.as_str().parse().ok())
+                            .unwrap_or(1.0);
+                        if alpha < 0.7 {
+                            is_text_bypass = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if is_text_bypass {
+                let display_text = if plain_text.len() > 20 {
+                    format!("{}...", &plain_text[..20])
+                } else {
+                    plain_text.clone()
+                };
+                issues.push(DesignIssue {
+                    slide: slide_num,
+                    r#type: "hardcoded_rgba_text_bypass".to_string(),
+                    severity: "error".to_string(),
+                    detail: format!("Text '{}' uses hardcoded low-alpha rgba that bypasses the design-token color system.", display_text),
+                    message: "Text with alpha < 0.7 on pure black or white uses low-contrast colors that can collapse against textured backgrounds.".to_string(),
+                    suggestion: "Use colors.text_primary or colors.text_secondary from the design-token system, which guarantee contrast-⁠safe colors for the current theme.".to_string(),
+                });
+            }
+
             if let Some(ratio) = inline_contrast(style_str) {
                 if ratio < 4.5 {
                     let display_text = if plain_text.len() > 20 {

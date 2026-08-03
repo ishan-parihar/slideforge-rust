@@ -7,11 +7,11 @@ Use this reference to find the exact slide type matching your content requiremen
 > | Retired | Use Instead |
 > |---|---|
 > | `feature` | `split_features` (single-feature beat) |
-> | `list` | `checklist_action_plan` (action list) |
+> | `list` | `timeline` (ordered steps) |
 > | `callout` | `split_features` (educational contrast) |
 > | `grid_cards` | `split_features` (2 col) or `case_study_result` (results grid) |
 > | `text_columns` | `split_features` (2 col) |
-> | `image_stat` | `image_callout` (image+stat combo) |
+> | `checklist_action_plan` | `timeline` (ordered steps) |
 > | `cta` | `qr_destination` (the canonical closing CTA slide) |
 > | `stat_row` | `metric_grid` |
 > | `column_chart` | `chart` with `chart_type="bar"` + `variant="vertical"` |
@@ -63,7 +63,7 @@ These slides guide narrative storytelling, objections, and planning:
 | `before_after_story` | `before`, `after` | `title`, `metric`, `variant` | Transformation showcases |
 | `logo_cloud` | `title`, `logos` | `variant` | Social proof, trust boards |
 | `pricing_plan` | `title`, `plans` | `variant` | Offer details and cost choices |
-| `checklist_action_plan` | `title`, `items` | `variant` | Process step checklist |
+| `timeline` | `title`, `steps` | `variant` | Process step checklist |
 | `faq` | `title`, `questions` | `variant` | Handing objections |
 | `process_map` | `title`, `steps` | `variant` | Operating flows |
 

@@ -904,6 +904,20 @@ fn cli_render_carousel(
     show_progress: bool,
     output: &Option<String>,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // Enforce 4-corner metadata: brand_name, topic, url, hashtags all required
+    // (drives existing slide__overlay-top / slide__overlay-bottom in slides.rs)
+    if brand_name.as_deref().unwrap_or("").is_empty() {
+        return Err("--brand-name is required (renders top-left brand overlay)".into());
+    }
+    if topic.as_deref().unwrap_or("").is_empty() {
+        return Err("--topic is required (renders top-right topic overlay)".into());
+    }
+    if url.as_deref().unwrap_or("").is_empty() {
+        return Err("--url is required (renders bottom-left url overlay)".into());
+    }
+    if hashtags.as_deref().unwrap_or("").is_empty() {
+        return Err("--hashtags is required (renders bottom-right hashtags overlay)".into());
+    }
     // Load slides array from file
     let slides_content = fs::read_to_string(slides_file)?;
     let slides_json: serde_json::Value = serde_json::from_str(&slides_content)?;
@@ -1215,7 +1229,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             let rand_bg = bg_options[rng.r#gen::<usize>() % bg_options.len()];
 
             // Randomize variants to test multiple layouts
-            let hero_variants = ["centered", "left-aligned", "split"];
+            let hero_variants = ["centered", "left-aligned", "split", "chapter"];
             let feature_variants = ["stacked", "icon-left", "icon-right", "minimal"];
             let list_variants = ["bullet", "numbered", "checklist", "icon-list", "two-column"];
             let chart_types = ["bar", "bar_vertical", "pie", "donut", "line", "area", "scatter"];

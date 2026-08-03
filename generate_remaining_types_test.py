@@ -4,8 +4,8 @@ Remaining types diagnostic carousel: every slide type NOT covered by the
 dataviz or text-layout carousels, rendered in both dark and light themes
 for visual inspection and layout debugging.
 
-Covers 19 types across Story, Image, Social-Proof, Conversion, and Content:
-  before_after_story, case_study_result, checklist_action_plan, comparison,
+Covers 18 types across Story, Image, Social-Proof, Conversion, and Content:
+  before_after_story, case_study_result,
   faq, image_callout, image_caption, image_collage, image_comparison,
   image_gallery, image_headline, image_quote, logo_cloud, myth_fact,
   pricing_plan, problem_solution, process_map, qr_destination, testimonial_avatar
@@ -126,46 +126,8 @@ SLIDES = [
          {"label": "Rasterize", "description": "Headless Chromium → PNG at 2x resolution"}
      ]}},
 
-    {"slide_type": "checklist_action_plan", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Launch Day Checklist", "items": [
-         "Verify all 28 presets render without overflow",
-         "Run composition validator on generated carousels",
-         "Check dark and light theme variants",
-         "Export final PNGs and verify pixel dimensions",
-         "Push to dist/ and update documentation"
-     ]}},
-
-    {"slide_type": "checklist_action_plan", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
-     "variant": "checklist",
-     "params": {"title": "New Slide Type Checklist", "items": [
-         "Register in slides.rs with layout_family",
-         "Implement render function in components.rs",
-         "Add to dispatch table with correct param mapping",
-         "Write unit test with valid and empty params",
-         "Add to SKILL.md and slide-types-manifest.md",
-         "Include in diagnostic carousel for visual audit"
-     ]}},
-
-    # ═══ SECTION: Comparison / Content ═══
-    {"section": "SECTION 2 — Comparison / Content"},
-
-    {"slide_type": "comparison", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Free vs Pro", "columns": ["Free", "Pro"], "rows": [
-         ["Slides per month", "5", "Unlimited"],
-         ["Custom typography", "—", "✓"],
-         ["Brand presets", "1", "Unlimited"],
-         ["Export format", "PNG", "PNG + PDF"],
-         ["API access", "—", "✓"]
-     ], "highlight_column": 1, "variant": "table"}},
-
-    {"slide_type": "comparison", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
-     "variant": "cards",
-     "params": {"title": "SlideForge vs Manual", "columns": ["Manual", "SlideForge"], "rows": [
-         ["Time per deck", "4 hours", "5 minutes"],
-         ["Brand consistency", "60%", "100%"],
-         ["Error rate", "15%", "0%"],
-         ["Scalability", "1 deck at a time", "Unlimited parallel"]
-     ]}},
+    # ═══ SECTION: Content ═══
+    {"section": "SECTION 2 — Content"},
 
     {"slide_type": "faq", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Common Questions", "questions": [
@@ -217,11 +179,11 @@ SLIDES = [
      "variant": "arrow",
      "params": {"before_image": IMG_COFFEE, "after_image": IMG_OFFICE, "before_label": "Coffee Shop MVP", "after_label": "Production Scale", "description": "Growth journey from prototype to platform."}},
 
-    {"slide_type": "image_stat", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"image_url": IMG_NATURE, "stat_value": "47", "stat_label": "Slide Types", "description": "Registered in the system"}},
+    {"slide_type": "image_callout", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
+     "params": {"image_url": IMG_NATURE, "callouts": [{"label": "Theme", "x": 20, "y": 30}, {"label": "Tokens", "x": 65, "y": 55}], "description": "Composition decisions"}},
 
-    {"slide_type": "image_stat", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"image_url": IMG_CITY, "stat_value": "<10ms", "stat_label": "Compile Time", "description": "Per slide, deterministic"}},
+    {"slide_type": "image_callout", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
+     "params": {"image_url": IMG_CITY, "callouts": [{"label": "Preset", "x": 25, "y": 35}, {"label": "Export", "x": 70, "y": 60}], "description": "Build pipeline flow"}},
 
     # ═══ SECTION: Collage & Gallery ═══
     {"section": "SECTION 4 — Collage & Gallery"},

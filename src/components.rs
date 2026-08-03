@@ -770,6 +770,7 @@ fn inject_background_image(html: String, image_url: &str, opacity: f32, is_dark:
 /// - `left-aligned` (default): content on left side.
 /// - `centered`: fully centred layout.
 /// - `split`: two-column grid, headline left, right empty (visual area).
+/// - `chapter`: section-divider visual (kicker, title, accent bar, subtitle).
 pub fn hero_slide(
     tokens: &DesignTokens,
     headline: &str,
@@ -781,6 +782,9 @@ pub fn hero_slide(
     theme: &str,
     background_image: &str,
     image_opacity: f32,
+    tagline: &str,
+    metric_value: &str,
+    metric_label: &str,
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
@@ -801,34 +805,42 @@ pub fn hero_slide(
 
     let effective_variant = variant;
 
+    // Animated right-pointing arrow indicator for carousel progression
+    let arrow_html = r#"<div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style>"#;
+
     let html = if effective_variant == "split" {
-        let headline_html = heading_block(
-            headline,
-            tokens,
-            "title",
-            None,
-            true,
-            Some((gradient_colors.0, gradient_colors.1)),
-            "left",
-            "0 0 4px",
-            true,
-        );
-        let sub_html = if !subheadline.is_empty() {
-            text_block(
-                subheadline,
-                tokens,
-                "body",
-                Some(&colors.text_secondary),
-                false,
-                None,
-                "left",
-                Some("100%"),
-                "8px 0 0",
+        // split variant: two-column hero — learn from chapter's raw HTML approach
+        let kicker_html = if !tagline.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">{}</div>"#,
+                tokens.body_font, colors.primary, escape_html(tagline)
+            )
+        } else if !badge.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">{}</div>"#,
+                tokens.body_font, colors.primary, escape_html(badge)
             )
         } else {
             String::new()
         };
-        let left_content = format!("{}{}{}{}{}", gc, badge_html, headline_html, sub_html, gx);
+        let title_size = tokens
+            .type_scale
+            .get("display")
+            .map(|t| t.font_size)
+            .unwrap_or(40);
+        let headline_html = format!(
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0 0 8px;">{}</h1>"#,
+            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+        );
+        let sub_html = if !subheadline.is_empty() {
+            format!(
+                r#"<p style="font-family:{};font-size:15px;color:{};line-height:1.5;margin:0;max-width:320px;">{}</p>"#,
+                tokens.body_font, colors.text_secondary, escape_html(subheadline)
+            )
+        } else {
+            String::new()
+        };
+        let left_content = format!("{}{}{}", kicker_html, headline_html, sub_html);
         let right_visual = if !background_image.is_empty() {
             let safe_bg = background_image.replace('\\', "\\\\").replace('\'', "\\'");
             format!(
@@ -852,21 +864,101 @@ pub fn hero_slide(
                 colors.primary
             )
         };
+        // Add arrow indicator to right visual area
+        let right_visual_with_arrow = format!("{}{}", right_visual, arrow_html);
         split_layout(
             &left_content,
-            &right_visual,
+            &right_visual_with_arrow,
             tokens,
             bg_style,
             "var(--space-3)",
             "1.2fr 1fr",
             true,
         )
-    } else {
-        let align = if effective_variant == "centered" {
-            "center"
+    } else if effective_variant == "chapter" {
+        // chapter variant: section-divider visual — plain kicker, accent bar, subtitle
+        let kicker_html = if !badge.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:12px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">{}</div>"#,
+                tokens.body_font, colors.primary, escape_html(badge)
+            )
         } else {
-            "left"
+            String::new()
         };
+        let title_size = tokens
+            .type_scale
+            .get("display")
+            .map(|t| t.font_size)
+            .unwrap_or(40);
+        let headline_html = format!(
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>"#,
+            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+        );
+        let accent_bar = format!(
+            r#"<div style="width:76px;height:4px;background:{};border-radius:{};margin:var(--space-3) 0;"></div>"#,
+            colors.primary,
+            current_component_radius(tokens, "chip")
+        );
+        let sub_html = if !subheadline.is_empty() {
+            format!(
+                r#"<p style="font-family:{};font-size:15px;color:{};line-height:1.45;margin:0;max-width:300px;">{}</p>"#,
+                tokens.body_font, colors.text_secondary, escape_html(subheadline)
+            )
+        } else {
+            String::new()
+        };
+        let content = format!(
+            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}{}{}{}{}</div>"#,
+            kicker_html, headline_html, accent_bar, sub_html, arrow_html
+        );
+        slide_base(&content, tokens, bg_style, true, "80px 52px", "center")
+    } else if effective_variant == "centered" {
+        // centered variant: editorial magazine-style hero — learn from chapter variant
+        // Use tagline as kicker (like chapter's badge), no glass container badge
+        let kicker_html = if !tagline.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">{}</div>"#,
+                tokens.body_font, colors.primary, escape_html(tagline)
+            )
+        } else if !badge.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">{}</div>"#,
+                tokens.body_font, colors.primary, escape_html(badge)
+            )
+        } else {
+            String::new()
+        };
+        let title_size = tokens
+            .type_scale
+            .get("display")
+            .map(|t| t.font_size)
+            .unwrap_or(40);
+        let headline_html = format!(
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>"#,
+            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+        );
+        let sub_html = if !subheadline.is_empty() {
+            format!(
+                r#"<p style="font-family:{};font-size:15px;color:{};line-height:1.45;margin:0;max-width:320px;">{}</p>"#,
+                tokens.body_font, colors.text_secondary, escape_html(subheadline)
+            )
+        } else {
+            String::new()
+        };
+        // Chapter-style accent bar
+        let accent = format!(
+            r#"<div style="width:76px;height:4px;background:{};border-radius:{};margin:var(--space-3) 0;"></div>"#,
+            colors.primary,
+            current_component_radius(tokens, "chip")
+        );
+        let content = format!(
+            r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">{}{}{}{}{}</div>"#,
+            kicker_html, headline_html, accent, sub_html, arrow_html
+        );
+        slide_base(&content, tokens, bg_style, true, "80px 52px", "center")
+    } else {
+        // left-aligned default (kept for backwards compat)
+        let align = "left";
         let headline_html = heading_block(
             headline,
             tokens,
@@ -893,18 +985,7 @@ pub fn hero_slide(
         } else {
             String::new()
         };
-        let content = if align == "center" {
-            let decor = format!(
-                r#"<div style="width:var(--space-6);height:2px;background:{};margin:var(--space-2) auto;border-radius:1px;opacity:0.85;"></div>"#,
-                colors.primary
-            );
-            format!(
-                r#"<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;height:100%;max-width:400px;margin:0 auto;box-sizing:border-box;">{}{}{}{}{}</div>"#,
-                gc, badge_html, headline_html, decor, sub_html
-            )
-        } else {
-            format!("{}{}{}{}{}", gc, badge_html, headline_html, sub_html, gx)
-        };
+        let content = format!("{}{}{}{}{}", gc, badge_html, headline_html, sub_html, gx);
         hero_layout(&content, tokens, bg_style, decorations, align)
     };
 
@@ -922,6 +1003,9 @@ pub fn hero_slide(
         "theme": theme
     })
 }
+
+
+
 
 
 
@@ -981,8 +1065,17 @@ pub fn quote_slide(
 
     let html = match effective_variant {
         "left-accent" => {
+            let quote_mark_color = if is_dark {
+                format!("{}20", tokens.primary)
+            } else {
+                format!("{}30", tokens.primary)
+            };
+            let decorative_quote = format!(
+                r#"<div style="font-family:Georgia,serif;font-size:48px;line-height:1;color:{};margin-bottom:-4px;user-select:none;" aria-hidden="true">❝</div>"#,
+                quote_mark_color
+            );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
@@ -990,19 +1083,27 @@ pub fn quote_slide(
                 tokens.primary,
                 escape_html(quote)
             );
-            let attr = if !author.is_empty() {
-                attribution_block(
+            let accent_and_attr = if !author.is_empty() {
+                let attr = attribution_block(
                     author,
                     role,
                     tokens,
                     Some(&colors.text_primary),
                     "20px 0 0",
                     "left",
+                );
+                format!(
+                    r#"<div style="width:40px;height:2px;background:{};margin:20px 0 12px;border-radius:1px;"></div>{}"#,
+                    tokens.primary,
+                    attr
                 )
             } else {
                 String::new()
             };
-            let content = format!("{}{}{}{}", glass_open, q, attr, glass_close);
+            let content = format!(
+                r#"{}{}{}{}{}"#,
+                glass_open, decorative_quote, q, accent_and_attr, glass_close
+            );
             slide_base(
                 &content,
                 tokens,
@@ -1013,8 +1114,17 @@ pub fn quote_slide(
             )
         }
         "attribution-below" => {
+            let quote_mark_color = if is_dark {
+                format!("{}20", tokens.primary)
+            } else {
+                format!("{}30", tokens.primary)
+            };
+            let decorative_quote = format!(
+                r#"<div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:{};text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div>"#,
+                quote_mark_color
+            );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;text-align:center;text-wrap:balance;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
@@ -1034,8 +1144,8 @@ pub fn quote_slide(
                 String::new()
             };
             let content = format!(
-                r#"{}{}<div style="margin-top:32px;text-align:center;">{}</div>{}"#,
-                glass_open, q, attr, glass_close
+                r#"{}{}{}<div style="width:40px;height:2px;background:{};margin:20px auto 16px;border-radius:1px;"></div><div style="text-align:center;">{}</div>{}"#,
+                glass_open, decorative_quote, q, tokens.primary, attr, glass_close
             );
             slide_base(
                 &content,
@@ -1047,30 +1157,44 @@ pub fn quote_slide(
             )
         }
         _ => {
-            // centered (default)
+            // centered (default) — editorial style with decorative quote mark
+            let quote_mark_color = if is_dark {
+                format!("{}20", tokens.primary)
+            } else {
+                format!("{}30", tokens.primary)
+            };
+            let decorative_quote = format!(
+                r#"<div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:{};text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div>"#,
+                quote_mark_color
+            );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;text-align:center;text-wrap:balance;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
                 escape_html(quote)
             );
-            let attr = if !author.is_empty() {
-                attribution_block(
+            let accent_and_attr = if !author.is_empty() {
+                let attr = attribution_block(
                     author,
                     role,
                     tokens,
                     Some(&colors.text_primary),
                     "0",
                     "center",
+                );
+                format!(
+                    r#"<div style="width:40px;height:2px;background:{};margin:20px auto 16px;border-radius:1px;"></div>{}"#,
+                    tokens.primary,
+                    attr
                 )
             } else {
                 String::new()
             };
             let content = format!(
-                r#"{}{}<div style="margin-top:32px;text-align:center;">{}</div>{}"#,
-                glass_open, q, attr, glass_close
+                r#"{}{}{}<div style="margin-top:12px;text-align:center;">{}</div>{}"#,
+                glass_open, decorative_quote, q, accent_and_attr, glass_close
             );
             slide_base(
                 &content,
@@ -1360,7 +1484,8 @@ pub fn split_features_slide(
 // 14. text_block_slide
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Title + multi-line body text (article-style).
+/// Editorial article-style text block with eyebrow, weight-900 title,
+/// accent line, drop-cap first paragraph, and optional subtitle.
 /// `body` is a single string; newlines produce separate paragraphs.
 pub fn text_block_slide(
     tokens: &DesignTokens,
@@ -1370,14 +1495,61 @@ pub fn text_block_slide(
     theme: &str,
     background_image: &str,
     image_opacity: f32,
+    subtitle: &str,
+    text_align: &str,
+    max_width_val: &str,
+    variant: &str,
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
     let body_fs = 14i32;
 
+    // Variant-driven alignment and width
+    let effective_variant = if variant.is_empty() { "left" } else { variant };
+    let align = if text_align.is_empty() {
+        match effective_variant {
+            "centered" => "center",
+            _ => "left",
+        }
+    } else {
+        text_align
+    };
+    let mw = if max_width_val.is_empty() {
+        match effective_variant {
+            "narrow" => "280px",
+            "wide" => "380px",
+            "centered" => "340px",
+            _ => "340px",
+        }
+    } else {
+        max_width_val
+    };
+
+    // Eyebrow: small uppercase label derived from title first-word or subtitle
+    let eyebrow_text = if !subtitle.is_empty() {
+        subtitle
+    } else if !title.is_empty() {
+        // Use first 3 words as eyebrow hint
+        let words: Vec<&str> = title.split_whitespace().take(3).collect();
+        &words.join(" ")
+    } else {
+        ""
+    };
+    let eyebrow_html = if !eyebrow_text.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:9px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">{}</div>"#,
+            tokens.body_font,
+            colors.primary,
+            escape_html(eyebrow_text)
+        )
+    } else {
+        String::new()
+    };
+
+    // Title: weight-900, 28px — the dominant visual element
     let title_html = if !title.is_empty() {
         format!(
-            r#"<h2 style="font-family:{};font-size:22px;font-weight:700;color:{};margin:0 0 16px;line-height:1.2;">{}</h2>"#,
+            r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 6px;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
             tokens.heading_font,
             colors.text_primary,
             escape_html(title)
@@ -1386,39 +1558,82 @@ pub fn text_block_slide(
         String::new()
     };
 
-    // Split body on newlines into paragraphs
+    // Accent line between title and body
+    let accent_html = format!(
+        r#"<div style="width:40px;height:2px;background:{};margin:12px 0 16px;opacity:0.35;"></div>"#,
+        colors.text_primary
+    );
+
+    // Split body on newlines into paragraphs; first non-empty gets drop-cap
     let mut body_html = String::new();
+    let mut first_done = false;
     for para in body.split('\n') {
         let p = para.trim();
         if !p.is_empty() {
-            body_html.push_str(&format!(
-                r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 12px;line-height:1.6;">{}</p>"#,
-                tokens.body_font, body_fs, colors.text_secondary, escape_html(p)
-            ));
+            if !first_done {
+                // Drop-cap first paragraph: first letter oversized
+                let chars: Vec<char> = p.chars().collect();
+                if chars.len() > 1 {
+                    let first_char = chars[0];
+                    let rest: String = chars[1..].iter().collect();
+                    body_html.push_str(&format!(
+                        r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};"><span style="font-size:36px;font-weight:900;color:{};float:left;line-height:0.85;margin:2px 8px 0 0;font-family:{};">{}</span>{}</p>"#,
+                        tokens.body_font, body_fs, colors.text_secondary, align,
+                        colors.primary, tokens.heading_font,
+                        escape_html(&first_char.to_string()),
+                        escape_html(&rest)
+                    ));
+                } else {
+                    body_html.push_str(&format!(
+                        r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};">{}</p>"#,
+                        tokens.body_font, body_fs, colors.text_secondary, align,
+                        escape_html(p)
+                    ));
+                }
+                first_done = true;
+            } else {
+                body_html.push_str(&format!(
+                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};">{}</p>"#,
+                    tokens.body_font, body_fs, colors.text_secondary, align,
+                    escape_html(p)
+                ));
+            }
         }
     }
 
     let content = format!(
-        r#"<div style="max-width:320px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
+        r#"<div style="max-width:{};margin:0 auto;text-align:{};width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
             {}
-            <div style="margin-top:4px;">{}</div>
+            {}
+            {}
+            <div>{}</div>
         </div>"#,
-        title_html, body_html
+        mw, align,
+        eyebrow_html,
+        title_html,
+        accent_html,
+        body_html
     );
 
+    let padding_val = match effective_variant {
+        "centered" => "80px 48px var(--space-12)",
+        "narrow" => "80px 56px var(--space-12)",
+        "wide" => "80px 36px var(--space-12)",
+        _ => "80px 48px var(--space-12)",
+    };
     let html = slide_base(
         &content,
         tokens,
         bg_style,
         false,
-        "80px 48px var(--space-12)",
+        padding_val,
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({
         "html": html,
         "background": bg_style,
-        "variant": "medium",
+        "variant": effective_variant,
         "theme": theme
     })
 }
@@ -2373,34 +2588,33 @@ fn funnel_chart_slide(
         let width_pct = (15.0 + (current_val / top_val) * 85.0).clamp(15.0, 100.0) as u32;
         let opacity_pct = 1.0 - (i as f64 * 0.15);
 
-        let arrow = if i < num_steps - 1 {
-            format!(r#"<div style="text-align:center;font-size:10px;color:{}99;margin:2px 0;font-weight:bold;">↓</div>"#, colors.primary)
+            let arrow = if i < num_steps - 1 {
+                format!(r#"<div style="text-align:center;font-size:10px;color:{};margin:2px 0;font-weight:bold;">↓</div>"#, colors.text_secondary)
         } else {
             String::new()
         };
 
         if width_pct < 40 {
-            let text_color = &colors.text_primary;
             format!(
                 r#"<div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
                     <span style="font-family:{};font-size:10px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">{}</span>
                     <div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
                     <strong style="font-family:{};font-size:12px;color:{};flex:1;">{}</strong>
                 </div>{}"#,
-                tokens.body_font, text_color, escape_html(lbl),
+                tokens.body_font, colors.text_primary, escape_html(lbl),
                 width_pct, colors.primary, opacity_pct,
-                tokens.body_font, text_color, escape_html(&val_display),
+                tokens.body_font, colors.text_primary, escape_html(&val_display),
                 arrow
             )
         } else {
             format!(
                 r#"<div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-family:{};font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.04em;">{}</span>
-                    <strong style="font-family:{};font-size:12px;color:white;">{}</strong>
+                    <span style="font-family:{};font-size:10px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.04em;">{}</span>
+                    <strong style="font-family:{};font-size:12px;color:{};">{}</strong>
                 </div>{}"#,
                 width_pct, colors.primary, opacity_pct,
-                tokens.body_font, escape_html(lbl),
-                tokens.body_font, escape_html(&val_display),
+                tokens.body_font, colors.button_text, escape_html(lbl),
+                tokens.body_font, colors.button_text, escape_html(&val_display),
                 arrow
             )
         }
@@ -2650,7 +2864,7 @@ pub fn problem_solution_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if colors.is_dark {
-        "rgba(255,255,255,0.06)"
+        "rgba(255,255,255,0.10)"
     } else {
         "rgba(255,255,255,0.92)"
     };
@@ -2691,8 +2905,8 @@ pub fn problem_solution_slide(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:#EF4444;margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
             </div>
             {}
         </div>"#,
@@ -2702,15 +2916,18 @@ pub fn problem_solution_slide(
         radius,
         card_bg,
         colors.border,
+        colors.primary,
         tokens.body_font,
+        colors.text_primary,
         tokens.body_font,
         colors.text_secondary,
         escape_html(problem),
         radius,
         card_bg,
         colors.border,
-        tokens.body_font,
         colors.primary,
+        tokens.body_font,
+        colors.text_primary,
         tokens.body_font,
         colors.text_secondary,
         escape_html(solution),
@@ -3752,7 +3969,7 @@ pub fn before_after_story_slide(
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
                 <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
-                    <div style="font-family:{};font-size:11px;font-weight:900;color:#EF4444;margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
+                    <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
                     <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;color:{};font-family:{};font-size:22px;font-weight:900;">→</div>
@@ -3770,6 +3987,7 @@ pub fn before_after_story_slide(
         card_bg,
         colors.border,
         tokens.body_font,
+        colors.primary,
         tokens.body_font,
         colors.text_secondary,
         escape_html(before),
@@ -3983,6 +4201,192 @@ pub fn qr_destination_slide(
     })
 }
 
+/// CTA slide types for visual carousels — structurally distinct persuasion architectures.
+///
+/// Each type embodies a different way to drive conversion:
+/// - big_statement: Brand confidence via massive typography
+/// Big statement CTA: single dominant focal element.
+/// Variant "default": massive centered text (movie poster style).
+/// Variant "stat": giant number/label dominates visual field.
+pub fn big_statement_slide(
+    tokens: &DesignTokens,
+    heading: &str,
+    body: &str,
+    stat_value: &str,
+    stat_label: &str,
+    cta_text: &str,
+    url: &str,
+    bg_style: &str,
+    background_image: &str,
+    image_opacity: f32,
+    theme: &str,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+    let is_stat = !stat_value.is_empty();
+
+    // Hero element: stat mode (giant number) or text mode (massive heading)
+    let hero_html = if is_stat {
+        // Stat mode — giant number + label
+        let stat_num = format!(
+            r#"<div style="font-family:{};font-size:72px;font-weight:900;color:{};line-height:1.0;letter-spacing:-0.04em;text-align:center;">{}</div>"#,
+            tokens.heading_font, colors.primary, escape_html(stat_value)
+        );
+        let label = if !stat_label.is_empty() {
+            format!(
+                r#"<div style="font-family:{};font-size:11px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.12em;margin-top:8px;text-align:center;">{}</div>"#,
+                tokens.body_font, colors.text_secondary, escape_html(stat_label)
+            )
+        } else { String::new() };
+        format!("{}{}", stat_num, label)
+    } else {
+        // Text mode — watermark + heading
+        let watermark = if !heading.is_empty() {
+            let ch = heading.chars().next().unwrap_or('A');
+            format!(
+                r#"<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:{};font-size:220px;font-weight:900;color:{};opacity:0.04;pointer-events:none;user-select:none;line-height:1;">{}</div>"#,
+                tokens.heading_font, colors.text_primary, escape_html(&ch.to_string())
+            )
+        } else { String::new() };
+        let h = if !heading.is_empty() {
+            format!(
+                r#"<h2 style="font-family:{};font-size:52px;font-weight:900;color:{};margin:0;line-height:1.0;letter-spacing:-0.04em;text-align:center;z-index:2;">{}</h2>"#,
+                tokens.heading_font, colors.text_primary, escape_html(heading)
+            )
+        } else { String::new() };
+        format!("{}{}", watermark, h)
+    };
+
+    // Accent line — between hero and body
+    let accent_html = if is_stat && !heading.is_empty() {
+        format!(
+            r#"<div style="width:60px;height:2px;background:{};opacity:0.4;margin:18px auto;"></div>"#,
+            colors.text_primary
+        )
+    } else if !is_stat && !heading.is_empty() && !body.is_empty() {
+        format!(
+            r#"<div style="width:60px;height:2px;background:{};opacity:0.4;margin:18px auto;z-index:2;"></div>"#,
+            colors.text_primary
+        )
+    } else { String::new() };
+
+    // Body text — only in text mode; in stat mode, heading serves as supporting text
+    let body_html = if is_stat && !heading.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:14px;line-height:1.5;color:{};text-align:center;max-width:280px;margin:8px auto 0;">{}</div>"#,
+            tokens.body_font, colors.text_secondary, escape_html(heading)
+        )
+    } else if !is_stat && !body.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:15px;font-style:italic;line-height:1.6;color:{};margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(body)
+        )
+    } else { String::new() };
+
+    // Action pill — in-flow, pushed to bottom by flex spacer
+    let action_html = if !cta_text.is_empty() {
+        let pill_bg = if colors.is_dark { "rgba(255,255,255,0.12)" } else { "rgba(0,0,0,0.08)" };
+        format!(
+            r#"<div style="text-align:center;z-index:2;margin-top:24px;">
+                <span style="display:inline-block;font-family:{};font-size:11px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.12em;background:{};padding:12px 28px;border-radius:100px;">{}</span>
+            </div>"#,
+            tokens.body_font, colors.text_primary, pill_bg, escape_html(cta_text)
+        )
+    } else { String::new() };
+
+    let content = format!(
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
+            <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+                {}
+                {}
+                {}
+                {}
+            </div>
+        </div>"#,
+        hero_html, accent_html, body_html, action_html
+    );
+
+    let variant = if is_stat { "stat" } else { "default" };
+    let html = slide_base(&content, tokens, bg_style, false, "0", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({
+        "html": html,
+        "background": bg_style,
+        "variant": variant,
+        "theme": theme
+    })
+}
+
+/// Comment-to-DM CTA slide.
+/// Left-aligned headline + sub-headline + CTA instruction with highlighted keyword.
+fn comment_cta_slide(
+    tokens: &DesignTokens,
+    heading: &str,
+    sub_heading: &str,
+    cta_text: &str,
+    keyword: &str,
+    bg_style: &str,
+    background_image: &str,
+    image_opacity: f32,
+    theme: &str,
+) -> Value {
+    let colors = get_slide_colors(tokens, bg_style, theme);
+
+    // Headline
+    let headline_html = if !heading.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;font-style:italic;">{}</div>"#,
+            tokens.heading_font, colors.text_primary, escape_html(heading)
+        )
+    } else { String::new() };
+
+    // Sub-headline (italic)
+    let sub_html = if !sub_heading.is_empty() {
+        format!(
+            r#"<div style="font-family:{};font-size:16px;font-style:italic;line-height:1.5;color:{};text-align:left;margin-top:16px;">{}</div>"#,
+            tokens.body_font, colors.text_secondary, escape_html(sub_heading)
+        )
+    } else { String::new() };
+
+    // CTA instruction with highlighted keyword
+    let cta_html = if !cta_text.is_empty() {
+        let rendered = if !keyword.is_empty() {
+            let kw_esc = escape_html(keyword);
+            let kw_hl = format!(
+                r#"<span style="color:{};font-weight:900;text-decoration:underline;text-underline-offset:3px;">{}</span>"#,
+                colors.primary, kw_esc
+            );
+            escape_html(cta_text).replace(&kw_esc, &kw_hl)
+        } else {
+            escape_html(cta_text)
+        };
+        format!(
+            r#"<div style="font-family:{};font-size:18px;font-weight:700;color:{};text-align:left;margin-top:24px;line-height:1.5;">{}</div>"#,
+            tokens.body_font, colors.text_primary, rendered
+        )
+    } else { String::new() };
+
+    let content = format!(
+        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:44px 44px 36px;position:relative;overflow:hidden;">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:left;display:flex;flex-direction:column;align-items:flex-start;">
+                {}{}{}
+            </div>
+        </div></div>"#,
+        headline_html, sub_html, cta_html
+    );
+
+    let html = slide_base(&content, tokens, bg_style, false, "0", "center");
+    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
+    json!({
+        "html": html,
+        "background": bg_style,
+        "variant": "default",
+        "theme": theme
+    })
+}
+
+
+
 /// Route a slide type name + JSON params to the appropriate slide generator.
 ///
 /// This is the single entry-point used by `mcp_server::generate_slide`.
@@ -3996,6 +4400,10 @@ pub fn dispatch_slide(
     theme: &str,
     _archetype: &str,
 ) -> Result<Value, String> {
+    // Build a tokens copy.
+    let tokens_owned = tokens.clone();
+    let tokens = &tokens_owned;
+
     CURRENT_THEME.with(|t| *t.borrow_mut() = theme.to_string());
     CURRENT_ARCHETYPE.with(|a| *a.borrow_mut() = _archetype.to_string());
     CURRENT_TOKENS.with(|tok| *tok.borrow_mut() = Some(tokens.clone()));
@@ -4056,6 +4464,9 @@ pub fn dispatch_slide(
             theme,
             &bg_img,
             img_opacity,
+            &s("tagline"),
+            &s("metric_value"),
+            &s("metric_label"),
         )),
         "quote" => Ok(quote_slide(
             tokens,
@@ -4215,6 +4626,10 @@ pub fn dispatch_slide(
             theme,
             &bg_img,
             img_opacity,
+            &s("subtitle"),
+            &s("text_align"),
+            &s("max_width"),
+            &s("variant"),
         )),
         // metric_card removed — use metric_grid, comparison_bars, gauge, or progress_rings
         "chart" => {
@@ -4228,7 +4643,7 @@ pub fn dispatch_slide(
                 &s("chart_type").if_empty("bar"),
                 data,
                 &s("title"),
-                &s("caption"),
+                &s("description").if_empty(&s("caption")),
                 bg_style,
                 theme,
                 &bg_img,
@@ -4427,7 +4842,7 @@ pub fn dispatch_slide(
                 "bar_vertical",
                 data,
                 &s("title"),
-                &s("caption"),
+                &s("description").if_empty(&s("caption")),
                 bg_style,
                 theme,
                 &bg_img,
@@ -4750,6 +5165,31 @@ pub fn dispatch_slide(
             &s("brand_logo"),
             &s("qr_alt_text"),
         )),
+        "big_statement" => Ok(big_statement_slide(
+            tokens,
+            &s("heading").if_empty(&s("title")),
+            &s("body").if_empty(&s("description")),
+            &s("stat_value").if_empty(&s("value")),
+            &s("stat_label").if_empty(&s("label")),
+            &s("cta_text").if_empty(&s("button_text")),
+            &s("url").if_empty(&s("destination_url")),
+            bg_style,
+            &bg_img,
+            img_opacity,
+            theme,
+        )),
+        "comment_cta" => Ok(comment_cta_slide(
+            tokens,
+            &s("heading").if_empty(&s("title")),
+            &s("sub_heading").if_empty(&s("subtitle")),
+            &s("cta_text").if_empty(&s("action_text")),
+            &s("keyword"),
+            bg_style,
+            &bg_img,
+            img_opacity,
+            theme,
+        )),
+
         other => Err(format!("Unknown slide type: '{}'", other)),
     };
 
@@ -4890,7 +5330,7 @@ pub fn image_caption_slide(
                 escape_html(caption),
                 if !description.is_empty() {
                     format!(
-                        r#"<p style="font-family:{};font-size:12px;color:rgba(255,255,255,0.88);margin:0;line-height:1.45;text-shadow:0 2px 6px rgba(0,0,0,0.6);">{}</p>"#,
+                        r#"<p style="font-family:{};font-size:12px;color:rgba(255,255,255,0.95);margin:0;line-height:1.45;text-shadow:0 2px 6px rgba(0,0,0,0.6);">{}</p>"#,
                         tokens.body_font,
                         escape_html(description)
                     )
@@ -4968,7 +5408,7 @@ pub fn image_headline_slide(
         tokens.heading_font
     );
     let sub_style = format!(
-        "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.88);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
+        "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
         tokens.body_font
     );
 
@@ -5047,7 +5487,7 @@ pub fn image_quote_slide(
             String::new()
         },
         if !role.is_empty() {
-            format!(r#"<p style="font-family:{};font-size:11px;color:rgba(255,255,255,0.88);margin:4px 0 0;text-shadow:0 2px 6px rgba(0,0,0,0.65);">{}</p>"#, tokens.body_font, escape_html(role))
+            format!(r#"<p style="font-family:{};font-size:11px;color:rgba(255,255,255,0.95);margin:4px 0 0;text-shadow:0 2px 6px rgba(0,0,0,0.65);">{}</p>"#, tokens.body_font, escape_html(role))
         } else {
             String::new()
         }
@@ -5095,7 +5535,10 @@ pub fn image_callout_slide(
     let markers = String::new();
 
     let desc_html = if !description.is_empty() {
-        heading_block(description, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 10px", true)
+        format!(
+            r#"<div style="font-family:{};font-size:18px;font-weight:800;color:{};line-height:1.2;letter-spacing:-0.01em;margin:16px 0 0;">{}</div>"#,
+            tokens.heading_font, colors.text_primary, escape_html(description)
+        )
     } else {
         String::new()
     };
@@ -5108,10 +5551,12 @@ pub fn image_callout_slide(
             let d = c.get("description").and_then(|v| v.as_str()).unwrap_or("");
             if !lbl.is_empty() {
                 items.push_str(&format!(
-                    r#"<div style="font-family:{};font-size:12px;color:{};line-height:1.45;">
-                        <strong style="color:{};font-weight:700;">{}</strong>{}
+                    r#"<div style="display:flex;align-items:flex-start;gap:8px;font-family:{};font-size:12px;color:{};line-height:1.5;">
+                        <span style="display:inline-block;width:6px;height:6px;min-width:6px;border-radius:50%;background:{};margin-top:5px;"></span>
+                        <span><strong style="color:{};font-weight:700;">{}</strong>{}</span>
                     </div>"#,
                     tokens.body_font, colors.text_secondary,
+                    colors.primary,
                     colors.text_primary, escape_html(lbl),
                     if !d.is_empty() { format!(" — {}", escape_html(d)) } else { String::new() }
                 ));
@@ -5119,31 +5564,21 @@ pub fn image_callout_slide(
         }
         if !items.is_empty() {
             list_html = format!(
-                r#"<div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;width:100%;">{}</div>"#,
+                r#"<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;width:100%;">{}</div>"#,
                 items
             );
         }
     }
 
-    let sub_desc_html = if !description.is_empty() {
-        format!(
-            r#"<p style="font-family:{};font-size:12px;color:{};margin:10px 0 0;line-height:1.45;opacity:0.9;">{}</p>"#,
-            tokens.body_font, colors.text_secondary, escape_html(description)
-        )
-    } else {
-        String::new()
-    };
-
     let content = format!(
         r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
             <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid {}30;">
-                {}
                 {}
             </div>
             {}
             {}
         </div>"#,
-        colors.border, img_html, markers, sub_desc_html, list_html
+        colors.border, img_html, desc_html, list_html
     );
 
     let padding_val = if padding.is_empty() {
@@ -5158,7 +5593,6 @@ pub fn image_callout_slide(
         "background": bg_style,
         "variant": "default",
         "theme": theme,
-        "archetype": archetype
     })
 }
 
@@ -5356,7 +5790,7 @@ pub fn image_gallery_slide(
 
     let caption_html = if !section_caption.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:11.5px;color:{};margin-top:10px;line-height:1.35;width:100%;opacity:0.9;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:11.5px;color:{};margin-top:10px;line-height:1.35;width:100%;">{}</div>"#,
             tokens.body_font,
             colors.text_secondary,
             escape_html(section_caption)
@@ -5721,13 +6155,9 @@ pub fn image_collage_slide(
 
     let collage_html = format!(
         r#"<div style="position:relative;width:316px;max-width:100%;height:{}px;margin:0 auto;box-sizing:border-box;">
-            <div style="position:absolute;left:38px;top:26px;width:230px;height:210px;border-radius:{};background:{};opacity:{};z-index:0;"></div>
             {}
         </div>"#,
         collage_height_px,
-        radius_md,
-        colors.primary,
-        if is_dark { "0.12" } else { "0.08" },
         img_html
     );
 

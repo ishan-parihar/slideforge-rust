@@ -21,7 +21,7 @@ To view templates, mandatory parameters, and specific layout limits, read the re
 
 ### 3. [Story & Educational Flows](file:///home/ishanp/.agents/skills/slideforge/slide-composition/story-flows/SKILL.md)
 - **When to descend:** Your slide needs to structure structured learning paths, lists of actions, comparisons, problem/solution matches, myth/fact checks, or case studies.
-- **Includes slide types:** `problem_solution`, `myth_fact`, `case_study_result`, `testimonial_avatar`, `before_after_story`, `logo_cloud`, `pricing_plan`, `checklist_action_plan`, `faq`, `process_map`.
+- **Includes slide types:** `problem_solution`, `myth_fact`, `case_study_result`, `testimonial_avatar`, `before_after_story`, `logo_cloud`, `pricing_plan`, `timeline`, `faq`, `process_map`.
 
 ### 4. [Image Integration](file:///home/ishanp/.agents/skills/slideforge/slide-composition/image-integration/SKILL.md)
 - **When to descend:** You are embedding photography or graphics into layout columns, collages, comparisons, galleries, or background grids.
