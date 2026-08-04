@@ -853,50 +853,21 @@ pub fn hero_slide(
             String::new()
         };
         let left_content = format!("{}{}{}", kicker_html, headline_html, sub_html);
-        let right_visual = if !background_image.is_empty() {
-            let safe_bg = background_image.replace('\\', "\\\\").replace('\'', "\\'");
+        let right_visual = {
+            // Always use a real image for the split variant's right side.
+            // When no background_image is provided, a stock Unsplash image is
+            // used as a mandatory fallback. The split variant MUST have a real
+            // image to avoid an empty right column.
+            let img_url = if !background_image.is_empty() {
+                background_image.to_string()
+            } else {
+                // Mandatory stock image fallback for split variant
+                "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop&auto=format".to_string()
+            };
+            let safe_bg = img_url.replace('\\', "\\\\").replace('\'', "\\'");
             format!(
                 r#"<div style="position:relative;width:100%;height:var(--space-28);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);background-image:url('{}');background-size:cover;background-position:center;opacity:{};"></div>"#,
                 safe_bg, image_opacity
-            )
-        } else {
-            // Mandatory image frame: a geometric "monitor" composition.
-            // This always renders so the split variant never has an empty right column.
-            // Compute surface color once to avoid mixing Rust expr in format string.
-            let surface_bg = if is_dark { "rgba(255,255,255,0.06)".to_string() } else { "#f5f5f7".to_string() };
-            let titlebar_bg = if is_dark { "rgba(255,255,255,0.04)".to_string() } else { "rgba(0,0,0,0.02)".to_string() };
-            let line_color = colors.primary.clone();
-            format!(
-                r#"<div style="position:relative;width:100%;height:var(--space-28);min-height:200px;background:linear-gradient(145deg, {}20, {}08);border:1px solid {}25;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;">
-                    <!-- monitor frame -->
-                    <div style="position:relative;width:84%;height:72%;background:{};border-radius:var(--radius-sm);border:1px solid {}30;box-shadow:inset 0 1px 2px rgba(0,0,0,0.03), 0 0 0 1px {}15;overflow:hidden;">
-                        <div style="position:absolute;top:0;left:0;right:0;height:14px;background:{};border-bottom:1px solid {}20;display:flex;align-items:center;gap:4px;padding:0 6px;">
-                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
-                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
-                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
-                        </div>
-                        <div style="position:absolute;top:16px;left:6px;right:6px;bottom:6px;display:flex;flex-direction:column;gap:3px;padding:8px 6px 4px;">
-                            <div style="height:4px;width:60%;background:{};border-radius:2px;opacity:0.15;"></div>
-                            <div style="height:4px;width:85%;background:{};border-radius:2px;opacity:0.10;"></div>
-                            <div style="height:4px;width:40%;background:{};border-radius:2px;opacity:0.08;margin-top:2px;"></div>
-                            <div style="height:3px;width:70%;background:{};border-radius:2px;opacity:0.06;margin-top:4px;"></div>
-                            <div style="height:3px;width:55%;background:{};border-radius:2px;opacity:0.06;"></div>
-                        </div>
-                        <div style="position:absolute;bottom:6px;right:6px;width:18px;height:12px;border:1px solid {}15;border-radius:1px;display:flex;align-items:center;justify-content:center;">
-                            <div style="width:14px;height:2px;background:{};opacity:0.08;"></div>
-                        </div>
-                    </div>
-                    <!-- decorative blurred blobs behind the monitor -->
-                    <div style="position:absolute;width:170px;height:170px;border-radius:50%;background:{};opacity:0.10;filter:blur(50px);-webkit-filter:blur(50px);left:-30px;top:10%;"></div>
-                    <div style="position:absolute;width:120px;height:120px;border-radius:50%;background:{};opacity:0.08;filter:blur(35px);-webkit-filter:blur(35px);right:-20px;bottom:5%;"></div>
-                </div>"#,
-                colors.primary, colors.primary, colors.primary,
-                surface_bg, colors.primary, colors.primary,
-                titlebar_bg, colors.primary,
-                colors.primary, colors.primary, colors.primary,
-                line_color, line_color, line_color, line_color, line_color,
-                colors.primary,
-                colors.primary, colors.primary, colors.primary
             )
         };
         // Add arrow indicator to right visual area
@@ -2910,11 +2881,30 @@ pub fn problem_solution_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let radius = current_component_radius(tokens, "card");
+    // Card text colors: on light slides, cards use a light card_bg, so their
+    // text must be dark (using token text_primary/secondary). On dark slides,
+    // cards use dark card_bg, so text must be light (using text_on_dark).
+    let card_label_color = if colors.is_dark {
+        colors.text_primary.clone()
+    } else {
+        tokens.text_primary.clone()
+    };
+    let card_body_color = if colors.is_dark {
+        colors.text_secondary.clone()
+    } else {
+        tokens.text_secondary.clone()
+    };
     let card_bg = if colors.is_dark {
         "rgba(255,255,255,0.10)"
     } else {
         "rgba(255,255,255,0.92)"
     };
+    let card_title_color = if colors.is_dark {
+        colors.text_primary.clone()
+    } else {
+        tokens.text_primary.clone()
+    };
+
     let proof_grid_html = if proof_points.is_empty() {
         String::new()
     } else {
@@ -2945,13 +2935,13 @@ pub fn problem_solution_slide(
             </div>"#,
             card_bg, colors.border, radius,
             tokens.body_font, colors.primary,
-            tokens.body_font, colors.text_secondary, combined_desc
+            tokens.body_font, card_body_color, combined_desc
         )
     };
     let desc_html = if !description.is_empty() {
         format!(
             r#"<p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>"#,
-            tokens.body_font, colors.text_secondary, escape_html(description)
+            tokens.body_font, card_body_color, escape_html(description)
         )
     } else {
         String::new()
@@ -2959,36 +2949,36 @@ pub fn problem_solution_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
-            {}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
                 <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
             </div>
             {}
+            {}
         </div>"#,
         tokens.heading_font,
-        colors.text_primary,
+        card_title_color,
         escape_html(title),
-        desc_html,
         radius,
         card_bg,
         colors.border,
         colors.primary,
         tokens.body_font,
-        colors.text_primary,
+        card_label_color,
         tokens.body_font,
-        colors.text_secondary,
+        card_body_color,
         escape_html(problem),
         radius,
         card_bg,
         colors.border,
         colors.primary,
         tokens.body_font,
-        colors.text_primary,
+        card_label_color,
         tokens.body_font,
-        colors.text_secondary,
+        card_body_color,
         escape_html(solution),
-        proof_grid_html
+        proof_grid_html,
+        desc_html
     );
     let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
@@ -3344,7 +3334,7 @@ pub fn myth_fact_slide(
         }
     };
 
-    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "20px 44px 20px", "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({
         "html": html,
@@ -4055,10 +4045,22 @@ pub fn before_after_story_slide(
     } else {
         String::new()
     };
+    // Card text colors: on light slides, cards use a light card_bg, so their
+    // text must be dark (using token text_primary/secondary). On dark slides,
+    // cards use dark card_bg, so text must be light (using text_on_dark).
+    let card_label_color = if colors.is_dark {
+        colors.text_primary.clone()
+    } else {
+        tokens.text_primary.clone()
+    };
+    let card_body_color = if colors.is_dark {
+        colors.text_secondary.clone()
+    } else {
+        tokens.text_secondary.clone()
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
-            {}
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
                 <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
@@ -4071,18 +4073,18 @@ pub fn before_after_story_slide(
                 </div>
             </div>
             {}
+            {}
         </div>"#,
         tokens.heading_font,
-        colors.text_primary,
+        card_label_color,
         escape_html(title),
-        desc_html,
         radius,
         card_bg,
         colors.border,
         tokens.body_font,
         colors.primary,
         tokens.body_font,
-        colors.text_secondary,
+        card_body_color,
         escape_html(before),
         colors.primary,
         tokens.heading_font,
@@ -4092,9 +4094,10 @@ pub fn before_after_story_slide(
         tokens.body_font,
         colors.primary,
         tokens.body_font,
-        colors.text_secondary,
+        card_body_color,
         escape_html(after),
-        metric_html
+        metric_html,
+        desc_html
     );
     let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);

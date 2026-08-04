@@ -435,7 +435,7 @@ body {
    so large decks never overflow the footer band. Dots are left-aligned inside
    the full-width strip. */
 .progress-dots {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   flex: 1 1 auto; width: 100%; min-width: 0; flex-wrap: nowrap;
   z-index: 50;
 }
@@ -470,13 +470,13 @@ body {
 .overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; white-space: nowrap; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; white-space: nowrap; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
 .overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; white-space: nowrap; }
 .slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
 .slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; line-height: 1.3; white-space: nowrap; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 "#.replace("[CSS_VARS]", &spec.css_variables)
