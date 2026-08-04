@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@400,600&family=IBM Plex Mono:wght@400,500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 525px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+  --chrome-x: 24px;
+}
+
+:root {
+  --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #FFEBF4;
+  --surface-dark: #100003;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #CDC1BC;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #737373;
+  --tertiary: #737373;
+  --gradient: linear-gradient(165deg, #100003 0%, #802100 60%, #100003 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFEBF4 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #100003 0%, #80210030 50%, #100003 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFEBF4CC;
+  --glass-light-border: 1px solid #CDC1BC40;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #100003CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFEBF4E6;
+  --glass-frosted-border: 1px solid #CDC1BC30;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
+}
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; background: #f0f0f0;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
+
+.slide {
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slide--full-bleed { overflow: hidden; }
+/* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
+   render ONLY inside .slide-body; the corner text lives in the bands so slide
+   content can never collide with it. The body is the only place slide-type
+   components are rendered. */
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+  display: flex; flex-direction: column;
+}
+.slide-header {
+  flex: 0 0 var(--chrome-header-h, 36px); min-height: var(--chrome-header-h, 36px);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 var(--chrome-x, 24px); z-index: 45;
+  background: transparent;
+}
+.slide-body {
+  flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden;
+  z-index: 10;
+}
+.slide-footer {
+  flex: 0 0 var(--chrome-footer-h, 40px); min-height: var(--chrome-footer-h, 40px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0; z-index: 45;
+  background: transparent;
+}
+.slide-footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 0 var(--chrome-x, 24px); flex: 1 1 auto; min-height: 0;
+  background: transparent;
+}
+/* Dedicated full-width progress strip: its own vertical height (8px), pinned
+   to the bottom edge of the footer band, spanning the full composition width.
+   The strip is separate from the footer text row so the bar never competes
+   with url/hashtags for space. */
+.slide-progress {
+  flex: 0 0 8px; height: 8px; width: 100%;
+  display: flex; align-items: center;
+  padding: 0 var(--chrome-x, 24px); box-sizing: border-box;
+  background: transparent;
+}
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
+   The inner div (gradient + noise + shapes) inside .slide-body is stretched
+   to fill the slide, while content stays at designed 420×525 composition
+   dimensions. The .slide element's overflow:hidden clips at the final slide
+   boundary. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-body > div:first-of-type {
+  position: absolute !important;
+  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+  overflow: hidden !important;
+}
+/* Content constrainer: reposition content wrapper to original composition
+   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
+   with 525px composition), this places content at top:111px instead of top:0,
+   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
+   calc resolves to 0 (canvas == composition height). */
+.slide--full-bleed .slide-content {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: var(--composition-height) !important;
+}
+/* Full-bleed light/mesh: .slide--light already carries the mesh gradient
+   (defined above), so no extra rule is needed — kept as a defensive alias. */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
+}
+/* Background continuity (universal): the slide-base background layer (the
+   first child of .slide-body — the mesh/gradient/surface div, and any injected
+   full-slide photo inside it) is stretched to cover the FULL composition so the
+   chrome bands (transparent 36px header + 40px footer) show the EXACT same
+   background as the body. Without this, the body's layer is 420×449 while the
+   bands show the slide-level background anchored to a different-size element,
+   producing a visible seam — and injected photos / image-primary slides
+   (image_headline, image_quote via slide_base_bleed) stopped at the body edge
+   instead of bleeding behind the corner text. Content stays anchored to the
+   body region (re-anchor rule) so it can never collide with the chrome.
+   Two content-wrapper classes are covered: `.slide-content` (slide_base) is
+   RE-anchored to the body region; `.slide-content--bleed` (slide_base_bleed,
+   image/glass slides) is left in flow so its height:100% fills the stretched
+   layer — the image/glass covers the full composition including the bands.
+   Gated on those wrappers so non-conforming slide roots keep the old hard
+   clip instead of leaking into the chrome bands. */
+.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+  overflow: visible !important;
+}
+.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
+  position: absolute !important;
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
+  left: 0 !important;
+  width: 100% !important;
+  /* height must INCLUDE the header offset so the layer reaches the
+     composition bottom (top −36 + height 561 = 525): a bare
+     composition-height (525) with top −36 would stop at 489, leaving the
+     footer band (485–525) on the plain surface — the exact seam the bleed
+     exists to remove. */
+  height: calc(var(--composition-height) + var(--chrome-header-h, 36px)) !important;
+  overflow: hidden !important;
+}
+.slide:not(.slide--full-bleed) .slide-body > div:first-of-type > .slide-content {
+  position: absolute !important;
+  top: var(--chrome-header-h, 36px) !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
+  overflow: hidden;
+}
+
+/* Chrome (header/footer) is transparent, so the FULL slide background — mesh,
+   gradient, hero, or surface — must live on .slide itself. Light/mesh carry the
+   mesh gradient so the chrome band never shows a flat white seam against the
+   body's meshed surface. Dark carries a hue-tinted mesh so dark slides read as
+   dark-but-colored rather than pure black. */
+.slide--light { background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F128 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background: var(--gradient-mesh-dark, none), var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+
+.slide--dark, .slide--gradient, .slide--hero {
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
+}
+
+.slide-layout {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
+}
+.slide-layout--center { justify-content: center; }
+
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
+.grid-2 > * { flex: 1; min-width: 0; }
+
+.serif { font-family: var(--font-heading, serif); }
+.sans { font-family: var(--font-body, sans-serif); }
+.mono { font-family: var(--font-heading, monospace); }
+
+.display-text {
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.heading-text {
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.body-text {
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
+  text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
+}
+.caption-text {
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
+  text-wrap: pretty; overflow-wrap: break-word;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.slide--dark .text-gradient, .slide--gradient .text-gradient, .slide--hero .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.card {
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
+  background: var(--surface-light, #F3F5FC);
+  border: 1px solid var(--border-light, #C4C7D1);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: break-word; word-break: break-word;
+}
+.slide--dark .card, .slide--gradient .card, .slide--hero .card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dark, #2A2D3D);
+  box-shadow: var(--shadow-md);
+}
+
+.badge {
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
+}
+.slide--light .badge, .slide--mesh .badge {
+  background: var(--primary)15; color: var(--primary);
+  border: 1px solid var(--primary)30;
+}
+.slide--dark .badge, .slide--gradient .badge, .slide--hero .badge {
+  background: var(--text-on-dark)15; color: var(--text-on-dark);
+  border: 1px solid var(--text-on-dark)30;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-decoration: none;
+  box-shadow: var(--shadow-md); transition: transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.slide--light .btn, .slide--mesh .btn {
+  background: var(--primary); color: #FFFFFF;
+}
+.slide--dark .btn, .slide--gradient .btn, .slide--hero .btn {
+  background: var(--surface-light); color: var(--primary-dark);
+}
+
+.icon-box {
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
+}
+.slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
+.slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
+.timeline-number {
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
+}
+.timeline-content { flex: 1; }
+
+.callout {
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
+  border-radius: var(--radius-md, 8px); border: 1px solid transparent;
+}
+.callout--warning {
+  background: rgba(255, 165, 0, 0.1); border-color: var(--status-warning, #FFA500);
+}
+.callout--info {
+  background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
+}
+
+/* Progress bar variants, placed INSIDE the dedicated .slide-progress strip at
+   the bottom of the footer band. Default "chips": segmented breadcrumb chips.
+   "line": a single thin progress line. "dots": round Instagram-style dots.
+   "none": no progress element rendered. The strip is full-width with its own
+   8px vertical height, so the bar spans the footer and never competes with the
+   footer text row. The validator relies on the fixed band geometry. */
+.breadcrumb-progress {
+  display: flex; align-items: center; gap: 6px;
+  flex: 1 1 auto; width: 100%; min-width: 0;
+  z-index: 50;
+}
+.breadcrumb-chip {
+  height: 3px; flex: 1; border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 6px;
+}
+.slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
+.slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
+.slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
+.breadcrumb-chip.active {
+  height: 5px; flex: 2.2;
+}
+.slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
+.slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.progress-line {
+  flex: 1 1 auto; width: 100%; height: 4px; border-radius: 999px; overflow: hidden;
+  background: rgba(0,0,0,0.12);
+}
+.slide--dark .progress-line, .slide--gradient .progress-line, .slide--hero .progress-line {
+  background: rgba(255,255,255,0.2);
+}
+.progress-line-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--primary, #7C3AED);
+}
+.slide--dark .progress-line-fill, .slide--gradient .progress-line-fill, .slide--hero .progress-line-fill {
+  background: #ffffff;
+}
+
+/* "dots" progress variant: round dots (Instagram-style). Capped at 10 dots
+   so large decks never overflow the footer band. Dots are left-aligned inside
+   the full-width strip. */
+.progress-dots {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  flex: 1 1 auto; width: 100%; min-width: 0; flex-wrap: nowrap;
+  z-index: 50;
+}
+.progress-dot {
+  width: 6px; height: 6px; border-radius: 999px; flex-shrink: 1; flex-basis: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .progress-dot, .slide--mesh .progress-dot { background: rgba(0,0,0,0.15); }
+.slide--dark .progress-dot, .slide--gradient .progress-dot, .slide--hero .progress-dot { background: rgba(255,255,255,0.3); }
+.slide--light .progress-dot.completed, .slide--mesh .progress-dot.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .progress-dot.completed, .slide--gradient .progress-dot.completed, .slide--hero .progress-dot.completed { background: rgba(255,255,255,0.65); }
+.progress-dot.active {
+  width: 16px; background: var(--primary, #7C3AED); opacity: 1;
+}
+.slide--dark .progress-dot.active, .slide--gradient .progress-dot.active, .slide--hero .progress-dot.active {
+  background: #ffffff; opacity: 1;
+}
+
+.swipe-arrow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  z-index: 50;
+}
+.slide--light .swipe-arrow, .slide--mesh .swipe-arrow { background: linear-gradient(to right, transparent, rgba(0,0,0,0.06)); }
+.slide--dark .swipe-arrow, .slide--gradient .swipe-arrow, .slide--hero .swipe-arrow { background: linear-gradient(to right, transparent, rgba(255,255,255,0.08)); }
+.swipe-arrow svg { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
+.slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
+
+/* Corner text inside the header/footer bands. These are the ONLY chrome
+   elements; slide types never render here (they live in .slide-body). */
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
+.slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; white-space: nowrap; }
+.slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
+.slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; white-space: nowrap; }
+.slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
+.slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; line-height: 1.3; white-space: nowrap; }
+.slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
+.slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+
+            :root {
+                --radius-lg: 8px;
+                --radius-md: 6px;
+            }
+            .slide--light, .slide--mesh { --surface-light: #F8F6F3; }
+            .slide--dark, .slide--hero { --surface-dark: #0A0A0F; }
+            .overlay__brand {
+                font-family: var(--font-heading), Georgia, serif !important;
+                font-style: normal !important;
+                text-transform: none !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                opacity: 0.9 !important;
+            }
+            .overlay__topic, .overlay__url, .overlay__hashtags {
+                font-family: var(--font-body), sans-serif !important;
+                font-style: normal !important;
+                text-transform: uppercase !important;
+                font-size: 11.5px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12em !important;
+                opacity: 0.75 !important;
+            }
+        
+.ig-frame {
+  width: var(--slide-width); background: #fff; border-radius: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--primary, #0B0A0F);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+.ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-subtitle { font-size: 11px; color: #8e8e8e; }
+.ig-dots { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
+.ig-dot { width: 6px; height: 6px; border-radius: 50%; background: #d8d8d8; transition: background 0.2s; }
+.ig-dot.active { background: #262626; }
+.ig-actions { display: flex; gap: 14px; padding: 8px 14px; }
+.ig-actions svg { width: 22px; height: 22px; stroke: #262626; fill: none; stroke-width: 1.8; cursor: pointer; }
+.ig-actions svg:hover { opacity: 0.6; }
+.ig-actions svg.bookmark { margin-left: auto; }
+.ig-caption { padding: 0 14px 12px; font-size: 12px; line-height: 1.45; color: #262626; }
+.ig-caption strong { font-weight: 600; }
+.ig-caption .timestamp { color: #8e8e8e; font-size: 11px; margin-top: 4px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
+    <div class="ig-frame">
+  <div class="ig-header">
+    <div class="ig-avatar">C</div>
+    <div>
+      <div class="ig-handle">@brand</div>
+      <div class="ig-subtitle">Carousel</div>
+    </div>
+  </div>
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+<div id="slide-0" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="top: -80px; pointer-events: none; border-radius: 50%; opacity: 0.07; height: 320px; left: -80px; position: absolute; background: #B15002; width: 320px"></div><div style="height: 120px; top: 60%; border-radius: 4px; right: -40px; pointer-events: none; transform: rotate(60deg); position: absolute; width: 120px; background: #007DB3; opacity: 0.05; left: auto"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display: inline-block; padding: 6px 16px; background: #D36F3115; border: 1px solid #D36F3130; border-radius: 9999px; font-family: IBM Plex Mono; font-size: 13px; font-weight: 600; color: #D36F31; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">The 7% Rule</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #F4EDE9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Space Grotesk; font-size: 24px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Time in the market beats timing the market</span><p style="font-family: IBM Plex Mono; font-size: 16px; font-weight: 400; line-height: 1.55; color: #D6CBC5; margin: 8px 0 0; text-align: left">A plain-language case for boring, compounding money</p>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:6%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-0 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-1" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; position: absolute; inset: 0; background: var(--texture-grain); z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #3D2C23;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#D36F31;background:#D36F3118;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#F4EDE9;margin:0 0 4px;line-height:1.1;">Compound interest</h2>
+            <div style="font-family:IBM Plex Mono;font-size:11px;font-style:italic;color:#D6CBC5;margin-bottom:12px;opacity:0.8;">/kəmˈpaʊnd ˈɪntrəst/</div>
+            <div style="border-left:3px solid #D36F31;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:IBM Plex Mono;font-size:13px;font-weight:500;color:#F4EDE9;margin:0;line-height:1.5;">Interest earned on interest — the eighth wonder of the world, per legend.</p>
+        </div>
+            <p style="font-family:IBM Plex Mono;font-size:10.5px;color:#D6CBC5;margin:0;line-height:1.4;opacity:0.85;">The longer money stays invested, the more the curve bends upward.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:13%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-1 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-2" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">The long curve</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            
+            
+            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">14.0</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">60.5</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">107.0</text>
+            
+            <path d="M 40.0 108.0 L 84.2 103.3 L 128.3 97.0 L 172.5 88.4 L 216.7 76.6 L 260.8 59.3 L 305.0 35.0 " stroke="#D36F31" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="108.0" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="84.2" cy="103.3" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="128.3" cy="97.0" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="172.5" cy="88.4" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="216.7" cy="76.6" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="260.8" cy="59.3" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="35.0" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr5</text><text x="84.2" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr10</text><text x="128.3" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr15</text><text x="172.5" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr20</text><text x="216.7" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr25</text><text x="260.8" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr30</text><text x="305.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr35</text>
+        </svg></div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">A $10K lump sum at a 7% real return grows past $100K in 35 years.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:19%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-2 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-3" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Contributions vs growth</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="chart_area_grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#D36F31" stop-opacity="0.25" />
+                        <stop offset="100%" stop-color="#D36F31" stop-opacity="0.0" />
+                    </linearGradient></defs>
+            
+            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">30.0</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">105.0</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#3D2C2355" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#D6CBC5" text-anchor="end" font-weight="600">180.0</text>
+            <path d="M 40.0 108.0 L 40.0 108.0 L 93.0 93.4 L 146.0 78.8 L 199.0 64.2 L 252.0 49.6 L 305.0 35.0 L 305.0 108.0 Z " fill="url(#chart_area_grad)" />
+            <path d="M 40.0 108.0 L 93.0 93.4 L 146.0 78.8 L 199.0 64.2 L 252.0 49.6 L 305.0 35.0 " stroke="#D36F31" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="108.0" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="93.0" cy="93.4" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="146.0" cy="78.8" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="199.0" cy="64.2" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="252.0" cy="49.6" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="35.0" r="4" fill="#D36F31" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr5</text><text x="93.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr10</text><text x="146.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr15</text><text x="199.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr20</text><text x="252.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr25</text><text x="305.0" y="126" font-size="9px" fill="#D6CBC5" text-anchor="middle">Yr30</text>
+        </svg></div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">After year 20, market growth out-earns your own contributions every single year.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:25%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-3 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-4" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Risk vs expected return</h2>
+            <div style="width:100%;height:195px;border-radius:0;overflow:hidden;background:rgba(255,255,255,0.05);border:1px solid #3D2C23;padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><svg width="100%" height="185px" viewBox="0 0 320 185" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="147.0" x2="296" y2="147.0" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="150.0" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">4.0</text><line x1="50" y1="87.5" x2="296" y2="87.5" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="90.5" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">9.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">14.0</text><line x1="50.0" y1="28" x2="50.0" y2="147" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="161" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">2</text><line x1="173.0" y1="28" x2="173.0" y2="147" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="161" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">7</text><line x1="296.0" y1="28" x2="296.0" y2="147" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="161" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">12</text>
+            <path d="M 72.0 129.0 L 112.4 112.4 L 132.6 104.1 L 173.0 87.5 L 213.4 70.9 L 274.0 46.0" fill="none" stroke="#D36F31" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <g>
+                <circle cx="72.0" cy="129.0" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="113.5" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">2,4</text>
+            </g><g>
+                <circle cx="112.4" cy="112.4" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="112.4" y="96.9" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">4,6</text>
+            </g><g>
+                <circle cx="132.6" cy="104.1" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="132.6" y="88.6" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">5,7</text>
+            </g><g>
+                <circle cx="173.0" cy="87.5" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="173.0" y="72.0" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">7,9</text>
+            </g><g>
+                <circle cx="213.4" cy="70.9" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="213.4" y="55.4" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">9,11</text>
+            </g><g>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">12,14</text>
+            </g>
+            <text x="173" y="183" font-size="9px" font-weight="800" fill="#D6CBC5" text-anchor="middle" letter-spacing="0.05em">Volatility</text>
+            <text x="50" y="14" font-size="9px" font-weight="800" fill="#D6CBC5" text-anchor="start" letter-spacing="0.05em">Expected return</text>
+        </svg></div>
+            <p style="font-family:IBM Plex Mono;font-size:10.5px;color:#D6CBC5;margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:31%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-4 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-5" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">The balanced portfolio</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="160.0,84.0 175.2,95.1 169.4,112.9 150.6,112.9 144.8,95.1" fill="none" stroke="#3D2C2333" stroke-width="1" /><polygon points="160.0,68.0 190.4,90.1 178.8,125.9 141.2,125.9 129.6,90.1" fill="none" stroke="#3D2C2333" stroke-width="1" /><polygon points="160.0,52.0 205.7,85.2 188.2,138.8 131.8,138.8 114.3,85.2" fill="none" stroke="#3D2C2333" stroke-width="1" /><polygon points="160.0,36.0 220.9,80.2 197.6,151.8 122.4,151.8 99.1,80.2" fill="none" stroke="#3D2C2333" stroke-width="1" /><polygon points="160.0,20.0 236.1,75.3 207.0,164.7 113.0,164.7 83.9,75.3" fill="none" stroke="#3D2C2333" stroke-width="1" />
+            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#3D2C2333" stroke-width="1" /><text x="160.0" y="13.0" font-size="10px" font-weight="700" fill="#F4EDE9" text-anchor="middle">Growth (80)</text><line x1="160" y1="100" x2="236.1" y2="75.3" stroke="#3D2C2333" stroke-width="1" /><text x="251.4" y="75.2" font-size="10px" font-weight="700" fill="#F4EDE9" text-anchor="start">Safety (85)</text><line x1="160" y1="100" x2="207.0" y2="164.7" stroke="#3D2C2333" stroke-width="1" /><text x="217.3" y="175.8" font-size="10px" font-weight="700" fill="#F4EDE9" text-anchor="start">Liquidity (70)</text><line x1="160" y1="100" x2="113.0" y2="164.7" stroke="#3D2C2333" stroke-width="1" /><text x="102.7" y="175.8" font-size="10px" font-weight="700" fill="#F4EDE9" text-anchor="end">Simplicity (90)</text><line x1="160" y1="100" x2="83.9" y2="75.3" stroke="#3D2C2333" stroke-width="1" /><text x="68.6" y="75.2" font-size="10px" font-weight="700" fill="#F4EDE9" text-anchor="end">Cost (95)</text>
+            <polygon points="160.0,32.6 228.1,77.9 194.6,147.7 115.5,161.3 83.9,75.3" fill="#D36F31" fill-opacity="0.25" stroke="#D36F31" stroke-width="2" />
+            <circle cx="160.0" cy="32.6" r="4" fill="#D36F31" stroke="#ffffff" stroke-width="1.5" /><circle cx="228.1" cy="77.9" r="4" fill="#D36F31" stroke="#ffffff" stroke-width="1.5" /><circle cx="194.6" cy="147.7" r="4" fill="#D36F31" stroke="#ffffff" stroke-width="1.5" /><circle cx="115.5" cy="161.3" r="4" fill="#D36F31" stroke="#ffffff" stroke-width="1.5" /><circle cx="83.9" cy="75.3" r="4" fill="#D36F31" stroke="#ffffff" stroke-width="1.5" />
+        </svg></div><p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">A 60/40 mix scores well on the four dimensions that matter to most savers.</p></div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:38%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-5 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-6" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); z-index: 1; pointer-events: none; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Where savings leak</h2>
+            <div style="width:100%;margin-top:14px;box-sizing:border-box;"><div style="width:100%;background:#D36F31;opacity:1.00;border-radius:6px;padding:6px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:700;color:#000701;text-transform:uppercase;letter-spacing:0.04em;">Income</span>
+                    <strong style="font-family:IBM Plex Mono;font-size:12px;color:#000701;">100</strong>
+                </div><div style="text-align:center;font-size:10px;color:#D6CBC5;margin:1px 0;font-weight:bold;">↓</div><div style="width:76%;background:#D36F31;opacity:0.85;border-radius:6px;padding:6px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:700;color:#000701;text-transform:uppercase;letter-spacing:0.04em;">After tax</span>
+                    <strong style="font-family:IBM Plex Mono;font-size:12px;color:#000701;">72</strong>
+                </div><div style="text-align:center;font-size:10px;color:#D6CBC5;margin:1px 0;font-weight:bold;">↓</div><div style="width:41%;background:#D36F31;opacity:0.70;border-radius:6px;padding:6px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:700;color:#000701;text-transform:uppercase;letter-spacing:0.04em;">After spend</span>
+                    <strong style="font-family:IBM Plex Mono;font-size:12px;color:#000701;">31</strong>
+                </div><div style="text-align:center;font-size:10px;color:#D6CBC5;margin:1px 0;font-weight:bold;">↓</div><div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:700;color:#F4EDE9;text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">Actually invested</span>
+                    <div style="width:25%;background:#D36F31;opacity:0.55;border-radius:6px;height:30px;min-width:12px;flex-shrink:0;"></div>
+                    <strong style="font-family:IBM Plex Mono;font-size:12px;color:#F4EDE9;flex:1;">12</strong>
+                </div></div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:12px 0 0;line-height:1.4;text-align:center;width:100%;opacity:0.85;">Of every $100 of income, only $12 survives the journey to invested capital.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:44%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-6 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-7" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Index vs active, after fees</h2><div style="width:100%;margin-top:20px;">
+            <div style="font-family:IBM Plex Mono;font-size:11px;font-weight:800;color:#D36F31;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">% of decades that beat the market</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:IBM Plex Mono;font-size:10px;color:#F4EDE9;font-weight:700;line-height:1.2;">
+                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">Index fund</span>
+                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">Avg active fund</span>
+            </div>
+            <div style="width:100%;height:16px;background:#3D2C2330;border-radius:8px;overflow:hidden;display:flex;">
+                <div style="width:62.0%;height:100%;background:#D36F31;border-radius:8px 0 0 8px;"></div>
+                <div style="width:38.0%;height:100%;background:#D6CBC5;border-radius:0 8px 8px 0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:Space Grotesk;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:#D36F31;text-align:left;white-space:nowrap;flex-shrink:0;">62 % of decades that beat the market</span>
+                <span style="color:#D6CBC5;text-align:right;white-space:nowrap;flex-shrink:0;">38 % of decades that beat the market</span>
+            </div>
+        </div><p style="font-family:IBM Plex Mono;font-size:12px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">Over 20 years, a low-cost index beat the average active fund by a wide margin.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:50%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-7 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-8" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">A boring allocation</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #3D2C23;border-radius:0;overflow:hidden;box-sizing:border-box;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#F4EDE9;background:#D36F3118;border-bottom:1px solid #3D2C23;text-transform:uppercase;letter-spacing:0.06em;">Asset</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#F4EDE9;background:#D36F3118;border-bottom:1px solid #3D2C23;text-transform:uppercase;letter-spacing:0.06em;">Target</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#F4EDE9;background:#D36F3118;border-bottom:1px solid #3D2C23;text-transform:uppercase;letter-spacing:0.06em;">Role</th></tr></thead>
+                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">Global equity index</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">60%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:IBM Plex Mono;color:#D6CBC5;">Growth engine</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">Bond index</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">30%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:IBM Plex Mono;color:#D6CBC5;">Cushion</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-weight:800;color:#F4EDE9;">Cash / T-bills</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">10%</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #3D2C2318;"><span style="font-family:IBM Plex Mono;color:#D6CBC5;">Opportunity</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-weight:800;color:#F4EDE9;">Total</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">100%</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #3D2C2318;"><span style="font-family:IBM Plex Mono;color:#D6CBC5;">Set &amp; rebalance</span></td></tr></tbody>
+                </table>
+            </div>
+            <p style="font-family:IBM Plex Mono;font-size:10.5px;color:#D6CBC5;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:56%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-8 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-9" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #F4EDE9; margin: 0 0 12px; text-align: center; letter-spacing: -0.015em; overflow-wrap: break-word">Current inflation drag</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #3D2C23;border-radius:0;padding:20px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;">
+                <div style="width:100%;max-width:240px;height:120px;margin:0 auto;display:flex;justify-content:center;"><svg width="100%" height="115px" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#3D2C2344" stroke-width="12" stroke-linecap="round" />
+            
+            <!-- Foreground Filled Arc -->
+            <path d="M 48.0 80.0 A 52.0 52.0 0 0 1 152.0 80.0" fill="none" stroke="#D36F31" stroke-width="12" stroke-linecap="round"
+                  stroke-dasharray="163.36" stroke-dashoffset="158.46" opacity="0.9" />
+                  
+            <!-- Central Metric Value -->
+            <text x="100.0" y="74.0" font-size="26px" fill="#F4EDE9" font-weight="900" text-anchor="middle">3.0%</text>
+            <text x="100.0" y="98.0" font-size="9px" font-weight="700" fill="#D6CBC5" text-anchor="middle" letter-spacing="0.04em">TARGET: 100%</text>
+        </svg></div>
+                <div style="font-family:Space Grotesk;font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: % — YOUR CASH LOSES THIS MUCH YEARLY</div>
+            </div>
+            <p style="font-family:IBM Plex Mono;font-size:10.5px;color:#D6CBC5;margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:63%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-9 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-10" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Where your dollar goes</h2>
+            <div style="display:flex;align-items:center;gap:24px;width:100%;margin-top:20px;justify-content:center;">
+                <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#D36F31 0.0deg 118.8deg, #D6CBC5 118.8deg 169.2deg, #F59E0B 169.2deg 212.4deg, #10B981 212.4deg 266.4deg, #EF4444 266.4deg 309.6deg);position:relative;">
+                    <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:var(--surface-dark, #010105);left:30px;top:30px;z-index:2;"></div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:var(--space-1);font-family:IBM Plex Mono;font-size:11px;color:#F4EDE9;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#D36F31;"></div>
+                    <span style="flex:1;">Housing</span>
+                    <strong>33.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:IBM Plex Mono;font-size:11px;color:#F4EDE9;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#D6CBC5;"></div>
+                    <span style="flex:1;">Food</span>
+                    <strong>14.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:IBM Plex Mono;font-size:11px;color:#F4EDE9;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#F59E0B;"></div>
+                    <span style="flex:1;">Transport</span>
+                    <strong>12.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:IBM Plex Mono;font-size:11px;color:#F4EDE9;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#10B981;"></div>
+                    <span style="flex:1;">Taxes</span>
+                    <strong>15.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:IBM Plex Mono;font-size:11px;color:#F4EDE9;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#EF4444;"></div>
+                    <span style="flex:1;">Invested</span>
+                    <strong>12.0%</strong>
+                </div>
+                </div>
+            </div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Housing dominates; investing is the quiet 12% that does the heavy lifting later.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:69%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-10 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-11" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Returns by decade, S&amp;P 500</h2>
+            <div style="display:flex;gap:var(--space-1);width:100%;margin-top:24px;height:180px;border-bottom:1px solid #3D2C23;padding-bottom:10px;box-sizing:border-box;">
+                <div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">19</span>
+                    <div style="width:14px;height:100.0%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">1950s</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">8</span>
+                    <div style="width:14px;height:42.1%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">1960s</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">6</span>
+                    <div style="width:14px;height:31.6%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">1970s</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">17</span>
+                    <div style="width:14px;height:89.5%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">1980s</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">18</span>
+                    <div style="width:14px;height:94.7%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">1990s</span>
+                </div><div style="display:flex;flex-direction:column;align-items:center;flex:1;height:var(--space-18);justify-content:flex-end;">
+                    <span style="font-family:IBM Plex Mono;font-size:10px;font-weight:600;color:#F4EDE9;margin-bottom:6px;">-1</span>
+                    <div style="width:14px;height:-5.3%;background:#D36F31;border-radius:3px 3px 0 0;"></div>
+                    <span style="font-family:IBM Plex Mono;font-size:10px;color:#D6CBC5;margin-top:6px;transform:rotate(-30deg);white-space:nowrap;">2000s</span>
+                </div>
+            </div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Even the &#x27;lost&#x27; decades recovered — the reason to never sell on the way down.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:75%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-11 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-12" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #F4EDE9; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Every point compounds</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="92.0" x2="296" y2="92.0" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="95.0" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">12.0</text><line x1="50" y1="60.0" x2="296" y2="60.0" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="63.0" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">121.0</text><line x1="50" y1="28.0" x2="296" y2="28.0" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="44" y="31.0" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="end">230.0</text><line x1="50.0" y1="28" x2="50.0" y2="92" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="50.0" y="106" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">1</text><line x1="173.0" y1="28" x2="173.0" y2="92" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="173.0" y="106" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">8</text><line x1="296.0" y1="28" x2="296.0" y2="92" stroke="#3D2C2344" stroke-dasharray="3,3" stroke-width="1" /><text x="296.0" y="106" font-size="8.5px" font-weight="600" fill="#D6CBC5" text-anchor="middle">14</text>
+            <path d="M 72.0 74.0 L 103.1 71.0 L 134.2 67.6 L 165.2 63.7 L 211.8 56.5 L 274.0 46.0" fill="none" stroke="#D36F31" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            <g>
+                <circle cx="72.0" cy="74.0" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="72.0" y="58.5" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">1,12</text>
+            </g><g>
+                <circle cx="103.1" cy="71.0" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="103.1" y="55.5" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">3,35</text>
+            </g><g>
+                <circle cx="134.2" cy="67.6" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="134.2" y="52.1" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">5,62</text>
+            </g><g>
+                <circle cx="165.2" cy="63.7" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="165.2" y="48.2" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">7,92</text>
+            </g><g>
+                <circle cx="211.8" cy="56.5" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="211.8" y="41.0" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">10,148</text>
+            </g><g>
+                <circle cx="274.0" cy="46.0" r="11.5" fill="#D36F31" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
+                <text x="274.0" y="30.5" font-size="8px" fill="#F4EDE9" text-anchor="middle" font-weight="800">14,230</text>
+            </g>
+            
+            
+        </svg></div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;color:#D6CBC5;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Same 7% return, 20 different savers — starting month is the only variable.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:81%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-12 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-13" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
+            <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+                <div style="font-family:Space Grotesk;font-size:72px;font-weight:900;color:#D36F31;line-height:1.0;letter-spacing:-0.04em;text-align:center;">7%</div><div style="font-family:IBM Plex Mono;font-size:11px;font-weight:700;color:#D6CBC5;text-transform:uppercase;letter-spacing:0.12em;margin-top:8px;text-align:center;">average real return — kept, not timed</div>
+                <div style="width:60px;height:2px;background:#F4EDE9;opacity:0.4;margin:18px auto;"></div>
+                <div style="font-family:IBM Plex Mono;font-size:14px;line-height:1.5;color:#D6CBC5;text-align:center;max-width:280px;margin:8px auto 0;">The rule is simple</div>
+                <div style="text-align:center;z-index:2;margin-top:24px;">
+                <span style="display:inline-block;font-family:IBM Plex Mono;font-size:11px;font-weight:800;color:#F4EDE9;text-transform:uppercase;letter-spacing:0.12em;background:rgba(255,255,255,0.12);padding:12px 28px;border-radius:100px;">Start with $50</span>
+            </div>
+            </div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:88%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-13 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-14" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; top: -80px; left: -80px; pointer-events: none; width: 320px; position: absolute; opacity: 0.07; border-radius: 50%; background: #B15002"></div><div style="right: -40px; width: 120px; height: 120px; top: 60%; position: absolute; pointer-events: none; left: auto; opacity: 0.05; background: #007DB3; transform: rotate(60deg); border-radius: 4px"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:IBM Plex Mono;font-size:12px;font-weight:800;color:#D36F31;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">YOUR MOVE</div>
+            <h1 style="font-family:Space Grotesk;font-size:24px;font-weight:900;color:#F4EDE9;line-height:1.02;margin:0;max-width:320px;">Boring is the strategy.</h1>
+            <div style="width:76px;height:4px;background:#D36F31;border-radius:0;margin:var(--space-3) 0;"></div>
+            <p style="font-family:IBM Plex Mono;font-size:15px;color:#D6CBC5;line-height:1.45;margin:0;max-width:300px;">Set the allocation, automate the deposit, ignore the noise.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:94%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-14 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-15" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Compound</span>
+    <span class="overlay__topic">Indexing, patience, 7%</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; z-index: 1; pointer-events: none; background: var(--texture-grain); opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
+            
+            <h2 style="font-family:Space Grotesk;font-size:22px;font-weight:900;color:#F4EDE9;margin:0 0 4px;line-height:1.2;text-align:center;letter-spacing:-0.01em;">The 7% rule, automated</h2>
+            <div style="background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 16px 36px rgba(0,0,0,0.18);box-sizing:border-box;margin:10px auto;">
+            <img src="data:image/svg+xml;utf8,%3C?xml version='1.0' standalone='yes'?%3E%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='264' height='264' viewBox='0 0 264 264' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='264' height='264' fill='%23FFFFFF'/%3E%3Cpath fill='%230B0A0F' d='M32 32h8v8H32V32M40 32h8v8H40V32M48 32h8v8H48V32M56 32h8v8H56V32M64 32h8v8H64V32M72 32h8v8H72V32M80 32h8v8H80V32M112 32h8v8H112V32M128 32h8v8H128V32M136 32h8v8H136V32M144 32h8v8H144V32M176 32h8v8H176V32M184 32h8v8H184V32M192 32h8v8H192V32M200 32h8v8H200V32M208 32h8v8H208V32M216 32h8v8H216V32M224 32h8v8H224V32M32 40h8v8H32V40M80 40h8v8H80V40M96 40h8v8H96V40M104 40h8v8H104V40M136 40h8v8H136V40M144 40h8v8H144V40M176 40h8v8H176V40M224 40h8v8H224V40M32 48h8v8H32V48M48 48h8v8H48V48M56 48h8v8H56V48M64 48h8v8H64V48M80 48h8v8H80V48M96 48h8v8H96V48M112 48h8v8H112V48M160 48h8v8H160V48M176 48h8v8H176V48M192 48h8v8H192V48M200 48h8v8H200V48M208 48h8v8H208V48M224 48h8v8H224V48M32 56h8v8H32V56M48 56h8v8H48V56M56 56h8v8H56V56M64 56h8v8H64V56M80 56h8v8H80V56M96 56h8v8H96V56M104 56h8v8H104V56M112 56h8v8H112V56M128 56h8v8H128V56M136 56h8v8H136V56M152 56h8v8H152V56M160 56h8v8H160V56M176 56h8v8H176V56M192 56h8v8H192V56M200 56h8v8H200V56M208 56h8v8H208V56M224 56h8v8H224V56M32 64h8v8H32V64M48 64h8v8H48V64M56 64h8v8H56V64M64 64h8v8H64V64M80 64h8v8H80V64M104 64h8v8H104V64M120 64h8v8H120V64M128 64h8v8H128V64M136 64h8v8H136V64M176 64h8v8H176V64M192 64h8v8H192V64M200 64h8v8H200V64M208 64h8v8H208V64M224 64h8v8H224V64M32 72h8v8H32V72M80 72h8v8H80V72M104 72h8v8H104V72M112 72h8v8H112V72M120 72h8v8H120V72M176 72h8v8H176V72M224 72h8v8H224V72M32 80h8v8H32V80M40 80h8v8H40V80M48 80h8v8H48V80M56 80h8v8H56V80M64 80h8v8H64V80M72 80h8v8H72V80M80 80h8v8H80V80M96 80h8v8H96V80M112 80h8v8H112V80M128 80h8v8H128V80M144 80h8v8H144V80M160 80h8v8H160V80M176 80h8v8H176V80M184 80h8v8H184V80M192 80h8v8H192V80M200 80h8v8H200V80M208 80h8v8H208V80M216 80h8v8H216V80M224 80h8v8H224V80M96 88h8v8H96V88M120 88h8v8H120V88M128 88h8v8H128V88M144 88h8v8H144V88M160 88h8v8H160V88M32 96h8v8H32V96M80 96h8v8H80V96M96 96h8v8H96V96M104 96h8v8H104V96M128 96h8v8H128V96M136 96h8v8H136V96M144 96h8v8H144V96M152 96h8v8H152V96M168 96h8v8H168V96M176 96h8v8H176V96M200 96h8v8H200V96M208 96h8v8H208V96M216 96h8v8H216V96M40 104h8v8H40V104M48 104h8v8H48V104M56 104h8v8H56V104M72 104h8v8H72V104M88 104h8v8H88V104M120 104h8v8H120V104M128 104h8v8H128V104M136 104h8v8H136V104M144 104h8v8H144V104M152 104h8v8H152V104M184 104h8v8H184V104M192 104h8v8H192V104M200 104h8v8H200V104M208 104h8v8H208V104M216 104h8v8H216V104M40 112h8v8H40V112M56 112h8v8H56V112M80 112h8v8H80V112M112 112h8v8H112V112M136 112h8v8H136V112M144 112h8v8H144V112M152 112h8v8H152V112M168 112h8v8H168V112M184 112h8v8H184V112M192 112h8v8H192V112M200 112h8v8H200V112M216 112h8v8H216V112M224 112h8v8H224V112M64 120h8v8H64V120M88 120h8v8H88V120M104 120h8v8H104V120M112 120h8v8H112V120M128 120h8v8H128V120M152 120h8v8H152V120M160 120h8v8H160V120M168 120h8v8H168V120M200 120h8v8H200V120M224 120h8v8H224V120M32 128h8v8H32V128M72 128h8v8H72V128M80 128h8v8H80V128M96 128h8v8H96V128M104 128h8v8H104V128M120 128h8v8H120V128M128 128h8v8H128V128M144 128h8v8H144V128M160 128h8v8H160V128M176 128h8v8H176V128M184 128h8v8H184V128M224 128h8v8H224V128M32 136h8v8H32V136M40 136h8v8H40V136M48 136h8v8H48V136M56 136h8v8H56V136M72 136h8v8H72V136M88 136h8v8H88V136M128 136h8v8H128V136M136 136h8v8H136V136M152 136h8v8H152V136M160 136h8v8H160V136M184 136h8v8H184V136M216 136h8v8H216V136M32 144h8v8H32V144M56 144h8v8H56V144M64 144h8v8H64V144M80 144h8v8H80V144M96 144h8v8H96V144M112 144h8v8H112V144M128 144h8v8H128V144M136 144h8v8H136V144M144 144h8v8H144V144M152 144h8v8H152V144M160 144h8v8H160V144M168 144h8v8H168V144M184 144h8v8H184V144M192 144h8v8H192V144M200 144h8v8H200V144M216 144h8v8H216V144M224 144h8v8H224V144M32 152h8v8H32V152M48 152h8v8H48V152M56 152h8v8H56V152M64 152h8v8H64V152M88 152h8v8H88V152M96 152h8v8H96V152M104 152h8v8H104V152M112 152h8v8H112V152M168 152h8v8H168V152M176 152h8v8H176V152M184 152h8v8H184V152M200 152h8v8H200V152M208 152h8v8H208V152M224 152h8v8H224V152M32 160h8v8H32V160M64 160h8v8H64V160M80 160h8v8H80V160M104 160h8v8H104V160M112 160h8v8H112V160M136 160h8v8H136V160M144 160h8v8H144V160M152 160h8v8H152V160M160 160h8v8H160V160M168 160h8v8H168V160M176 160h8v8H176V160M184 160h8v8H184V160M192 160h8v8H192V160M208 160h8v8H208V160M96 168h8v8H96V168M104 168h8v8H104V168M120 168h8v8H120V168M144 168h8v8H144V168M152 168h8v8H152V168M160 168h8v8H160V168M192 168h8v8H192V168M32 176h8v8H32V176M40 176h8v8H40V176M48 176h8v8H48V176M56 176h8v8H56V176M64 176h8v8H64V176M72 176h8v8H72V176M80 176h8v8H80V176M104 176h8v8H104V176M120 176h8v8H120V176M128 176h8v8H128V176M144 176h8v8H144V176M160 176h8v8H160V176M176 176h8v8H176V176M192 176h8v8H192V176M224 176h8v8H224V176M32 184h8v8H32V184M80 184h8v8H80V184M120 184h8v8H120V184M128 184h8v8H128V184M144 184h8v8H144V184M152 184h8v8H152V184M160 184h8v8H160V184M192 184h8v8H192V184M32 192h8v8H32V192M48 192h8v8H48V192M56 192h8v8H56V192M64 192h8v8H64V192M80 192h8v8H80V192M112 192h8v8H112V192M136 192h8v8H136V192M144 192h8v8H144V192M152 192h8v8H152V192M160 192h8v8H160V192M168 192h8v8H168V192M176 192h8v8H176V192M184 192h8v8H184V192M192 192h8v8H192V192M208 192h8v8H208V192M32 200h8v8H32V200M48 200h8v8H48V200M56 200h8v8H56V200M64 200h8v8H64V200M80 200h8v8H80V200M104 200h8v8H104V200M120 200h8v8H120V200M152 200h8v8H152V200M168 200h8v8H168V200M176 200h8v8H176V200M216 200h8v8H216V200M224 200h8v8H224V200M32 208h8v8H32V208M48 208h8v8H48V208M56 208h8v8H56V208M64 208h8v8H64V208M80 208h8v8H80V208M104 208h8v8H104V208M144 208h8v8H144V208M160 208h8v8H160V208M168 208h8v8H168V208M200 208h8v8H200V208M208 208h8v8H208V208M224 208h8v8H224V208M32 216h8v8H32V216M80 216h8v8H80V216M128 216h8v8H128V216M160 216h8v8H160V216M176 216h8v8H176V216M184 216h8v8H184V216M192 216h8v8H192V216M224 216h8v8H224V216M32 224h8v8H32V224M40 224h8v8H40V224M48 224h8v8H48V224M56 224h8v8H56V224M64 224h8v8H64V224M72 224h8v8H72V224M80 224h8v8H80V224M96 224h8v8H96V224M104 224h8v8H104V224M112 224h8v8H112V224M120 224h8v8H120V224M128 224h8v8H128V224M160 224h8v8H160V224M168 224h8v8H168V224M176 224h8v8H176V224M200 224h8v8H200V224M224 224h8v8H224V224'/%3E%3C/svg%3E" alt="Open an account" style="width:160px;height:160px;display:block;" />
+            <div style="margin-top:8px;font-family:IBM Plex Mono;font-size:10px;font-weight:700;color:#1F2937;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.1);border-radius:12px;padding:4px 10px;text-align:center;letter-spacing:0.02em;box-sizing:border-box;">🔗 compound.fin</div>
+        </div>
+            <div style="margin-top:10px;background:#D36F31;color:#000701;font-family:Space Grotesk;font-size:13px;font-weight:800;padding:10px 24px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.12);text-align:center;letter-spacing:-0.01em;display:inline-block;">Open an account</div>
+            <p style="font-family:IBM Plex Mono;font-size:11px;line-height:1.4;color:#D6CBC5;margin:8px 0 0;text-align:center;max-width:320px;opacity:0.85;">5 minutes to set up</p>
+            
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://compound.fin/start</span>
+      <span class="overlay__hashtags">#Investing #FIRE</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:100%"></div></div></div>
+  </div>
+</div>
+</div><style>#slide-15 {   --primary: #B15002;
+  --primary-light: #FF975C;
+  --primary-dark: #802100;
+  --surface-light: #DCFEF0;
+  --surface-dark: #000701;
+  --text-primary: #0F0A08;
+  --text-secondary: #49403B;
+  --text-on-dark: #F4EDE9;
+  --text-on-dark-secondary: #D6CBC5;
+  --border-light: #D3C8C2;
+  --border-dark: #3D2C23;
+  --accent: #007DB3;
+  --secondary: #487D6A;
+  --tertiary: #6F6A94;
+  --gradient: linear-gradient(165deg, #000701 0%, #802100 60%, #000701 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #B1500240;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #DCFEF0 0%, #B1500208 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #B1500238 0px, transparent 50%), radial-gradient(at 80% 0%, #007DB328 0px, transparent 50%), radial-gradient(at 0% 50%, #FF975C30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #FF975C3A 0px, transparent 55%), radial-gradient(at 85% 25%, #007DB330 0px, transparent 50%), radial-gradient(at 50% 90%, #B1500228 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #000701 0%, #80210030 50%, #000701 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #DCFEF0CC;
+  --glass-light-border: 1px solid #D3C8C240;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #000701CC;
+  --glass-dark-border: 1px solid #3D2C2340;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #DCFEF0E6;
+  --glass-frosted-border: 1px solid #D3C8C230;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'IBM Plex Mono', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+
+</div>
+</div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-actions">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="ig-caption">
+    <strong>@brand</strong> Swipe through for the full breakdown
+    <span class="timestamp">2 hours ago</span>
+  </div>
+</div>
+  </div>
+</div>
+
+
+<script>
+(function() {
+  const track = document.getElementById('carouselTrack');
+  const dots = document.querySelectorAll('.ig-dot');
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  const total = 16;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    track.style.transform = `translateX(${-current * 420}px)`;
+    if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; track.style.transition = 'none'; });
+  track.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; track.style.transition = 'none'; }, { passive: true });
+
+  function endDrag(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - x;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+    else goTo(current);
+  }
+
+  track.addEventListener('mouseup', (e) => endDrag(e.clientX));
+  track.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientX));
+  track.addEventListener('mouseleave', (e) => { if (isDragging) endDrag(e.clientX); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

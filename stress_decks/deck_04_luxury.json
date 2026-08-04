@@ -1,0 +1,206 @@
+{
+  "id": "luxury",
+  "name": "Maison Verre — Autumn Atelier",
+  "deck_caption": "Luxury brand arc: mood → craft → collection → heritage → acquisition",
+  "primary": "#C0A062",
+  "style": "editorial",
+  "preset": "tonal_spot",
+  "typology": "luxury",
+  "color_scheme": "monochrome",
+  "theme": "luxury",
+  "archetype": "brand_storyteller",
+  "brand": "Maison Verre",
+  "topic": "The Autumn Atelier collection",
+  "url": "https://maisonverre.com/autumn",
+  "hashtags": ["Luxury", "Fashion", "Atelier"],
+  "aspect_ratio": "1:1",
+  "progress": "none",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "dark",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "headline": "Quiet luxury is a discipline",
+        "subheadline": "The Autumn Atelier collection — cut in Paris, finished by hand",
+        "badge": "Maison Verre",
+        "tagline": "New collection, October 12"
+      }
+    },
+    {
+      "type": "big_statement",
+      "variant": "default",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "heading": "Craft is the loudest statement.",
+        "body": "No logos required — only fabric, cut and time.",
+        "cta_text": "Explore the collection"
+      }
+    },
+    {
+      "type": "image_headline",
+      "variant": "center",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-hero/800/1000",
+        "headline": "Autumn, redefined",
+        "subheadline": "Wool that breathes, silk that holds shape"
+      }
+    },
+    {
+      "type": "image_headline",
+      "variant": "bottom",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-coat/800/500",
+        "headline": "The Cascade Coat",
+        "subheadline": "Double-faced cashmere, zero lining"
+      }
+    },
+    {
+      "type": "image_headline",
+      "variant": "top",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-silk/800/500",
+        "headline": "Silk, weighted",
+        "subheadline": "23-momme twill, cut on the bias"
+      }
+    },
+    {
+      "type": "image_quote",
+      "variant": "default",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-atelier/800/500",
+        "quote": "We do not chase seasons. We finish one piece properly.",
+        "author": "Élodie Verre"
+      }
+    },
+    {
+      "type": "image_callout",
+      "variant": "default",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-detail/800/500",
+        "callouts": [
+          {"label": "Hand-sewn lapel", "x": 25, "y": 35},
+          {"label": "Horn buttons", "x": 65, "y": 60}
+        ],
+        "description": "Details a machine cannot reproduce"
+      }
+    },
+    {
+      "type": "image_gallery",
+      "variant": "3-grid",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "title": "The collection",
+        "section_caption": "Nine pieces. Three silhouettes. One palette of tobacco, ink and bone.",
+        "images": [
+          {"url": "https://picsum.photos/seed/verre-1/400"},
+          {"url": "https://picsum.photos/seed/verre-2/400"},
+          {"url": "https://picsum.photos/seed/verre-3/400"}
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "mosaic",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "title": "Material studies",
+        "section_caption": "Cashmere, silk, wool — photographed before a single seam was cut.",
+        "images": [
+          {"url": "https://picsum.photos/seed/verre-fabric1/400"},
+          {"url": "https://picsum.photos/seed/verre-fabric2/400"},
+          {"url": "https://picsum.photos/seed/verre-fabric3/400"},
+          {"url": "https://picsum.photos/seed/verre-fabric4/400"}
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "geometric",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "title": "Studio light",
+        "section_caption": "Shot on a single afternoon with natural north light.",
+        "images": [
+          {"url": "https://picsum.photos/seed/verre-studio1/400"},
+          {"url": "https://picsum.photos/seed/verre-studio2/400"},
+          {"url": "https://picsum.photos/seed/verre-studio3/400"}
+        ]
+      }
+    },
+    {
+      "type": "image_comparison",
+      "variant": "arrow",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "before_image": "https://picsum.photos/seed/verre-rough/400/300",
+        "after_image": "https://picsum.photos/seed/verre-finished/400/300",
+        "before_label": "Blocked",
+        "after_label": "Finished",
+        "description": "One coat, 38 hours of handwork between these two frames."
+      }
+    },
+    {
+      "type": "image_caption",
+      "variant": "image-overlay",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/verre-runway/800/500",
+        "caption": "The October presentation",
+        "description": "Held in the atelier itself — forty guests, one garment per chair."
+      }
+    },
+    {
+      "type": "quote",
+      "variant": "with-avatar",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "quote": "The coat is worth it. Ten years in, it still looks better than the day I bought it.",
+        "author": "Charlotte A.",
+        "role": "Client since 2016"
+      }
+    },
+    {
+      "type": "section_divider",
+      "variant": "minimal",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "kicker": "BY APPOINTMENT",
+        "title": "The Atelier",
+        "subtitle": "Private fittings in Paris, London and Tokyo"
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "image-bg",
+      "theme": "luxury",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://maisonverre.com/autumn",
+        "cta_text": "Request the lookbook",
+        "heading": "Autumn Atelier",
+        "caption": "The digital lookbook, by invitation",
+        "short_url": "verre.at/aut"
+      }
+    }
+  ]
+}

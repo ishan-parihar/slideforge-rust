@@ -1,0 +1,514 @@
+{
+  "id": "devtool",
+  "name": "Taskflow \u2014 Ship. Track. Done.",
+  "deck_caption": "Dev-tool launch arc: pain \u2192 workflow \u2192 comparison \u2192 adoption \u2192 install",
+  "primary": "#4F46E5",
+  "style": "technical",
+  "preset": "vibrant",
+  "typology": "technical",
+  "color_scheme": "triadic",
+  "theme": "technical",
+  "archetype": "startup_pitch",
+  "brand": "Taskflow",
+  "topic": "The CI-ready issue tracker",
+  "url": "https://taskflow.dev/install",
+  "hashtags": [
+    "DevTools",
+    "Agile",
+    "ShipIt"
+  ],
+  "aspect_ratio": "4:5",
+  "progress": "chips",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "left-aligned",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "headline": "Your issues should close themselves",
+        "subheadline": "Taskflow links PRs to tickets, tests to releases, and slack to done",
+        "badge": "v2.0",
+        "tagline": "The issue tracker for teams that ship"
+      }
+    },
+    {
+      "type": "section_divider",
+      "variant": "statement",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "kicker": "THE PROBLEM",
+        "title": "Three tools, zero shared truth.",
+        "subtitle": "Issues live in one tab, PRs in another, and the status update happens in a meeting."
+      }
+    },
+    {
+      "type": "problem_solution",
+      "variant": "split",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "One source of truth",
+        "problem": "Status boards drift from reality. 'Almost done' is a lie told kindly across four tools.",
+        "solution": "Taskflow derives status from your actual commits \u2014 an issue is Done when the PR merged, and not a moment before.",
+        "proof_points": "Automatic PR linkage. Real-time status. Zero status meetings.",
+        "description": "Every follow-up and touchpoint lands automatically, so the pipeline never goes quiet."
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "minimal",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "The four keystrokes",
+        "features": [
+          {
+            "title": "tf new",
+            "description": "Issue from your editor"
+          },
+          {
+            "title": "tf branch",
+            "description": "Auto-linked branch"
+          },
+          {
+            "title": "tf merge",
+            "description": "Closes the ticket"
+          },
+          {
+            "title": "tf standup",
+            "description": "Writes your update"
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "icon-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Built for the merge train",
+        "features": [
+          {
+            "title": "Git-native",
+            "description": "Hooks into every branch"
+          },
+          {
+            "title": "CI aware",
+            "description": "Blocks merge on red"
+          },
+          {
+            "title": "Sprint view",
+            "description": "Velocity auto-charted"
+          },
+          {
+            "title": "CLI first",
+            "description": "Terminal or web, same truth"
+          },
+          {
+            "title": "Webhook ready",
+            "description": "Slack, Discord, Linear"
+          },
+          {
+            "title": "Self-hostable",
+            "description": "Docker one-liner"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "line",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Cycle time, falling",
+        "chart_type": "line",
+        "description": "Median open-to-merged dropped from 6.2 days to 1.4 days after adoption.",
+        "data": [
+          {
+            "label": "Wk1",
+            "value": 6.2
+          },
+          {
+            "label": "Wk2",
+            "value": 5.1
+          },
+          {
+            "label": "Wk3",
+            "value": 4.0
+          },
+          {
+            "label": "Wk4",
+            "value": 3.1
+          },
+          {
+            "label": "Wk5",
+            "value": 2.2
+          },
+          {
+            "label": "Wk6",
+            "value": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "donut",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Where the day goes",
+        "chart_type": "donut",
+        "description": "Status sync was the silent tax on every standup.",
+        "data": [
+          {
+            "label": "Coding",
+            "value": 48
+          },
+          {
+            "label": "Review",
+            "value": 26
+          },
+          {
+            "label": "Status updates",
+            "value": 14
+          },
+          {
+            "label": "Context switching",
+            "value": 12
+          }
+        ]
+      }
+    },
+    {
+      "type": "radar_chart",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Devs rate their tracker",
+        "description": "Taskflow wins on the axes teams actually complain about.",
+        "data": [
+          {
+            "axis": "Speed",
+            "value": 94
+          },
+          {
+            "axis": "Accuracy",
+            "value": 90
+          },
+          {
+            "axis": "Integrations",
+            "value": 86
+          },
+          {
+            "axis": "CLI",
+            "value": 97
+          },
+          {
+            "axis": "Onboarding",
+            "value": 82
+          }
+        ]
+      }
+    },
+    {
+      "type": "comparison_bars",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Taskflow vs the old stack",
+        "description": "One tool replaced four \u2014 and the weekly status meeting died with them.",
+        "comparison": {
+          "entity_a": "Old stack",
+          "value_a": 4,
+          "entity_b": "Taskflow",
+          "value_b": 1,
+          "metric": "Tools needed to ship"
+        }
+      }
+    },
+    {
+      "type": "table",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Feature matrix",
+        "headers": [
+          "Feature",
+          "Old",
+          "Taskflow"
+        ],
+        "rows": [
+          [
+            "PR-linked",
+            "No",
+            "Yes"
+          ],
+          [
+            "Auto status",
+            "No",
+            "Yes"
+          ],
+          [
+            "CI gating",
+            "Partial",
+            "Yes"
+          ],
+          [
+            "CLI",
+            "No",
+            "Yes"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "case_study_result",
+      "variant": "summary",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "client": "ByteLane (42 devs)",
+        "challenge": "Weekly status meetings, drifting boards, 6-day cycle time",
+        "solution": "Adopted Taskflow on three flagship repos",
+        "results": [
+          {
+            "metric": "1.4d",
+            "label": "Cycle time"
+          },
+          {
+            "metric": "0",
+            "label": "Status meetings"
+          },
+          {
+            "metric": "38%",
+            "label": "More merges"
+          }
+        ],
+        "description": "One engagement, three hard numbers \u2014 the kind of proof that survives a review."
+      }
+    },
+    {
+      "type": "timeline",
+      "variant": "numbered",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Adoption, day by day",
+        "steps": [
+          {
+            "label": "Day 1",
+            "description": "Install CLI"
+          },
+          {
+            "label": "Day 2",
+            "description": "Link your repo"
+          },
+          {
+            "label": "Day 3",
+            "description": "First auto-closed issue"
+          },
+          {
+            "label": "Week 2",
+            "description": "Cancel the meeting"
+          }
+        ]
+      }
+    },
+    {
+      "type": "process_map",
+      "variant": "map",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "The closing loop",
+        "steps": [
+          {
+            "label": "Commit",
+            "description": "Message references #42"
+          },
+          {
+            "label": "CI",
+            "description": "Green on branch"
+          },
+          {
+            "label": "Merge",
+            "description": "PR lands on main"
+          },
+          {
+            "label": "Closed",
+            "description": "Ticket auto-closes"
+          },
+          {
+            "label": "Shipped",
+            "description": "Release note generated"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_callout",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/taskflow-ui/800/500",
+        "callouts": [
+          {
+            "label": "Live board",
+            "x": 25,
+            "y": 30
+          },
+          {
+            "label": "CI gates",
+            "x": 70,
+            "y": 55
+          }
+        ],
+        "description": "The sprint view \u2014 status you can trust"
+      }
+    },
+    {
+      "type": "image_headline",
+      "variant": "top",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/taskflow-cli/800/500",
+        "headline": "The terminal is home",
+        "subheadline": "Every feature has a CLI twin \u2014 power users never leave the shell"
+      }
+    },
+    {
+      "type": "image_gallery",
+      "variant": "featured-2-1",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Every surface, one truth",
+        "section_caption": "Web, CLI, and Slack all render the same live status.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/taskflow-web/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/taskflow-term/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/taskflow-slack/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "pricing_plan",
+      "variant": "offer-stack",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Pricing that scales with merges",
+        "plans": [
+          {
+            "name": "Solo",
+            "price": "Free",
+            "features": [
+              "1 project",
+              "CLI",
+              "Git hooks"
+            ]
+          },
+          {
+            "name": "Team",
+            "price": "$8/dev",
+            "features": [
+              "Unlimited projects",
+              "CI gating",
+              "Sprint analytics"
+            ],
+            "featured": true
+          },
+          {
+            "name": "Self-host",
+            "price": "$499",
+            "features": [
+              "Docker deploy",
+              "SSO",
+              "Priority support"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "logo_cloud",
+      "variant": "strip",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Shipped with Taskflow at",
+        "logos": [
+          "ByteLane",
+          "KernelWorks",
+          "Streamline",
+          "DataCraft",
+          "BlueBox",
+          "FastPath"
+        ]
+      }
+    },
+    {
+      "type": "faq",
+      "variant": "compact",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Ship-or-ask",
+        "questions": [
+          {
+            "q": "Migrate from Jira?",
+            "a": "One command: tf import jira. Issues, comments and attachments move over."
+          },
+          {
+            "q": "Works with GitLab?",
+            "a": "Yes \u2014 GitHub, GitLab and Gitea all supported."
+          },
+          {
+            "q": "Is it open source?",
+            "a": "The CLI is MIT. The server is free for small teams."
+          }
+        ]
+      }
+    },
+    {
+      "type": "big_statement",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "heading": "Ship the merge train.",
+        "body": "Install in 60 seconds. Cancel your first meeting by Friday.",
+        "cta_text": "tf install"
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "full-conversion",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://taskflow.dev/install",
+        "cta_text": "Install now",
+        "heading": "curl -fsSL taskflow.dev | sh",
+        "caption": "Free for solo devs, forever",
+        "short_url": "taskflow.dev"
+      }
+    }
+  ]
+}

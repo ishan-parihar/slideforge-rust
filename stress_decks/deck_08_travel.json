@@ -1,0 +1,324 @@
+{
+  "id": "travel",
+  "name": "Kyoto Unplugged \u2014 5-Day Itinerary",
+  "deck_caption": "Travel arc: hook \u2192 icons \u2192 hidden gems \u2192 itinerary \u2192 practical \u2192 book",
+  "primary": "#D97706",
+  "style": "warm",
+  "preset": "tonal_spot",
+  "typology": "nature",
+  "color_scheme": "analogous",
+  "theme": "warm",
+  "archetype": "creator",
+  "brand": "Kyoto Unplugged",
+  "topic": "5 days off the tourist trail",
+  "url": "https://kyotounplugged.jp/itinerary",
+  "hashtags": [
+    "Kyoto",
+    "Japan",
+    "Travel"
+  ],
+  "aspect_ratio": "4:5",
+  "progress": "dots",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "split",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "headline": "Kyoto, but slower",
+        "subheadline": "Five days of temples at dawn, empty alleys, and one perfect bowl of noodles",
+        "badge": "5-Day Itinerary",
+        "background_image": "https://picsum.photos/seed/kyoto-hero/520/650",
+        "tagline": "The unplugged route"
+      }
+    },
+    {
+      "type": "image_headline",
+      "variant": "bottom",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/kyoto-fushimi/800/500",
+        "headline": "Fushimi before the crowds",
+        "subheadline": "Gates at 6:30am, when it's just you and the foxes"
+      }
+    },
+    {
+      "type": "image_caption",
+      "variant": "image-top",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/kyoto-temple/800/500",
+        "caption": "Kinkaku-ji, golden hour",
+        "description": "Go for opening, walk the back loop, and skip the selfie rail entirely."
+      }
+    },
+    {
+      "type": "image_caption",
+      "variant": "image-left",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/kyoto-food/400/300",
+        "caption": "Nishiki at 9am",
+        "description": "The market wakes before the tourists \u2014 pickled everything and a coffee stand in alley three."
+      }
+    },
+    {
+      "type": "image_gallery",
+      "variant": "featured-1-2",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "The quiet half of Kyoto",
+        "section_caption": "One featured shot, two supporting frames from the Arashiyama bamboo grove.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/kyoto-bamboo1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-bamboo2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-bamboo3/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "scattered",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Street-level Kyoto",
+        "section_caption": "Cicadas, vending machines, and a thousand-year-old corner shrine.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/kyoto-street1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-street2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-street3/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "layered",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Cuisine",
+        "section_caption": "Kaiseki by night, conveyor sushi by noon, matcha at 4.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/kyoto-food1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-food2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-food3/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/kyoto-food4/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_comparison",
+      "variant": "arrow",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "before_image": "https://picsum.photos/seed/kyoto-day/400/300",
+        "after_image": "https://picsum.photos/seed/kyoto-night/400/300",
+        "before_label": "Day",
+        "after_label": "Night",
+        "description": "The same street in Gion, twelve hours apart."
+      }
+    },
+    {
+      "type": "timeline",
+      "variant": "horizontal",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "The 5-day rhythm",
+        "steps": [
+          {
+            "label": "Day 1",
+            "description": "East temples & Gion"
+          },
+          {
+            "label": "Day 2",
+            "description": "Arashiyama bamboo"
+          },
+          {
+            "label": "Day 3",
+            "description": "Nishiki & art alleys"
+          },
+          {
+            "label": "Day 4",
+            "description": "Fushimi & sake town"
+          },
+          {
+            "label": "Day 5",
+            "description": "Hiking & onsen"
+          }
+        ]
+      }
+    },
+    {
+      "type": "table",
+      "variant": "default",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Budget, roughly",
+        "headers": [
+          "Item",
+          "Low",
+          "High"
+        ],
+        "rows": [
+          [
+            "Sleep",
+            "$60",
+            "$120"
+          ],
+          [
+            "Food",
+            "$25",
+            "$60"
+          ],
+          [
+            "Temples",
+            "$8",
+            "$15"
+          ],
+          [
+            "Day total",
+            "$105",
+            "$207"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "faq",
+      "variant": "compact",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Practical answers",
+        "questions": [
+          {
+            "q": "When is it least crowded?",
+            "a": "Late November and February. Avoid golden week at all costs."
+          },
+          {
+            "q": "Cash or card?",
+            "a": "Cash for shrines and street food; cards are fine at most restaurants."
+          },
+          {
+            "q": "Can we do it without a car?",
+            "a": "Yes \u2014 the bus + subway pass covers everything on this route."
+          }
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "variant": "centered",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "quote": "The itinerary was perfect. We never waited in a line, and we still saw everything.",
+        "author": "Hannah & Tom",
+        "role": "Honeymoon, May 2026"
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "pie",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Where the budget goes",
+        "chart_type": "pie",
+        "description": "Sleep and food dominate; experiences are surprisingly cheap in Kyoto.",
+        "data": [
+          {
+            "label": "Sleep",
+            "value": 38
+          },
+          {
+            "label": "Food",
+            "value": 30
+          },
+          {
+            "label": "Transport",
+            "value": 8
+          },
+          {
+            "label": "Temples",
+            "value": 10
+          },
+          {
+            "label": "Extras",
+            "value": 14
+          }
+        ]
+      }
+    },
+    {
+      "type": "logo_cloud",
+      "variant": "grid",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "title": "Featured by",
+        "logos": [
+          "Nomad Mag",
+          "Trail Weekly",
+          "EastBound",
+          "Slow Travel Co",
+          "Map & Compass",
+          "WanderLane"
+        ]
+      }
+    },
+    {
+      "type": "section_divider",
+      "variant": "chapter",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "kicker": "YOUR TURN",
+        "title": "Slow down. You'll see more.",
+        "subtitle": "The full map, the alley shortcuts, and the bowl of noodles is waiting."
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "split-card",
+      "theme": "warm",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://kyotounplugged.jp/itinerary",
+        "cta_text": "Get the free map",
+        "heading": "The full Kyoto map",
+        "caption": "Printable, offline-friendly, with every alley marked",
+        "short_url": "kyoto.one/map"
+      }
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+{
+  "id": "nonprofit",
+  "name": "ClearWater \u2014 2026 Impact Report",
+  "deck_caption": "Nonprofit arc: mission \u2192 scale of need \u2192 programs \u2192 proof \u2192 donate",
+  "primary": "#0F766E",
+  "style": "classic",
+  "preset": "neutral",
+  "typology": "editorial",
+  "color_scheme": "monochrome",
+  "theme": "editorial",
+  "archetype": "thought_leader",
+  "brand": "ClearWater",
+  "topic": "Clean water, one village",
+  "url": "https://clearwater.org/impact",
+  "hashtags": [
+    "CleanWater",
+    "Impact",
+    "Nonprofit"
+  ],
+  "aspect_ratio": "4:5",
+  "progress": "chips",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "dark",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "headline": "Every $1 becomes clean water for a decade",
+        "subheadline": "The 2026 impact report of ClearWater Initiative",
+        "badge": "Impact Report",
+        "tagline": "3 regions \u00b7 214 villages \u00b7 1 mission"
+      }
+    },
+    {
+      "type": "big_statement",
+      "variant": "stat",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "heading": "Water is the multiplier",
+        "stat_value": "86K",
+        "stat_label": "people reached with safe water in 2026",
+        "cta_text": "Read the full report"
+      }
+    },
+    {
+      "type": "metric_grid",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "The year, measured",
+        "metrics": [
+          {
+            "value": "214",
+            "label": "Villages served"
+          },
+          {
+            "value": "86K",
+            "label": "People reached"
+          },
+          {
+            "value": "311",
+            "label": "Wells & taps built"
+          },
+          {
+            "value": "97%",
+            "label": "Still working in yr 5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "area",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "People reached, 2021-2026",
+        "chart_type": "area",
+        "description": "Compound growth as repaired wells multiply in place.",
+        "data": [
+          {
+            "label": "2021",
+            "value": 12
+          },
+          {
+            "label": "2022",
+            "value": 22
+          },
+          {
+            "label": "2023",
+            "value": 38
+          },
+          {
+            "label": "2024",
+            "value": 51
+          },
+          {
+            "label": "2025",
+            "value": 66
+          },
+          {
+            "label": "2026",
+            "value": 86
+          }
+        ]
+      }
+    },
+    {
+      "type": "funnel_chart",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "Where donations go",
+        "description": "93 cents of every dollar reaches the field.",
+        "steps": [
+          {
+            "label": "Raised",
+            "value": 100
+          },
+          {
+            "label": "Programs",
+            "value": 93
+          },
+          {
+            "label": "Operations",
+            "value": 5
+          },
+          {
+            "label": "Fundraising",
+            "value": 2
+          }
+        ]
+      }
+    },
+    {
+      "type": "gauge",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "Program efficiency",
+        "value": 93,
+        "label": "cents per dollar to the field"
+      }
+    },
+    {
+      "type": "progress_rings",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "2026 goals, met",
+        "description": "Two years ahead of schedule on the five-year village plan.",
+        "items": [
+          {
+            "label": "Wells",
+            "value": 104
+          },
+          {
+            "label": "Schools",
+            "value": 88
+          },
+          {
+            "label": "Hygiene",
+            "value": 92
+          }
+        ]
+      }
+    },
+    {
+      "type": "case_study_result",
+      "variant": "results-grid",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "client": "Kisuma Region",
+        "challenge": "Seasonal drought left 14 villages dependent on a trucked-in supply",
+        "solution": "Solar boreholes + community maintenance training",
+        "results": [
+          {
+            "metric": "0",
+            "label": "Days without water"
+          },
+          {
+            "metric": "6.2K",
+            "label": "People served"
+          },
+          {
+            "metric": "5yr",
+            "label": "Guaranteed support"
+          }
+        ],
+        "description": "One engagement, three hard numbers \u2014 the kind of proof that survives a review."
+      }
+    },
+    {
+      "type": "before_after_story",
+      "variant": "metric",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "One village's year",
+        "before": "4km walk to a seasonal river, waterborne illness in every family",
+        "after": "Solar tap in the square, girls back in school, clinic cases down",
+        "metric": "-71%",
+        "metric_label": "waterborne illness in 12 months",
+        "description": "Measured change, not a vibe \u2014 the numbers moved because the habits did."
+      }
+    },
+    {
+      "type": "image_caption",
+      "variant": "image-bottom",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/cw-pump/800/500",
+        "caption": "The first tap",
+        "description": "Kisuma's solar borehole, commissioned June 2026 \u2014 maintained by a local team we trained."
+      }
+    },
+    {
+      "type": "image_quote",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "image_url": "https://picsum.photos/seed/cw-children/800/500",
+        "quote": "The girls were the first to notice. They stopped carrying jugs and started carrying books.",
+        "author": "Head teacher, Kisuma"
+      }
+    },
+    {
+      "type": "image_gallery",
+      "variant": "4-grid",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "The work",
+        "section_caption": "Drilling crews, hygiene workshops, and the communities that run it all.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/cw-work1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-work2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-work3/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-work4/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "editorial_stack",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "A year in photos",
+        "section_caption": "Twelve months, three regions, one commitment.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/cw-photo1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-photo2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-photo3/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-photo4/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_collage",
+      "variant": "filmstrip",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "Field notes",
+        "section_caption": "Maintenance training in session \u2014 the part that makes wells last.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/cw-train1/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-train2/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/cw-train3/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "timeline",
+      "variant": "vertical",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "title": "Ten years of ClearWater",
+        "steps": [
+          {
+            "label": "2016",
+            "description": "First well, 40 villagers"
+          },
+          {
+            "label": "2019",
+            "description": "10,000 people reached"
+          },
+          {
+            "label": "2022",
+            "description": "Regional training hubs"
+          },
+          {
+            "label": "2026",
+            "description": "86,000 people reached"
+          }
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "variant": "card",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "quote": "ClearWater doesn't drop a well and leave. They train the people who will maintain it for thirty years.",
+        "author": "Dr. Amara Osei",
+        "role": "Regional water authority"
+      }
+    },
+    {
+      "type": "comment_cta",
+      "variant": "default",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "heading": "The report is free. The change isn't.",
+        "sub_heading": "Comment IMPACT and we'll send the full PDF \u2014 and one tap costs $8.",
+        "cta_text": "Comment IMPACT for the report.",
+        "keyword": "IMPACT"
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "minimal",
+      "theme": "editorial",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://clearwater.org/impact",
+        "cta_text": "Donate $8 \u2014 one tap",
+        "heading": "One tap. Ten years of water.",
+        "caption": "100% of tap donations go to the field",
+        "short_url": "clearwater.org"
+      }
+    }
+  ]
+}
