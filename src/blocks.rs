@@ -154,13 +154,45 @@ pub fn heading_block(
     }
 
     let mut font_size = scale.font_size;
-    if plain_content.len() > 60 {
-        if let Some(title_scale) = tokens.type_scale.get("title") {
-            font_size = title_scale.font_size;
-        }
-    } else if plain_content.len() > 40 && variant == "display" {
-        if let Some(headline_scale) = tokens.type_scale.get("headline") {
-            font_size = headline_scale.font_size;
+    // Automatic type-fit: step down the tier ladder until the heading fits within
+    // MAX_HEADING_LINES in the standard content column, so long display/headline/
+    // title text never wraps into a wall that overflows the composition. Uses the
+    // same overflow model as the validator gate (single source of truth).
+    const MAX_HEADING_LINES: usize = 2;
+    const HEADING_COLUMN_WIDTH: f32 = 340.0;
+    let ladder = ["display", "headline", "title", "body"];
+    let start = ladder
+        .iter()
+        .position(|t| *t == variant)
+        .unwrap_or(1);
+    if crate::overflow_model::estimate_wrapped_lines(
+        &plain_content,
+        font_size as f32,
+        HEADING_COLUMN_WIDTH,
+    ) > MAX_HEADING_LINES
+    {
+        for tier in ladder.iter().skip(start + 1) {
+            let candidate = tokens
+                .type_scale
+                .get(*tier)
+                .map(|t| t.font_size)
+                .unwrap_or(font_size);
+            // Only ever step DOWN the tier ladder — never enlarge a heading that
+            // already fits (a caption/micro variant would otherwise be bumped up
+            // to body size, which is the opposite of the intended fit).
+            if candidate >= font_size {
+                continue;
+            }
+            if crate::overflow_model::estimate_wrapped_lines(
+                &plain_content,
+                candidate as f32,
+                HEADING_COLUMN_WIDTH,
+            ) <= MAX_HEADING_LINES
+            {
+                font_size = candidate;
+                break;
+            }
+            font_size = candidate;
         }
     }
 

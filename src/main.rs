@@ -22,6 +22,7 @@ mod effects;
 mod export;
 mod layouts;
 mod mcp_server;
+mod overflow_model;
 mod platforms;
 mod slide_registry;
 mod slides;
@@ -244,6 +245,9 @@ enum Commands {
         /// Show progress indicator
         #[arg(long, default_value = "true")]
         show_progress: bool,
+        /// Progress bar variant: chips (segmented), line, none
+        #[arg(long, value_parser = ["chips", "line", "none"])]
+        progress_style: Option<String>,
         /// Output file path (defaults to stdout)
         #[arg(long)]
         output: Option<String>,
@@ -261,6 +265,12 @@ enum Commands {
     /// Validate carousel HTML for design issues
     ValidateDesign {
         /// Path to HTML file
+        html_file: String,
+    },
+    /// Per-slide layout geometry report (bands, body region, text-stack vs
+    /// available height). Same numbers the text-overflow gate uses.
+    DebugLayout {
+        /// Path to carousel HTML file
         html_file: String,
     },
     /// Validate a carousel composition against arc structure and constraints
@@ -607,6 +617,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             aspect_ratio,
             include_ig_frame,
             show_progress,
+            progress_style,
             output,
         }) => {
             cli_render_carousel(
@@ -621,6 +632,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 aspect_ratio,
                 *include_ig_frame,
                 *show_progress,
+                progress_style.as_deref(),
                 output,
             )?;
         }
@@ -641,6 +653,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Some(Commands::ValidateDesign { html_file }) => {
             let html = fs::read_to_string(html_file)?;
             let report = validate::validate_design(&html);
+            println!("{}", serde_json::to_string_pretty(&report)?);
+        }
+        Some(Commands::DebugLayout { html_file }) => {
+            let html = fs::read_to_string(html_file)?;
+            let report = validate::debug_layout(&html);
             println!("{}", serde_json::to_string_pretty(&report)?);
         }
         Some(Commands::ValidateComposition { file, json }) => {
@@ -941,10 +958,49 @@ fn cli_generate_slide(
         })
         .unwrap_or_default();
 
-    // Resolve tokens: either from --tokens-file or derive from --primary-color
+    // Resolve tokens: either from --tokens-file or derive from --primary-color.
+    // When a --tokens-file is provided AND a --typology is also present, the
+    // typology must override the styling axes (font family, color-scheme
+    // family, type-scale tier). Re-derive a fresh palette seeded from the
+    // tokens file's primary color so typology actually reaches the slide.
     let (mut tokens, resolved_theme) = if let Some(tf) = tokens_file {
         let t = cli_load_tokens(tf)?;
-        (t, theme.clone().unwrap_or_else(|| "editorial".to_string()))
+        if let Some(typo) = typology.as_deref() {
+            let axes = styling::resolve_styling(
+                typo,
+                &variant_ops,
+                color_scheme.as_deref().map(Family::parse).flatten(),
+                &[],
+            )?;
+            let p = preset.as_deref().unwrap_or("tonal_spot");
+            let plt = platform.as_deref().unwrap_or("instagram_portrait");
+            // NOTE: tokens must be derived at the BASE composition (420×525). The
+            // carousel HTML renders at base size and CSS-scales the whole page via
+            // transform:scale() to the export canvas — deriving at the export
+            // canvas (1080×1350) double-scales spacing + type base by 2.571×,
+            // crushing the content column (measured: --space-6 = 123px on a 420px
+            // composition leaves a 174px column). resolve_canvas is still used to
+            // validate the platform/ratio combo.
+            let _canvas = platforms::resolve_canvas(plt, aspect_ratio.as_deref())?;
+            let mut fam_overrides = IndexMap::new();
+            fam_overrides.insert("family".to_string(), axes.family.scheme_key().to_string());
+            let rederived = design_system::derive_palette_with_canvas(
+                &t.primary,
+                &axes.font,
+                axes.tier.scale_base() as i32,
+                axes.tier.scale_ratio(),
+                p,
+                theme.as_deref().unwrap_or("editorial"),
+                Some(&fam_overrides),
+                None,
+                None,
+                420,
+                525,
+            )?;
+            (rederived, theme.clone().unwrap_or_else(|| "editorial".to_string()))
+        } else {
+            (t, theme.clone().unwrap_or_else(|| "editorial".to_string()))
+        }
     } else {
         let primary = primary_color
             .as_deref()
@@ -977,7 +1033,9 @@ fn cli_generate_slide(
         };
         let p = preset.as_deref().unwrap_or("tonal_spot");
         let plt = platform.as_deref().unwrap_or("instagram_portrait");
-        let canvas = platforms::resolve_canvas(plt, aspect_ratio.as_deref())?;
+        // Same base-composition rule as the typology path: derive at 420×525, never
+        // the export canvas (double-scaling bug — see above).
+        let _canvas = platforms::resolve_canvas(plt, aspect_ratio.as_deref())?;
         let mut fam_overrides = IndexMap::new();
         fam_overrides.insert("family".to_string(), fam_key);
         let tokens = design_system::derive_palette_with_canvas(
@@ -990,8 +1048,8 @@ fn cli_generate_slide(
             Some(&fam_overrides),
             None,
             None,
-            canvas.width,
-            canvas.height,
+            420,
+            525,
         )?;
         (tokens, t_eff)
     };
@@ -1041,10 +1099,49 @@ fn cli_generate_slide(
         arch,
     )?;
 
+    // Compile-time design gate: the rendered slide must not overflow the slide
+    // body (text stack vs available height). Blocks generation so every slide
+    // that ships is aesthetic at the source.
+    let rendered_html = result
+        .get("html")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    let design = validate::validate_layout(
+        &slide_type,
+        &params_json,
+        Some(rendered_html),
+        aspect_ratio.as_deref(),
+    );
+    if design
+        .errors
+        .iter()
+        .any(|e| e.contains("text_overflow"))
+    {
+        let response = serde_json::json!({
+            "success": false,
+            "slide_type": slide_type,
+            "validation": {
+                "errors": design.errors,
+                "warnings": design.warnings,
+            },
+            "hint": "The rendered slide overflows the 420x525 slide body. The component already auto-scaled to its fitted minimum, so retrying with the same copy will fail identically — shorten the copy (or use a slide type better suited to the content length).",
+        });
+        eprintln!("{}", serde_json::to_string_pretty(&response)?);
+        std::process::exit(1);
+    }
+
     // Enrich with slide_type + validation warnings (errors already blocked above)
     let mut enriched = result;
     if let Some(obj) = enriched.as_object_mut() {
         obj.insert("slide_type".to_string(), serde_json::json!(slide_type));
+        // Per-slide CSS variables so each slide carries its own resolved surface/font/color
+        // token set, defeating the single global :root block in render_carousel_html.
+        obj.insert("css_vars".to_string(), serde_json::json!(tokens.css_variable_pairs()));
+        // Per-slide font pairing URL so the carousel loads every typology's fonts.
+        obj.insert(
+            "google_fonts_url".to_string(),
+            serde_json::json!(tokens.google_fonts_url),
+        );
         if !validation.warnings.is_empty() {
             obj.insert(
                 "validation".to_string(),
@@ -1087,6 +1184,7 @@ fn cli_render_carousel(
     aspect_ratio: &Option<String>,
     include_ig_frame: bool,
     show_progress: bool,
+    progress_style: Option<&str>,
     output: &Option<String>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Enforce 4-corner metadata: brand_name, topic, url, hashtags all required
@@ -1161,6 +1259,7 @@ fn cli_render_carousel(
             .map(|s| s.split(',').map(|t| t.trim().to_string()).collect())
             .unwrap_or_default(),
         show_progress,
+        progress_style: progress_style.unwrap_or("chips").to_string(),
         visual_theme: "editorial".to_string(),
         include_ig_frame,
         platform: canvas.platform.clone(),
@@ -1616,6 +1715,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                 format!("#{}", theme),
             ],
             show_progress: true,
+            progress_style: "chips".to_string(),
             visual_theme: theme.to_string(),
             include_ig_frame: true,
             platform: canvas.platform,

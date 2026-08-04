@@ -60,8 +60,14 @@ pub struct DesignTokens {
 }
 
 impl DesignTokens {
-    pub fn to_css_variables(&self) -> String {
-        let mut lines = vec![":root {".to_string()];
+    /// Return all CSS variable declarations as `  --name: value;` lines (no
+    /// `:root {}` wrapper). Usable for per-slide scoped overrides.
+    pub fn css_variable_pairs(&self) -> String {
+        self.css_variable_lines().join("\n")
+    }
+
+    fn css_variable_lines(&self) -> Vec<String> {
+        let mut lines = vec![];
 
         let color_tokens = vec![
             ("primary", &self.primary),
@@ -143,6 +149,12 @@ impl DesignTokens {
             lines.push(format!("  --space-{}: {}px;", step, pixels));
         }
 
+        lines
+    }
+
+    pub fn to_css_variables(&self) -> String {
+        let mut lines = vec![":root {".to_string()];
+        lines.extend(self.css_variable_lines());
         lines.push("}".to_string());
         lines.join("\n")
     }

@@ -369,7 +369,7 @@ pub fn hero_layout(
         tokens,
         bg_style,
         decorations,
-        "60px var(--space-6) 60px",
+        "16px var(--space-6) 20px",
         justify_val,
     )
 }
@@ -408,7 +408,7 @@ pub fn split_layout(
         tokens,
         bg_style,
         decorations,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     )
 }
@@ -431,7 +431,7 @@ pub fn grid_layout(
         tokens,
         bg_style,
         decorations,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     )
 }
@@ -459,7 +459,7 @@ pub fn timeline_layout(
         tokens,
         bg_style,
         true,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     )
 }
@@ -475,7 +475,7 @@ pub fn cta_layout(
         r#"<div style="text-align:{};">{}</div>"#,
         align, content_html
     );
-    slide_base(&content, tokens, bg_style, true, "80px 64px 80px", "center")
+    slide_base(&content, tokens, bg_style, true, "16px 64px 20px", "center")
 }
 
 #[allow(dead_code)]
@@ -495,7 +495,7 @@ pub fn bento_layout(
         tokens,
         bg_style,
         true,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     )
 }

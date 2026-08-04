@@ -1,13 +1,23 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 pub struct SlideSpec {
     pub html: String,
     pub background: String, // light, dark, gradient, mesh, hero
     pub variant: String,
     pub theme: String,
     pub archetype: String,
+    /// Per-slide CSS variable overrides (e.g. "--heading: 'X'; --family-hue: 40") that
+    /// scope over the carousel-level `:root` block. Lets each slide in one carousel
+    /// carry its own typology/color-scheme instead of sharing one global token set.
+    #[serde(default)]
+    pub css_vars: Option<String>,
+    /// Per-slide Google Fonts URL (the slide's typology font pairing). The carousel
+    /// loads every distinct URL across slides so each typology's fonts actually
+    /// render instead of falling back to the single global pairing.
+    #[serde(default)]
+    pub google_fonts_url: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -23,12 +33,19 @@ pub struct CarouselSpec {
     pub url: String,
     pub hashtags: Vec<String>,
     pub show_progress: bool,
+    /// Progress bar variant: "chips" (segmented, default), "line" (thin line), "none".
+    #[serde(default = "default_progress_style")]
+    pub progress_style: String,
     pub visual_theme: String,
     pub include_ig_frame: bool,
     pub platform: String,
     pub aspect_ratio: String,
     pub canvas_width: u32,
     pub canvas_height: u32,
+}
+
+fn default_progress_style() -> String {
+    "chips".to_string()
 }
 
 pub fn render_carousel_html(spec: &CarouselSpec) -> String {
@@ -95,18 +112,38 @@ body {
   overflow: hidden;
 }
 .slide--full-bleed { overflow: hidden; }
+/* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
+   render ONLY inside .slide-body; the corner text lives in the bands so slide
+   content can never collide with it. The body is the only place slide-type
+   components are rendered. */
 .slide-composition {
   width: var(--composition-width); height: var(--composition-height);
   position: relative; overflow: hidden; flex-shrink: 0;
+  display: flex; flex-direction: column;
+}
+.slide-header {
+  flex: 0 0 var(--chrome-header-h, 36px); min-height: var(--chrome-header-h, 36px);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 var(--space-5, 44px); z-index: 45;
+}
+.slide-body {
+  flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden;
+  z-index: 10;
+}
+.slide-footer {
+  flex: 0 0 var(--chrome-footer-h, 40px); min-height: var(--chrome-footer-h, 40px);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 0 var(--space-5, 44px); z-index: 45;
 }
 /* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
-   The inner div (gradient + noise + shapes) is stretched to fill the slide,
-   while content stays at designed 420×525 composition dimensions.
-   The .slide element's overflow:hidden clips at the final slide boundary. */
+   The inner div (gradient + noise + shapes) inside .slide-body is stretched
+   to fill the slide, while content stays at designed 420×525 composition
+   dimensions. The .slide element's overflow:hidden clips at the final slide
+   boundary. */
 .slide--full-bleed .slide-composition {
   overflow: visible;
 }
-.slide--full-bleed .slide-composition > div:first-of-type {
+.slide--full-bleed .slide-body > div:first-of-type {
   position: absolute !important;
   top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
@@ -258,14 +295,19 @@ body {
   background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
 }
 
+/* Progress bar variants, placed INSIDE the .slide-footer band. Default
+   "chips": segmented breadcrumb chips. "line": a single thin progress line.
+   "none": no progress element rendered. All are in-flow so the footer band
+   height is stable and the validator can rely on the band geometry. */
 .breadcrumb-progress {
-  position: absolute; bottom: var(--space-1, 8px); left: var(--space-3, 28px); right: var(--space-3, 28px);
   display: flex; align-items: center; gap: 6px;
+  flex: 0 1 160px; min-width: 0;
   z-index: 50;
 }
 .breadcrumb-chip {
   height: 2px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 6px;
 }
 .slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
 .slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
@@ -276,6 +318,21 @@ body {
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.progress-line {
+  flex: 1 1 120px; height: 3px; border-radius: 999px; overflow: hidden;
+  background: rgba(0,0,0,0.12);
+}
+.slide--dark .progress-line, .slide--gradient .progress-line, .slide--hero .progress-line {
+  background: rgba(255,255,255,0.2);
+}
+.progress-line-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--primary, #7C3AED);
+}
+.slide--dark .progress-line-fill, .slide--gradient .progress-line-fill, .slide--hero .progress-line-fill {
+  background: #ffffff;
+}
 
 .swipe-arrow {
   position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
@@ -288,13 +345,12 @@ body {
 .slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
 .slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
 
-.slide__overlay { position: absolute; inset: 0; pointer-events: none; z-index: 45; padding: var(--space-3, 24px) var(--space-3, 28px); display: flex; flex-direction: column; justify-content: space-between; }
-.slide__overlay-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.slide__overlay-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+/* Corner text inside the header/footer bands. These are the ONLY chrome
+   elements; slide types never render here (they live in .slide-body). */
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
 .overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
@@ -386,112 +442,125 @@ body {
             ""
         };
 
-        // Top/bottom overlay
-        let mut overlay_html = String::new();
-        if !spec.brand_name.is_empty()
-            || !spec.topic.is_empty()
-            || !spec.url.is_empty()
-            || !spec.hashtags.is_empty()
-        {
-            // When the slide has a background image, add inline text-shadow
-            // to overlay spans so the validator recognizes the contrast
-            // backing and the text remains legible over photographic backgrounds.
-            let has_bg_img = slide.html.contains("background-image");
-            let shadow_attr = if has_bg_img {
-                r#" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);""#
-            } else {
-                ""
-            };
-            let top_left = if !spec.brand_name.is_empty() {
-                format!(
-                    r#"<span class="overlay__brand"{}>{}</span>"#,
-                    shadow_attr,
-                    escape_html(&spec.brand_name)
-                )
-            } else {
-                String::new()
-            };
-            let top_right = if !spec.topic.is_empty() {
-                format!(
-                    r#"<span class="overlay__topic"{}>{}</span>"#,
-                    shadow_attr,
-                    escape_html(&spec.topic)
-                )
-            } else {
-                String::new()
-            };
-            let bottom_left = if !spec.url.is_empty() {
-                format!(
-                    r#"<span class="overlay__url"{}>{}</span>"#,
-                    shadow_attr,
-                    escape_html(&spec.url)
-                )
-            } else {
-                String::new()
-            };
+        // ── Banded chrome ─────────────────────────────────────────────────────
+        // Header band: brand (left) + topic (right). Footer band: url (left),
+        // progress bar, hashtags (right). The slide's HTML is wrapped in
+        // .slide-body — the ONLY place slide types render. Corner text never
+        // overlaps slide content by construction.
+        let has_bg_img = slide.html.contains("background-image");
+        let shadow_attr = if has_bg_img {
+            r#" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);""#
+        } else {
+            ""
+        };
+        let header_left = if !spec.brand_name.is_empty() {
+            format!(
+                r#"<span class="overlay__brand"{}>{}</span>"#,
+                shadow_attr,
+                escape_html(&spec.brand_name)
+            )
+        } else {
+            String::new()
+        };
+        let header_right = if !spec.topic.is_empty() {
+            format!(
+                r#"<span class="overlay__topic"{}>{}</span>"#,
+                shadow_attr,
+                escape_html(&spec.topic)
+            )
+        } else {
+            String::new()
+        };
+        let footer_left = if !spec.url.is_empty() {
+            format!(
+                r#"<span class="overlay__url"{}>{}</span>"#,
+                shadow_attr,
+                escape_html(&spec.url)
+            )
+        } else {
+            String::new()
+        };
 
-            let mut clean_tags = vec![];
-            let mut char_count = 0;
-            for h in spec.hashtags.iter().take(2) {
-                let tag = format!("#{}", h.trim_start_matches('#'));
-                if char_count + tag.len() + (if clean_tags.is_empty() { 0 } else { 1 }) <= 24 {
-                    clean_tags.push(tag.clone());
-                    char_count += tag.len() + (if clean_tags.len() > 1 { 1 } else { 0 });
-                } else {
-                    break;
-                }
+        let mut clean_tags = vec![];
+        let mut char_count = 0;
+        for h in spec.hashtags.iter().take(2) {
+            let tag = format!("#{}", h.trim_start_matches('#'));
+            if char_count + tag.len() + (if clean_tags.is_empty() { 0 } else { 1 }) <= 24 {
+                clean_tags.push(tag.clone());
+                char_count += tag.len() + (if clean_tags.len() > 1 { 1 } else { 0 });
+            } else {
+                break;
             }
-            let hashtags_str = clean_tags.join(" ");
-            let bottom_right = if !hashtags_str.is_empty() {
-                format!(
-                    r#"<span class="overlay__hashtags"{}>{}</span>"#,
-                    shadow_attr,
-                    escape_html(&hashtags_str)
-                )
-            } else {
-                String::new()
-            };
-
-            overlay_html = format!(
-                r#"  <div class="slide__overlay">
-    <div class="slide__overlay-top">
-      {}
-      {}
-    </div>
-    <div class="slide__overlay-bottom">
-      {}
-      {}
-    </div>
-  </div>"#,
-                top_left, top_right, bottom_left, bottom_right
-            );
         }
+        let hashtags_str = clean_tags.join(" ");
+        let footer_right = if !hashtags_str.is_empty() {
+            format!(
+                r#"<span class="overlay__hashtags"{}>{}</span>"#,
+                shadow_attr,
+                escape_html(&hashtags_str)
+            )
+        } else {
+            String::new()
+        };
 
-        // Slide progress chips
+        // Slide progress — variant chips (default), line, or none.
         let mut progress_html = String::new();
-        if show_progress_slide {
-            let mut chips = vec![];
-            for i in 0..total {
-                if i < idx {
-                    chips.push("completed");
-                } else if i == idx {
-                    chips.push("active");
-                } else {
-                    chips.push("");
+        let progress_style = spec.progress_style.trim().to_lowercase();
+        if show_progress_slide && progress_style != "none" {
+            if progress_style == "line" {
+                let pct = ((idx + 1) as f32 / total as f32 * 100.0).round() as u32;
+                progress_html = format!(
+                    r#"  <div class="progress-line"><div class="progress-line-fill" style="width:{}%"></div></div>"#,
+                    pct
+                );
+            } else {
+                let mut chips = vec![];
+                for i in 0..total {
+                    if i < idx {
+                        chips.push("completed");
+                    } else if i == idx {
+                        chips.push("active");
+                    } else {
+                        chips.push("");
+                    }
                 }
-            }
-            let chip_html: String = chips
-                .into_iter()
-                .map(|state| format!(r#"<div class="breadcrumb-chip {}"></div>"#, state))
-                .collect();
-
-            progress_html = format!(
-                r#"  <div class="breadcrumb-progress">
+                let chip_html: String = chips
+                    .into_iter()
+                    .map(|state| format!(r#"<div class="breadcrumb-chip {}"></div>"#, state))
+                    .collect();
+                progress_html = format!(
+                    r#"  <div class="breadcrumb-progress">
     {}
   </div>"#,
-                chip_html
-            );
+                    chip_html
+                );
+            }
         }
+
+        let header_html = if header_left.is_empty() && header_right.is_empty() {
+            String::new()
+        } else {
+            format!(
+                r#"  <div class="slide-header">
+    {}
+    {}
+  </div>"#,
+                header_left, header_right
+            )
+        };
+        let footer_html = if footer_left.is_empty() && progress_html.is_empty() && footer_right.is_empty()
+        {
+            String::new()
+        } else {
+            format!(
+                r#"  <div class="slide-footer">
+    {}
+    {}
+    {}
+  </div>"#,
+                footer_left, progress_html, footer_right
+            )
+        };
 
         // Swipe Arrow
         let mut arrow_html = String::new();
@@ -514,24 +583,37 @@ body {
             ""
         };
 
-        // Overlay, progress, and arrow are placed as direct children of .slide
-        // (not .slide-composition) so they anchor to the full canvas for
-        // full-bleed aspect ratios. For 4:5 (canvas == composition), this is
-        // a no-op since .slide and .slide-composition share the same bounds.
+        // Header, body, and footer are children of .slide-composition (which
+        // stays 420×525), so chrome anchors to the composition even when the
+        // canvas bleeds. The arrow anchors to the full canvas.
+        let slide_id = format!("slide-{}", idx);
+        let per_slide_css = match &slide.css_vars {
+            Some(vars) if !vars.trim().is_empty() => format!(
+                r#"<style>#{id} {{ {vars} }}</style>"#,
+                id = slide_id,
+                vars = vars
+            ),
+            _ => String::new(),
+        };
         slides_html.push_str(&format!(
-            r#"<div class="slide {}{}"{}><div class="slide-composition">
-{}
-</div>{}
-{}
-{}</div>
+            r#"<div id="{slide_id}" class="slide {bg_class}{full_bleed_class}"{bg_style}><div class="slide-composition">
+{header_html}
+  <div class="slide-body">
+{slide_html}
+  </div>
+{footer_html}
+</div>
+{arrow_html}</div>{per_slide_css}
 "#,
-            bg_class,
-            full_bleed_class,
-            bg_style,
-            slide.html,
-            overlay_html,
-            progress_html,
-            arrow_html
+            slide_id = slide_id,
+            bg_class = bg_class,
+            full_bleed_class = full_bleed_class,
+            bg_style = bg_style,
+            header_html = header_html,
+            slide_html = slide.html,
+            footer_html = footer_html,
+            arrow_html = arrow_html,
+            per_slide_css = per_slide_css
         ));
     }
 
@@ -626,14 +708,25 @@ body {
 "#.replace("[TOTAL]", &total.to_string()).replace("[SLIDE_WIDTH]", &base_w.to_string());
     }
 
-    let font_link = if !spec.google_fonts_url.is_empty() {
-        format!(
-            r#"<link href="{}" rel="stylesheet">"#,
-            spec.google_fonts_url
-        )
-    } else {
-        String::new()
-    };
+    // Each slide may carry its own Google Fonts URL (its typology pairing). Emit one
+    // <link> per distinct URL so every typology's fonts actually load; the
+    // carousel-level spec.google_fonts_url remains the fallback for older inputs.
+    let mut font_urls: Vec<String> = Vec::new();
+    if !spec.google_fonts_url.is_empty() {
+        font_urls.push(spec.google_fonts_url.clone());
+    }
+    for slide in &spec.slides {
+        if let Some(url) = slide.google_fonts_url.as_deref() {
+            if !url.is_empty() && !font_urls.iter().any(|u| u == url) {
+                font_urls.push(url.to_string());
+            }
+        }
+    }
+    let font_link = font_urls
+        .iter()
+        .map(|url| format!(r#"<link href="{}" rel="stylesheet">"#, url))
+        .collect::<Vec<_>>()
+        .join("\n");
 
     let carousel_html = format!(
         r#"{header}
@@ -889,6 +982,7 @@ mod tests {
                 variant: "test".to_string(),
                 theme: "minimal".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: ":root { --primary:#000; }".to_string(),
             google_fonts_url: String::new(),
@@ -900,6 +994,7 @@ mod tests {
             url: "https://example.com".to_string(),
             hashtags: vec![],
             show_progress: false,
+            progress_style: "chips".to_string(),
             visual_theme: "minimal".to_string(),
             include_ig_frame: false,
             platform: "instagram_portrait".to_string(),
@@ -932,6 +1027,7 @@ mod tests {
                 variant: "test".to_string(),
                 theme: "minimal".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: ":root { --primary:#000; }".to_string(),
             google_fonts_url: String::new(),
@@ -943,6 +1039,7 @@ mod tests {
             url: "https://example.com".to_string(),
             hashtags: vec![],
             show_progress: false,
+            progress_style: "chips".to_string(),
             visual_theme: "minimal".to_string(),
             include_ig_frame: false,
             platform: "instagram_portrait".to_string(),
@@ -972,6 +1069,7 @@ mod tests {
                 variant: "test".to_string(),
                 theme: "minimal".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: ":root { --primary:#000; }".to_string(),
             google_fonts_url: String::new(),
@@ -983,6 +1081,7 @@ mod tests {
             url: "https://example.com".to_string(),
             hashtags: vec![],
             show_progress: false,
+            progress_style: "chips".to_string(),
             visual_theme: "minimal".to_string(),
             include_ig_frame: false,
             platform: "instagram_reels".to_string(),
@@ -1009,6 +1108,7 @@ mod tests {
                 variant: "test".to_string(),
                 theme: "minimal".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: ":root { --primary:#000; }".to_string(),
             google_fonts_url: String::new(),
@@ -1020,6 +1120,7 @@ mod tests {
             url: "https://example.com".to_string(),
             hashtags: vec![],
             show_progress: false,
+            progress_style: "chips".to_string(),
             visual_theme: "minimal".to_string(),
             include_ig_frame: false,
             platform: "instagram_square".to_string(),
@@ -1051,6 +1152,7 @@ mod tests {
                 variant: "test".to_string(),
                 theme: "minimal".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: ":root { --primary:#000; }".to_string(),
             google_fonts_url: String::new(),
@@ -1062,6 +1164,7 @@ mod tests {
             url: "https://example.com".to_string(),
             hashtags: vec!["slideforge".to_string()],
             show_progress: true,
+            progress_style: "chips".to_string(),
             visual_theme: "minimal".to_string(),
             include_ig_frame: false,
             platform: "instagram_portrait".to_string(),
@@ -1077,5 +1180,104 @@ mod tests {
         assert!(html.contains(".breadcrumb-chip.active {\n  height: 3px;"));
         assert!(!html.contains("font-size: 9px !important"));
         assert!(!html.contains("font-size: 9.5px !important"));
+    }
+
+    #[test]
+    fn test_render_carousel_per_slide_fonts_and_css_vars() {
+        // Per-slide typology variance: each slide carries its own font URL and
+        // css_vars. The renderer must load every distinct font URL and scope
+        // each slide's vars to its own #slide-{idx} block.
+        let slide = |font_url: Option<&str>, css_vars: Option<&str>| SlideSpec {
+            html: "<div>hello</div>".to_string(),
+            background: "light".to_string(),
+            variant: "test".to_string(),
+            theme: "minimal".to_string(),
+            archetype: "educator".to_string(),
+            css_vars: css_vars.map(|s| s.to_string()),
+            google_fonts_url: font_url.map(|s| s.to_string()),
+        };
+        let spec = CarouselSpec {
+            slides: vec![
+                slide(
+                    Some("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap"),
+                    Some("  --primary: #C62828;\n  --font-heading: 'Playfair Display', serif;"),
+                ),
+                slide(
+                    Some("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap"),
+                    Some("  --primary: #0F172A;\n  --font-heading: 'Space Grotesk', serif;"),
+                ),
+                // Duplicate of slide 0's URL: must still emit only one link for it.
+                slide(Some("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap"), None),
+            ],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            progress_style: "chips".to_string(),
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "4:5".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1350,
+        };
+
+        let html = render_carousel_html(&spec);
+        // Both distinct font URLs are loaded (duplicate deduped).
+        assert_eq!(
+            html.matches("rel=\"stylesheet\"").count(),
+            2,
+            "expected exactly 2 font links, got: {}",
+            html
+        );
+        assert!(html.contains("family=Playfair+Display"));
+        assert!(html.contains("family=Space+Grotesk"));
+        // Per-slide vars are scoped to the matching slide id.
+        assert!(html.contains(r#"<style>#slide-0 {   --primary: #C62828;"#));
+        assert!(html.contains(r#"<style>#slide-1 {   --primary: #0F172A;"#));
+        // Slide 2 has no css_vars -> no scoped block for it.
+        assert!(!html.contains("#slide-2 {"));
+    }
+
+    #[test]
+    fn test_render_carousel_falls_back_to_spec_font_url() {
+        // Slides without their own font URL fall back to the carousel-level URL.
+        let spec = CarouselSpec {
+            slides: vec![SlideSpec {
+                html: "<div>hello</div>".to_string(),
+                background: "light".to_string(),
+                variant: "test".to_string(),
+                theme: "minimal".to_string(),
+                archetype: "educator".to_string(),
+                ..Default::default()
+            }],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: "https://fonts.googleapis.com/css2?family=Inter&display=swap".to_string(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            brand_name: "Brand".to_string(),
+            brand_handle: "@brand".to_string(),
+            topic: "Topic".to_string(),
+            url: "https://example.com".to_string(),
+            hashtags: vec![],
+            show_progress: false,
+            progress_style: "chips".to_string(),
+            visual_theme: "minimal".to_string(),
+            include_ig_frame: false,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "4:5".to_string(),
+            canvas_width: 1080,
+            canvas_height: 1350,
+        };
+
+        let html = render_carousel_html(&spec);
+        assert_eq!(html.matches("rel=\"stylesheet\"").count(), 1);
+        assert!(html.contains("family=Inter"));
     }
 }

@@ -805,6 +805,24 @@ pub fn hero_slide(
 
     let effective_variant = variant;
 
+    // Automatic type-fit (shared overflow model): the display tier (113px) turns
+    // a long hero headline into a wall that overflows by ~230px. Cap the headline
+    // to 2 wrapped lines in the ~320px hero column via the same model the
+    // validator gate uses, so fitted-at-source == accepted-by-gate.
+    let display_tier = tokens
+        .type_scale
+        .get("display")
+        .map(|t| t.font_size as f32)
+        .unwrap_or(40.0);
+    let hero_title_size = crate::overflow_model::fit_font_size_to_lines(
+        headline,
+        320.0,
+        2,
+        1.05,
+        30.0,
+        display_tier,
+    ) as i32;
+
     // Animated right-pointing arrow indicator for carousel progression
     let arrow_html = r#"<div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style>"#;
 
@@ -823,14 +841,9 @@ pub fn hero_slide(
         } else {
             String::new()
         };
-        let title_size = tokens
-            .type_scale
-            .get("display")
-            .map(|t| t.font_size)
-            .unwrap_or(40);
         let headline_html = format!(
-            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0 0 8px;">{}</h1>"#,
-            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0 0 8px;">{}</h1>"#,
+            tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
         );
         let sub_html = if !subheadline.is_empty() {
             format!(
@@ -885,14 +898,9 @@ pub fn hero_slide(
         } else {
             String::new()
         };
-        let title_size = tokens
-            .type_scale
-            .get("display")
-            .map(|t| t.font_size)
-            .unwrap_or(40);
         let headline_html = format!(
-            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>"#,
-            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0;max-width:320px;">{}</h1>"#,
+            tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
         );
         let accent_bar = format!(
             r#"<div style="width:76px;height:4px;background:{};border-radius:{};margin:var(--space-3) 0;"></div>"#,
@@ -911,7 +919,7 @@ pub fn hero_slide(
             r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}{}{}{}{}</div>"#,
             kicker_html, headline_html, accent_bar, sub_html, arrow_html
         );
-        slide_base(&content, tokens, bg_style, true, "80px 52px", "center")
+        slide_base(&content, tokens, bg_style, true, "16px 52px", "center")
     } else if effective_variant == "centered" {
         // centered variant: editorial magazine-style hero — learn from chapter variant
         // Use tagline as kicker (like chapter's badge), no glass container badge
@@ -928,14 +936,9 @@ pub fn hero_slide(
         } else {
             String::new()
         };
-        let title_size = tokens
-            .type_scale
-            .get("display")
-            .map(|t| t.font_size)
-            .unwrap_or(40);
         let headline_html = format!(
-            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>"#,
-            tokens.heading_font, title_size, colors.text_primary, escape_html(headline)
+            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0;max-width:320px;">{}</h1>"#,
+            tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
         );
         let sub_html = if !subheadline.is_empty() {
             format!(
@@ -955,7 +958,7 @@ pub fn hero_slide(
             r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">{}{}{}{}{}</div>"#,
             kicker_html, headline_html, accent, sub_html, arrow_html
         );
-        slide_base(&content, tokens, bg_style, true, "80px 52px", "center")
+        slide_base(&content, tokens, bg_style, true, "16px 52px", "center")
     } else {
         // left-aligned default (kept for backwards compat)
         let align = "left";
@@ -1030,14 +1033,28 @@ pub fn quote_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
 
-    // Dynamic font size based on quote length
-    let quote_font_size = if quote.len() < 60 {
-        format!("{}px", tokens.type_scale.get("display").unwrap().font_size)
-    } else if quote.len() < 120 {
-        format!("{}px", tokens.type_scale.get("headline").unwrap().font_size)
-    } else {
-        format!("{}px", tokens.type_scale.get("title").unwrap().font_size)
-    };
+    // Automatic type-fit (shared overflow model): size the quote so it fits the
+    // glass card's inner height. The display tier (113px) turns a 40-char quote
+    // into a ~400px wall; fit_font_size picks the largest size that fits.
+    // Geometry: composition 420 − 2×44 slide padding − 2×30 glass padding = 272px
+    // column; 405px available − glass pad (2×26) − 64px quote mark − ~90px
+    // divider+attribution. Budget and width live in overflow_model.rs (single
+    // calibration point shared with the validator gate — see QUOTE_* consts).
+    let quote_column_width = crate::overflow_model::QUOTE_COLUMN_WIDTH;
+    let quote_max_height = crate::overflow_model::QUOTE_TEXT_BUDGET;
+    let quote_line_height = 1.25;
+    let max_quote_font = tokens.type_scale.get("display").unwrap().font_size as f32;
+    let quote_font_size = format!(
+        "{}px",
+        crate::overflow_model::fit_font_size(
+            quote,
+            quote_column_width,
+            quote_max_height,
+            quote_line_height,
+            26.0,
+            max_quote_font,
+        ) as i32
+    );
 
     let headline_fw = tokens.type_scale.get("headline").unwrap().font_weight;
     let glass_variant = if is_dark { "dark" } else { "light" };
@@ -1109,7 +1126,7 @@ pub fn quote_slide(
                 tokens,
                 bg_style,
                 false,
-                "80px 44px 80px",
+                "16px 44px 20px",
                 "center",
             )
         }
@@ -1152,7 +1169,7 @@ pub fn quote_slide(
                 tokens,
                 bg_style,
                 false,
-                "80px 44px 80px",
+                "16px 44px 20px",
                 "center",
             )
         }
@@ -1201,7 +1218,7 @@ pub fn quote_slide(
                 tokens,
                 bg_style,
                 false,
-                "80px 44px 80px",
+                "16px 44px 20px",
                 "center",
             )
         }
@@ -1462,9 +1479,9 @@ pub fn split_features_slide(
 
     let padding_val = if padding.is_empty() {
         if image_feature_layout {
-            "48px 36px 56px"
+            "16px 36px 20px"
         } else {
-            "80px var(--space-6) 80px"
+            "16px var(--space-6) 20px"
         }
     } else {
         padding
@@ -1616,10 +1633,10 @@ pub fn text_block_slide(
     );
 
     let padding_val = match effective_variant {
-        "centered" => "80px 48px var(--space-12)",
-        "narrow" => "80px 56px var(--space-12)",
-        "wide" => "80px 36px var(--space-12)",
-        _ => "80px 48px var(--space-12)",
+        "centered" => "16px 48px 20px",
+        "narrow" => "16px 56px 20px",
+        "wide" => "16px 36px 20px",
+        _ => "16px 48px 20px",
     };
     let html = slide_base(
         &content,
@@ -1729,7 +1746,7 @@ pub fn metric_card_slide(
         tokens,
         bg_style,
         false,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -2169,7 +2186,7 @@ pub fn chart_slide(
         tokens,
         bg_style,
         false,
-        "80px var(--space-6) 80px",
+        "16px var(--space-6) 20px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -2259,7 +2276,7 @@ fn gauge_slide(
         tokens.body_font,
         colors.text_secondary
     );
-    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "default", "theme": theme})
 }
@@ -2575,6 +2592,13 @@ fn funnel_chart_slide(
     let top_val = vals.first().copied().unwrap_or(1.0).max(1.0);
 
     let num_steps = steps.len().min(5);
+    // Density scaling (shared overflow model): 5 rows × 34px bars + arrows + title
+    // exceeded the 405px safe height by ~22px. Shrink bar height for dense funnels.
+    let bar_height = match num_steps {
+        5 => 26,
+        4 => 30,
+        _ => 34,
+    };
     let funnel_html: String = steps.iter().take(5).enumerate().map(|(i, item)| {
         let lbl = item.get("label").or_else(|| item.get("title")).and_then(|v| v.as_str()).unwrap_or("");
         let current_val = vals.get(i).copied().unwrap_or(0.0);
@@ -2589,7 +2613,7 @@ fn funnel_chart_slide(
         let opacity_pct = 1.0 - (i as f64 * 0.15);
 
             let arrow = if i < num_steps - 1 {
-                format!(r#"<div style="text-align:center;font-size:10px;color:{};margin:2px 0;font-weight:bold;">↓</div>"#, colors.text_secondary)
+                format!(r#"<div style="text-align:center;font-size:10px;color:{};margin:1px 0;font-weight:bold;">↓</div>"#, colors.text_secondary)
         } else {
             String::new()
         };
@@ -2598,17 +2622,17 @@ fn funnel_chart_slide(
             format!(
                 r#"<div style="position:relative;width:100%;margin:0 auto;display:flex;align-items:center;gap:var(--space-1);">
                     <span style="font-family:{};font-size:10px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.04em;flex:1;text-align:right;">{}</span>
-                    <div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;height:34px;min-width:12px;flex-shrink:0;"></div>
+                    <div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;height:{}px;min-width:12px;flex-shrink:0;"></div>
                     <strong style="font-family:{};font-size:12px;color:{};flex:1;">{}</strong>
                 </div>{}"#,
                 tokens.body_font, colors.text_primary, escape_html(lbl),
-                width_pct, colors.primary, opacity_pct,
+                width_pct, colors.primary, opacity_pct, bar_height,
                 tokens.body_font, colors.text_primary, escape_html(&val_display),
                 arrow
             )
         } else {
             format!(
-                r#"<div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;padding:8px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                r#"<div style="width:{}%;background:{};opacity:{:.2};border-radius:6px;padding:6px 14px;box-sizing:border-box;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
                     <span style="font-family:{};font-size:10px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.04em;">{}</span>
                     <strong style="font-family:{};font-size:12px;color:{};">{}</strong>
                 </div>{}"#,
@@ -2845,7 +2869,7 @@ pub fn section_divider_slide(
         colors.text_secondary,
         escape_html(subtitle)
     );
-    let html = slide_base(&content, tokens, bg_style, true, "80px 52px", "center");
+    let html = slide_base(&content, tokens, bg_style, true, "16px 52px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "section_divider", "theme": theme})
 }
@@ -2933,7 +2957,7 @@ pub fn problem_solution_slide(
         escape_html(solution),
         proof_grid_html
     );
-    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "problem_solution", "theme": theme})
 }
@@ -3018,31 +3042,51 @@ pub fn timeline_slide(
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
 
+    // Density scaling (shared overflow model): 4-5 items at fixed sizes stack
+    // ~203px too tall under the new 41px-body type tiers. Scale item fonts,
+    // padding, and gaps by step count so the stack fits the 405px safe height.
+    let step_count = steps.len();
+    let (item_title_size, item_desc_size, item_pad, item_gap, item_phase_size) = match step_count {
+        5 => (11.5, 9.5, 8, 3, 8.5),
+        4 => (12.5, 10.5, 10, 4, 9.0),
+        _ => (13.0, 11.0, 12, 6, 9.5),
+    };
+    let step_desc_text: usize = steps
+        .iter()
+        .map(|s| {
+            s.get("description")
+                .and_then(|v| v.as_str())
+                .map(|d| d.len())
+                .unwrap_or(0)
+        })
+        .sum::<usize>();
+    // Long descriptions push the item body into extra lines: trim desc font further.
+    let item_desc_size = if step_desc_text > 180 { item_desc_size - 1.0 } else { item_desc_size };
+
     let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
         let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
         let step_desc = step.get("description").and_then(|v| v.as_str()).unwrap_or("");
         format!(
-            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{}px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
                 <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:{};font-size:9.5px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
-                    <h3 style="font-family:{};font-size:13px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+                    <span style="font-family:{};font-size:{}px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
+                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
                 </div>
-                <p style="font-family:{};font-size:11px;color:{};margin:0;line-height:1.4;">{}</p>
+                <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.4;">{}</p>
             </div>"#,
-            card_bg, border, radius,
-            tokens.heading_font, colors.primary, colors.primary, idx + 1,
-            tokens.heading_font, colors.text_primary, escape_html(step_title),
-            tokens.body_font, colors.text_secondary, escape_html(step_desc)
+            card_bg, border, radius, item_pad,
+            tokens.heading_font, item_phase_size, colors.primary, colors.primary, idx + 1,
+            tokens.heading_font, item_title_size, colors.text_primary, escape_html(step_title),
+            tokens.body_font, item_desc_size, colors.text_secondary, escape_html(step_desc)
         )
     }).collect();
 
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:{}px;">
             {}
-            <div style="display:flex;flex-direction:column;gap:10px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Chronological roadmap tracking SlideForge engine milestones from core compilation to headless PNG export.</p>
+            <div style="display:flex;flex-direction:column;gap:{}px;width:100%;border-left:3px solid {};padding-left:14px;box-sizing:border-box;">{}</div>
         </div>"#,
-        heading, colors.primary, items_html, tokens.body_font, colors.text_secondary
+        item_gap, heading, item_gap, colors.primary, items_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -3130,7 +3174,7 @@ pub fn definition_slide(
         tokens,
         bg_style,
         false,
-        "72px 44px",
+        "16px 44px",
         "center",
     );
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -3267,7 +3311,7 @@ pub fn myth_fact_slide(
         }
     };
 
-    let html = slide_base(&content, tokens, bg_style, false, "80px 48px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 48px", "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({
         "html": html,
@@ -3320,9 +3364,10 @@ pub fn checklist_action_plan_slide(
     }).sum();
     
     // Calculate actual content requirements
-    const COMP_HEIGHT: f32 = 525.0;
-    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
-    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    // Shared banded-chrome model: body region = composition − 36px header band
+    // − 40px footer band. Single calibration point in overflow_model.rs so the
+    // renderer's density scaling and the validator gate can never drift.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
     
     // Estimate required height: title + items + gaps.
     // Empirical card heights derived from rendered geometry (per directive #1774):
@@ -3346,11 +3391,11 @@ pub fn checklist_action_plan_slide(
     let content_padding = if total_padding_needed < 40.0 {
         "16px var(--space-6) 16px" // Very aggressive
     } else if total_padding_needed < 60.0 {
-        "24px var(--space-6) 24px" // Aggressive
+        "16px var(--space-6) 20px" // Aggressive
     } else if total_padding_needed < 80.0 {
-        "40px var(--space-6) 40px" // Moderate
+        "16px var(--space-6) 20px" // Moderate
     } else {
-        "72px 44px" // Standard
+        "16px 44px" // Standard
     };
     
     // Scale fonts based on how tight the fit is
@@ -3470,9 +3515,10 @@ pub fn pricing_plan_slide(
     let plan_count = plans.len();
     
     // Calculate actual content requirements
-    const COMP_HEIGHT: f32 = 525.0;
-    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
-    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    // Shared banded-chrome model: body region = composition − 36px header band
+    // − 40px footer band. Single calibration point in overflow_model.rs so the
+    // renderer's density scaling and the validator gate can never drift.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
     
     // Estimate required height: title + plans + gaps
     let title_height = 30.0; // 15px font + 15px margin
@@ -3491,11 +3537,11 @@ pub fn pricing_plan_slide(
     let content_padding = if total_padding_needed < 40.0 {
         "16px var(--space-6) 16px" // Very aggressive
     } else if total_padding_needed < 60.0 {
-        "24px var(--space-6) 24px" // Aggressive
+        "16px var(--space-6) 20px" // Aggressive
     } else if total_padding_needed < 80.0 {
-        "40px var(--space-6) 40px" // Moderate
+        "16px var(--space-6) 20px" // Moderate
     } else {
-        "72px 44px" // Standard
+        "16px 44px" // Standard
     };
     
     // Scale fonts based on how tight the fit is
@@ -3687,7 +3733,7 @@ pub fn testimonial_avatar_slide(
         colors.text_secondary,
         escape_html(role)
     );
-    let html = slide_base(&content, tokens, bg_style, false, "80px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "testimonial_avatar", "theme": theme})
 }
@@ -3742,7 +3788,7 @@ pub fn logo_cloud_slide(
         escape_html(title),
         cells
     );
-    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "logo_cloud", "theme": theme})
 }
@@ -3826,9 +3872,10 @@ pub fn process_map_slide(
     }).sum();
     
     // Calculate actual content requirements
-    const COMP_HEIGHT: f32 = 525.0;
-    const HEADER_FOOTER_SPACE: f32 = 120.0; // 60px header + 60px footer
-    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_FOOTER_SPACE;
+    // Shared banded-chrome model: body region = composition − 36px header band
+    // − 40px footer band. Single calibration point in overflow_model.rs so the
+    // renderer's density scaling and the validator gate can never drift.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
     
     // Estimate required height: title + items + gaps
     let title_height = 37.0; // 25px font + 12px margin
@@ -3847,11 +3894,11 @@ pub fn process_map_slide(
     let content_padding = if total_padding_needed < 40.0 {
         "16px var(--space-6) 16px" // Very aggressive
     } else if total_padding_needed < 60.0 {
-        "24px var(--space-6) 24px" // Aggressive
+        "16px var(--space-6) 20px" // Aggressive
     } else if total_padding_needed < 80.0 {
-        "40px var(--space-6) 40px" // Moderate
+        "16px var(--space-6) 20px" // Moderate
     } else {
-        "60px var(--space-6) 60px" // Standard
+        "16px var(--space-6) 20px" // Standard
     };
     
     // Scale fonts based on how tight the fit is
@@ -4003,7 +4050,7 @@ pub fn before_after_story_slide(
         escape_html(after),
         metric_html
     );
-    let html = slide_base(&content, tokens, bg_style, false, "72px 44px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
     json!({"html": html, "background": bg_style, "variant": "before_after_story", "theme": theme})
 }
@@ -4183,7 +4230,7 @@ pub fn qr_destination_slide(
         incentive_html
     );
 
-    let layout_padding = if !padding.is_empty() { padding } else { "60px 36px" };
+    let layout_padding = if !padding.is_empty() { padding } else { "16px 36px" };
     let html = slide_base(&content, tokens, bg_style, false, layout_padding, "center");
 
     let bg_img_to_inject = if effective_variant == "image-bg" {
@@ -5360,7 +5407,7 @@ pub fn image_caption_slide(
     };
 
     let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
+        "16px var(--space-6) 20px"
     } else {
         padding
     };
@@ -5582,7 +5629,7 @@ pub fn image_callout_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
+        "16px var(--space-6) 20px"
     } else {
         padding
     };
@@ -5809,7 +5856,7 @@ pub fn image_gallery_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "60px var(--space-6) 60px"
+        "16px var(--space-6) 20px"
     } else {
         padding
     };
@@ -6204,7 +6251,7 @@ pub fn image_collage_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
+        "16px var(--space-6) 20px"
     } else {
         padding
     };
@@ -6335,7 +6382,7 @@ pub fn image_comparison_slide(
     );
 
     let padding_val = if padding.is_empty() {
-        "80px var(--space-6) 80px"
+        "16px var(--space-6) 20px"
     } else {
         padding
     };
@@ -6469,7 +6516,7 @@ mod tests {
             0.4,
             "minimal",
             "educator",
-            "100px 50px 100px",
+            "16px 50px 20px",
             "MyBrand",
             "https://example.com/logo.png",
             "Scan MyBrand QR Code",
@@ -6478,7 +6525,7 @@ mod tests {
         assert!(html_custom.contains("data:image/svg+xml;utf8,"));
         assert!(html_custom.contains("Scan this QR code"));
         assert!(!html_custom.contains("Some caption text about this conversion"));
-        assert!(html_custom.contains("padding:100px 50px 100px;"));
+        assert!(html_custom.contains("padding:16px 50px 20px;"));
         assert!(html_custom.contains("MyBrand"));
         assert!(html_custom.contains("https://example.com/logo.png"));
         assert!(html_custom.contains("alt=\"Scan MyBrand QR Code\""));

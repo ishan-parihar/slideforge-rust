@@ -256,6 +256,8 @@ pub struct RenderCarouselRequest {
     pub url: Option<String>,
     pub hashtags: Option<Vec<String>>,
     pub show_progress: Option<bool>,
+    /// Progress bar variant: "chips" (segmented, default), "line", "none".
+    pub progress_style: Option<String>,
     pub platform: Option<String>,
     pub aspect_ratio: Option<String>,
 }
@@ -1055,10 +1057,42 @@ impl Server {
         )
         .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
+        // Compile-time design gate: the rendered slide must not overflow the
+        // slide body. Blocks the slide so nothing un-aesthetic reaches a deck.
+        let rendered_html = result
+            .get("html")
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
+        let design = validate::validate_layout(&slide_type, &params, Some(rendered_html), None);
+        if design
+            .errors
+            .iter()
+            .any(|e| e.contains("text_overflow"))
+        {
+            let error_msg = serde_json::json!({
+                "success": false,
+                "slide_type": slide_type,
+                "validation": {
+                    "errors": design.errors,
+                    "warnings": design.warnings,
+                },
+                "hint": "The rendered slide overflows the 420x525 slide body. Shorten the copy or reduce the font tier.",
+            });
+            return Ok(Json(RawJson(error_msg)));
+        }
+
         // Enrich the response with slide_type echo + validation warnings
         let mut enriched = result;
         if let Some(obj) = enriched.as_object_mut() {
             obj.insert("slide_type".to_string(), serde_json::json!(slide_type));
+            // Per-slide CSS variable pairs (bare declarations, no `:root {}` wrapper)
+            // so render_carousel can scope them to `#slide-{idx}`.
+            obj.insert("css_vars".to_string(), serde_json::json!(tokens.css_variable_pairs()));
+            // Per-slide font pairing URL so the carousel loads every typology's fonts.
+            obj.insert(
+                "google_fonts_url".to_string(),
+                serde_json::json!(tokens.google_fonts_url),
+            );
             if let Some(w) = &warnings {
                 obj.insert("validation".to_string(), w.clone());
             }
@@ -1143,6 +1177,11 @@ impl Server {
                 .clone()
                 .unwrap_or_else(|| state.hashtags.clone()),
             show_progress: req.show_progress.unwrap_or(state.show_progress),
+            progress_style: req
+                .progress_style
+                .clone()
+                .filter(|s| !s.is_empty())
+                .unwrap_or_else(|| "chips".to_string()),
             visual_theme: state.visual_theme.clone(),
             include_ig_frame: req.include_ig_frame.unwrap_or(true),
             platform: canvas.platform.clone(),
@@ -1831,6 +1870,7 @@ mod tests {
                 variant: "hero".to_string(),
                 theme: "modern".to_string(),
                 archetype: "educator".to_string(),
+                ..Default::default()
             }],
             css_variables: Some(":root { --primary: #4f46e5; }".to_string()),
             google_fonts_url: None,
@@ -1838,6 +1878,7 @@ mod tests {
             body_font: None,
             brand_name: None,
             brand_handle: None,
+            progress_style: None,
             include_ig_frame: Some(false),
             output_path: None,
             topic: None,

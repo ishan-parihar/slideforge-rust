@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde_json::{Value, json};
 
 use crate::slide_registry::get_slide_type_info;
@@ -1202,6 +1204,113 @@ mod tests {
 
 
     #[test]
+    fn test_validate_design_splits_id_first_slide_divs() {
+        // Regression: the renderer emits `<div id="slide-0" class="slide slide--light">`
+        // (id BEFORE class). The slide-split regex must be attribute-order agnostic
+        // or validate_design silently validates zero slides.
+        let html = r#"
+            <div id="slide-0" class="slide slide--light"><div class="slide-composition"><p style="font-size:16px;">Fine text</p></div></div>
+            <style>#slide-0 { --primary: #C62828; }</style>
+            <div id="slide-1" class="slide slide--dark"><div class="slide-composition"><span style="font-size:9px;">tiny</span></div></div>
+            <div id="slide-2" class="slide slide--mesh"><div class="slide-composition"><p style="font-size:16px;">OK</p></div></div>
+        "#;
+        let report = validate_design(html);
+        assert_eq!(report.slide_count, 3, "expected all 3 slides to be detected");
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|i| i.r#type == "tiny_text" && i.slide == 2),
+            "per-slide issue must be attributed to slide 2"
+        );
+    }
+
+    #[test]
+    fn test_validate_design_bare_fragment_validates_as_one_slide() {
+        // Compile-time validation passes a bare slide fragment (no `.slide` div).
+        // The fallback must validate it as one slide instead of silently passing.
+        let html = r#"
+            <div style="position:relative;"><span style="font-size:9px;font-weight:700;">Q1</span></div>
+        "#;
+        let report = validate_design(html);
+        assert_eq!(report.slide_count, 1);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|i| i.r#type == "tiny_text" && i.slide == 1)
+        );
+    }
+
+    #[test]
+    fn test_validate_design_warns_when_carousel_split_fails() {
+        // A carousel whose slide divs carry a `class` attribute WITHOUT the exact
+        // `slide` token (e.g. class="slide--light" only) — the split regex requires
+        // an exact `slide` class, so it matches nothing and must warn. Keep the
+        // `slide-composition` nodes intact so the carousel heuristic fires.
+        let mut html = String::from(
+            "<div id=\"slide-0\" class=\"slide--light\"><div class=\"slide-composition\">X</div></div>\n",
+        );
+        while html.len() < 21_000 {
+            html.push_str(
+                "<div id=\"slide-1\" class=\"slide--dark\"><div class=\"slide-composition\">Y</div></div>\n",
+            );
+        }
+        let report = validate_design(&html);
+        assert!(
+            report.issues.iter().any(|i| i.r#type == "slide_split_failed"),
+            "expected slide_split_failed warning, got {:?}",
+            report.issues.iter().map(|i| &i.r#type).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_validate_design_flags_113px_quote_overflow() {
+        // The harness quote (40 chars at the display tier) renders at 113px in a
+        // narrow column and overflows by ~400px. The shared overflow model must
+        // flag it as a text_overflow error even though the composition clips it.
+        let html = r#"
+            <div class="slide slide--light"><div class="slide-composition">
+                <div class="slide-content" style="padding:16px 44px 20px;">
+                    <blockquote style="font-family:Playfair Display;font-size:113px;font-weight:600;line-height:1.25;max-width:272px;">Design is the silent language of trust.</blockquote>
+                </div>
+            </div></div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|i| i.r#type == "text_overflow" && i.severity == "error"),
+            "expected text_overflow error, issues: {:?}",
+            report
+                .issues
+                .iter()
+                .map(|i| (&i.r#type, &i.severity))
+                .collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_validate_design_passes_short_text() {
+        // A short, normally-sized text stack must NOT be flagged.
+        let html = r#"
+            <div class="slide slide--light"><div class="slide-composition">
+                <div class="slide-content" style="padding:16px 44px 20px;">
+                    <h2 style="font-size:31px;line-height:1.2;">Short title</h2>
+                    <p style="font-size:15px;line-height:1.5;max-width:320px;">A compact supporting line.</p>
+                </div>
+            </div></div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            !report.issues.iter().any(|i| i.r#type == "text_overflow"),
+            "short text must not overflow, issues: {:?}",
+            report.issues.iter().map(|i| &i.r#type).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
     fn test_qr_destination_requires_url_and_cta() {
         let params = json!({"heading": "Read the full guide"});
         let r = validate_slide_spec("qr_destination", &params);
@@ -1604,6 +1713,128 @@ fn text_has_descender_risk(text: &str) -> bool {
         .any(|ch| matches!(ch, 'g' | 'j' | 'p' | 'q' | 'y' | 'Q' | 'J'))
 }
 
+/// Parse `--text-{level}-size: Npx` declarations from a slide's `<style>` blocks
+/// (the per-slide css_vars emitted by the renderer) so `var(--text-*-size)`
+/// references can be resolved to concrete pixel sizes.
+/// Parse the `.slide-content` vertical padding (top, bottom) from a slide
+/// fragment, tolerating `var(--space-N)` tokens in any shorthand slot.
+/// Returns `(top, bottom)` in px, defaulting to `(16.0, 20.0)` (the banded
+/// body-region defaults used by the renderer) when no `.slide-content`
+/// padding can be parsed.
+fn parse_slide_content_padding(slide_html: &str) -> (f32, f32) {
+    // Extract the padding declaration inside the .slide-content style attribute.
+    let style_re = Regex::new(r#"class="slide-content"[^>]*style="([^"]*)""#).unwrap();
+    let Some(cap) = style_re.captures(slide_html) else {
+        return (16.0, 20.0);
+    };
+    let style = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+    let padding_re = Regex::new(r#"padding\s*:\s*([^;"]+)"#).unwrap();
+    let Some(pcap) = padding_re.captures(style) else {
+        return (16.0, 20.0);
+    };
+    let decl = pcap.get(1).map(|m| m.as_str()).unwrap_or("");
+    // Extract numeric px tokens; var(--space-N, fallback) contributes its px
+    // fallback when present, otherwise it is treated as 0 (horizontal slots
+    // do not matter for vertical measurement).
+    let token_re = Regex::new(r"(?:var\(--space-\d+,\s*)?([0-9.]+)px").unwrap();
+    let values: Vec<f32> = token_re
+        .captures_iter(decl)
+        .filter_map(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()))
+        .collect();
+    match values.len() {
+        0 => (16.0, 20.0),
+        1 => (values[0], values[0]),
+        2 => (values[0], values[0]), // t b → top/bottom = t
+        3 => (values[0], values[2]), // t r b
+        _ => (values[0], values[2]), // t r b l → bottom = b
+    }
+}
+
+fn parse_css_size_vars(slide_html: &str) -> HashMap<String, f32> {
+    let mut map = HashMap::new();
+    let re = Regex::new(r"(--text-[a-z0-9]+-size):\s*([0-9.]+)px").unwrap();
+    for cap in re.captures_iter(slide_html) {
+        if let Some(v) = cap.get(2).and_then(|m| m.as_str().parse::<f32>().ok()) {
+            map.insert(cap.get(1).unwrap().as_str().to_string(), v);
+        }
+    }
+    map
+}
+
+/// Resolve an element's font size from its inline style: an explicit px value,
+/// a `var(--text-*-size)` reference (via `css_vars`), or a 16px fallback.
+fn resolve_font_size(style: &str, css_vars: &HashMap<String, f32>) -> f32 {
+    if let Some(px) = numeric_style_value(style, "font-size") {
+        return px;
+    }
+    let var_re = Regex::new(r"var\(--text-([a-z0-9]+)-size\)").unwrap();
+    if let Some(cap) = var_re.captures(style) {
+        let key = format!("--text-{}-size", cap.get(1).unwrap().as_str());
+        if let Some(v) = css_vars.get(&key) {
+            return *v;
+        }
+    }
+    16.0
+}
+
+/// Estimate the total rendered height of the slide's text stack. Walks leaf text
+/// elements (p, h1-h6, blockquote, span, li) that directly contain text, resolves
+/// their font size (inline px or css var), and sums wrapped line height plus
+/// inter-block margins. Absolute-positioned elements (decorations) are skipped
+/// because they do not contribute flow height.
+fn estimate_slide_text_height(slide_html: &str, css_vars: &HashMap<String, f32>) -> f32 {
+    let mut total = 0.0;
+    let text_re = Regex::new(
+        r#"(?s)<(p|h[1-6]|blockquote|span|li)\s+[^>]*style="([^"]*)"[^>]*>([^<]{2,})</"#,
+    )
+    .unwrap();
+    // Blockquote slides (quote_slide) wrap their text in a glass card with a
+    // decorative quote mark, divider, and attribution — QUOTE_CHROME_HEIGHT of
+    // fixed chrome the text-sum alone never sees. The renderer's fit budgets
+    // the quote text at QUOTE_TEXT_BUDGET; without this overhead the gate lets
+    // borderline wall-of-text quotes through (browser-measured drift). Add it
+    // once per blockquote. Constants shared with the renderer (single point).
+    let mut blockquote_chrome = 0.0;
+    let mut seen_blockquote = false;
+    let absolute_re = Regex::new(r"position\s*:\s*absolute").unwrap();
+    for cap in text_re.captures_iter(slide_html) {
+        let style = cap.get(2).map(|m| m.as_str()).unwrap_or("");
+        let absolute = absolute_re.is_match(style);
+        let tag = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+        // Blockquotes live inside glass cards (quote_slide), so their text column
+        // is QUOTE_COLUMN_WIDTH (272px), not the full 332px DEFAULT_COLUMN_WIDTH.
+        // Using the wider fallback underestimates wrapping and lets
+        // borderline-overflowing quotes through the gate — exactly the drift the
+        // browser measurement caught. Constant shared with the renderer's fit.
+        let fallback_width = if tag == "blockquote" {
+            crate::overflow_model::QUOTE_COLUMN_WIDTH
+        } else {
+            crate::overflow_model::DEFAULT_COLUMN_WIDTH
+        };
+        if absolute {
+            continue;
+        }
+        let raw_text = cap.get(3).map(|m| m.as_str()).unwrap_or("");
+        let plain = raw_text.replace("&amp;", "&").replace("&nbsp;", " ");
+        if plain.trim().is_empty() {
+            continue;
+        }
+        let font_size = resolve_font_size(style, css_vars);
+        let line_height = numeric_style_value(style, "line-height").unwrap_or(1.2);
+        let width = numeric_px_style_value(style, "max-width")
+            .or_else(|| numeric_px_style_value(style, "width"))
+            .unwrap_or(fallback_width);
+        total +=
+            crate::overflow_model::estimate_text_height(&plain, font_size, line_height, width);
+        total += 8.0; // inter-block margin approximation
+        if tag == "blockquote" && !seen_blockquote {
+            seen_blockquote = true;
+            blockquote_chrome = crate::overflow_model::QUOTE_CHROME_HEIGHT;
+        }
+    }
+    total + blockquote_chrome
+}
+
 fn has_overflow_hidden(style: &str) -> bool {
     style_value(style, "overflow")
         .map(|value| value.eq_ignore_ascii_case("hidden"))
@@ -1893,11 +2124,14 @@ fn grid_container_text_len(slide_html: &str, text_tag_re: &regex::Regex) -> usiz
         .sum()
 }
 
-pub fn validate_design(html: &str) -> ValidationReport {
-    let mut issues = Vec::new();
-
-    // Split the HTML into slides. Each slide starts with <div class="slide
-    let slide_start_re = Regex::new(r#"<div\s+class="([^"]*)""#).unwrap();
+/// Per-slide layout geometry report for the `debug-layout` CLI/MCP tool.
+///
+/// Reports the banded-chrome geometry (36px header band, 40px footer band,
+/// body region = composition − bands − content padding) alongside the
+/// estimated text stack so a debugger can see exactly why a slide does or
+/// does not fit — the same numbers the text-overflow gate uses.
+pub fn debug_layout(html: &str) -> serde_json::Value {
+    let slide_start_re = Regex::new(r#"<div\b[^>]*?\bclass="([^"]*)""#).unwrap();
     let slide_starts: Vec<_> = slide_start_re
         .captures_iter(html)
         .filter_map(|cap| {
@@ -1918,6 +2152,107 @@ pub fn validate_design(html: &str) -> ValidationReport {
             html.len()
         };
         slides.push(&html[start..end]);
+    }
+    if slides.is_empty() {
+        slides.push(html);
+    }
+
+    let mut per_slide = Vec::new();
+    for (idx, slide_html) in slides.iter().enumerate() {
+        let (pad_top, pad_bottom) = parse_slide_content_padding(slide_html);
+        let available =
+            crate::overflow_model::available_content_height(pad_top, pad_bottom);
+        let css_vars = parse_css_size_vars(slide_html);
+        let est = estimate_slide_text_height(slide_html, &css_vars);
+        let overflow = est > available;
+        per_slide.push(json!({
+            "slide": idx + 1,
+            "chrome": {
+                "header_band": crate::overflow_model::CHROME_HEADER_HEIGHT,
+                "footer_band": crate::overflow_model::CHROME_FOOTER_HEIGHT,
+                "body_region": crate::overflow_model::COMPOSITION_HEIGHT
+                    - crate::overflow_model::CHROME_HEADER_HEIGHT
+                    - crate::overflow_model::CHROME_FOOTER_HEIGHT,
+            },
+            "content_padding": { "top": pad_top, "bottom": pad_bottom },
+            "available_height": available,
+            "estimated_text_height": est,
+            "margin_px": (available - est).max(0.0),
+            "overflow": overflow,
+            "tight": !overflow && est > available * 0.92,
+        }));
+    }
+
+    let total = per_slide.len();
+    let overflow_count = per_slide
+        .iter()
+        .filter(|s| s["overflow"] == json!(true))
+        .count();
+    json!({
+        "slides": per_slide,
+        "total": total,
+        "overflowing": overflow_count,
+        "chrome_model": {
+            "composition": crate::overflow_model::COMPOSITION_HEIGHT,
+            "header_band": crate::overflow_model::CHROME_HEADER_HEIGHT,
+            "footer_band": crate::overflow_model::CHROME_FOOTER_HEIGHT,
+        },
+    })
+}
+
+pub fn validate_design(html: &str) -> ValidationReport {
+    let mut issues = Vec::new();    // Split the HTML into slides. Attribute-order agnostic: the renderer emits
+    // `<div id="slide-0" class="slide slide--light">` (id BEFORE class), so the
+    // matcher cannot require `class=` to be the first attribute. The exact
+    // whitespace-token check below keeps slide-content / slide-composition /
+    // slide__overlay from being mistaken for slide boundaries.
+    let slide_start_re = Regex::new(r#"<div\b[^>]*?\bclass="([^"]*)""#).unwrap();
+    let slide_starts: Vec<_> = slide_start_re
+        .captures_iter(html)
+        .filter_map(|cap| {
+            let class_attr = cap.get(1)?.as_str();
+            if class_attr.split_whitespace().any(|class| class == "slide") {
+                cap.get(0).map(|m| m.start())
+            } else {
+                None
+            }
+        })
+        .collect();
+    let mut slides = Vec::new();
+    for i in 0..slide_starts.len() {
+        let start = slide_starts[i];
+        let end = if i + 1 < slide_starts.len() {
+            slide_starts[i + 1]
+        } else {
+            html.len()
+        };
+        slides.push(&html[start..end]);
+    }
+
+    // No `.slide` div found → the input is a bare slide fragment (compile-time
+    // validation passes single-slide HTML). Validate it as one slide so the
+    // per-slide checks actually run instead of silently passing zero slides.
+    // Guard: a document this large is almost certainly a carousel whose slide
+    // split regex failed to match — flag it instead of silently "passing" the
+    // whole doc as one slide (the original silent-no-op bug class).
+    if slides.is_empty() {
+        let looks_like_carousel = html.len() > 20_000
+            && html.matches("slide-composition").count() >= 2;
+        if looks_like_carousel {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "slide_split_failed".to_string(),
+                severity: "warning".to_string(),
+                detail: format!(
+                    "No `.slide` divs matched in a {} byte document with {} `.slide-composition` nodes — the slide-split regex likely failed (attribute order?).",
+                    html.len(),
+                    html.matches("slide-composition").count()
+                ),
+                message: "Carousel slide-splitting did not find any slides.".to_string(),
+                suggestion: "Verify the slide div markup (id/class attribute order) matches the split regex, and re-run validation.".to_string(),
+            });
+        }
+        slides.push(html);
     }
 
     let slide_count = slides.len().max(1);
@@ -1962,23 +2297,17 @@ pub fn validate_design(html: &str) -> ValidationReport {
     .unwrap();
 
     // New: Header/footer overflow detection
-    // Check if slide-content content overflows the 420x525 composition bounds
-    const COMP_HEIGHT: f32 = 525.0;
-    const HEADER_HEIGHT: f32 = 60.0;  // Estimated header space
-    const FOOTER_HEIGHT: f32 = 60.0;  // Estimated footer space
-    const SAFE_CONTENT_HEIGHT: f32 = COMP_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT;
+    // Check if slide-content content overflows the 420x525 composition bounds.
+    // Body region = composition minus the real 36px header band and 40px footer
+    // band (single calibration point in overflow_model.rs).
+    const COMP_HEIGHT: f32 = crate::overflow_model::COMPOSITION_HEIGHT;
+    const HEADER_HEIGHT: f32 = crate::overflow_model::CHROME_HEADER_HEIGHT;
+    const FOOTER_HEIGHT: f32 = crate::overflow_model::CHROME_FOOTER_HEIGHT;
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
 
     for (idx, slide_html) in slides.iter().enumerate() {
-        // Extract slide-content padding
-        let padding_re = Regex::new(r#"padding:\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))\s*([0-9.]+)(?:px|var\(--space-[0-9]+\))"#).unwrap();
-        let content_padding_top = padding_re.captures(slide_html)
-            .and_then(|cap| cap.get(1))
-            .and_then(|m| m.as_str().parse::<f32>().ok())
-            .unwrap_or(60.0); // Default padding
-        let content_padding_bottom = padding_re.captures(slide_html)
-            .and_then(|cap| cap.get(3))
-            .and_then(|m| m.as_str().parse::<f32>().ok())
-            .unwrap_or(60.0); // Default padding
+        // Extract slide-content padding (var()-tolerant, banded body region)
+        let (content_padding_top, content_padding_bottom) = parse_slide_content_padding(slide_html);
 
         // Calculate available content height
         let available_height = SAFE_CONTENT_HEIGHT - content_padding_top - content_padding_bottom;
@@ -2150,45 +2479,23 @@ pub fn validate_design(html: &str) -> ValidationReport {
         .unwrap_or(525.0);
     let is_full_bleed_canvas = (canvas_w - comp_w).abs() > 1.0 || (canvas_h - comp_h).abs() > 1.0;
 
-    // Check 1: progress-overlay spacing. Parse .breadcrumb-progress { bottom: Npx }
-    // and .slide__overlay { padding: Apx Bpx } to ensure the breadcrumb sits
-    // at least 12px below the overlay-bottom text.
-    let progress_bottom_re = Regex::new(
-        r#"(?s)\.breadcrumb-progress\s*\{[^}]*bottom\s*:\s*(?:var\(--space-\d+,\s*)?([0-9.]+)px"#,
+    // Check 1: progress placement. In the banded chrome architecture the
+    // progress bar lives INSIDE the .slide-footer band (in-flow), so it can
+    // never collide with slide-body content. Flag any absolutely-positioned
+    // progress element (legacy overlay structure) that could overlap content.
+    let progress_abs_re = Regex::new(
+        r#"(?s)\.breadcrumb-progress\s*\{[^}]*position\s*:\s*absolute"#,
     )
     .unwrap();
-    let overlay_padding_re = Regex::new(
-        r#"(?s)\.slide__overlay\s*\{[^}]*padding\s*:\s*(?:var\(--space-\d+,\s*)?([0-9.]+)px"#,
-    )
-    .unwrap();
-    let progress_bottom = progress_bottom_re
-        .captures(html)
-        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()));
-    let overlay_padding_bottom = overlay_padding_re
-        .captures(html)
-        .and_then(|c| c.get(1).and_then(|m| m.as_str().parse::<f32>().ok()));
-    if let (Some(pb), Some(op)) = (progress_bottom, overlay_padding_bottom) {
-        // Overlay-bottom text height ≈ 15px (11.5px font × 1.3 line-height).
-        let overlay_text_top_from_bottom = op + 15.0;
-        // Breadcrumb chip top from bottom = pb + chip_height (2-3px).
-        let chip_top_from_bottom = pb + 3.0;
-        let gap = chip_top_from_bottom - overlay_text_top_from_bottom;
-        // If breadcrumb is ABOVE overlay text (positive gap) and gap < 12px,
-        // OR if breadcrumb is BELOW overlay text (negative gap) and overlap > 0,
-        // flag it.
-        if gap.abs() < 12.0 && gap > -20.0 {
-            issues.push(DesignIssue {
-                slide: 1,
-                r#type: "progress_overlay_collision".to_string(),
-                severity: "warning".to_string(),
-                detail: format!(
-                    "breadcrumb-progress bottom {:.0}px is only {:.0}px from overlay-bottom text (padding {:.0}px + ~15px text).",
-                    pb, gap.abs(), op
-                ),
-                message: "Progress indicator sits too close to the bottom overlay text, hurting visual separation.".to_string(),
-                suggestion: "Move breadcrumb-progress to bottom:8px (below the overlay text) or increase to bottom:60px+ (above the overlay text with clear breathing room).".to_string(),
-            });
-        }
+    if progress_abs_re.is_match(html) {
+        issues.push(DesignIssue {
+            slide: 1,
+            r#type: "progress_overlay_collision".to_string(),
+            severity: "warning".to_string(),
+            detail: "breadcrumb-progress uses position:absolute — the legacy overlay structure can overlap slide-body content.".to_string(),
+            message: "Progress indicator must live inside the .slide-footer band so it cannot collide with slide content.".to_string(),
+            suggestion: "Move breadcrumb-progress into the .slide-footer band as an in-flow flex child.".to_string(),
+        });
     }
 
     // Check 2: full-bleed stretch rule presence. If any slide has
@@ -2197,7 +2504,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
     let has_full_bleed_slide = html.contains("slide--full-bleed");
     if has_full_bleed_slide {
         let stretch_rule_re = Regex::new(
-            r#"(?s)\.slide--full-bleed\s+\.slide-composition\s*>\s*div:first-of-type\s*\{[^}]*width:\s*var\(--slide-width\)\s*!important[^}]*height:\s*var\(--slide-height\)\s*!important"#,
+            r#"(?s)\.slide--full-bleed\s+\.slide-body\s*>\s*div:first-of-type\s*\{[^}]*width:\s*var\(--slide-width\)\s*!important[^}]*height:\s*var\(--slide-height\)\s*!important"#,
         )
         .unwrap();
         if !stretch_rule_re.is_match(html) {
@@ -2205,9 +2512,9 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 slide: 1,
                 r#type: "missing_full_bleed_stretch_rule".to_string(),
                 severity: "error".to_string(),
-                detail: "Full-bleed slides are present but the CSS lacks the .slide--full-bleed .slide-composition > div:first-of-type stretch rule with !important.".to_string(),
+                detail: "Full-bleed slides are present but the CSS lacks the .slide--full-bleed .slide-body > div:first-of-type stretch rule with !important.".to_string(),
                 message: "Background layers on full-bleed slides will be clipped to the 420x525 composition instead of filling the canvas.".to_string(),
-                suggestion: "Add: .slide--full-bleed .slide-composition > div:first-of-type { position:absolute!important; width:var(--slide-width)!important; height:var(--slide-height)!important; }".to_string(),
+                suggestion: "Add: .slide--full-bleed .slide-body > div:first-of-type { position:absolute!important; width:var(--slide-width)!important; height:var(--slide-height)!important; }".to_string(),
             });
         }
 
@@ -2774,6 +3081,50 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     });
                 }
             }
+        }
+
+        // ── General text-overflow gate (shared overflow model) ────────────────
+        // Estimates the slide's text stack against the available content height so
+        // oversized display-tier text (e.g. 113px quotes, 80px headlines) is caught
+        // even when the composition clips it with overflow:hidden. Uses the same
+        // model as the renderer's automatic scaling so both sides agree.
+        // Parse `.slide-content` vertical padding with the var()-tolerant
+        // parser so `16px var(--space-6) 20px` shorthand resolves to
+        // (top=16, bottom=20) instead of falling back to an over-conservative
+        // (60,60). Shared with the renderer's banded body-region geometry.
+        let (pad_top, pad_bottom) = parse_slide_content_padding(slide_html);
+        let available =
+            crate::overflow_model::available_content_height(pad_top, pad_bottom);
+        let css_vars = parse_css_size_vars(slide_html);
+        let est = estimate_slide_text_height(slide_html, &css_vars);
+        if est > available {
+            issues.push(DesignIssue {
+                slide: slide_num,
+                r#type: "text_overflow".to_string(),
+                severity: "error".to_string(),
+                detail: format!(
+                    "Estimated text stack height {:.0}px exceeds available content height {:.0}px (composition {:.0}px − padding {:.0}/{:.0}).",
+                    est,
+                    available,
+                    crate::overflow_model::COMPOSITION_HEIGHT,
+                    pad_top,
+                    pad_bottom
+                ),
+                message: "Text content overflows the slide body and will be clipped at export.".to_string(),
+                suggestion: "Scale the component (reduce display-tier font sizes, paddings, and gaps) or shorten the copy so the text stack fits the available height.".to_string(),
+            });
+        } else if est > available * 0.92 {
+            issues.push(DesignIssue {
+                slide: slide_num,
+                r#type: "text_overflow_tight".to_string(),
+                severity: "warning".to_string(),
+                detail: format!(
+                    "Estimated text stack height {:.0}px is within 8% of the available {:.0}px.",
+                    est, available
+                ),
+                message: "Text content nearly overflows the slide body.".to_string(),
+                suggestion: "Give the text stack a small safety margin by reducing font size or padding.".to_string(),
+            });
         }
     }
 

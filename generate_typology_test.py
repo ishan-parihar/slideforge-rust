@@ -126,6 +126,31 @@ def render_carousel(slides, tokens_file):
     ], check=True, capture_output=True)
 
 
+def validate_gate(carousel_path):
+    """Phase D runtime gate: validate-design must return 0 errors on the compiled
+    carousel, otherwise the build fails. Any slide passing through the gate
+    post-generation must pass the overflow check."""
+    result = subprocess.run(
+        [str(BIN), "validate-design", str(carousel_path)],
+        capture_output=True,
+        text=True,
+    )
+    try:
+        report = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        report = {}
+    error_count = report.get("error_count", report.get("errors", "unknown"))
+    slide_count = report.get("slide_count", "unknown")
+    if report.get("passed") is not True or (isinstance(error_count, int) and error_count > 0):
+        print(
+            f"[validate-gate] FAILED: {error_count} errors across {slide_count} slides\n"
+            f"{result.stdout[:2000]}",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    print(f"[validate-gate] passed: 0 errors across {slide_count} slides")
+
+
 def build_viewer(metas):
     cards = "".join(
         f'<div class="card" data-t="{m["typology"]}">'
@@ -172,5 +197,6 @@ if __name__ == "__main__":
         sys.exit(1)
     tokens_file = generate_tokens(PRIMARIES[0])
     render_carousel(slides, tokens_file)
+    validate_gate(OUT_CAROUSEL)
     build_viewer(metas)
     print(f"generated {len(slides)} samples, viewer at dist/typology_viewer.html")
