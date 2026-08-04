@@ -87,10 +87,10 @@ EXAMPLES = [
     ("hero", "chapter", {"headline": "The Composition Layer", "subheadline": "How slides are authored", "badge": "Chapter 3"}, "Openers & Hooks"),
 
     # ── Narrative & Story
-    ("problem_solution", "default", {"title": "The slide problem", "problem": "Design systems break at scale — tokens drift, components diverge.", "solution": "Compile-time validation catches violations before they ship.", "proof_points": "94 tests. Real-time composition check. Runtime geometry."}, "Narrative & Story"),
+    ("problem_solution", "default", {"title": "The slide problem", "problem": "Design systems break at scale — tokens drift, components diverge.", "solution": "Compile-time validation catches violations before they ship.", "proof_points": "94 tests. Real-time composition check. Runtime geometry.", "description": "Every deck is a constraint satisfaction problem at fixed geometry."}, "Narrative & Story"),
     ("myth_fact", "default", {"myth": "Slide decks are just static images.", "fact": "They are runtime composition decisions against an aspect-ratio canvas.", "explanation": "Every layout is a constraint satisfaction problem at fixed geometry."}, "Narrative & Story"),
-    ("before_after_story", "default", {"before": "Manual 4-hour deck", "after": "5-minute CLI run", "title": "The shift", "metric": "48x faster"}, "Narrative & Story"),
-    ("case_study_result", "default", {"client": "TechCorp", "challenge": "12-deck/month, 3-day lag", "solution": "Adopted SlideForge CLI", "results": [{"metric": "3x", "label": "Content velocity"}, {"metric": "0", "label": "Token violations"}]}, "Narrative & Story"),
+    ("before_after_story", "default", {"before": "Manual 4-hour deck", "after": "5-minute CLI run", "title": "The shift", "metric": "48x faster", "metric_label": "Speed improvement", "description": "SlideForge cuts deck production time from hours to minutes."}, "Narrative & Story"),
+    ("case_study_result", "default", {"client": "TechCorp", "challenge": "12-deck/month, 3-day lag", "solution": "Adopted SlideForge CLI", "description": "A single automation pipeline replaced an entire team's manual workflow.", "results": [{"metric": "3x", "label": "Content velocity"}, {"metric": "0", "label": "Token violations"}]}, "Narrative & Story"),
 
     # ── Social Proof & Trust
     ("testimonial_avatar", "default", {"quote": "Our marketing team generates 3x more content since adopting SlideForge.", "author": "James Park", "role": "CMO, GrowthCo"}, "Social Proof & Trust"),
@@ -173,6 +173,8 @@ for i, (stype, variant, params, category) in enumerate(EXAMPLES):
     idx = i + 1
     try:
         slide_obj = run_generate(stype, params, variant, tokens_file, s["theme"], s["bg"], s["archetype"], idx)
+        # Per-slide progress style rotation
+        slide_obj["progress_style"] = PROGRESS_STYLES[idx % len(PROGRESS_STYLES)]
         compiled_slides.append(slide_obj)
         slide_metas.append({
             "idx": idx,

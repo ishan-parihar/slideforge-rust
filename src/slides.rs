@@ -18,6 +18,11 @@ pub struct SlideSpec {
     /// render instead of falling back to the single global pairing.
     #[serde(default)]
     pub google_fonts_url: Option<String>,
+    /// Per-slide progress bar variant override. When set, takes precedence over
+    /// the carousel-level `progress_style` for this slide. Accepts:
+    /// "chips", "line", "dots", "none".
+    #[serde(default)]
+    pub progress_style: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -636,15 +641,20 @@ body {
         // at the bottom of the footer band (separate from the text row). Large
         // decks cap chip/dot counts so the strip never overflows.
         let mut progress_html = String::new();
-        let progress_style = spec.progress_style.trim().to_lowercase();
-        if show_progress_slide && progress_style != "none" {
-            if progress_style == "line" {
+        let effective_progress = slide
+            .progress_style
+            .as_deref()
+            .unwrap_or(&spec.progress_style)
+            .trim()
+            .to_lowercase();
+        if show_progress_slide && effective_progress != "none" {
+            if effective_progress == "line" {
                 let pct = ((idx + 1) as f32 / total as f32 * 100.0).round() as u32;
                 progress_html = format!(
                     r#"    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:{}%"></div></div></div>"#,
                     pct
                 );
-            } else if progress_style == "dots" {
+            } else if effective_progress == "dots" {
                 // Round dots capped at 10 — a 210-slide deck renders 10 dots.
                 let dot_count = total.min(10);
                 let mut dots = vec![];
@@ -1446,6 +1456,7 @@ mod tests {
             archetype: "educator".to_string(),
             css_vars: css_vars.map(|s| s.to_string()),
             google_fonts_url: font_url.map(|s| s.to_string()),
+            progress_style: None,
         };
         let spec = CarouselSpec {
             slides: vec![

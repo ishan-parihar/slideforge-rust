@@ -840,11 +840,10 @@ pub fn hero_slide(
             )
         } else {
             String::new()
-        };
-        let headline_html = format!(
-            r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0 0 8px;">{}</h1>"#,
-            tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
-        );
+        };            let headline_html = format!(
+                r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0 0 8px;overflow-wrap:break-word;word-break:break-word;">{}</h1>"#,
+                tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
+            );
         let sub_html = if !subheadline.is_empty() {
             format!(
                 r#"<p style="font-family:{};font-size:15px;color:{};line-height:1.5;margin:0;max-width:320px;">{}</p>"#,
@@ -2903,6 +2902,7 @@ pub fn problem_solution_slide(
     problem: &str,
     solution: &str,
     proof_points: Vec<Value>,
+    description: &str,
     bg_style: &str,
     theme: &str,
     background_image: &str,
@@ -2948,9 +2948,18 @@ pub fn problem_solution_slide(
             tokens.body_font, colors.text_secondary, combined_desc
         )
     };
+    let desc_html = if !description.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+            {}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
                 <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
@@ -2960,6 +2969,7 @@ pub fn problem_solution_slide(
         tokens.heading_font,
         colors.text_primary,
         escape_html(title),
+        desc_html,
         radius,
         card_bg,
         colors.border,
@@ -3290,7 +3300,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:1 1 auto;justify-content:center;">{}{}{}</div></div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:1 1 auto;justify-content:center;overflow:hidden;">{}{}{}</div></div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
@@ -3328,13 +3338,13 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:1 1 auto;align-items:center;">{}{}</div>{}</div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:1 1 auto;align-items:center;overflow:hidden;">{}{}</div>{}</div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
     };
 
-    let html = slide_base(&content, tokens, bg_style, false, "16px 48px", "center");
+    let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
     json!({
         "html": html,
@@ -3488,6 +3498,7 @@ pub fn case_study_result_slide(
     challenge: &str,
     solution: &str,
     results: Vec<Value>,
+    description: &str,
     bg_style: &str,
     theme: &str,
     background_image: &str,
@@ -3504,6 +3515,7 @@ pub fn case_study_result_slide(
         challenge,
         solution,
         results,
+        description,
         bg_style,
         theme,
         background_image,
@@ -3985,6 +3997,7 @@ pub fn before_after_story_slide(
     after: &str,
     metric: &str,
     metric_label: &str,
+    description: &str,
     bg_style: &str,
     theme: &str,
     background_image: &str,
@@ -4034,9 +4047,18 @@ pub fn before_after_story_slide(
             escape_html(metric)
         )
     };
+    let desc_html = if !description.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
             <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+            {}
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
                 <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
@@ -4053,6 +4075,7 @@ pub fn before_after_story_slide(
         tokens.heading_font,
         colors.text_primary,
         escape_html(title),
+        desc_html,
         radius,
         card_bg,
         colors.border,
@@ -4595,6 +4618,7 @@ pub fn dispatch_slide(
                 &after,
                 &metric,
                 &metric_label,
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -4942,6 +4966,7 @@ pub fn dispatch_slide(
                 &s("problem"),
                 &s("solution"),
                 proof_points,
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -4988,6 +5013,7 @@ pub fn dispatch_slide(
                 &s("challenge"),
                 &s("solution"),
                 results,
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -5077,6 +5103,7 @@ pub fn dispatch_slide(
             &s_or_text("after"),
             &s("metric"),
             &s("metric_label"),
+            &s("description"),
             bg_style,
             theme,
             &bg_img,
