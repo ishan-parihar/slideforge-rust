@@ -33,7 +33,8 @@ pub struct CarouselSpec {
     pub url: String,
     pub hashtags: Vec<String>,
     pub show_progress: bool,
-    /// Progress bar variant: "chips" (segmented, default), "line" (thin line), "none".
+    /// Progress bar variant: "chips" (segmented, default), "line" (thin line),
+    /// "dots" (round Instagram-style dots), or "none".
     #[serde(default = "default_progress_style")]
     pub progress_style: String,
     pub visual_theme: String,
@@ -42,6 +43,71 @@ pub struct CarouselSpec {
     pub aspect_ratio: String,
     pub canvas_width: u32,
     pub canvas_height: u32,
+}
+
+// ── Corner chrome character limits ─────────────────────────────────────────
+// Absolute max lengths for the four corner text elements (brand, topic, url,
+// hashtags). These are enforced at runtime — a carousel whose corner text
+// exceeds a limit FAILS to render instead of silently truncating with "…".
+// The limits are calibrated to the 420px-wide composition at 24px chrome-x
+// padding with the chrome font sizes (12px brand / 11.5px others).
+
+/// Top-left brand (12px uppercase, letter-spacing 0.08em).
+pub const MAX_BRAND_CHARS: usize = 24;
+/// Top-right topic (11.5px semibold).
+pub const MAX_TOPIC_CHARS: usize = 32;
+/// Bottom-left URL (11.5px).
+pub const MAX_URL_CHARS: usize = 44;
+/// Bottom-right hashtags, combined width budget across all tags (11.5px).
+pub const MAX_HASHTAGS_CHARS: usize = 28;
+
+/// Validate the four corner chrome elements against absolute character limits.
+/// Returns a list of error messages (empty when valid). This is the runtime
+/// gate: any config exceeding a limit is rejected so the sequence can be fixed
+/// instead of producing silently-truncated "…" chrome text.
+pub fn validate_corner_chrome(spec: &CarouselSpec) -> Vec<String> {
+    let mut errors = vec![];
+    let brand_len = spec.brand_name.chars().count();
+    if brand_len > MAX_BRAND_CHARS {
+        errors.push(format!(
+            "brand_name '{}' is {} chars — max {} for the top-left corner.",
+            spec.brand_name, brand_len, MAX_BRAND_CHARS
+        ));
+    }
+    let topic_len = spec.topic.chars().count();
+    if topic_len > MAX_TOPIC_CHARS {
+        errors.push(format!(
+            "topic '{}' is {} chars — max {} for the top-right corner.",
+            spec.topic, topic_len, MAX_TOPIC_CHARS
+        ));
+    }
+    let url_len = spec.url.chars().count();
+    if url_len > MAX_URL_CHARS {
+        errors.push(format!(
+            "url '{}' is {} chars — max {} for the bottom-left corner.",
+            spec.url, url_len, MAX_URL_CHARS
+        ));
+    }
+    // Hashtags: total text width budget (tag length + leading '#'), capped.
+    let mut tags_len = 0usize;
+    let mut over = false;
+    for tag in &spec.hashtags {
+        let t = tag.trim_start_matches('#').trim();
+        if t.is_empty() {
+            continue;
+        }
+        tags_len += t.chars().count() + 1; // +1 for '#', +1 space after each
+        if tags_len > MAX_HASHTAGS_CHARS {
+            over = true;
+        }
+    }
+    if over {
+        errors.push(format!(
+            "hashtags {:?} total {} chars — max {} for the bottom-right corner. Shorten or drop tags.",
+            spec.hashtags, tags_len, MAX_HASHTAGS_CHARS
+        ));
+    }
+    errors
 }
 
 fn default_progress_style() -> String {
@@ -93,6 +159,7 @@ pub fn render_carousel_html(spec: &CarouselSpec) -> String {
   --slide-height: [BASE_HEIGHT]px;
   --composition-width: 420px;
   --composition-height: 525px;
+  --chrome-x: 24px;
 }
 
 [CSS_VARS]
@@ -124,7 +191,8 @@ body {
 .slide-header {
   flex: 0 0 var(--chrome-header-h, 36px); min-height: var(--chrome-header-h, 36px);
   display: flex; justify-content: space-between; align-items: center;
-  padding: 0 var(--space-5, 44px); z-index: 45;
+  padding: 0 var(--chrome-x, 24px); z-index: 45;
+  background: transparent;
 }
 .slide-body {
   flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden;
@@ -132,8 +200,24 @@ body {
 }
 .slide-footer {
   flex: 0 0 var(--chrome-footer-h, 40px); min-height: var(--chrome-footer-h, 40px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0; z-index: 45;
+  background: transparent;
+}
+.slide-footer-row {
   display: flex; justify-content: space-between; align-items: center;
-  gap: 12px; padding: 0 var(--space-5, 44px); z-index: 45;
+  gap: 12px; padding: 0 var(--chrome-x, 24px); flex: 1 1 auto; min-height: 0;
+  background: transparent;
+}
+/* Dedicated full-width progress strip: its own vertical height (8px), pinned
+   to the bottom edge of the footer band, spanning the full composition width.
+   The strip is separate from the footer text row so the bar never competes
+   with url/hashtags for space. */
+.slide-progress {
+  flex: 0 0 8px; height: 8px; width: 100%;
+  display: flex; align-items: center;
+  padding: 0 var(--chrome-x, 24px); box-sizing: border-box;
+  background: transparent;
 }
 /* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
    The inner div (gradient + noise + shapes) inside .slide-body is stretched
@@ -164,16 +248,22 @@ body {
   width: var(--composition-width) !important;
   height: var(--composition-height) !important;
 }
-/* Light/mesh slides need the mesh gradient on .slide too */
+/* Full-bleed light/mesh: .slide--light already carries the mesh gradient
+   (defined above), so no extra rule is needed — kept as a defensive alias. */
 .slide--full-bleed.slide--light,
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
 }
 
-.slide--light, .slide--mesh { background-color: var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
-.slide--dark { background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+/* Chrome (header/footer) is transparent, so the FULL slide background — mesh,
+   gradient, hero, or surface — must live on .slide itself. Light/mesh carry the
+   mesh gradient so the chrome band never shows a flat white seam against the
+   body's meshed surface. Dark carries a hue-tinted mesh so dark slides read as
+   dark-but-colored rather than pure black. */
+.slide--light { background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F128 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background: var(--gradient-mesh-dark, none), var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
 .slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
-.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F115 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
 .slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
 
 .slide--dark, .slide--gradient, .slide--hero {
@@ -295,17 +385,19 @@ body {
   background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
 }
 
-/* Progress bar variants, placed INSIDE the .slide-footer band. Default
-   "chips": segmented breadcrumb chips. "line": a single thin progress line.
-   "none": no progress element rendered. All are in-flow so the footer band
-   height is stable and the validator can rely on the band geometry. */
+/* Progress bar variants, placed INSIDE the dedicated .slide-progress strip at
+   the bottom of the footer band. Default "chips": segmented breadcrumb chips.
+   "line": a single thin progress line. "dots": round Instagram-style dots.
+   "none": no progress element rendered. The strip is full-width with its own
+   8px vertical height, so the bar spans the footer and never competes with the
+   footer text row. The validator relies on the fixed band geometry. */
 .breadcrumb-progress {
   display: flex; align-items: center; gap: 6px;
-  flex: 0 1 160px; min-width: 0;
+  flex: 1 1 auto; width: 100%; min-width: 0;
   z-index: 50;
 }
 .breadcrumb-chip {
-  height: 2px; flex: 1; border-radius: 999px;
+  height: 3px; flex: 1; border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 6px;
 }
@@ -314,13 +406,13 @@ body {
 .slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
 .slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
 .breadcrumb-chip.active {
-  height: 3px; flex: 2.2;
+  height: 5px; flex: 2.2;
 }
 .slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
 .slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
 
 .progress-line {
-  flex: 1 1 120px; height: 3px; border-radius: 999px; overflow: hidden;
+  flex: 1 1 auto; width: 100%; height: 4px; border-radius: 999px; overflow: hidden;
   background: rgba(0,0,0,0.12);
 }
 .slide--dark .progress-line, .slide--gradient .progress-line, .slide--hero .progress-line {
@@ -332,6 +424,29 @@ body {
 }
 .slide--dark .progress-line-fill, .slide--gradient .progress-line-fill, .slide--hero .progress-line-fill {
   background: #ffffff;
+}
+
+/* "dots" progress variant: round dots (Instagram-style). Capped at 10 dots
+   so large decks never overflow the footer band. Dots are left-aligned inside
+   the full-width strip. */
+.progress-dots {
+  display: flex; align-items: center; gap: 6px;
+  flex: 1 1 auto; width: 100%; min-width: 0; flex-wrap: nowrap;
+  z-index: 50;
+}
+.progress-dot {
+  width: 6px; height: 6px; border-radius: 999px; flex-shrink: 1; flex-basis: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .progress-dot, .slide--mesh .progress-dot { background: rgba(0,0,0,0.15); }
+.slide--dark .progress-dot, .slide--gradient .progress-dot, .slide--hero .progress-dot { background: rgba(255,255,255,0.3); }
+.slide--light .progress-dot.completed, .slide--mesh .progress-dot.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .progress-dot.completed, .slide--gradient .progress-dot.completed, .slide--hero .progress-dot.completed { background: rgba(255,255,255,0.65); }
+.progress-dot.active {
+  width: 16px; background: var(--primary, #7C3AED); opacity: 1;
+}
+.slide--dark .progress-dot.active, .slide--gradient .progress-dot.active, .slide--hero .progress-dot.active {
+  background: #ffffff; opacity: 1;
 }
 
 .swipe-arrow {
@@ -350,13 +465,13 @@ body {
 .overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
 .slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
 .slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
-.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; white-space: nowrap; }
 .slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
 .slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
-.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; white-space: nowrap; }
 .slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
 .slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
-.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; max-width: 42%; line-height: 1.3; white-space: nowrap; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
 "#.replace("[CSS_VARS]", &spec.css_variables)
@@ -420,8 +535,19 @@ body {
         };
 
         if slide.html.contains("background-image") {
+            // has-bg-image is always ADDITIVE: the bg identity class (slide--light,
+            // slide--hero, etc.) is preserved so chrome theming rules still apply.
+            // The only case where bg_class is empty is a custom hex background —
+            // in that case the slide still gets has-bg-image with no identity class.
             if bg_class.is_empty() {
-                bg_class = "has-bg-image".to_string();
+                // If bg_class is empty AND the slide has a background-image, we
+                // still need a background identity for chrome styling. Use the
+                // slide.background if it's a valid type, or default to light.
+                if valid_bg_types.contains(&slide.background.as_str()) {
+                    bg_class = format!("slide--{} has-bg-image", slide.background);
+                } else {
+                    bg_class = "has-bg-image".to_string();
+                }
             } else {
                 bg_class.push_str(" has-bg-image");
             }
@@ -485,7 +611,9 @@ body {
         let mut char_count = 0;
         for h in spec.hashtags.iter().take(2) {
             let tag = format!("#{}", h.trim_start_matches('#'));
-            if char_count + tag.len() + (if clean_tags.is_empty() { 0 } else { 1 }) <= 24 {
+            if char_count + tag.len() + (if clean_tags.is_empty() { 0 } else { 1 })
+                <= MAX_HASHTAGS_CHARS
+            {
                 clean_tags.push(tag.clone());
                 char_count += tag.len() + (if clean_tags.len() > 1 { 1 } else { 0 });
             } else {
@@ -503,35 +631,62 @@ body {
             String::new()
         };
 
-        // Slide progress — variant chips (default), line, or none.
+        // Slide progress — variant chips (default), line, dots, or none.
+        // Rendered as a dedicated full-width strip with its own vertical height
+        // at the bottom of the footer band (separate from the text row). Large
+        // decks cap chip/dot counts so the strip never overflows.
         let mut progress_html = String::new();
         let progress_style = spec.progress_style.trim().to_lowercase();
         if show_progress_slide && progress_style != "none" {
             if progress_style == "line" {
                 let pct = ((idx + 1) as f32 / total as f32 * 100.0).round() as u32;
                 progress_html = format!(
-                    r#"  <div class="progress-line"><div class="progress-line-fill" style="width:{}%"></div></div>"#,
+                    r#"    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:{}%"></div></div></div>"#,
                     pct
                 );
-            } else {
-                let mut chips = vec![];
-                for i in 0..total {
-                    if i < idx {
-                        chips.push("completed");
-                    } else if i == idx {
-                        chips.push("active");
+            } else if progress_style == "dots" {
+                // Round dots capped at 10 — a 210-slide deck renders 10 dots.
+                let dot_count = total.min(10);
+                let mut dots = vec![];
+                for i in 0..dot_count {
+                    let state = if i < idx.min(dot_count - 1) {
+                        "completed"
+                    } else if i == idx.min(dot_count - 1) {
+                        "active"
                     } else {
-                        chips.push("");
-                    }
+                        ""
+                    };
+                    dots.push(format!(r#"<div class="progress-dot {}"></div>"#, state));
+                }
+                let dots_html: String = dots.join("\n      ");
+                progress_html = format!(
+                    r#"    <div class="slide-progress progress--dots"><div class="progress-dots">
+      {}
+    </div></div>"#,
+                    dots_html
+                );
+            } else {
+                // Segmented chips capped at 12 for large decks.
+                let chip_count = total.min(12);
+                let mut chips = vec![];
+                for i in 0..chip_count {
+                    let state = if i < idx.min(chip_count - 1) {
+                        "completed"
+                    } else if i == idx.min(chip_count - 1) {
+                        "active"
+                    } else {
+                        ""
+                    };
+                    chips.push(state);
                 }
                 let chip_html: String = chips
                     .into_iter()
                     .map(|state| format!(r#"<div class="breadcrumb-chip {}"></div>"#, state))
                     .collect();
                 progress_html = format!(
-                    r#"  <div class="breadcrumb-progress">
-    {}
-  </div>"#,
+                    r#"    <div class="slide-progress progress--chips"><div class="breadcrumb-progress">
+      {}
+    </div></div>"#,
                     chip_html
                 );
             }
@@ -548,17 +703,30 @@ body {
                 header_left, header_right
             )
         };
-        let footer_html = if footer_left.is_empty() && progress_html.is_empty() && footer_right.is_empty()
-        {
+        // Footer is a text row (url left · hashtags right) plus a dedicated
+        // full-width progress strip with its own vertical height. The strip is
+        // always emitted when a progress variant is active so the bar spans the
+        // whole footer width instead of squeezing into the text row.
+        let footer_text_row = if footer_left.is_empty() && footer_right.is_empty() {
+            String::new()
+        } else {
+            format!(
+                r#"    <div class="slide-footer-row">
+      {}
+      {}
+    </div>"#,
+                footer_left, footer_right
+            )
+        };
+        let footer_html = if footer_text_row.is_empty() && progress_html.is_empty() {
             String::new()
         } else {
             format!(
                 r#"  <div class="slide-footer">
-    {}
-    {}
-    {}
+{}
+{}
   </div>"#,
-                footer_left, progress_html, footer_right
+                footer_text_row, progress_html
             )
         };
 
@@ -973,6 +1141,89 @@ fn escape_html(input: &str) -> String {
 mod tests {
     use super::*;
 
+    fn base_spec() -> CarouselSpec {
+        CarouselSpec {
+            slides: vec![],
+            css_variables: ":root { --primary:#000; }".to_string(),
+            google_fonts_url: String::new(),
+            heading_font: "A".to_string(),
+            body_font: "B".to_string(),
+            brand_name: "SlideForge".to_string(),
+            brand_handle: "@slideforge".to_string(),
+            topic: "Design Systems".to_string(),
+            url: "slideforge.dev".to_string(),
+            hashtags: vec!["#design".to_string(), "#systems".to_string()],
+            show_progress: true,
+            progress_style: "chips".to_string(),
+            visual_theme: "editorial".to_string(),
+            include_ig_frame: true,
+            platform: "instagram_portrait".to_string(),
+            aspect_ratio: "4:5".to_string(),
+            canvas_width: 420,
+            canvas_height: 525,
+        }
+    }
+
+    #[test]
+    fn test_validate_corner_chrome_accepts_normal_config() {
+        let spec = base_spec();
+        let errors = validate_corner_chrome(&spec);
+        assert!(errors.is_empty(), "expected no errors, got {:?}", errors);
+    }
+
+    #[test]
+    fn test_validate_corner_chrome_rejects_oversized_brand() {
+        let mut spec = base_spec();
+        spec.brand_name = "A".repeat(MAX_BRAND_CHARS + 1);
+        let errors = validate_corner_chrome(&spec);
+        assert!(
+            errors.iter().any(|e| e.contains("brand_name")),
+            "expected brand error, got {:?}",
+            errors
+        );
+    }
+
+    #[test]
+    fn test_validate_corner_chrome_rejects_oversized_topic_and_url() {
+        let mut spec = base_spec();
+        spec.topic = "T".repeat(MAX_TOPIC_CHARS + 1);
+        spec.url = "U".repeat(MAX_URL_CHARS + 1);
+        let errors = validate_corner_chrome(&spec);
+        assert!(
+            errors.iter().any(|e| e.contains("topic")),
+            "expected topic error, got {:?}",
+            errors
+        );
+        assert!(
+            errors.iter().any(|e| e.contains("url")),
+            "expected url error, got {:?}",
+            errors
+        );
+    }
+
+    #[test]
+    fn test_validate_corner_chrome_rejects_excess_hashtags() {
+        let mut spec = base_spec();
+        spec.hashtags = vec![
+            "#thisisareallylonghashtagone".to_string(),
+            "#thisisareallylonghashtagtwo".to_string(),
+        ];
+        let errors = validate_corner_chrome(&spec);
+        assert!(
+            errors.iter().any(|e| e.contains("hashtags")),
+            "expected hashtags error, got {:?}",
+            errors
+        );
+    }
+
+    #[test]
+    fn test_validate_corner_chrome_progress_style_none_allowed() {
+        let mut spec = base_spec();
+        spec.progress_style = "none".to_string();
+        let errors = validate_corner_chrome(&spec);
+        assert!(errors.is_empty(), "got {:?}", errors);
+    }
+
     #[test]
     fn test_render_carousel_uses_canvas_dimensions() {
         let spec = CarouselSpec {
@@ -1176,8 +1427,8 @@ mod tests {
         let html = render_carousel_html(&spec);
         assert!(html.contains(".overlay__brand { font-family: var(--heading); font-size: 12px;"));
         assert!(html.contains(".overlay__url { font-family: var(--body); font-size: 11.5px;"));
-        assert!(html.contains(".breadcrumb-chip {\n  height: 2px;"));
-        assert!(html.contains(".breadcrumb-chip.active {\n  height: 3px;"));
+        assert!(html.contains(".breadcrumb-chip {\n  height: 3px;"));
+        assert!(html.contains(".breadcrumb-chip.active {\n  height: 5px;"));
         assert!(!html.contains("font-size: 9px !important"));
         assert!(!html.contains("font-size: 9.5px !important"));
     }

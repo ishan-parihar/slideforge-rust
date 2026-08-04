@@ -861,20 +861,43 @@ pub fn hero_slide(
                 safe_bg, image_opacity
             )
         } else {
+            // Mandatory image frame: a geometric "monitor" composition.
+            // This always renders so the split variant never has an empty right column.
+            // Compute surface color once to avoid mixing Rust expr in format string.
+            let surface_bg = if is_dark { "rgba(255,255,255,0.06)".to_string() } else { "#f5f5f7".to_string() };
+            let titlebar_bg = if is_dark { "rgba(255,255,255,0.04)".to_string() } else { "rgba(0,0,0,0.02)".to_string() };
+            let line_color = colors.primary.clone();
             format!(
-                r#"<div style="position:relative;width:100%;height:var(--space-28);min-height:180px;background:linear-gradient(135deg, {}12, {}08);border:1px solid {}30;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;">
-                    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:{};opacity:0.12;filter:blur(40px);-webkit-filter:blur(40px);left:-20px;top:-20px;"></div>
-                    <div style="position:absolute;width:140px;height:140px;border-radius:50%;background:{};opacity:0.10;filter:blur(30px);-webkit-filter:blur(30px);right:-10px;bottom:20%;"></div>
-                    <div style="position:absolute;width:80px;height:80px;border-radius:var(--radius-md);background:{};opacity:0.08;transform:rotate(12deg);left:30%;top:30%;"></div>
-                    <div style="position:absolute;width:60px;height:60px;border-radius:var(--radius-lg);background:{};opacity:0.06;transform:rotate(-8deg);right:25%;bottom:25%;"></div>
+                r#"<div style="position:relative;width:100%;height:var(--space-28);min-height:200px;background:linear-gradient(145deg, {}20, {}08);border:1px solid {}25;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;">
+                    <!-- monitor frame -->
+                    <div style="position:relative;width:84%;height:72%;background:{};border-radius:var(--radius-sm);border:1px solid {}30;box-shadow:inset 0 1px 2px rgba(0,0,0,0.03), 0 0 0 1px {}15;overflow:hidden;">
+                        <div style="position:absolute;top:0;left:0;right:0;height:14px;background:{};border-bottom:1px solid {}20;display:flex;align-items:center;gap:4px;padding:0 6px;">
+                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
+                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
+                            <div style="width:4px;height:4px;border-radius:50%;background:{};"></div>
+                        </div>
+                        <div style="position:absolute;top:16px;left:6px;right:6px;bottom:6px;display:flex;flex-direction:column;gap:3px;padding:8px 6px 4px;">
+                            <div style="height:4px;width:60%;background:{};border-radius:2px;opacity:0.15;"></div>
+                            <div style="height:4px;width:85%;background:{};border-radius:2px;opacity:0.10;"></div>
+                            <div style="height:4px;width:40%;background:{};border-radius:2px;opacity:0.08;margin-top:2px;"></div>
+                            <div style="height:3px;width:70%;background:{};border-radius:2px;opacity:0.06;margin-top:4px;"></div>
+                            <div style="height:3px;width:55%;background:{};border-radius:2px;opacity:0.06;"></div>
+                        </div>
+                        <div style="position:absolute;bottom:6px;right:6px;width:18px;height:12px;border:1px solid {}15;border-radius:1px;display:flex;align-items:center;justify-content:center;">
+                            <div style="width:14px;height:2px;background:{};opacity:0.08;"></div>
+                        </div>
+                    </div>
+                    <!-- decorative blurred blobs behind the monitor -->
+                    <div style="position:absolute;width:170px;height:170px;border-radius:50%;background:{};opacity:0.10;filter:blur(50px);-webkit-filter:blur(50px);left:-30px;top:10%;"></div>
+                    <div style="position:absolute;width:120px;height:120px;border-radius:50%;background:{};opacity:0.08;filter:blur(35px);-webkit-filter:blur(35px);right:-20px;bottom:5%;"></div>
                 </div>"#,
+                colors.primary, colors.primary, colors.primary,
+                surface_bg, colors.primary, colors.primary,
+                titlebar_bg, colors.primary,
+                colors.primary, colors.primary, colors.primary,
+                line_color, line_color, line_color, line_color, line_color,
                 colors.primary,
-                colors.primary,
-                colors.primary,
-                colors.primary,
-                colors.button_bg,
-                colors.primary,
-                colors.primary
+                colors.primary, colors.primary, colors.primary
             )
         };
         // Add arrow indicator to right visual area
@@ -3267,7 +3290,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;">{}{}{}</div></div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:1 1 auto;justify-content:center;">{}{}{}</div></div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
@@ -3305,7 +3328,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;">{}{}</div>{}</div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:1 1 auto;align-items:center;">{}{}</div>{}</div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }

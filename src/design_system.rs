@@ -430,6 +430,42 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
             "sans",
             "serif",
         ),
+        "geometric" => (
+            "Sora",
+            "Inter",
+            vec![300, 600],
+            vec![400, 500, 600],
+            "Geometric / modern-engineering",
+            "sans",
+            "sans",
+        ),
+        "humanist" => (
+            "Urbanist",
+            "Source Serif 4",
+            vec![300, 600],
+            vec![400, 500, 600],
+            "Humanist / warm-modern",
+            "sans",
+            "serif",
+        ),
+        "slab" => (
+            "Roboto Slab",
+            "Inter",
+            vec![400, 700],
+            vec![400, 500, 600],
+            "Slab / sturdy-editorial",
+            "serif",
+            "sans",
+        ),
+        "display" => (
+            "Syne",
+            "DM Sans",
+            vec![500, 700],
+            vec![400, 500, 600],
+            "Display / contemporary-art",
+            "sans",
+            "sans",
+        ),
         _ => (
             "Plus Jakarta Sans",
             "Plus Jakarta Sans",
@@ -684,8 +720,12 @@ pub fn derive_palette_with_canvas(
     };
 
     let (_, _, sh) = hex_to_oklch(&secondary)?;
-    let surface_light = oklch_to_hex(0.97, 0.015, sh);
-    let surface_dark = oklch_to_hex(0.08, 0.02, sh);
+    // Hue-tinted surfaces: light/dark carry the brand hue at a subtle but
+    // visible chroma so slides read as colored, not near-white/near-black.
+    // Raised from 0.015/0.02 (previously near-achromatic → flat white/gray
+    // backgrounds with color only on text accents).
+    let surface_light = oklch_to_hex(0.97, 0.04, sh);
+    let surface_dark = oklch_to_hex(0.10, 0.06, sh);
 
     if contrast_ratio(&primary_str, &surface_light) < 4.5 {
         primary_str = auto_clamp_text(pl, pc, ph, &surface_light, "darken", 4.5);
@@ -870,7 +910,12 @@ pub fn derive_palette_with_canvas(
             surface_light, primary_str
         ),
     );
-    gradients_map.insert("mesh".to_string(), format!("radial-gradient(at 40% 20%, {}15 0px, transparent 50%), radial-gradient(at 80% 0%, {}10 0px, transparent 50%), radial-gradient(at 0% 50%, {}12 0px, transparent 50%)", primary_str, accent, primary_light));
+    gradients_map.insert("mesh".to_string(), format!("radial-gradient(at 40% 20%, {}38 0px, transparent 50%), radial-gradient(at 80% 0%, {}28 0px, transparent 50%), radial-gradient(at 0% 50%, {}30 0px, transparent 50%)", primary_str, accent, primary_light));
+    // Dark-mode mesh: subtle hue-tinted blobs over the near-black surface so
+    // dark slides read as dark-but-colored (never flat #010105). Alphas are
+    // ~1.5-2x stronger than the light mesh because the dark surface is very
+    // low-chroma — equal alpha would be invisible against it.
+    gradients_map.insert("mesh-dark".to_string(), format!("radial-gradient(at 30% 15%, {}3A 0px, transparent 55%), radial-gradient(at 85% 25%, {}30 0px, transparent 50%), radial-gradient(at 50% 90%, {}28 0px, transparent 55%)", primary_light, accent, primary_str));
     gradients_map.insert(
         "hero".to_string(),
         format!(

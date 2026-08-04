@@ -245,8 +245,8 @@ enum Commands {
         /// Show progress indicator
         #[arg(long, default_value = "true")]
         show_progress: bool,
-        /// Progress bar variant: chips (segmented), line, none
-        #[arg(long, value_parser = ["chips", "line", "none"])]
+        /// Progress bar variant: chips (segmented), line, dots, none
+        #[arg(long, value_parser = ["chips", "line", "dots", "none"])]
         progress_style: Option<String>,
         /// Output file path (defaults to stdout)
         #[arg(long)]
@@ -423,8 +423,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 family_override,
                 &overrides,
             )?;
-            // Explicit --style/--preset flags win over typology-derived values
-            let font = if axes.font.is_empty() { style.to_string() } else { axes.font };
+            // Font pairing resolution: --typology bundle owns the font when a
+            // typology is specified. When no typology is given, --style is the
+            // font pairing key (editorial, geometric, etc.).
+            let font = if typology.is_some() {
+                axes.font
+            } else {
+                style.to_string()
+            };
             let preset = if preset == "tonal_spot" {
                 axes.preset
             } else {
@@ -963,6 +969,17 @@ fn cli_generate_slide(
     // typology must override the styling axes (font family, color-scheme
     // family, type-scale tier). Re-derive a fresh palette seeded from the
     // tokens file's primary color so typology actually reaches the slide.
+    // Per-typology background as a SOFT default: the typology bundle suggests a
+    // bg_style (e.g. nightlife→hero, playful→mesh), but an explicit --bg-style
+    // always wins, then the archetype default, then light. Keeps pooling dynamic
+    // (config can override) while giving each typology a background identity.
+    let mut typo_bg_default: Option<String> = None;
+    let mut capture_typo_bg = |axes: &styling::AxisSet| {
+        if !axes.bg.is_empty() && axes.bg != "light" {
+            typo_bg_default = Some(axes.bg.clone());
+        }
+    };
+
     let (mut tokens, resolved_theme) = if let Some(tf) = tokens_file {
         let t = cli_load_tokens(tf)?;
         if let Some(typo) = typology.as_deref() {
@@ -972,6 +989,7 @@ fn cli_generate_slide(
                 color_scheme.as_deref().map(Family::parse).flatten(),
                 &[],
             )?;
+            capture_typo_bg(&axes);
             let p = preset.as_deref().unwrap_or("tonal_spot");
             let plt = platform.as_deref().unwrap_or("instagram_portrait");
             // NOTE: tokens must be derived at the BASE composition (420×525). The
@@ -1012,6 +1030,7 @@ fn cli_generate_slide(
         // legacy per-slide hue/bg shorthand.
         let (style, t_eff, fam_key, scale_base, scale_ratio) = if let Some(typo) = typology.as_deref() {
             let axes = styling::resolve_styling(typo, &variant_ops, color_scheme.as_deref().map(Family::parse).flatten(), &[])?;
+            capture_typo_bg(&axes);
             (
                 axes.font.clone(),
                 t.to_string(),
@@ -1060,11 +1079,24 @@ fn cli_generate_slide(
     let (overrides_applied, overrides_warnings) =
         cli_apply_token_overrides(&mut tokens, override_tokens);
 
-    let mut bg = bg_style.as_deref().unwrap_or("light").to_string();
     let arch = archetype.as_deref().unwrap_or("educator");
+    // Background precedence (soft defaults, explicit config wins):
+    //   1. --bg-style (explicit caller intent)
+    //   2. typology bundle bg (background identity per style)
+    //   3. archetype default_bg_style
+    //   4. light
+    let mut bg = if let Some(explicit) = bg_style.as_deref() {
+        explicit.to_string()
+    } else if let Some(typo_bg) = typo_bg_default.clone() {
+        typo_bg
+    } else {
+        "light".to_string()
+    };
 
     // P2a: honor archetype default_bg_style when caller didn't set bg explicitly
-    if bg_style.is_none() {
+    // and no typology background is active (typology identity wins over the
+    // generic archetype fallback).
+    if bg_style.is_none() && typo_bg_default.is_none() {
         let arch_bg = crate::archetypes::archetype_bg_style(arch);
         if !arch_bg.is_empty() {
             bg = arch_bg.to_string();
@@ -1267,6 +1299,13 @@ fn cli_render_carousel(
         canvas_width: canvas.width,
         canvas_height: canvas.height,
     };
+
+    // Runtime gate: corner chrome char limits are ABSOLUTE — reject the config
+    // instead of silently truncating with "…".
+    let chrome_errors = slides::validate_corner_chrome(&spec);
+    if !chrome_errors.is_empty() {
+        return Err(chrome_errors.join("\n").into());
+    }
 
     let html = slides::render_carousel_html(&spec);
 

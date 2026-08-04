@@ -22,9 +22,10 @@ os.makedirs(os.path.dirname(OUT_SLIDES), exist_ok=True)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # ── Style matrices to randomize across ──────────────────────────────
-STYLES = ["editorial", "warm", "technical", "bold", "classic", "rounded"]
+STYLES = ["editorial", "warm", "technical", "bold", "classic", "rounded", "geometric", "humanist", "slab", "display"]
 BG_STYLES = ["dark", "light", "gradient", "mesh", "hero"]
 VISUAL_THEMES = ["editorial", "bold", "minimal", "dark", "vibrant", "natural"]
+PROGRESS_STYLES = ["chips", "line", "dots"]
 PRIMARY_COLORS = [
     "#5E5FE0",  # indigo
     "#E04040",  # red
@@ -210,6 +211,7 @@ subprocess.run([
     "--topic", "RANDOMIZED-STYLES-AUDIT",
     "--url", "slideforge.dev",
     "--hashtags", "#slides #rust",
+    "--progress-style", PROGRESS_STYLES[0],
     "--output", OUT_CAROUSEL
 ], check=True)
 

@@ -65,7 +65,18 @@ def generate_tokens(primary):
     return tmp.name
 
 
-def run_generate(slide_type, params, variant, tokens_file, typology, family, primary, idx):
+# Background rotation pool: cycle through the full surface range so the
+# viewer samples every background treatment (light/dark/gradient/mesh/hero).
+# Rotation is a SOFT hint — an explicit --bg-style in the config wins, and the
+# typology bundle's own bg identity takes precedence when present (only the
+# light-identity typologies below are rotated; gradient/dark/mesh/hero
+# typologies keep their own identity).
+BG_ROTATION = ["light", "dark", "gradient", "mesh", "hero"]
+# Typologies whose bundle bg is "light" (no strong identity) — safe to rotate.
+LIGHT_BG_TYPOLOGIES = {"editorial", "startup", "playful", "data"}
+
+
+def run_generate(slide_type, params, variant, tokens_file, typology, family, primary, idx, bg_hint=None):
     """Run slideforge generate-slide with typology flags + --output tempfile pattern."""
     params = dict(params)
     params["variant"] = variant
@@ -79,6 +90,8 @@ def run_generate(slide_type, params, variant, tokens_file, typology, family, pri
         "--params", json.dumps(params),
         "--output", tmp.name,
     ]
+    if bg_hint is not None:
+        cmd += ["--bg-style", bg_hint]
     subprocess.run(cmd, check=True, capture_output=True)
     with open(tmp.name) as f:
         return json.load(f)
@@ -95,8 +108,16 @@ def main():
                 primary = PRIMARIES[(idx + len(FAMILIES)) % len(PRIMARIES)]
                 slide_type, slide_variant, params = SLIDE_POOL[idx % len(SLIDE_POOL)]
                 tokens_file = generate_tokens(primary)
+                # Rotate backgrounds across the pool: light/dark/gradient/mesh/hero.
+                # Only rotate typologies whose bundle identity is light (editorial,
+                # startup, playful, data) — typologies with gradient/dark/mesh/hero
+                # identities keep theirs, so the rotation adds variety without
+                # fighting the per-typology pairing.
+                bg_hint = None
+                if typ in LIGHT_BG_TYPOLOGIES:
+                    bg_hint = BG_ROTATION[idx % len(BG_ROTATION)]
                 try:
-                    compiled = run_generate(slide_type, params, slide_variant, tokens_file, typ, fam, primary, idx)
+                    compiled = run_generate(slide_type, params, slide_variant, tokens_file, typ, fam, primary, idx, bg_hint)
                     slides.append(compiled)
                     metas.append({"idx": idx, "typology": typ, "variant": variant, "family": fam, "primary": primary, "slide_type": slide_type})
                 except subprocess.CalledProcessError as e:

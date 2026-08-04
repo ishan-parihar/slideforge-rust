@@ -634,6 +634,10 @@ impl Server {
         let mut type_tier = String::new();
         let mut radius = String::new();
         let mut decoration = String::new();
+        // Per-typology background as a SOFT default: the typology bundle suggests
+        // a bg_style (nightlife→hero, playful→mesh...), but an explicit request
+        // bg_style wins, then the typology identity, then the state default.
+        let mut typo_bg_default: Option<String> = None;
         let (typology, style, type_scale_base, type_scale_ratio) = if let Some(t) =
             req.typology.as_deref().filter(|s| !s.is_empty())
         {
@@ -654,6 +658,9 @@ impl Server {
                 &[],
             )
             .map_err(|e| ErrorData::invalid_request(e, None))?;
+            if !axes.bg.is_empty() && axes.bg != "light" {
+                typo_bg_default = Some(axes.bg.clone());
+            }
             family = axes.family.scheme_key().to_string();
             surface = format!("{:?}", axes.surface).to_lowercase();
             type_tier = format!("{:?}", axes.tier).to_lowercase();
@@ -734,7 +741,17 @@ impl Server {
         state.archetype = req.archetype.clone().unwrap_or_default();
         state.platform = canvas.platform.clone();
         state.aspect_ratio = canvas.aspect_ratio.clone();
-        state.bg_style = req.bg_style.clone().unwrap_or_else(|| "light".to_string());
+        // Background precedence (soft defaults, explicit config wins):
+        //   1. request bg_style
+        //   2. typology bundle bg (background identity per style)
+        //   3. light
+        state.bg_style = if let Some(b) = req.bg_style.clone().filter(|s| !s.is_empty()) {
+            b
+        } else if let Some(typo_bg) = typo_bg_default.clone() {
+            typo_bg
+        } else {
+            "light".to_string()
+        };
         state.typology = typology.clone();
         state.variant_ops = req.variant.clone().unwrap_or_default();
         state.color_scheme = family.clone();
@@ -891,6 +908,8 @@ impl Server {
                 }
             });
 
+        // Background precedence: request bg_style, else the state default set
+        // by configure_design (which already applies the typology soft default).
         let bg_style = req
             .bg_style
             .clone()
@@ -1190,6 +1209,14 @@ impl Server {
             canvas_height: canvas.height,
         };
         drop(state);
+
+        // Runtime gate: corner chrome char limits are ABSOLUTE — reject the
+        // config instead of silently truncating with "…".
+        let chrome_errors = slides::validate_corner_chrome(&spec);
+        if !chrome_errors.is_empty() {
+            let msg = chrome_errors.join("\n");
+            return Err(ErrorData::invalid_request(msg, None));
+        }
 
         let html = slides::render_carousel_html(&spec);
         let total = spec.slides.len();

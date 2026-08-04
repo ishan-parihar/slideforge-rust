@@ -965,6 +965,52 @@ mod tests {
     }
 
     #[test]
+    fn test_validate_design_flags_oversized_corner_text() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div class="slide-header">
+                    <span class="overlay__brand">THISBRANDNAMEISFARTOOLONGFORTHEUPPERCORNER</span>
+                    <span class="overlay__topic">Short topic</span>
+                </div>
+                <div class="slide-footer">
+                    <span class="overlay__url">example.com</span>
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report
+                .issues
+                .iter()
+                .any(|issue| issue.r#type == "corner_text_overflow" && issue.severity == "error"),
+            "expected corner_text_overflow error, issues: {:?}",
+            report.issues.iter().map(|i| (&i.r#type, &i.severity)).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_validate_design_passes_short_corner_text() {
+        let html = r#"
+            <div class="slide bg-light">
+                <div class="slide-header">
+                    <span class="overlay__brand">SlideForge</span>
+                    <span class="overlay__topic">Design Systems</span>
+                </div>
+                <div class="slide-footer">
+                    <span class="overlay__url">slideforge.dev</span>
+                    <span class="overlay__hashtags">#design #systems</span>
+                </div>
+            </div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            !report.issues.iter().any(|i| i.r#type == "corner_text_overflow"),
+            "short corner text must pass, issues: {:?}",
+            report.issues.iter().map(|i| &i.r#type).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
     fn test_validate_design_flags_tiny_overlay_and_progress_css() {
         let html = r#"
             <style>
@@ -993,9 +1039,11 @@ mod tests {
 
     #[test]
     fn test_validate_design_flags_thick_progress_indicator() {
+        // 8px chips exceed the dedicated-strip budget (3px base / 5px active is
+        // the calibrated max) — must be flagged.
         let html = r#"
             <style>
-              .breadcrumb-chip { height: 6px; }
+              .breadcrumb-chip { height: 8px; }
             </style>
             <div class="slide bg-light">
                 <div class="breadcrumb-progress"><div class="breadcrumb-chip"></div></div>
@@ -2421,6 +2469,53 @@ pub fn validate_design(html: &str) -> ValidationReport {
         }
     }
 
+    // Corner chrome char limits: absolute — the renderer must never silently
+    // truncate corner text with "…". Compiled HTML that carries an oversized
+    // overlay element is a config bug and must be flagged.
+    let corner_text_re = Regex::new(
+        r#"(?s)<span class="overlay__(?:brand|topic|url|hashtags)"[^>]*>(.*?)</span>"#,
+    )
+    .unwrap();
+    for (i, cap) in corner_text_re.captures_iter(html).enumerate() {
+        let raw = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+        let text = raw.trim();
+        if text.is_empty() {
+            continue;
+        }
+        // Map element to its limit via the class inside the matched span.
+        let class = cap.get(0).map(|m| m.as_str()).unwrap_or("");
+        let limit = if class.contains("overlay__brand") {
+            crate::slides::MAX_BRAND_CHARS
+        } else if class.contains("overlay__topic") {
+            crate::slides::MAX_TOPIC_CHARS
+        } else if class.contains("overlay__url") {
+            crate::slides::MAX_URL_CHARS
+        } else {
+            crate::slides::MAX_HASHTAGS_CHARS
+        };
+        if text.chars().count() > limit {
+            issues.push(DesignIssue {
+                slide: 1,
+                r#type: "corner_text_overflow".to_string(),
+                severity: "error".to_string(),
+                detail: format!(
+                    "Corner text '{}' is {} chars — max {} for its corner.",
+                    text,
+                    text.chars().count(),
+                    limit
+                ),
+                message: "Corner chrome text exceeds its absolute character limit and would be truncated with '…'.".to_string(),
+                suggestion: format!(
+                    "Shorten the corner text to {} chars or fewer at the config level — the renderer rejects over-limit configs at runtime.",
+                    limit
+                ),
+            });
+        }
+        if i > 200 {
+            break;
+        }
+    }
+
     for cap in tiny_progress_re.captures_iter(html) {
         let height = cap
             .get(1)
@@ -2438,7 +2533,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                     .to_string(),
             });
         }
-        if height > 4.0 {
+        if height > 6.0 {
             issues.push(DesignIssue {
                 slide: 1,
                 r#type: "progress_indicator_too_thick".to_string(),
@@ -2446,7 +2541,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 detail: format!("Progress chip CSS uses {:.1}px height, which is visually heavy at export scale.", height),
                 message: "Progress indicators should be thin and refined for premium slide aesthetics."
                     .to_string(),
-                suggestion: "Use 2px default height and 3px active height for optimal visual weight."
+                suggestion: "Use 3px default height and 5px active height in the dedicated 8px progress strip for optimal visual weight."
                     .to_string(),
             });
         }
