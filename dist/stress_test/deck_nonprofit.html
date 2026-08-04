@@ -114,6 +114,7 @@
 body {
   display: flex; justify-content: center; align-items: center;
   min-height: 100vh; background: #f0f0f0;
+  overflow-x: hidden;
   font-family: var(--font-body, system-ui, sans-serif);
 }
 
@@ -515,7 +516,7 @@ body {
 </head>
 <body>
 
-<div style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;">
+<div id="sf-canvas" style="width:1080px;height:1736px;overflow:visible;position:relative;margin:0 auto;flex-shrink:0;">
   <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:675px;">
     <div class="ig-frame">
   <div class="ig-header">
@@ -534,8 +535,8 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); inset: 0; pointer-events: none; opacity: 0.04; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #0F766E; height: 320px; top: -80px; left: -80px; width: 320px; pointer-events: none; opacity: 0.07; position: absolute; border-radius: 50%"></div><div style="opacity: 0.05; height: 120px; pointer-events: none; width: 120px; position: absolute; left: auto; border-radius: 4px; transform: rotate(60deg); background: #90505E; right: -40px; top: 60%"></div></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #0F766E; left: -80px; pointer-events: none; border-radius: 50%; width: 320px; position: absolute; height: 320px; opacity: 0.07; top: -80px"></div><div style="left: auto; opacity: 0.05; top: 60%; pointer-events: none; border-radius: 4px; right: -40px; width: 120px; position: absolute; height: 120px; background: #90505E; transform: rotate(60deg)"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display: inline-block; padding: 6px 16px; background: #3E978E15; border: 1px solid #3E978E30; border-radius: 9999px; font-family: DM Sans; font-size: 13px; font-weight: 600; color: #3E978E; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">Impact Report</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #E7F1EF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Playfair Display; font-size: 22px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Every $1 becomes clean water for a decade</span><p style="font-family: DM Sans; font-size: 16px; font-weight: 400; line-height: 1.55; color: #C3D1CF; margin: 8px 0 0; text-align: left">The 2026 impact report of ClearWater Initiative</p>
             </div>
@@ -654,7 +655,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
@@ -783,7 +784,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -943,7 +944,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -1078,7 +1079,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
+            <div style="pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -1216,7 +1217,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+            <div style="inset: 0; z-index: 1; opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -1354,7 +1355,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; position: absolute; pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -1499,7 +1500,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1630,7 +1631,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; position: absolute"></div>
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1768,7 +1769,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; position: absolute"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -1897,7 +1898,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; position: absolute"></div>
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; z-index: 1; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -2028,7 +2029,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); z-index: 1; position: absolute; pointer-events: none; inset: 0"></div>
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2178,7 +2179,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; inset: 0"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2324,7 +2325,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none"></div>
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); z-index: 1; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2465,7 +2466,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; inset: 0"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -2612,10 +2613,10 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0"></div>
+            <div style="inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="border: 1px solid #1B333040; background: #000600CC; border-radius: 16px;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#0F766E20;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Playfair Display;font-size:26px;font-weight:600;line-height:1.25;color:#E7F1EF;margin:0;text-align:center;text-wrap:balance;font-style:italic;">ClearWater doesn&#x27;t drop a well and leave. They train the people who will maintain it for thirty years.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#0F766E;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="background: #000600CC; border-radius: 16px; border: 1px solid #1B333040;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#0F766E20;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Playfair Display;font-size:26px;font-weight:600;line-height:1.25;color:#E7F1EF;margin:0;text-align:center;text-wrap:balance;font-style:italic;">ClearWater doesn&#x27;t drop a well and leave. They train the people who will maintain it for thirty years.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#0F766E;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #E7F1EF20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #E7F1EF; flex-shrink: 0;">D</div>
             <div>
                 <div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#E7F1EF;">Dr. Amara Osei</div>
@@ -2863,7 +2864,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; opacity: 0.04; z-index: 1; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="z-index: 1; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
@@ -3000,6 +3001,38 @@ body {
   </div>
 </div>
 
+<script>
+// Viewport-fit: scale the fixed export canvas DOWN to fit the browser window
+// (or an embedding iframe) when the viewport is narrower than the canvas.
+// Exports are unaffected: headless export opens the document at the exact
+// canvas size, so the computed scale stays >= 0.985 and no transform applies.
+(function() {
+  var c = document.getElementById('sf-canvas');
+  if (!c) return;
+  var W = 1080, H = 1736;
+  function fit() {
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var s = vw / W;
+    if (s >= 0.985) {
+      c.style.transform = '';
+      c.style.zoom = '';
+      document.body.style.minHeight = '100vh';
+      document.body.style.overflowY = 'auto';
+      return;
+    }
+    // Use CSS zoom (Chrome) for the fit so layout collapses with the visual
+    // scale — no flex-shrink interplay, no overflowing 1080px layout box.
+    c.style.zoom = s.toFixed(4);
+    document.body.style.minHeight = Math.ceil(H * s) + 'px';
+    // The scaled canvas fits the viewport exactly, so vertical scrollbars are
+    // unnecessary; when unscaled (wide screens), keep the page scrollable so
+    // tall canvases are never clipped.
+    document.body.style.overflowY = 'hidden';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+})();
+</script>
 
 <script>
 (function() {

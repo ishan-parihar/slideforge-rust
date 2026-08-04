@@ -172,6 +172,7 @@ pub fn render_carousel_html(spec: &CarouselSpec) -> String {
 body {
   display: flex; justify-content: center; align-items: center;
   min-height: 100vh; background: #f0f0f0;
+  overflow-x: hidden;
   font-family: var(--font-body, system-ui, sans-serif);
 }
 
@@ -982,12 +983,44 @@ body {
 </head>
 <body>
 
-<div style="width:{target_w}px;height:{target_h_ig}px;overflow:visible;position:relative;margin:0 auto;">
+<div id="sf-canvas" style="width:{target_w}px;height:{target_h_ig}px;overflow:visible;position:relative;margin:0 auto;flex-shrink:0;">
   <div style="transform:scale({sf});transform-origin:top left;width:{base_w}px;height:{total_base_h}px;">
     {carousel}
   </div>
 </div>
 
+<script>
+// Viewport-fit: scale the fixed export canvas DOWN to fit the browser window
+// (or an embedding iframe) when the viewport is narrower than the canvas.
+// Exports are unaffected: headless export opens the document at the exact
+// canvas size, so the computed scale stays >= 0.985 and no transform applies.
+(function() {{
+  var c = document.getElementById('sf-canvas');
+  if (!c) return;
+  var W = {target_w}, H = {target_h_ig};
+  function fit() {{
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var s = vw / W;
+    if (s >= 0.985) {{
+      c.style.transform = '';
+      c.style.zoom = '';
+      document.body.style.minHeight = '100vh';
+      document.body.style.overflowY = 'auto';
+      return;
+    }}
+    // Use CSS zoom (Chrome) for the fit so layout collapses with the visual
+    // scale — no flex-shrink interplay, no overflowing 1080px layout box.
+    c.style.zoom = s.toFixed(4);
+    document.body.style.minHeight = Math.ceil(H * s) + 'px';
+    // The scaled canvas fits the viewport exactly, so vertical scrollbars are
+    // unnecessary; when unscaled (wide screens), keep the page scrollable so
+    // tall canvases are never clipped.
+    document.body.style.overflowY = 'hidden';
+  }}
+  fit();
+  window.addEventListener('resize', fit);
+}})();
+</script>
 {js}
 </body>
 </html>"#,
@@ -1366,6 +1399,14 @@ mod tests {
         assert!(!html.contains(r#"<div style="position:absolute;inset:0;background:var(--texture-grain);opacity:0.04;pointer-events:none;z-index:1;"></div>"#));
         assert!(html.contains("transform:scale(2.571429)"));
         assert!(html.contains("width:1080px;height:1350px"));
+        // Viewport-fit shell: the canvas carries an id + flex-shrink:0 so the
+        // fit script is the only scale applied (no double-scaling), and the
+        // fit script itself is present so standalone/browser viewing scales
+        // the fixed export canvas down to the window width.
+        assert!(html.contains("id=\"sf-canvas\""));
+        assert!(html.contains("flex-shrink:0"));
+        assert!(html.contains("Viewport-fit"));
+        assert!(html.contains("window.addEventListener('resize', fit)"));
     }
 
     #[test]

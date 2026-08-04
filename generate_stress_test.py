@@ -107,6 +107,12 @@ def load_decks():
 
 def build_master_viewer(deck_results):
     # deck_results: list of dicts {deck, slides_html, carousel_html, errors, warnings, slides_count, used}
+    # Each carousel is rendered at its export canvas (e.g. 1080x1736 for 4:5).
+    # The carousel shell self-fits to the iframe width (viewport-fit script), so
+    # we size each iframe to the deck's canvas aspect ratio and add per-preview
+    # zoom controls that resize only that iframe — zooming the slide, not the page.
+    import re as _re
+
     cards = []
     for i, dr in enumerate(deck_results):
         d = dr["deck"]
@@ -114,8 +120,10 @@ def build_master_viewer(deck_results):
         badge = ("gate-pass" if dr["errors"] == 0 else "gate-fail")
         badge_txt = ("0 errors" if dr["errors"] == 0 else "%d errors" % dr["errors"])
         types_used = ", ".join(dr["used"])
+        m = _re.search(r'id="sf-canvas"[^>]*width:(\d+)px;height:(\d+)px', dr["carousel_html"])
+        cw, ch = (int(m.group(1)), int(m.group(2))) if m else (1080, 1736)
         cards.append(f"""
-<div class="deck" id="deck-{i}">
+<div class="deck" id="deck-{i}" data-cw="{cw}" data-ch="{ch}">
   <div class="deck-head">
     <div class="deck-index">{i+1:02d}</div>
     <div class="deck-title">
@@ -130,7 +138,15 @@ def build_master_viewer(deck_results):
     </div>
   </div>
   <div class="deck-body">
-    <iframe class="carousel-frame" srcdoc="{esc_carousel}" title="{_html.escape(d['name'])}"></iframe>
+    <div class="pv-wrap">
+      <iframe class="carousel-frame" srcdoc="{esc_carousel}" title="{_html.escape(d['name'])}"></iframe>
+      <div class="pv-zoom">
+        <button class="pv-btn" data-act="out" title="Zoom out">−</button>
+        <span class="pv-pct">100%</span>
+        <button class="pv-btn" data-act="in" title="Zoom in">+</button>
+        <button class="pv-btn" data-act="fit" title="Reset">⤾</button>
+      </div>
+    </div>
     <div class="deck-slides"><span class="lbl">TYPES</span>{_html.escape(types_used)}</div>
   </div>
 </div>""")
@@ -140,6 +156,7 @@ def build_master_viewer(deck_results):
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SlideForge Stress Test — 10 Carousel Decks</title>
 <style>
 :root {{ --bg:#0a0b10; --surface:#14151c; --surface-2:#1c1e27; --border:#2a2c3d;
@@ -165,22 +182,63 @@ h1 {{ font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px
 .chip.gate-pass {{ color:var(--ok); border-color:var(--ok); background:transparent; }}
 .chip.gate-fail {{ color:var(--bad); border-color:var(--bad); background:transparent; }}
 .deck-body {{ display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; }}
-.carousel-frame {{ width:420px; height:525px; border:1px solid var(--border); border-radius:8px;
-  background:#111; transform:scale(1.35); transform-origin:top left; box-shadow:0 10px 30px rgba(0,0,0,.35); }}
+/* Preview iframe: sized to the deck's canvas aspect at a 380px base width.
+   The carousel shell self-fits to the iframe width, so the full slide is
+   always visible — no zoomed-in crop. Zoom buttons resize only this iframe. */
+.pv-wrap {{ flex:0 0 auto; }}
+.carousel-frame {{ display:block; width:380px; height:calc(380px * var(--ar, 1.6)); border:1px solid var(--border);
+  border-radius:8px; background:#111; box-shadow:0 10px 30px rgba(0,0,0,.35); transition:width .2s ease, height .2s ease; }}
+.pv-zoom {{ display:flex; align-items:center; gap:8px; margin-top:8px; }}
+.pv-btn {{ width:28px; height:28px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--text); font-size:15px; font-weight:700; cursor:pointer;
+  line-height:1; transition:background .15s, border-color .15s; }}
+.pv-btn:hover {{ background:var(--accent); border-color:var(--accent); color:#fff; }}
+.pv-pct {{ min-width:44px; text-align:center; font-size:11.5px; font-weight:700; color:var(--dim);
+  font-variant-numeric:tabular-nums; }}
 .deck-body > .deck-slides {{ flex:1; min-width:200px; color:var(--dim); font-size:12px; line-height:1.6; padding-top:6px; }}
 .deck-slides .lbl {{ display:block; font-size:10.5px; letter-spacing:0.1em; color:var(--accent); font-weight:800; margin-bottom:6px; }}
-@media (max-width: 700px) {{ .carousel-frame {{ transform:scale(1); }} }}
 </style>
 </head>
 <body>
 <h1>SlideForge Stress Test — 10 Carousel Decks</h1>
-<div class="subtitle">Deep-population audit: overflow protection, automated scaling, word/char limits, per-slide typology variance.</div>
+<div class="subtitle">Deep-population audit: overflow protection, automated scaling, per-slide typology variance. Use each deck's +/− controls to zoom that slide alone — the page itself never zooms.</div>
 <div class="summary">
   <div class="stat"><b>{len(deck_results)}</b><span>decks</span></div>
   <div class="stat"><b>{total_slides}</b><span>slides</span></div>
   <div class="stat"><b>{total_errors}</b><span>validation errors</span></div>
 </div>
 {''.join(cards)}
+<script>
+// Per-preview zoom: resizes the iframe (the carousel self-fits), so zooming
+// only affects that deck's preview — never the whole page.
+(function () {{
+  const BASE_W = 380;
+  document.querySelectorAll('.deck').forEach(deck => {{
+    const cw = parseInt(deck.dataset.cw || 1080, 10);
+    const ch = parseInt(deck.dataset.ch || 1736, 10);
+    const frame = deck.querySelector('.carousel-frame');
+    const pct = deck.querySelector('.pv-pct');
+    let zoom = 1;
+    function apply() {{
+      const w = Math.round(BASE_W * zoom);
+      const h = Math.round(w * ch / cw);
+      frame.style.width = w + 'px';
+      frame.style.height = h + 'px';
+      pct.textContent = Math.round(zoom * 100) + '%';
+    }}
+    deck.querySelectorAll('.pv-btn').forEach(btn => {{
+      btn.addEventListener('click', () => {{
+        const act = btn.dataset.act;
+        if (act === 'in') zoom = Math.min(zoom * 1.25, 6);
+        else if (act === 'out') zoom = Math.max(zoom / 1.25, 0.25);
+        else zoom = 1;
+        apply();
+      }});
+    }});
+    apply();
+  }});
+}})();
+</script>
 </body>
 </html>"""
 
