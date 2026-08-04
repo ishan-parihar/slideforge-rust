@@ -289,6 +289,28 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         }
     }
 
+    // Narrative slides MUST carry a non-empty `description`: it renders below
+    // the cards (problem/solution pair, before/after grid, or results strip). A
+    // missing description silently renders an empty gap at the bottom of the
+    // composition. This is a hard runtime error so the agent fixes the config
+    // instead of shipping a slide with a hollow tail. case_study_result renders
+    // through problem_solution_slide, so it needs the same gate.
+    if matches!(
+        slide_type,
+        "problem_solution" | "before_after_story" | "case_study_result"
+    ) {
+        let has_description = params
+            .get("description")
+            .and_then(|v| v.as_str())
+            .map(|s| !s.trim().is_empty())
+            .unwrap_or(false);
+        if !has_description {
+            result.add_error(format!(
+                "{slide_type} requires a non-empty 'description' — it renders below the cards. Provide one so the slide closes with a takeaway."
+            ));
+        }
+    }
+
     result
 }
 
@@ -712,6 +734,36 @@ mod tests {
         });
         let r2 = validate_slide_spec("hero", &ok);
         assert!(r2.valid, "split hero with image must be valid: {:?}", r2.errors);
+    }
+
+    #[test]
+    fn test_narrative_slides_require_description() {
+        // problem_solution / before_after_story / case_study_result MUST carry a
+        // non-empty description (it renders below the cards). Missing it is a
+        // hard error, not a silent gap.
+        for t in ["problem_solution", "before_after_story", "case_study_result"] {
+            let params = json!({
+                "title": "T", "problem": "P", "solution": "S", "proof_points": ["x"],
+                "before": "B", "after": "A", "metric": "M", "metric_label": "L",
+                "client": "C", "challenge": "Ch", "results": [{"metric": "1x", "label": "V"}]
+            });
+            let r = validate_slide_spec(t, &params);
+            assert!(!r.valid, "{t} without description must be invalid");
+            assert!(
+                r.errors.iter().any(|e| e.contains("description")),
+                "{t} errors must mention description: {:?}",
+                r.errors
+            );
+
+            let mut with_desc = params.clone();
+            with_desc["description"] = json!("A closing note below the cards.");
+            let r2 = validate_slide_spec(t, &with_desc);
+            assert!(
+                r2.valid,
+                "{t} with description must be valid: {:?}",
+                r2.errors
+            );
+        }
     }
 
     #[test]

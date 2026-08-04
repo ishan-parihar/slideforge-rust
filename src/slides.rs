@@ -259,20 +259,26 @@ body {
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
 }
-/* Image slides: the injected background photo must bleed BEHIND the chrome
-   bands (36px header + 40px footer), not stop at the body region. The bg layer
-   div (first-of-type inside .slide-body) is stretched to the full composition
-   height and offset up by the header height, while content stays anchored to
-   the body region so it never collides with corner text. */
-/* The body band's overflow:hidden would clip the negative-top bg layer; the
-   bg layer is the only thing that escapes (content stays inside the body via
-   the re-anchor rule above). Gated on a `.slide-content` child so non-
-   conforming slide roots keep the old hard clip instead of leaking into the
-   chrome bands. */
-.slide.has-bg-image:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content) {
+/* Background continuity (universal): the slide-base background layer (the
+   first child of .slide-body — the mesh/gradient/surface div, and any injected
+   full-slide photo inside it) is stretched to cover the FULL composition so the
+   chrome bands (transparent 36px header + 40px footer) show the EXACT same
+   background as the body. Without this, the body's layer is 420×449 while the
+   bands show the slide-level background anchored to a different-size element,
+   producing a visible seam — and injected photos / image-primary slides
+   (image_headline, image_quote via slide_base_bleed) stopped at the body edge
+   instead of bleeding behind the corner text. Content stays anchored to the
+   body region (re-anchor rule) so it can never collide with the chrome.
+   Two content-wrapper classes are covered: `.slide-content` (slide_base) is
+   RE-anchored to the body region; `.slide-content--bleed` (slide_base_bleed,
+   image/glass slides) is left in flow so its height:100% fills the stretched
+   layer — the image/glass covers the full composition including the bands.
+   Gated on those wrappers so non-conforming slide roots keep the old hard
+   clip instead of leaking into the chrome bands. */
+.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
   overflow: visible !important;
 }
-.slide.has-bg-image:not(.slide--full-bleed) .slide-body > div:first-of-type {
+.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
   position: absolute !important;
   top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: 0 !important;
@@ -285,7 +291,7 @@ body {
   height: calc(var(--composition-height) + var(--chrome-header-h, 36px)) !important;
   overflow: hidden !important;
 }
-.slide.has-bg-image:not(.slide--full-bleed) .slide-body > div:first-of-type > .slide-content {
+.slide:not(.slide--full-bleed) .slide-body > div:first-of-type > .slide-content {
   position: absolute !important;
   top: var(--chrome-header-h, 36px) !important;
   left: 0 !important;

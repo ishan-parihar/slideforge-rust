@@ -3277,7 +3277,7 @@ pub fn myth_fact_slide(
         false,
         None,
         "left",
-        "0 0 16px",
+        "0 0 12px",
         true,
     );
 
@@ -3310,8 +3310,16 @@ pub fn myth_fact_slide(
             } else {
                 String::new()
             };
+            // ONE centered group: heading (tight 12px bottom margin) + cards +
+            // explanation. Centering the whole group (not the cards alone in a
+            // tall middle region) kills the dead gap between the heading and the
+            // cards that both the old layouts produced. The myth/fact cards
+            // center against each other via align-items on the row.
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:0 1 auto;justify-content:center;overflow:hidden;">{}{}{}</div></div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
+                    {}
+                    <div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:0 1 auto;justify-content:center;overflow:hidden;">{}{}{}</div>
+                </div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
@@ -3348,8 +3356,15 @@ pub fn myth_fact_slide(
             } else {
                 String::new()
             };
+            // Split (default): one centered group — heading + myth/fact row +
+            // explanation, tight internal gaps. See debunk branch comment for
+            // why centering the WHOLE group (not the cards alone) matters.
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:0 1 auto;align-items:center;overflow:hidden;">{}{}</div>{}</div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
+                    {}
+                    <div style="display:flex;gap:14px;width:100%;min-height:0;flex:0 1 auto;align-items:center;overflow:hidden;">{}{}</div>
+                    {}
+                </div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
