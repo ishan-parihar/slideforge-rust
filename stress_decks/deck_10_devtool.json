@@ -75,7 +75,18 @@
           {
             "title": "tf merge",
             "description": "Closes the ticket"
-          },
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "minimal",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "The four keystrokes (more)",
+        "features": [
           {
             "title": "tf standup",
             "description": "Writes your update"
@@ -102,7 +113,18 @@
           {
             "title": "Sprint view",
             "description": "Velocity auto-charted"
-          },
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "icon-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Built for the merge train (more)",
+        "features": [
           {
             "title": "CLI first",
             "description": "Terminal or web, same truth"

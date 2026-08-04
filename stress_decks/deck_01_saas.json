@@ -75,7 +75,18 @@
           {
             "title": "Smart reminders",
             "description": "Nudges only when a deal actually needs a human move."
-          },
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "two-column",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Two engines, one flow (more)",
+        "features": [
           {
             "title": "One inbox",
             "description": "Email, calls and notes collapsed into a single timeline."
@@ -102,7 +113,18 @@
           {
             "title": "Templates",
             "description": "Ship sequences in minutes, not days."
-          },
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "icon-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Built for the revenue team (more)",
+        "features": [
           {
             "title": "Audit log",
             "description": "Every touch recorded, exportable on demand."

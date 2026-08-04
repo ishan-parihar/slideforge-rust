@@ -177,24 +177,31 @@ body {
 }
 .slide--full-bleed .slide-body > div:first-of-type {
   position: absolute !important;
-  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  /* The background layer (mesh/gradient/image) must reach the TOP of the
+     composition so it bleeds behind the transparent header band. The body
+     starts after the header, so the layer is pulled up by exactly the header
+     height; its height is the full slide (canvas) so it also covers the
+     footer band and any aspect-ratio bleed below the composition. */
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition
-   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
-   with 525px composition), this places content at top:111px instead of top:0,
-   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
-   calc resolves to 0 (canvas == composition height). */
+/* Content constrainer: reposition the content wrapper to the BODY region
+   (between header and footer bands), not the full composition. The body is
+   comp-height − header(36) − footer(40) = 449px. The background layer is
+   anchored at composition-top, so content is offset by exactly the header
+   height and sized to the body — content can never spill into the footer band
+   and vertical centering happens within the visible body (fixes the "content
+   pushed down into the footer" bug on 3:4 / 1:1 / 9:16 canvases). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: var(--chrome-header-h, 36px) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
-  height: var(--composition-height) !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
 }
 /* Full-bleed light/mesh: .slide--light already carries the mesh gradient
    (defined above), so no extra rule is needed — kept as a defensive alias. */
@@ -535,8 +542,8 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -80px; width: 320px; opacity: 0.07; border-radius: 50%; pointer-events: none; top: -80px; position: absolute; background: #B15200; height: 320px"></div><div style="opacity: 0.05; width: 120px; right: -40px; height: 120px; background: #007EB5; position: absolute; pointer-events: none; left: auto; border-radius: 4px; top: 60%; transform: rotate(60deg)"></div></div>
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; top: -80px; left: -80px; width: 320px; height: 320px; position: absolute; border-radius: 50%; pointer-events: none; background: #B15200"></div><div style="pointer-events: none; border-radius: 4px; right: -40px; width: 120px; position: absolute; transform: rotate(60deg); top: 60%; background: #007EB5; left: auto; opacity: 0.05; height: 120px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-3);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;"><div style="font-family:Nunito Sans;font-size:11px;font-weight:700;color:#CC6A2A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">The unplugged route</div><h1 style="font-family:Lora;font-size:44px;font-weight:900;color:#F4EDE9;line-height:1.08;margin:0 0 8px;overflow-wrap:break-word;">Kyoto, but slower</h1><p style="font-family:Nunito Sans;font-size:15px;color:#D6CBC5;line-height:1.5;margin:0;max-width:320px;">Five days of temples at dawn, empty alleys, and one perfect bowl of noodles</p></div><div style="min-width:0;overflow:hidden;"><div style="position:relative;width:100%;height:var(--space-28);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);background-image:url('https://picsum.photos/seed/kyoto-hero/520/650');background-size:cover;background-position:center;opacity:0.4;"></div><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div></div>
             </div>
@@ -664,7 +671,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; pointer-events: none; inset: 0; background: var(--texture-grain); position: absolute"></div>
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -802,7 +809,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
+            <div style="z-index: 1; inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -940,7 +947,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -1078,7 +1085,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
+            <div style="opacity: 0.04; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -1235,7 +1242,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
+            <div style="inset: 0; z-index: 1; opacity: 0.04; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -1385,7 +1392,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1; inset: 0; pointer-events: none"></div>
+            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -1540,7 +1547,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
@@ -1689,7 +1696,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0"></div>
+            <div style="pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:3px;">
@@ -1851,7 +1858,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="pointer-events: none; background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -1989,7 +1996,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
@@ -2139,10 +2146,10 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; position: absolute; inset: 0; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="background: #0D0000CC; border-radius: var(--radius-lg); border: 1px solid #3A2A2040;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#B1520020;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Lora;font-size:26px;font-weight:600;line-height:1.25;color:#F4EDE9;margin:0;text-align:center;text-wrap:balance;font-style:italic;">The itinerary was perfect. We never waited in a line, and we still saw everything.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#B15200;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="border-radius: var(--radius-lg); background: #0D0000CC; border: 1px solid #3A2A2040;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#B1520020;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Lora;font-size:26px;font-weight:600;line-height:1.25;color:#F4EDE9;margin:0;text-align:center;text-wrap:balance;font-style:italic;">The itinerary was perfect. We never waited in a line, and we still saw everything.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#B15200;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #F4EDE920; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #F4EDE9; flex-shrink: 0;">H</div>
             <div>
                 <div style="font-family:Nunito Sans;font-size:11px;font-weight:600;color:#F4EDE9;">Hannah &amp; Tom</div>
@@ -2274,7 +2281,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; inset: 0; z-index: 1"></div>
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -2434,7 +2441,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; opacity: 0.04; z-index: 1; background: var(--texture-grain)"></div>
+            <div style="background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Lora;font-size:28px;font-weight:900;color:#F4EDE9;margin:0;text-align:center;">Featured by</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">N</div>Nomad Mag</div><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">T</div>Trail Weekly</div><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">E</div>EastBound</div><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">S</div>Slow Travel Co</div><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">M</div>Map &amp; Compass</div><div style="height:58px;border-radius:var(--radius-lg);border:1px solid #3A2A20;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Nunito Sans;font-size:var(--text-sm);font-weight:800;color:#D6CBC5;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F4EDE9;flex-shrink:0;">W</div>WanderLane</div></div></div>
@@ -2563,8 +2570,8 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; background: var(--texture-grain); opacity: 0.04; pointer-events: none; inset: 0"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #B15200; opacity: 0.07; width: 320px; height: 320px; top: -80px; left: -80px; position: absolute; border-radius: 50%; pointer-events: none"></div><div style="transform: rotate(60deg); left: auto; width: 120px; position: absolute; pointer-events: none; right: -40px; height: 120px; top: 60%; background: #007EB5; opacity: 0.05; border-radius: 4px"></div></div>
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1; opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; top: -80px; border-radius: 50%; position: absolute; width: 320px; height: 320px; pointer-events: none; left: -80px; background: #B15200"></div><div style="top: 60%; background: #007EB5; opacity: 0.05; pointer-events: none; height: 120px; left: auto; transform: rotate(60deg); position: absolute; right: -40px; width: 120px; border-radius: 4px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
             <div style="font-family:Nunito Sans;font-size:12px;font-weight:800;color:#CC6A2A;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">YOUR TURN</div>
@@ -2697,7 +2704,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; inset: 0"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">

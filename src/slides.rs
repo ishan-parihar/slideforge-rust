@@ -235,24 +235,31 @@ body {
 }
 .slide--full-bleed .slide-body > div:first-of-type {
   position: absolute !important;
-  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  /* The background layer (mesh/gradient/image) must reach the TOP of the
+     composition so it bleeds behind the transparent header band. The body
+     starts after the header, so the layer is pulled up by exactly the header
+     height; its height is the full slide (canvas) so it also covers the
+     footer band and any aspect-ratio bleed below the composition. */
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition
-   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
-   with 525px composition), this places content at top:111px instead of top:0,
-   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
-   calc resolves to 0 (canvas == composition height). */
+/* Content constrainer: reposition the content wrapper to the BODY region
+   (between header and footer bands), not the full composition. The body is
+   comp-height − header(36) − footer(40) = 449px. The background layer is
+   anchored at composition-top, so content is offset by exactly the header
+   height and sized to the body — content can never spill into the footer band
+   and vertical centering happens within the visible body (fixes the "content
+   pushed down into the footer" bug on 3:4 / 1:1 / 9:16 canvases). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: var(--chrome-header-h, 36px) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
-  height: var(--composition-height) !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
 }
 /* Full-bleed light/mesh: .slide--light already carries the mesh gradient
    (defined above), so no extra rule is needed — kept as a defensive alias. */

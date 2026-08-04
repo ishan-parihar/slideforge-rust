@@ -1368,17 +1368,23 @@ pub fn split_features_slide(
 
     // ponytail: dynamic scaling — learn from grid_cards dense variant (lines 2716-2738).
     // Compute character mass to scale padding + font sizes so tiles never overflow.
-    let max_feat_title_len = features
+    // Tiles are capped at 3: the right column (or grid stack) can carry at most
+    // three feature cards inside the 449px body; a 4th card overflows the banded
+    // layout. Configs with more than 3 features are rejected by the validator
+    // (see validate_slide_spec split_features gate) so content is never dropped
+    // silently — the renderer here simply never renders a 4th tile.
+    let rendered_features: Vec<&Value> = features.iter().take(3).collect();
+    let max_feat_title_len = rendered_features
         .iter()
         .map(|f| f.get("title").and_then(|v| v.as_str()).unwrap_or("").len())
         .max()
         .unwrap_or(0);
-    let max_feat_desc_len = features
+    let max_feat_desc_len = rendered_features
         .iter()
         .map(|f| f.get("description").and_then(|v| v.as_str()).unwrap_or("").len())
         .max()
         .unwrap_or(0);
-    let total_feat_chars: usize = features.iter().map(|f| {
+    let total_feat_chars: usize = rendered_features.iter().map(|f| {
         let t = f.get("title").and_then(|v| v.as_str()).unwrap_or("").len();
         let d = f.get("description").and_then(|v| v.as_str()).unwrap_or("").len();
         t + d
@@ -1417,7 +1423,7 @@ pub fn split_features_slide(
     let card_margin = if image_feature_layout { "0" } else { "0 0 12px" };
 
     let mut feature_cards = Vec::new();
-    for feat in features.iter() {
+    for feat in rendered_features.iter() {
         let t = feat.get("title").and_then(|v| v.as_str()).unwrap_or("");
         let d = feat
             .get("description")
@@ -2706,10 +2712,13 @@ fn table_slide(
         let cells: Vec<String> = row.as_array().map(|arr| {
             arr.iter().enumerate().map(|(c_idx, cell)| {
                 let text = cell.as_str().unwrap_or("");
-                let is_badge = text.contains('x') || text.contains('%');
-                let cell_html = if is_badge {
-                    format!(r#"<span style="font-family:{};font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:2px 8px;border-radius:999px;display:inline-block;">{}</span>"#, tokens.heading_font, escape_html(text))
-                } else if c_idx == 0 {
+                // Consistent cell styling: first column is the row label
+                // (semibold), every other column is secondary text. NO
+                // auto-badge heuristic — a naive contains('x')||contains('%')
+                // check made cells like "60%" and "Global equity index" (the
+                // 'x' in "index") green pills while neighbors stayed plain,
+                // producing an inconsistent tag-like vs plain mix.
+                let cell_html = if c_idx == 0 {
                     format!(r#"<span style="font-family:{};font-weight:800;color:{};">{}</span>"#, tokens.heading_font, colors.text_primary, escape_html(text))
                 } else {
                     format!(r#"<span style="font-family:{};color:{};">{}</span>"#, tokens.body_font, colors.text_secondary, escape_html(text))
@@ -6750,10 +6759,12 @@ mod tests {
     }
 
     #[test]
-    fn test_split_features_dense_renders_all_features() {
+    fn test_split_features_caps_tiles_at_three() {
         // split_features absorbed the grid_cards list-dense visual contract —
-        // a multi-row list of icon+title+description beats. This test locks
-        // in that a 5-feature split_features slide renders every feature.
+        // a multi-row list of icon+title+description beats. The banded body can
+        // carry AT MOST three feature cards (a 4th tile overflows into the
+        // chrome bands). The renderer caps rendered tiles at 3 and the validator
+        // rejects configs with more than 3 features (see validate_slide_spec).
         let tokens = derive_palette(
             "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
         ).unwrap();
@@ -6772,11 +6783,17 @@ mod tests {
         let res = dispatch_slide("split_features", &tokens, &params, "light", "editorial", "educator")
             .expect("split_features should accept list-dense features");
         let html = res["html"].as_str().unwrap();
+        // Only the first 3 tiles render; the 4th/5th are never emitted.
         assert!(html.contains("Literature Review"), "feature 1 title missing");
         assert!(html.contains("Survey Design"), "feature 2 title missing");
         assert!(html.contains("Controlled Trials"), "feature 3 title missing");
-        assert!(html.contains("Statistical Modeling"), "feature 4 title missing");
-        assert!(html.contains("Peer Review"), "feature 5 title missing");
+        assert!(!html.contains("Statistical Modeling"), "4th tile must NOT render");
+        assert!(!html.contains("Peer Review"), "5th tile must NOT render");
+
+        // The validator gate rejects >3 features as a hard error.
+        let vr = crate::validate::validate_slide_spec("split_features", &params);
+        assert!(!vr.valid, "config with 5 features must be rejected");
+        assert!(vr.errors.iter().any(|e| e.contains("maximum of 3")));
     }
 
     #[test]

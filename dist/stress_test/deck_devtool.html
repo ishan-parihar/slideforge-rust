@@ -177,24 +177,31 @@ body {
 }
 .slide--full-bleed .slide-body > div:first-of-type {
   position: absolute !important;
-  top: calc((var(--composition-height) - var(--slide-height)) / 2) !important;
+  /* The background layer (mesh/gradient/image) must reach the TOP of the
+     composition so it bleeds behind the transparent header band. The body
+     starts after the header, so the layer is pulled up by exactly the header
+     height; its height is the full slide (canvas) so it also covers the
+     footer band and any aspect-ratio bleed below the composition. */
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
   width: var(--slide-width) !important;
   height: var(--slide-height) !important;
   overflow: hidden !important;
 }
-/* Content constrainer: reposition content wrapper to original composition
-   bounds, vertically CENTERED within the canvas. For 9:16 (747px tall canvas
-   with 525px composition), this places content at top:111px instead of top:0,
-   eliminating the "content pushed to upper area" bug. For 1:1 and 4:5, the
-   calc resolves to 0 (canvas == composition height). */
+/* Content constrainer: reposition the content wrapper to the BODY region
+   (between header and footer bands), not the full composition. The body is
+   comp-height − header(36) − footer(40) = 449px. The background layer is
+   anchored at composition-top, so content is offset by exactly the header
+   height and sized to the body — content can never spill into the footer band
+   and vertical centering happens within the visible body (fixes the "content
+   pushed down into the footer" bug on 3:4 / 1:1 / 9:16 canvases). */
 .slide--full-bleed .slide-content {
   position: absolute !important;
   z-index: 10 !important;
-  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  top: var(--chrome-header-h, 36px) !important;
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
-  height: var(--composition-height) !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
 }
 /* Full-bleed light/mesh: .slide--light already carries the mesh gradient
    (defined above), so no extra rule is needed — kept as a defensive alias. */
@@ -535,8 +542,8 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain)"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; position: absolute; background: #4F46E5; opacity: 0.07; pointer-events: none; top: -80px; left: -80px; width: 320px; border-radius: 50%"></div><div style="opacity: 0.05; height: 120px; pointer-events: none; transform: rotate(60deg); right: -40px; position: absolute; border-radius: 4px; width: 120px; background: #8D5E00; top: 60%; left: auto"></div></div>
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute; z-index: 1"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #4F46E5; opacity: 0.07; pointer-events: none; width: 320px; border-radius: 50%; position: absolute; top: -80px; height: 320px; left: -80px"></div><div style="width: 120px; height: 120px; right: -40px; left: auto; opacity: 0.05; position: absolute; pointer-events: none; border-radius: 4px; top: 60%; transform: rotate(60deg); background: #8D5E00"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display: inline-block; padding: 6px 16px; background: #7276FF15; border: 1px solid #7276FF30; border-radius: 9999px; font-family: Space Grotesk; font-size: 13px; font-weight: 600; color: #7276FF; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 16px;">v2.0</div><span style="background: linear-gradient(135deg, #FFFFFF 0%, #ECEEF5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: Space Grotesk; font-size: 24px; font-weight: 600; line-height: 1.08; text-align: left; margin: 0; display: block; letter-spacing: -0.02em">Your issues should close themselves</span><p style="font-family: Space Grotesk; font-size: 16px; font-weight: 400; line-height: 1.55; color: #CBCDD8; margin: 8px 0 0; text-align: left">Taskflow links PRs to tickets, tests to releases, and slack to done</p>
             </div>
@@ -655,8 +662,8 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="border-radius: 50%; position: absolute; height: 320px; left: -80px; width: 320px; top: -80px; background: #4F46E5; pointer-events: none; opacity: 0.07"></div><div style="top: 60%; position: absolute; width: 120px; right: -40px; opacity: 0.05; left: auto; height: 120px; background: #8D5E00; transform: rotate(60deg); border-radius: 4px; pointer-events: none"></div></div>
+            <div style="background: var(--texture-grain); z-index: 1; inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; top: -80px; border-radius: 50%; left: -80px; position: absolute; background: #4F46E5; opacity: 0.07; pointer-events: none; width: 320px"></div><div style="right: -40px; height: 120px; background: #8D5E00; pointer-events: none; opacity: 0.05; left: auto; width: 120px; position: absolute; transform: rotate(60deg); top: 60%; border-radius: 4px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
             <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#7276FF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">THE PROBLEM</div>
@@ -780,7 +787,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; inset: 0; z-index: 1"></div>
+            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -908,7 +915,7 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            <div style="opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
@@ -932,11 +939,6 @@ body {
                 <div style="min-width:0;">
                     <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">tf merge</h3>
                     <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Closes the ticket</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">tf standup</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Writes your update</p>
                 </div>
             </div></div>
                 </div>
@@ -1057,45 +1059,20 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
                 <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Built for the merge train" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="The four keystrokes (more)" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div></div>
                 <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
-                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Built for the merge train</h2>
-                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The four keystrokes (more)</h2>
+                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
                 <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Git-native</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Hooks into every branch</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">CI aware</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Blocks merge on red</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Sprint view</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Velocity auto-charted</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">CLI first</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Terminal or web, same truth</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Webhook ready</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Slack, Discord, Linear</p>
-                </div>
-            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
-                <div style="min-width:0;">
-                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Self-hostable</h3>
-                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Docker one-liner</p>
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">tf standup</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Writes your update</p>
                 </div>
             </div></div>
                 </div>
@@ -1216,22 +1193,34 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); z-index: 1; position: absolute; pointer-events: none"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Cycle time, falling</h2>
-            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
-            
-            
-            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">1.4</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">3.8</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">6.2</text>
-            
-            <path d="M 40.0 35.0 L 93.0 51.7 L 146.0 68.5 L 199.0 82.1 L 252.0 95.8 L 305.0 108.0 " stroke="#7276FF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="40.0" cy="35.0" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="93.0" cy="51.7" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="146.0" cy="68.5" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="199.0" cy="82.1" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="252.0" cy="95.8" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="108.0" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
-            <text x="40.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk1</text><text x="93.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk2</text><text x="146.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk3</text><text x="199.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk4</text><text x="252.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk5</text><text x="305.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk6</text>
-        </svg></div>
-            <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Median open-to-merged dropped from 6.2 days to 1.4 days after adoption.</p>
-        </div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Built for the merge train" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div></div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Built for the merge train</h2>
+                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Git-native</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Hooks into every branch</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">CI aware</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Blocks merge on red</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Sprint view</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Velocity auto-charted</p>
+                </div>
+            </div></div>
+                </div>
+            </div>
             </div>
         </div>
   </div>
@@ -1348,37 +1337,34 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; inset: 0; z-index: 1"></div>
+            <div style="z-index: 1; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; opacity: 0.04"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Where the day goes</h2>
-            <div style="display:flex;align-items:center;gap:24px;width:100%;margin-top:20px;justify-content:center;">
-                <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#7276FF 0.0deg 172.8deg, #CBCDD8 172.8deg 266.4deg, #F59E0B 266.4deg 316.8deg, #10B981 316.8deg 360.0deg);position:relative;">
-                    <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:var(--surface-dark, #010105);left:30px;top:30px;z-index:2;"></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="Built for the merge train (more)" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div></div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Built for the merge train (more)</h2>
+                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">CLI first</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Terminal or web, same truth</p>
                 </div>
-                <div style="flex:1;">
-                    <div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
-                    <div style="width:12px;height:12px;border-radius:3px;background:#7276FF;"></div>
-                    <span style="flex:1;">Coding</span>
-                    <strong>48.0%</strong>
-                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
-                    <div style="width:12px;height:12px;border-radius:3px;background:#CBCDD8;"></div>
-                    <span style="flex:1;">Review</span>
-                    <strong>26.0%</strong>
-                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
-                    <div style="width:12px;height:12px;border-radius:3px;background:#F59E0B;"></div>
-                    <span style="flex:1;">Status updates</span>
-                    <strong>14.0%</strong>
-                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
-                    <div style="width:12px;height:12px;border-radius:3px;background:#10B981;"></div>
-                    <span style="flex:1;">Context switching</span>
-                    <strong>12.0%</strong>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Webhook ready</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Slack, Discord, Linear</p>
                 </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2A2D3D;border-radius:0;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:10px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:14px;font-weight:800;color:#ECEEF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Self-hostable</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CBCDD8;margin:0;line-height:1.45;">Docker one-liner</p>
+                </div>
+            </div></div>
                 </div>
             </div>
-            <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Status sync was the silent tax on every standup.</p>
-        </div>
             </div>
         </div>
   </div>
@@ -1495,15 +1481,22 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Devs rate their tracker</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="160.0,84.0 175.2,95.1 169.4,112.9 150.6,112.9 144.8,95.1" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,68.0 190.4,90.1 178.8,125.9 141.2,125.9 129.6,90.1" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,52.0 205.7,85.2 188.2,138.8 131.8,138.8 114.3,85.2" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,36.0 220.9,80.2 197.6,151.8 122.4,151.8 99.1,80.2" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,20.0 236.1,75.3 207.0,164.7 113.0,164.7 83.9,75.3" fill="none" stroke="#2A2D3D33" stroke-width="1" />
-            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#2A2D3D33" stroke-width="1" /><text x="160.0" y="13.0" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="middle">Speed (94)</text><line x1="160" y1="100" x2="236.1" y2="75.3" stroke="#2A2D3D33" stroke-width="1" /><text x="251.4" y="75.2" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="start">Accuracy (90)</text><line x1="160" y1="100" x2="207.0" y2="164.7" stroke="#2A2D3D33" stroke-width="1" /><text x="217.3" y="175.8" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="start">Integrations (86)</text><line x1="160" y1="100" x2="113.0" y2="164.7" stroke="#2A2D3D33" stroke-width="1" /><text x="102.7" y="175.8" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="end">CLI (97)</text><line x1="160" y1="100" x2="83.9" y2="75.3" stroke="#2A2D3D33" stroke-width="1" /><text x="68.6" y="75.2" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="end">Onboarding (82)</text>
-            <polygon points="160.0,22.5 230.6,77.1 201.7,157.4 113.0,164.7 95.7,79.1" fill="#7276FF" fill-opacity="0.25" stroke="#7276FF" stroke-width="2" />
-            <circle cx="160.0" cy="22.5" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="230.6" cy="77.1" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="201.7" cy="157.4" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="113.0" cy="164.7" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="95.7" cy="79.1" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" />
-        </svg></div><p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">Taskflow wins on the axes teams actually complain about.</p></div>
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Cycle time, falling</h2>
+            <div style="width:100%;margin-top:16px;"><svg width="100%" height="130px" viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+            
+            
+            <line x1="40" y1="108.0" x2="305" y2="108.0" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="112.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">1.4</text><line x1="40" y1="71.5" x2="305" y2="71.5" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="75.5" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">3.8</text><line x1="40" y1="35.0" x2="305" y2="35.0" stroke="#2A2D3D55" stroke-dasharray="3,3" stroke-width="1" /><text x="32" y="39.0" font-size="9px" fill="#CBCDD8" text-anchor="end" font-weight="600">6.2</text>
+            
+            <path d="M 40.0 35.0 L 93.0 51.7 L 146.0 68.5 L 199.0 82.1 L 252.0 95.8 L 305.0 108.0 " stroke="#7276FF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="40.0" cy="35.0" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="93.0" cy="51.7" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="146.0" cy="68.5" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="199.0" cy="82.1" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="252.0" cy="95.8" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" /><circle cx="305.0" cy="108.0" r="4" fill="#7276FF" stroke="var(--surface-dark, #010105)" stroke-width="1.5" />
+            <text x="40.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk1</text><text x="93.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk2</text><text x="146.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk3</text><text x="199.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk4</text><text x="252.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk5</text><text x="305.0" y="126" font-size="9px" fill="#CBCDD8" text-anchor="middle">Wk6</text>
+        </svg></div>
+            <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Median open-to-merged dropped from 6.2 days to 1.4 days after adoption.</p>
+        </div>
             </div>
         </div>
   </div>
@@ -1620,25 +1613,36 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
+            <div style="position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Taskflow vs the old stack</h2><div style="width:100%;margin-top:20px;">
-            <div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#7276FF;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">Tools needed to ship</div>
-            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;font-weight:700;line-height:1.2;">
-                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">Old stack</span>
-                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">Taskflow</span>
+            <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Where the day goes</h2>
+            <div style="display:flex;align-items:center;gap:24px;width:100%;margin-top:20px;justify-content:center;">
+                <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(#7276FF 0.0deg 172.8deg, #CBCDD8 172.8deg 266.4deg, #F59E0B 266.4deg 316.8deg, #10B981 316.8deg 360.0deg);position:relative;">
+                    <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:var(--surface-dark, #010105);left:30px;top:30px;z-index:2;"></div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#7276FF;"></div>
+                    <span style="flex:1;">Coding</span>
+                    <strong>48.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#CBCDD8;"></div>
+                    <span style="flex:1;">Review</span>
+                    <strong>26.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#F59E0B;"></div>
+                    <span style="flex:1;">Status updates</span>
+                    <strong>14.0%</strong>
+                </div><div style="display:flex;align-items:center;gap:var(--space-1);font-family:Space Grotesk;font-size:11px;color:#ECEEF5;margin-bottom:6px;">
+                    <div style="width:12px;height:12px;border-radius:3px;background:#10B981;"></div>
+                    <span style="flex:1;">Context switching</span>
+                    <strong>12.0%</strong>
+                </div>
+                </div>
             </div>
-            <div style="width:100%;height:16px;background:#2A2D3D30;border-radius:8px;overflow:hidden;display:flex;">
-                <div style="width:80.0%;height:100%;background:#7276FF;border-radius:8px 0 0 8px;"></div>
-                <div style="width:20.0%;height:100%;background:#CBCDD8;border-radius:0 8px 8px 0;"></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:Space Grotesk;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
-                <span style="color:#7276FF;text-align:left;white-space:nowrap;flex-shrink:0;">4 Tools needed to ship</span>
-                <span style="color:#CBCDD8;text-align:right;white-space:nowrap;flex-shrink:0;">1 Tools needed to ship</span>
-            </div>
-        </div><p style="font-family:Space Grotesk;font-size:12px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">One tool replaced four — and the weekly status meeting died with them.</p>
+            <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.4;text-align:center;width:100%;">Status sync was the silent tax on every standup.</p>
         </div>
             </div>
         </div>
@@ -1756,19 +1760,15 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0"></div>
+            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Feature matrix</h2>
-            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;overflow:hidden;box-sizing:border-box;">
-                <table style="width:100%;border-collapse:collapse;">
-                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Feature</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Old</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Taskflow</th></tr></thead>
-                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">PR-linked</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">Auto status</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">CI gating</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Partial</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">CLI</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr></tbody>
-                </table>
-            </div>
-            <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
-        </div>
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Devs rate their tracker</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="160.0,84.0 175.2,95.1 169.4,112.9 150.6,112.9 144.8,95.1" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,68.0 190.4,90.1 178.8,125.9 141.2,125.9 129.6,90.1" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,52.0 205.7,85.2 188.2,138.8 131.8,138.8 114.3,85.2" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,36.0 220.9,80.2 197.6,151.8 122.4,151.8 99.1,80.2" fill="none" stroke="#2A2D3D33" stroke-width="1" /><polygon points="160.0,20.0 236.1,75.3 207.0,164.7 113.0,164.7 83.9,75.3" fill="none" stroke="#2A2D3D33" stroke-width="1" />
+            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#2A2D3D33" stroke-width="1" /><text x="160.0" y="13.0" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="middle">Speed (94)</text><line x1="160" y1="100" x2="236.1" y2="75.3" stroke="#2A2D3D33" stroke-width="1" /><text x="251.4" y="75.2" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="start">Accuracy (90)</text><line x1="160" y1="100" x2="207.0" y2="164.7" stroke="#2A2D3D33" stroke-width="1" /><text x="217.3" y="175.8" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="start">Integrations (86)</text><line x1="160" y1="100" x2="113.0" y2="164.7" stroke="#2A2D3D33" stroke-width="1" /><text x="102.7" y="175.8" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="end">CLI (97)</text><line x1="160" y1="100" x2="83.9" y2="75.3" stroke="#2A2D3D33" stroke-width="1" /><text x="68.6" y="75.2" font-size="10px" font-weight="700" fill="#ECEEF5" text-anchor="end">Onboarding (82)</text>
+            <polygon points="160.0,22.5 230.6,77.1 201.7,157.4 113.0,164.7 95.7,79.1" fill="#7276FF" fill-opacity="0.25" stroke="#7276FF" stroke-width="2" />
+            <circle cx="160.0" cy="22.5" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="230.6" cy="77.1" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="201.7" cy="157.4" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="113.0" cy="164.7" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="95.7" cy="79.1" r="4" fill="#7276FF" stroke="#ffffff" stroke-width="1.5" />
+        </svg></div><p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">Taskflow wins on the axes teams actually complain about.</p></div>
             </div>
         </div>
   </div>
@@ -1885,20 +1885,25 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; inset: 0"></div>
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.08;">ByteLane (42 devs)</h2>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-left:3px solid #7276FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;margin-bottom:8px;">PROBLEM</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">Weekly status meetings, drifting boards, 6-day cycle time</p></div>
-                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-left:3px solid #7276FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;margin-bottom:8px;">SOLUTION</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">Adopted Taskflow on three flagship repos</p></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Taskflow vs the old stack</h2><div style="width:100%;margin-top:20px;">
+            <div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#7276FF;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;text-align:center;width:100%;">Tools needed to ship</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;font-weight:700;line-height:1.2;">
+                <span style="text-align:left;max-width:48%;overflow-wrap:break-word;">Old stack</span>
+                <span style="text-align:right;max-width:48%;overflow-wrap:break-word;">Taskflow</span>
             </div>
-            <div style="background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
-                <div style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#7276FF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.45;">Cycle time &nbsp;•&nbsp; Status meetings &nbsp;•&nbsp; More merges</div>
+            <div style="width:100%;height:16px;background:#2A2D3D30;border-radius:8px;overflow:hidden;display:flex;">
+                <div style="width:80.0%;height:100%;background:#7276FF;border-radius:8px 0 0 8px;"></div>
+                <div style="width:20.0%;height:100%;background:#CBCDD8;border-radius:0 8px 8px 0;"></div>
             </div>
-            <p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">One engagement, three hard numbers — the kind of proof that survives a review.</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-family:Space Grotesk;font-size:15px;font-weight:800;letter-spacing:-0.01em;line-height:1.2;">
+                <span style="color:#7276FF;text-align:left;white-space:nowrap;flex-shrink:0;">4 Tools needed to ship</span>
+                <span style="color:#CBCDD8;text-align:right;white-space:nowrap;flex-shrink:0;">1 Tools needed to ship</span>
+            </div>
+        </div><p style="font-family:Space Grotesk;font-size:12px;color:#CBCDD8;margin:var(--space-2) 0 0;line-height:1.45;text-align:center;width:100%;">One tool replaced four — and the weekly status meeting died with them.</p>
         </div>
             </div>
         </div>
@@ -2016,36 +2021,18 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain)"></div>
+            <div style="pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Adoption, day by day</h2>
-            <div style="display:flex;flex-direction:column;gap:4px;width:100%;border-left:3px solid #7276FF;padding-left:14px;box-sizing:border-box;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 01</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Install CLI</p>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 02</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Link your repo</p>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 03</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">First auto-closed issue</p>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 04</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Cancel the meeting</p>
-            </div></div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: var(--text-primary, #0B0A0F); margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Feature matrix</h2>
+            <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;overflow:hidden;box-sizing:border-box;">
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead><tr><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Feature</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Old</th><th style="padding:10px 14px;text-align:left;font-family:Space Grotesk;font-size:10.5px;font-weight:900;color:#ECEEF5;background:#7276FF18;border-bottom:1px solid #2A2D3D;text-transform:uppercase;letter-spacing:0.06em;">Taskflow</th></tr></thead>
+                    <tbody><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">PR-linked</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">Auto status</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">CI gating</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Partial</span></td><td style="padding:9px 14px;font-size:11px;background:transparent;border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr><tr><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;font-weight:800;color:#ECEEF5;">CLI</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">No</span></td><td style="padding:9px 14px;font-size:11px;background:rgba(255,255,255,0.02);border-bottom:1px solid #2A2D3D18;"><span style="font-family:Space Grotesk;color:#CBCDD8;">Yes</span></td></tr></tbody>
+                </table>
+            </div>
+            <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;opacity:0.85;">Benchmark metrics evaluated under 1,000 carousel thread iterations.</p>
         </div>
             </div>
         </div>
@@ -2163,43 +2150,20 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; position: absolute"></div>
+            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The closing loop</h2>
-            <div style="display:flex;flex-direction:column;gap:4px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">01</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Commit</div>
-                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Message references #42</div>
-                </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">02</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">CI</div>
-                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Green on branch</div>
-                </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">03</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Merge</div>
-                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">PR lands on main</div>
-                </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">04</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Closed</div>
-                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Ticket auto-closes</div>
-                </div>
-            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">05</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Shipped</div>
-                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Release note generated</div>
-                </div>
-            </div></div>
-            <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.08;">ByteLane (42 devs)</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-left:3px solid #7276FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;margin-bottom:8px;">PROBLEM</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">Weekly status meetings, drifting boards, 6-day cycle time</p></div>
+                <div style="border-radius:0;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-left:3px solid #7276FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;margin-bottom:8px;">SOLUTION</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">Adopted Taskflow on three flagship repos</p></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.10);border:1px solid #2A2D3D;border-radius:0;padding:12px 16px;width:100%;box-sizing:border-box;">
+                <div style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#7276FF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.45;">Cycle time &nbsp;•&nbsp; Status meetings &nbsp;•&nbsp; More merges</div>
+            </div>
+            <p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CBCDD8;line-height:1.45;margin:0;">One engagement, three hard numbers — the kind of proof that survives a review.</p>
         </div>
             </div>
         </div>
@@ -2317,24 +2281,36 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); z-index: 1; pointer-events: none; opacity: 0.04"></div>
+            <div style="position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2D3D30;">
-                <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://picsum.photos/seed/taskflow-ui/800/500" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
-                
-            </div>
-            </div>
-            <div style="font-family:Space Grotesk;font-size:18px;font-weight:800;color:#ECEEF5;line-height:1.2;letter-spacing:-0.01em;margin:16px 0 0;">The sprint view — status you can trust</div>
-            <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;width:100%;"><div style="display:flex;align-items:flex-start;gap:8px;font-family:Space Grotesk;font-size:12px;color:#CBCDD8;line-height:1.5;">
-                        <span style="display:inline-block;width:6px;height:6px;min-width:6px;border-radius:50%;background:#7276FF;margin-top:5px;"></span>
-                        <span><strong style="color:#ECEEF5;font-weight:700;">Live board</strong></span>
-                    </div><div style="display:flex;align-items:flex-start;gap:8px;font-family:Space Grotesk;font-size:12px;color:#CBCDD8;line-height:1.5;">
-                        <span style="display:inline-block;width:6px;height:6px;min-width:6px;border-radius:50%;background:#7276FF;margin-top:5px;"></span>
-                        <span><strong style="color:#ECEEF5;font-weight:700;">CI gates</strong></span>
-                    </div></div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Adoption, day by day</h2>
+            <div style="display:flex;flex-direction:column;gap:4px;width:100%;border-left:3px solid #7276FF;padding-left:14px;box-sizing:border-box;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 01</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Install CLI</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 02</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Link your repo</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 03</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">First auto-closed issue</p>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9px;font-weight:900;color:#7276FF;background:#7276FF18;padding:2px 6px;border-radius:4px;">PHASE 04</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;"></h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:0;line-height:1.4;">Cancel the meeting</p>
+            </div></div>
         </div>
             </div>
         </div>
@@ -2452,18 +2428,43 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0; opacity: 0.04; position: absolute"></div>
+            <div style="opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
             
-            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
-                <div style="position:relative;width:100%;height:100%;">
-            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://picsum.photos/seed/taskflow-cli/800/500" alt="The terminal is home" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
-                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
-            </div>
-            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
-                <h2 style="font-family:Space Grotesk;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">The terminal is home</h2>
-                <p style="font-family:Space Grotesk;font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Every feature has a CLI twin — power users never leave the shell</p>
-            </div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The closing loop</h2>
+            <div style="display:flex;flex-direction:column;gap:4px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">01</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Commit</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Message references #42</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">02</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">CI</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Green on branch</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">03</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Merge</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">PR lands on main</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">04</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Closed</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Ticket auto-closes</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:#7276FF;color:#110000;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">05</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#ECEEF5;margin-bottom:2px;">Shipped</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;line-height:1.4;overflow-wrap:break-word;">Release note generated</div>
+                </div>
+            </div></div>
+            <p style="font-family:Space Grotesk;font-size:10.5px;color:#CBCDD8;margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
         </div>
             </div>
         </div>
@@ -2581,37 +2582,24 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); z-index: 1; pointer-events: none; position: absolute; opacity: 0.04"></div>
+            <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Every surface, one truth</h2>
-            <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px;width:100%;"><div style="display:flex;flex-direction:column;width:100%;">
-                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
-                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://picsum.photos/seed/taskflow-web/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
+            <div style="position:relative;width:100%;height:230px;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.15);border:1px solid #2A2D3D30;">
+                <div style="position:relative;width:100%;height:240px;border-radius: var(--radius-sm);overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://picsum.photos/seed/taskflow-ui/800/500" alt="Annotated Diagram" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
                 
             </div>
-                        </div>
-                        
-                    </div> <div style="display:flex;flex-direction:column;width:100%;">
-                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
-                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://picsum.photos/seed/taskflow-term/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
-                
             </div>
-                        </div>
-                        
-                    </div> <div style="display:flex;flex-direction:column;width:100%;">
-                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
-                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://picsum.photos/seed/taskflow-slack/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
-                
-            </div>
-                        </div>
-                        
+            <div style="font-family:Space Grotesk;font-size:18px;font-weight:800;color:#ECEEF5;line-height:1.2;letter-spacing:-0.01em;margin:16px 0 0;">The sprint view — status you can trust</div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;width:100%;"><div style="display:flex;align-items:flex-start;gap:8px;font-family:Space Grotesk;font-size:12px;color:#CBCDD8;line-height:1.5;">
+                        <span style="display:inline-block;width:6px;height:6px;min-width:6px;border-radius:50%;background:#7276FF;margin-top:5px;"></span>
+                        <span><strong style="color:#ECEEF5;font-weight:700;">Live board</strong></span>
+                    </div><div style="display:flex;align-items:flex-start;gap:8px;font-family:Space Grotesk;font-size:12px;color:#CBCDD8;line-height:1.5;">
+                        <span style="display:inline-block;width:6px;height:6px;min-width:6px;border-radius:50%;background:#7276FF;margin-top:5px;"></span>
+                        <span><strong style="color:#ECEEF5;font-weight:700;">CI gates</strong></span>
                     </div></div>
-            <div style="font-family:Space Grotesk;font-size:11.5px;color:#CBCDD8;margin-top:10px;line-height:1.35;width:100%;">Web, CLI, and Slack all render the same live status.</div>
         </div>
             </div>
         </div>
@@ -2729,63 +2717,18 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); position: absolute; pointer-events: none; opacity: 0.04; z-index: 1"></div>
+            <div style="pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 16px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
-            <h2 style="font-family:Space Grotesk;font-size:14px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.1;">Pricing that scales with merges</h2>
-            <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;width:100%;min-width:0;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:none;">
-                    
-                    <div>
-                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Solo</div>
-                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
-                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">Free</span>
-                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
-                        </div>
-                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> 1 project
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> CLI
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Git hooks
-                        </li></ul>
-                    </div>
-                    <div style="margin-top:10px;padding:6px 0;background:#2A2D3D;color:#ECEEF5;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Get Started</div>
-                </div><div style="min-width:0;background:rgba(99, 102, 241, 0.12);border:2px solid #7276FF;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:0 8px 24px rgba(0,0,0,0.15);">
-                    <div style="position:absolute;top:-10px;right:12px;background:#7276FF;color:#110000;font-family:Space Grotesk;font-size:8.5px;font-weight:900;padding:2px 8px;border-radius:999px;letter-spacing:0.06em;text-transform:uppercase;">POPULAR</div>
-                    <div>
-                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Team</div>
-                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
-                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">$8/dev</span>
-                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
-                        </div>
-                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Unlimited projects
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> CI gating
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Sprint analytics
-                        </li></ul>
-                    </div>
-                    <div style="margin-top:10px;padding:6px 0;background:#7276FF;color:#110000;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Upgrade Now</div>
-                </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:none;">
-                    
-                    <div>
-                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Self-host</div>
-                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
-                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">$499</span>
-                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
-                        </div>
-                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Docker deploy
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> SSO
-                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
-                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Priority support
-                        </li></ul>
-                    </div>
-                    <div style="margin-top:10px;padding:6px 0;background:#2A2D3D;color:#ECEEF5;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Get Started</div>
-                </div></div>
+            <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
+                <div style="position:relative;width:100%;height:100%;">
+            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://picsum.photos/seed/taskflow-cli/800/500" alt="The terminal is home" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>
+            </div>
+            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:flex-end;z-index:3;">
+                <h2 style="font-family:Space Grotesk;font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);">The terminal is home</h2>
+                <p style="font-family:Space Grotesk;font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);">Every feature has a CLI twin — power users never leave the shell</p>
+            </div>
         </div>
             </div>
         </div>
@@ -2903,10 +2846,38 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; z-index: 1; opacity: 0.04"></div>
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#ECEEF5;margin:0;text-align:center;">Shipped with Taskflow at</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">B</div>ByteLane</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">K</div>KernelWorks</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">S</div>Streamline</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">D</div>DataCraft</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">B</div>BlueBox</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">F</div>FastPath</div></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Every surface, one truth</h2>
+            <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:8px;width:100%;"><div style="display:flex;flex-direction:column;width:100%;">
+                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
+                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://picsum.photos/seed/taskflow-web/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div>
+                        </div>
+                        
+                    </div> <div style="display:flex;flex-direction:column;width:100%;">
+                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
+                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://picsum.photos/seed/taskflow-term/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div>
+                        </div>
+                        
+                    </div> <div style="display:flex;flex-direction:column;width:100%;">
+                        <div style="position:relative;width:100%;height:190px;overflow:hidden;flex-shrink:0;">
+                            <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://picsum.photos/seed/taskflow-slack/400" alt="" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div>
+                        </div>
+                        
+                    </div></div>
+            <div style="font-family:Space Grotesk;font-size:11.5px;color:#CBCDD8;margin-top:10px;line-height:1.35;width:100%;">Web, CLI, and Slack all render the same live status.</div>
+        </div>
             </div>
         </div>
   </div>
@@ -3023,30 +2994,63 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+            <div style="position: absolute; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0; opacity: 0.04"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
-            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Ship-or-ask</h2>
-            <div style="display:flex;flex-direction:column;gap:8px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q1</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Migrate from Jira?</h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">One command: tf import jira. Issues, comments and attachments move over.</p>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q2</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Works with GitLab?</h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">Yes — GitHub, GitLab and Gitea all supported.</p>
-            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q3</span>
-                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Is it open source?</h3>
-                </div>
-                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">The CLI is MIT. The server is free for small teams.</p>
-            </div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 16px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
+            <h2 style="font-family:Space Grotesk;font-size:14px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.1;">Pricing that scales with merges</h2>
+            <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;width:100%;min-width:0;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:none;">
+                    
+                    <div>
+                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Solo</div>
+                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
+                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">Free</span>
+                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
+                        </div>
+                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> 1 project
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> CLI
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Git hooks
+                        </li></ul>
+                    </div>
+                    <div style="margin-top:10px;padding:6px 0;background:#2A2D3D;color:#ECEEF5;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Get Started</div>
+                </div><div style="min-width:0;background:rgba(99, 102, 241, 0.12);border:2px solid #7276FF;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+                    <div style="position:absolute;top:-10px;right:12px;background:#7276FF;color:#110000;font-family:Space Grotesk;font-size:8.5px;font-weight:900;padding:2px 8px;border-radius:999px;letter-spacing:0.06em;text-transform:uppercase;">POPULAR</div>
+                    <div>
+                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Team</div>
+                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
+                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">$8/dev</span>
+                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
+                        </div>
+                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Unlimited projects
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> CI gating
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Sprint analytics
+                        </li></ul>
+                    </div>
+                    <div style="margin-top:10px;padding:6px 0;background:#7276FF;color:#110000;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Upgrade Now</div>
+                </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:8px 10px 6px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:none;">
+                    
+                    <div>
+                        <div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#CBCDD8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Self-host</div>
+                        <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px;">
+                            <span style="font-family:Space Grotesk;font-size:13px;font-weight:900;color:#ECEEF5;line-height:1;">$499</span>
+                            <span style="font-family:Space Grotesk;font-size:14px;color:#CBCDD8;"></span>
+                        </div>
+                        <ul style="list-style:none;padding:0;margin:10px 0 12px;"><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Docker deploy
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> SSO
+                        </li><li style="display:flex;align-items:center;gap:6px;font-family:Space Grotesk;font-size:11px;color:#ECEEF5;line-height:1.3;margin-bottom:4px;">
+                            <span style="color:#7276FF;font-weight:900;font-size:12px;">✓</span> Priority support
+                        </li></ul>
+                    </div>
+                    <div style="margin-top:10px;padding:6px 0;background:#2A2D3D;color:#ECEEF5;border-radius:0;text-align:center;font-family:Space Grotesk;font-size:12px;font-weight:800;">Get Started</div>
+                </div></div>
         </div>
             </div>
         </div>
@@ -3164,19 +3168,10 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
+            <div style="pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
             
-            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
-            <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
-                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:Space Grotesk;font-size:220px;font-weight:900;color:#ECEEF5;opacity:0.04;pointer-events:none;user-select:none;line-height:1;">S</div><h2 style="font-family:Space Grotesk;font-size:52px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.0;letter-spacing:-0.04em;text-align:center;z-index:2;">Ship the merge train.</h2>
-                <div style="width:60px;height:2px;background:#ECEEF5;opacity:0.4;margin:18px auto;z-index:2;"></div>
-                <p style="font-family:Space Grotesk;font-size:15px;font-style:italic;line-height:1.6;color:#CBCDD8;margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">Install in 60 seconds. Cancel your first meeting by Friday.</p>
-                <div style="text-align:center;z-index:2;margin-top:24px;">
-                <span style="display:inline-block;font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;text-transform:uppercase;letter-spacing:0.12em;background:rgba(255,255,255,0.12);padding:12px 28px;border-radius:100px;">tf install</span>
-            </div>
-            </div>
-        </div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#ECEEF5;margin:0;text-align:center;">Shipped with Taskflow at</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">B</div>ByteLane</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">K</div>KernelWorks</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">S</div>Streamline</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">D</div>DataCraft</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">B</div>BlueBox</div><div style="height:58px;border-radius:0;border:1px solid #2A2D3D;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Space Grotesk;font-size:var(--text-sm);font-weight:800;color:#CBCDD8;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#ECEEF5;flex-shrink:0;">F</div>FastPath</div></div></div>
             </div>
         </div>
   </div>
@@ -3293,7 +3288,277 @@ body {
   </div>
   <div class="slide-body">
 <div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #ECEEF5; margin: 0 0 10px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">Ship-or-ask</h2>
+            <div style="display:flex;flex-direction:column;gap:8px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q1</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Migrate from Jira?</h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">One command: tf import jira. Issues, comments and attachments move over.</p>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q2</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Works with GitLab?</h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">Yes — GitHub, GitLab and Gitea all supported.</p>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2A2D3D;border-radius:0;padding:10px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;color:#7276FF;background:#7276FF18;padding:1px 5px;border-radius:4px;flex-shrink:0;">Q3</span>
+                    <h3 style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#ECEEF5;margin:0;line-height:1.2;">Is it open source?</h3>
+                </div>
+                <p style="font-family:Space Grotesk;font-size:11px;color:#CBCDD8;margin:0;line-height:1.4;">The CLI is MIT. The server is free for small teams.</p>
+            </div></div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://taskflow.dev/install</span>
+      <span class="overlay__hashtags">#DevTools #Agile</span>
+    </div>
+    <div class="slide-progress progress--chips"><div class="breadcrumb-progress">
+      <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    </div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-20 {   --primary: #4F46E5;
+  --primary-light: #8E97FF;
+  --primary-dark: #3100B1;
+  --surface-light: #FFECE3;
+  --surface-dark: #110000;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #ECEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C1C3CE;
+  --border-dark: #2A2D3D;
+  --accent: #8D5E00;
+  --secondary: #974F3B;
+  --tertiary: #28774E;
+  --gradient: linear-gradient(165deg, #110000 0%, #3100B1 60%, #110000 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #4F46E540;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFECE3 0%, #4F46E508 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #4F46E538 0px, transparent 50%), radial-gradient(at 80% 0%, #8D5E0028 0px, transparent 50%), radial-gradient(at 0% 50%, #8E97FF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #8E97FF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #8D5E0030 0px, transparent 50%), radial-gradient(at 50% 90%, #4F46E528 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #110000 0%, #3100B130 50%, #110000 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFECE3CC;
+  --glass-light-border: 1px solid #C1C3CE40;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #110000CC;
+  --glass-dark-border: 1px solid #2A2D3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFECE3E6;
+  --glass-frosted-border: 1px solid #C1C3CE30;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-21" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Taskflow</span>
+    <span class="overlay__topic">The CI-ready issue tracker</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
+            <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:Space Grotesk;font-size:220px;font-weight:900;color:#ECEEF5;opacity:0.04;pointer-events:none;user-select:none;line-height:1;">S</div><h2 style="font-family:Space Grotesk;font-size:52px;font-weight:900;color:#ECEEF5;margin:0;line-height:1.0;letter-spacing:-0.04em;text-align:center;z-index:2;">Ship the merge train.</h2>
+                <div style="width:60px;height:2px;background:#ECEEF5;opacity:0.4;margin:18px auto;z-index:2;"></div>
+                <p style="font-family:Space Grotesk;font-size:15px;font-style:italic;line-height:1.6;color:#CBCDD8;margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">Install in 60 seconds. Cancel your first meeting by Friday.</p>
+                <div style="text-align:center;z-index:2;margin-top:24px;">
+                <span style="display:inline-block;font-family:Space Grotesk;font-size:11px;font-weight:800;color:#ECEEF5;text-transform:uppercase;letter-spacing:0.12em;background:rgba(255,255,255,0.12);padding:12px 28px;border-radius:100px;">tf install</span>
+            </div>
+            </div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">https://taskflow.dev/install</span>
+      <span class="overlay__hashtags">#DevTools #Agile</span>
+    </div>
+    <div class="slide-progress progress--chips"><div class="breadcrumb-progress">
+      <div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip completed"></div><div class="breadcrumb-chip active"></div>
+    </div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-21 {   --primary: #4F46E5;
+  --primary-light: #8E97FF;
+  --primary-dark: #3100B1;
+  --surface-light: #FFECE3;
+  --surface-dark: #110000;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424B;
+  --text-on-dark: #ECEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C1C3CE;
+  --border-dark: #2A2D3D;
+  --accent: #8D5E00;
+  --secondary: #974F3B;
+  --tertiary: #28774E;
+  --gradient: linear-gradient(165deg, #110000 0%, #3100B1 60%, #110000 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #4F46E540;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFECE3 0%, #4F46E508 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #4F46E538 0px, transparent 50%), radial-gradient(at 80% 0%, #8D5E0028 0px, transparent 50%), radial-gradient(at 0% 50%, #8E97FF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #8E97FF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #8D5E0030 0px, transparent 50%), radial-gradient(at 50% 90%, #4F46E528 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #110000 0%, #3100B130 50%, #110000 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFECE3CC;
+  --glass-light-border: 1px solid #C1C3CE40;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #110000CC;
+  --glass-dark-border: 1px solid #2A2D3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFECE3E6;
+  --glass-frosted-border: 1px solid #C1C3CE30;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-22" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Taskflow</span>
+    <span class="overlay__topic">The CI-ready issue tracker</span>
+  </div>
+  <div class="slide-body">
+<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
@@ -3320,7 +3585,7 @@ body {
     </div></div>
   </div>
 </div>
-</div><style>#slide-20 {   --primary: #4F46E5;
+</div><style>#slide-22 {   --primary: #4F46E5;
   --primary-light: #8E97FF;
   --primary-dark: #3100B1;
   --surface-light: #FFECE3;
@@ -3415,7 +3680,7 @@ body {
 
 </div>
 </div>
-  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
   <div class="ig-actions">
     <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -3470,7 +3735,7 @@ body {
   let current = 0;
   let startX = 0;
   let isDragging = false;
-  const total = 21;
+  const total = 23;
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, total - 1));

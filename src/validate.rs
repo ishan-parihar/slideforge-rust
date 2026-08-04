@@ -311,6 +311,23 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         }
     }
 
+    // split_features tile ceiling: the banded layout's right column / card stack
+    // can carry at most THREE feature cards inside the 449px body (the renderer
+    // caps rendered tiles at 3 — a 4th tile overflows the body into the bands).
+    // More than 3 configured features is a hard runtime error so the agent splits
+    // the content across multiple split_features slides instead of silently
+    // dropping tiles or shipping an overflowing composition.
+    if slide_type == "split_features" {
+        if let Some(feats) = params.get("features").and_then(|v| v.as_array()) {
+            if feats.len() > 3 {
+                result.add_error(format!(
+                    "split_features accepts a maximum of 3 feature tiles (got {}). The banded body can carry 3 cards; split the content across multiple split_features slides.",
+                    feats.len()
+                ));
+            }
+        }
+    }
+
     result
 }
 
