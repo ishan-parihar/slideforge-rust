@@ -265,6 +265,30 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         result.add_error("cta slide type has been removed. Use qr_destination for the closing slide (deck-level marketing constraint: exactly one CTA, always final).");
     }
 
+    // Hero "split" variant has a mandatory right-column image: the image is
+    // COMPULSORY (the renderer falls back to a stock Unsplash sample, but the
+    // caller must provide their own `background_image` or accept the sample
+    // explicitly). A split hero without any background_image is a hard error so
+    // the agent fixes the config instead of shipping a repetitive stock image.
+    if slide_type == "hero" {
+        let variant = params
+            .get("variant")
+            .and_then(|v| v.as_str())
+            .unwrap_or("left-aligned");
+        if variant == "split" {
+            let has_image = params
+                .get("background_image")
+                .and_then(|v| v.as_str())
+                .map(|s| !s.trim().is_empty())
+                .unwrap_or(false);
+            if !has_image {
+                result.add_error(
+                    "hero split variant requires background_image (mandatory right-column image). Provide an image URL, or accept the stock sample by passing \"background_image\" explicitly.",
+                );
+            }
+        }
+    }
+
     result
 }
 
@@ -668,6 +692,26 @@ mod tests {
         // Empty string headline must be an error, not a silent warning.
         assert!(!r.valid);
         assert!(r.errors.iter().any(|e| e.contains("headline")));
+    }
+
+    #[test]
+    fn test_hero_split_requires_background_image() {
+        // The split variant's right-column image is COMPULSORY. A split hero
+        // without background_image must hard-error so the caller fixes the
+        // config instead of shipping a repetitive stock fallback.
+        let params = json!({ "headline": "Split hero", "variant": "split" });
+        let r = validate_slide_spec("hero", &params);
+        assert!(!r.valid, "split hero without image must be invalid");
+        assert!(r.errors.iter().any(|e| e.contains("background_image")));
+
+        // With an explicit image, the split hero validates (headline present).
+        let ok = json!({
+            "headline": "Split hero",
+            "variant": "split",
+            "background_image": "https://example.com/img.jpg"
+        });
+        let r2 = validate_slide_spec("hero", &ok);
+        assert!(r2.valid, "split hero with image must be valid: {:?}", r2.errors);
     }
 
     #[test]

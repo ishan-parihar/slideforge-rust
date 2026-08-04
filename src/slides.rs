@@ -259,6 +259,40 @@ body {
 .slide--full-bleed.slide--mesh {
   background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
 }
+/* Image slides: the injected background photo must bleed BEHIND the chrome
+   bands (36px header + 40px footer), not stop at the body region. The bg layer
+   div (first-of-type inside .slide-body) is stretched to the full composition
+   height and offset up by the header height, while content stays anchored to
+   the body region so it never collides with corner text. */
+/* The body band's overflow:hidden would clip the negative-top bg layer; the
+   bg layer is the only thing that escapes (content stays inside the body via
+   the re-anchor rule above). Gated on a `.slide-content` child so non-
+   conforming slide roots keep the old hard clip instead of leaking into the
+   chrome bands. */
+.slide.has-bg-image:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content) {
+  overflow: visible !important;
+}
+.slide.has-bg-image:not(.slide--full-bleed) .slide-body > div:first-of-type {
+  position: absolute !important;
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
+  left: 0 !important;
+  width: 100% !important;
+  /* height must INCLUDE the header offset so the layer reaches the
+     composition bottom (top −36 + height 561 = 525): a bare
+     composition-height (525) with top −36 would stop at 489, leaving the
+     footer band (485–525) on the plain surface — the exact seam the bleed
+     exists to remove. */
+  height: calc(var(--composition-height) + var(--chrome-header-h, 36px)) !important;
+  overflow: hidden !important;
+}
+.slide.has-bg-image:not(.slide--full-bleed) .slide-body > div:first-of-type > .slide-content {
+  position: absolute !important;
+  top: var(--chrome-header-h, 36px) !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
+  overflow: hidden;
+}
 
 /* Chrome (header/footer) is transparent, so the FULL slide background — mesh,
    gradient, hero, or surface — must live on .slide itself. Light/mesh carry the
@@ -525,7 +559,11 @@ body {
         // Detect if theme "dark" forces a visually dark surface
         // When theme="dark", ALL slides must use dark CSS class regardless of bg_style
         // to ensure correct text-on-dark colors via CSS variable overrides.
-        let theme_is_dark = spec.visual_theme == "dark";
+        // Dark chrome is driven by EITHER the carousel-level visual_theme OR the
+        // per-slide theme. A slide generated with theme="dark" paints a dark
+        // surface (effective_surface), so its chrome bands must be dark too —
+        // otherwise the corner text flips to light-on-light.
+        let theme_is_dark = spec.visual_theme == "dark" || slide.theme == "dark";
 
         let mut bg_class = if theme_is_dark {
             // Dark theme forces dark CSS class on ALL slides for correct theme vars
@@ -539,7 +577,11 @@ body {
             String::new()
         };
 
-        if slide.html.contains("background-image") {
+        // Only a FULL-SLIDE injected background (inject_background_image emits
+        // position:absolute;inset:0;background-image) counts as has-bg-image.
+        // Per-element background-image (e.g. hero split's framed right column)
+        // must NOT trigger the bleed/stretch treatment.
+        if slide.html.contains("inset:0;background-image") {
             // has-bg-image is always ADDITIVE: the bg identity class (slide--light,
             // slide--hero, etc.) is preserved so chrome theming rules still apply.
             // The only case where bg_class is empty is a custom hex background —
@@ -562,7 +604,7 @@ body {
         // Check if custom hex color
         if bg_class.is_empty() && slide.background.starts_with('#') && slide.background.len() == 7 {
             bg_style = format!(r#" style="background-color: {};""#, slide.background);
-            if slide.html.contains("background-image") {
+            if slide.html.contains("inset:0;background-image") {
                 bg_class = "has-bg-image".to_string();
             }
         }

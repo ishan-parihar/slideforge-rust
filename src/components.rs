@@ -502,6 +502,13 @@ thread_local! {
     static CURRENT_PARAMS: RefCell<Value> = RefCell::new(json!({}));
 }
 
+/// Current slide theme (set by `dispatch_slide`). Used by `layouts::slide_base`
+/// so the painted surface matches `get_slide_colors` exactly — otherwise a
+/// theme="dark" slide on a light bg_style gets white text on a light surface.
+pub fn current_theme() -> String {
+    CURRENT_THEME.with(|t| t.borrow().clone())
+}
+
 fn image_treatment_for_theme(theme: &str) -> Option<ImageTreatment> {
     match theme {
         "editorial" => Some(ImageTreatment::editorial_preset()),
@@ -814,6 +821,20 @@ pub fn hero_slide(
         .get("display")
         .map(|t| t.font_size as f32)
         .unwrap_or(40.0);
+    // Split variant left column ≈ 164px (content 420−96 padding, gap 24, ratio
+    // 1.2fr:1fr). Centered/chapter variants use the full ~324px column. Compute
+    // per-variant so words never get chopped mid-character.
+    let split_title_size = crate::overflow_model::fit_font_size_to_lines(
+        headline,
+        164.0,
+        3,
+        1.05,
+        22.0,
+        display_tier,
+    )
+    .min(crate::overflow_model::fit_font_size_to_words(
+        headline, 164.0, 22.0, display_tier, 2.0,
+    )) as i32;
     let hero_title_size = crate::overflow_model::fit_font_size_to_lines(
         headline,
         320.0,
@@ -841,8 +862,8 @@ pub fn hero_slide(
         } else {
             String::new()
         };            let headline_html = format!(
-                r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.05;margin:0 0 8px;overflow-wrap:break-word;word-break:break-word;">{}</h1>"#,
-                tokens.heading_font, hero_title_size, colors.text_primary, escape_html(headline)
+                r#"<h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.08;margin:0 0 8px;overflow-wrap:break-word;">{}</h1>"#,
+                tokens.heading_font, split_title_size, colors.text_primary, escape_html(headline)
             );
         let sub_html = if !subheadline.is_empty() {
             format!(
@@ -3290,7 +3311,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:1 1 auto;justify-content:center;overflow:hidden;">{}{}{}</div></div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;flex-direction:column;width:100%;min-height:0;flex:0 1 auto;justify-content:center;overflow:hidden;">{}{}{}</div></div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }
@@ -3328,7 +3349,7 @@ pub fn myth_fact_slide(
                 String::new()
             };
             format!(
-                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:1 1 auto;align-items:center;overflow:hidden;">{}{}</div>{}</div>"#,
+                r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">{}<div style="display:flex;gap:14px;width:100%;margin-top:12px;min-height:0;flex:0 1 auto;align-items:center;overflow:hidden;">{}{}</div>{}</div>"#,
                 heading, myth_html, fact_html, explanation_html
             )
         }

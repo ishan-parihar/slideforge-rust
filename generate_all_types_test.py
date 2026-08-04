@@ -57,7 +57,7 @@ def run_generate(stype, params, variant="", theme="editorial", bg="dark", arch="
 EXAMPLES = [
     # ── Openers & Hooks ────────────────────────────────────────────────
     ("hero", "centered", "editorial", "dark", {"headline": "Ship slides in minutes", "subheadline": "47 types, 28 presets, 1 CLI", "badge": "SlideForge", "tagline": "Design system CLI"}, "Openers & Hooks"),
-    ("hero", "split", "bold", "light", {"headline": "Beautiful by default", "subheadline": "Editorial themes tuned for carousels", "badge": "SlideForge", "tagline": "Visual proof", "metric_value": "47", "metric_label": "slide types"}, "Openers & Hooks"),
+    ("hero", "split", "bold", "light", {"headline": "Beautiful by default", "subheadline": "Editorial themes tuned for carousels", "badge": "SlideForge", "tagline": "Visual proof", "metric_value": "47", "metric_label": "slide types", "background_image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop&auto=format"}, "Openers & Hooks"),
     ("hero", "chapter", "editorial", "dark", {"headline": "The Composition Layer", "subheadline": "How slides are authored", "badge": "Chapter 3", "variant": "chapter"}, "Openers & Hooks"),
 
     # ── Narrative & Story ──────────────────────────────────────────────

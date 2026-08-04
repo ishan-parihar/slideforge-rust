@@ -107,6 +107,35 @@ pub fn fit_font_size_to_lines(
     min_size
 }
 
+/// Largest font size (stepping by `step`) that keeps EVERY word of `text` on a
+/// single line within `width`. Words are never split mid-character — a long
+/// single word gets the font scaled down until it fits whole. This is the
+/// word-integrity complement to `fit_font_size_to_lines` (which allows
+/// mid-word breaks).
+pub fn fit_font_size_to_words(
+    text: &str,
+    width: f32,
+    min_size: f32,
+    max_size: f32,
+    step: f32,
+) -> f32 {
+    let longest_word_chars = text
+        .split_whitespace()
+        .map(|w| w.chars().count())
+        .max()
+        .unwrap_or(1)
+        .max(1) as f32;
+    let mut size = max_size;
+    // Average glyph advance ≈ 0.55 × font-size for 900-weight display faces.
+    while size >= min_size {
+        if longest_word_chars * size * 0.55 <= width {
+            return size;
+        }
+        size -= step;
+    }
+    min_size
+}
+
 /// Available content height given the slide-content vertical padding, within the
 /// `.slide-body` region (composition minus the 36px header and 40px footer
 /// chrome bands). Padding-less layouts still reserve the chrome.
@@ -162,5 +191,22 @@ mod tests {
         assert_eq!(available_content_height(60.0, 60.0), 329.0);
         assert_eq!(available_content_height(80.0, 80.0), 289.0);
         assert_eq!(available_content_height(16.0, 20.0), 413.0);
+    }
+
+    #[test]
+    fn words_fit_whole_longest_word() {
+        // "Beautiful by default" — longest word is "Beautiful" (9 chars).
+        // In a 164px column, 9 × size × 0.55 ≤ 164 → size ≤ 33.1.
+        let fitted = fit_font_size_to_words("Beautiful by default", 164.0, 16.0, 60.0, 2.0);
+        assert!(fitted <= 33.1, "longest word would split at {fitted}");
+        assert!(fitted >= 31.0, "too aggressive: {fitted}");
+    }
+
+    #[test]
+    fn words_fit_single_long_word() {
+        // Single word case: must shrink hard so the word stays whole.
+        let fitted = fit_font_size_to_words("Extraordinary", 164.0, 10.0, 60.0, 2.0);
+        // 13 chars × size × 0.55 ≤ 164 → size ≤ 22.9
+        assert!(fitted <= 23.0, "word splits at {fitted}");
     }
 }

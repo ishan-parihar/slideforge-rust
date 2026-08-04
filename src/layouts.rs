@@ -167,7 +167,13 @@ pub fn slide_base(
     padding: &str,
     justify: &str,
 ) -> String {
-    let is_dark = is_dark_bg(bg_style);
+    // Dark determination must MATCH get_slide_colors exactly. get_slide_colors
+    // uses the theme-aware effective_surface (a theme="dark" on a light bg_style
+    // paints a dark surface), so slide_base must paint the same dark surface
+    // or the slide renders white text on a light background.
+    let theme = crate::components::current_theme();
+    let eff_surf = effective_surface(tokens, bg_style, &theme);
+    let is_dark = is_dark_bg(bg_style) || is_visually_dark_surface(&eff_surf);
     let bg_var = if is_dark {
         "var(--surface-dark)"
     } else {
@@ -223,7 +229,10 @@ pub fn hero_slide_base(
     padding: &str,
     justify: &str,
 ) -> String {
-    let is_dark = is_dark_bg(bg_style);
+    // Same theme-aware dark determination as slide_base/get_slide_colors.
+    let theme = crate::components::current_theme();
+    let eff_surf = effective_surface(tokens, bg_style, &theme);
+    let is_dark = is_dark_bg(bg_style) || is_visually_dark_surface(&eff_surf);
     let bg_var = if is_dark {
         "var(--surface-dark)"
     } else {
@@ -304,7 +313,10 @@ pub fn slide_base_bleed(
     padding: &str,
     justify: &str,
 ) -> String {
-    let is_dark = is_dark_bg(bg_style);
+    // Same theme-aware dark determination as slide_base/get_slide_colors.
+    let theme = crate::components::current_theme();
+    let eff_surf = effective_surface(tokens, bg_style, &theme);
+    let is_dark = is_dark_bg(bg_style) || is_visually_dark_surface(&eff_surf);
     let bg_var = if is_dark {
         "var(--surface-dark)"
     } else {
@@ -498,4 +510,72 @@ pub fn bento_layout(
         "16px var(--space-6) 20px",
         "center",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::design_system::{ContrastReportItem, DesignTokens, TypeLevel};
+    use indexmap::IndexMap;
+
+    fn tokens() -> DesignTokens {
+        DesignTokens {
+            primary: "#4f46e5".to_string(),
+            primary_light: "#a5b4fc".to_string(),
+            primary_dark: "#3730a3".to_string(),
+            surface_light: "#ffffff".to_string(),
+            surface_dark: "#101014".to_string(),
+            text_primary: "#18181b".to_string(),
+            text_secondary: "#52525b".to_string(),
+            text_on_dark: "#f8fafc".to_string(),
+            text_on_dark_secondary: "#cbd5e1".to_string(),
+            border_light: "#e4e4e7".to_string(),
+            border_dark: "#27272a".to_string(),
+            accent: "#ec4899".to_string(),
+            secondary: "#f59e0b".to_string(),
+            tertiary: "#10b981".to_string(),
+            gradient: "linear-gradient(135deg,#4f46e5,#ec4899)".to_string(),
+            temperature: "cool".to_string(),
+            heading_font: "Inter".to_string(),
+            body_font: "Inter".to_string(),
+            google_fonts_url: "https://fonts.googleapis.com/css2?family=Inter".to_string(),
+            type_scale: IndexMap::new(),
+            spacing: IndexMap::new(),
+            contrast_report: IndexMap::new(),
+            shadows: IndexMap::new(),
+            radii: IndexMap::new(),
+            gradients: IndexMap::new(),
+            textures: IndexMap::new(),
+            glass: serde_json::json!({}),
+        }
+    }
+
+    /// The painted surface in `slide_base` MUST agree with the text colors
+    /// chosen by `get_slide_colors` for the same theme/bg pair. If they drift
+    /// (e.g. theme="dark" on a light bg_style), the slide renders white text on
+    /// a light surface — the exact bug class fixed in this session. This test
+    /// pins the invariant: light text ⟺ dark painted surface.
+    #[test]
+    fn slide_base_surface_agrees_with_get_slide_colors() {
+        let tk = tokens();
+        for bg in ["light", "mesh", "dark", "gradient", "hero"] {
+            for theme in ["editorial", "dark", "bold"] {
+                let colors = get_slide_colors(&tk, bg, theme);
+                let text_is_light = crate::design_system::contrast_ratio(&colors.text_primary, &tk.surface_dark)
+                    > crate::design_system::contrast_ratio(&colors.text_primary, &tk.surface_light);
+
+                // slide_base paints surface-dark exactly when is_dark is true.
+                let eff = effective_surface(&tk, bg, theme);
+                let is_dark = is_dark_bg(bg) || is_visually_dark_surface(&eff);
+                let paints_dark = is_dark;
+
+                assert_eq!(
+                    text_is_light, paints_dark,
+                    "bg={bg} theme={theme}: get_slide_colors picked {} text but slide_base paints {}",
+                    if text_is_light { "light" } else { "dark" },
+                    if paints_dark { "dark surface" } else { "light surface" },
+                );
+            }
+        }
+    }
 }
