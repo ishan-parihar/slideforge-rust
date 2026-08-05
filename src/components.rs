@@ -41,6 +41,7 @@ pub struct ImageTreatment {
     /// Which vertical zone the overlaid text occupies ("top" | "center" |
     /// "bottom"). The scrim gradient's dark end anchors to this zone so white
     /// text stays legible on bright/high-key images. Defaults to "bottom".
+    #[serde(default)]
     pub overlay_anchor: String,
     pub image_mix_blend: String,
     pub image_mask: String,
@@ -5701,8 +5702,11 @@ pub fn image_quote_slide(
     // image regions behind and between quote lines stay darkened.
     treatment.overlay_anchor = "center".to_string();
 
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let is_dark = colors.is_dark;
+    // image_quote always renders white text over the full-bleed photo, so the
+    // slide is always treated as dark (scrim on) — even if a light bg_style is
+    // passed — otherwise a light bg drops the overlay (render_themed_image
+    // clears it for light) and leaves white-on-white text.
+    let is_dark = true;
 
     let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, is_dark);
 
