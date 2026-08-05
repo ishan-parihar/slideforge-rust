@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build-and-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry + build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Unit tests
+        run: cargo test
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: SKILL.md single-source-of-truth gate
+        # AXI §7 — fails if the committed SKILL.md drifted from the live CLI
+        # command surface (regenerate with `slideforge skill-guide --write`).
+        run: ./target/release/slideforge-rust skill-guide --check
+
+      - name: Validator gate on a committed carousel
+        run: ./target/release/slideforge-rust validate-design dist/all_types_carousel.html
