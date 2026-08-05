@@ -369,7 +369,8 @@ fn session_start_dashboard() -> Result<(), Box<dyn std::error::Error>> {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Download Chromium to ~/.slideforge/chromium/ for offline/CI installs
+    /// No-op (kept for CLI compat): the blitz renderer is embedded and needs
+    /// no browser download
     Setup,
     /// Start the Model Context Protocol (MCP) server
     Mcp,
@@ -680,24 +681,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  Run `slideforge mcp` to start the MCP server");
         }
         Some(Commands::Setup) => {
-            println!("Downloading Chromium to ~/.slideforge/chromium/...");
-            match export::download_chromium() {
-                Ok(path) => {
-                    let response = serde_json::json!({
-                        "status": "success",
-                        "binary": path.display().to_string(),
-                        "message": "Chromium downloaded. Will auto-resolve on cold-start.",
-                        "hint": "Set CHROME_PATH to skip auto-download."
-                    });
-                    output_toon(&response);
-                }
-                Err(e) => {
-                    axi_error(
-                        &format!("Failed to download Chromium: {}", e),
-                        Some("Manual: sudo apt install chromium-browser | brew install --cask chromium"),
-                    );
-                }
-            }
+            println!("No browser setup needed — SlideForge uses the embedded blitz renderer.");
+            let response = serde_json::json!({
+                "status": "no-op",
+                "message": "The blitz renderer is embedded in the binary; no Chromium download is required.",
+                "hint": "Run `slideforge export` or `slideforge preview-slide` directly."
+            });
+            output_toon(&response);
         }
         Some(Commands::ConfigureDesign {
             primary,
@@ -799,7 +789,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             preset,
             aspect_ratio,
         }) => {
-            export::ensure_chrome_available()?;
             let canvas = platforms::resolve_canvas(preset, aspect_ratio.as_deref())?;
             println!(
                 "Exporting {} slides from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
@@ -812,8 +801,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 canvas.aspect_ratio
             );
             let paths =
-                export::export_slides(html, output_dir, *slides, canvas.width, canvas.height)
-                    .await?;
+                export::export_slides(html, output_dir, *slides, canvas.width, canvas.height)?;
             println!("Export complete! Slides saved:");
             for p in paths {
                 println!(" - {}", p);
@@ -1063,7 +1051,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             cli_embed_image(file_path)?;
         }
         Some(Commands::PreviewSlide { html_file, output }) => {
-            export::ensure_chrome_available()?;
             let html = if html_file == "-" {
                 use std::io::Read;
                 let mut buf = String::new();
@@ -1080,19 +1067,11 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
                 html
             );
             fs::write(temp_html, full_html)?;
-            match export::render_html_to_png(temp_html, output, 1.0) {
-                Ok(_) => {    let response = serde_json::json!({
-        "png_path": output,
-        "message": format!("Preview saved to {}", output),
-    });
-    output_toon(&response);
-                }
-                Err(e) => {
-                    axi_error(
-                        &format!("Chrome render failed: {}", e),
-                        Some("Ensure Chrome/Chromium is installed. Run `slideforge setup` to download."),
-                    );
-                }
+            if let Err(e) = export::render_html_to_png(temp_html, output, 1.0) {
+                axi_error(
+                    &format!("Blitz render failed: {}", e),
+                    Some("The blitz renderer is embedded — no browser install is needed. Check the HTML fragment is a complete slide document."),
+                );
             }
         }
         Some(Commands::SessionSetup { agent }) => session_setup(agent)?,

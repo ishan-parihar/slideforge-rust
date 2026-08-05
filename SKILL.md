@@ -50,7 +50,7 @@ slideforge validate-design carousel.html
 | `slideforge render-carousel` | Assemble slide HTML objects into a full carousel HTML document |
 | `slideforge session-setup` | Install the SessionStart hook so agents get a SlideForge dashboard at session start (AXI §7) |
 | `slideforge session-start` | Print the session-start dashboard (recent decks + validator health) — the SessionStart hook target |
-| `slideforge setup` | Download Chromium to ~/.slideforge/chromium/ for offline/CI installs |
+| `slideforge setup` | No-op (kept for CLI compat): the blitz renderer is embedded and needs no browser download |
 | `slideforge skill-guide` | Load the design guide and skill documentation |
 | `slideforge slide-info` | Get detailed info for a specific slide type |
 | `slideforge slide-types-for-context` | Get slide types recommended for a specific context |

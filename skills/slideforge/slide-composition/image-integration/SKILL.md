@@ -5,11 +5,11 @@ description: Use when integrating photography, illustrations, or graphics into s
 
 # SlideForge Image Integration
 
-This leaf skill guides the inclusion and rendering of images inside carousels. Because SlideForge compiles to HTML and is screenshot via headless Chromium, image loading and layouts require strict rules.
+This leaf skill guides the inclusion and rendering of images inside carousels. SlideForge compiles to HTML and rasterizes via the embedded Blitz renderer (stylo layout + vello-cpu), so image loading and layouts require strict rules.
 
 ## Local Image Data URI Conversion (Critical)
 
-Headless Chrome cannot consistently resolve relative file paths in all system contexts.
+The Blitz renderer cannot resolve relative file paths across system contexts.
 - **Rule:** Never reference local file paths (like `./assets/photo.png`) in your image parameters.
 - **Workflow:** You must convert the local image into a Base64 Data URI first using `embed-image` (CLI) or `embed_local_image` (MCP). Then use that Data URI in your parameter payload.
 
@@ -99,7 +99,7 @@ You can pass these style overrides via CLI `--override` or slide metadata:
 
 ## Actionable Constraints & Design Rules
 
-- [ ] **Image Pre-compression:** High-resolution images (>5MB) slow down headless Chrome rendering significantly. Ensure Base64 source files are compressed before conversion.
+- [ ] **Image Pre-compression:** High-resolution images (>5MB) slow down rendering significantly. Ensure Base64 source files are compressed before conversion.
 - [ ] **Valid URL Scheme:** `image_url` must start with `http://`, `https://`, or `data:image/`.
 - [ ] **Data URI Sanitization:** When generating payload files, verify that the data URI string has no extra spaces or newline breaks inside the JSON object.
 

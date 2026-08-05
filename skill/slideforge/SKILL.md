@@ -52,7 +52,7 @@ SlideForge works in a 4-step pipeline:
 1. **Configure Design** — Generate design tokens (colors, fonts, spacing) from a brand color
 2. **Generate Slides** — Create individual slide HTML for each slide type
 3. **Render Carousel** — Assemble slides into a full carousel HTML document
-4. **Export** — Optionally export to PNG images via headless Chrome
+4. **Export** — Optionally export to PNG images via the embedded Blitz renderer (no browser needed)
 
 The tool is available as both a **CLI** (18 commands) and an **MCP server** (18 tools) with identical functionality.
 
@@ -414,15 +414,10 @@ curl -fsSL -o ~/.local/bin/slideforge "https://github.com/ishan-parihar/slidefor
 chmod +x ~/.local/bin/slideforge
 ```
 
-### Chrome/Chromium not found during export
-PNG export requires headless Chrome. Install it:
-```bash
-# Ubuntu/Debian
-sudo apt install chromium-browser
-
-# Or Google Chrome
-sudo apt install google-chrome-stable
-```
+### PNG export fails
+PNG export uses the **embedded Blitz renderer** (stylo layout + vello-cpu raster) — no Chrome/Chromium install is needed and no browser is downloaded. If export fails, check the HTML you're exporting:
+- Font URLs must be Google Fonts CSS2-clean (spaces `+`-encoded, semicolon weight lists) — the renderer validates these at emission.
+- Images must be `http(s)://` or `data:` URIs (`file://` paths from other machines won't resolve).
 
 ### Slides look off-center on 9:16
 This was fixed in v0.2.0. Ensure you're using the latest version:

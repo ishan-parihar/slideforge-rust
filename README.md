@@ -18,7 +18,7 @@
 - **MCP server** — integrate with Claude, Cursor, or any MCP client for AI-driven slide generation
 - **CLI** — scriptable, CI-friendly commands for batch generation
 - **Design system** — tokens, themes, archetypes, Google Fonts, CSS variables
-- **Export pipeline** — HTML → PNG via headless Chromium (1080×1350, 1080×1080, 1080×1920, 1200×628, etc.)
+- **Export pipeline** — HTML → PNG via the embedded Blitz renderer (stylo + vello-cpu, no browser needed; 1080×1350, 1080×1080, 1080×1920, 1200×628, etc.)
 - **Validation** — pre-flight param checks, layout overflow detection, contrast auditing
 - **Session persistence** — `configure_design` tokens survive MCP restarts (`~/.slideforge/session_state.json`)
 
@@ -174,9 +174,9 @@ Checks: overflow, contrast, descender clipping, squished components, distorted i
 |-----------|------------|--------------|
 | MCP server | **~8.5 MB** | — |
 | CLI (generate-slide) | **~4 MB** | — |
-| Export (Chromium) | — | **~350–800 MB** (one-shot per export) |
+| Export (Blitz renderer) | — | **~110 MB** (one-shot per export) |
 
-Chromium subprocess is spawned per `export`/`preview` call and torn down immediately. No persistent browser pool.
+The Blitz rendering engine (stylo layout + vello-cpu raster) is embedded in the binary — no Chromium subprocess, no browser download, no persistent browser pool. Peak export RSS is ~110 MB vs ~550 MB for headless Chrome.
 
 ---
 

@@ -1238,19 +1238,15 @@ impl Server {
 
     // ── export_carousel_slides ────────────────────────────────────────────────
 
-    /// Export carousel HTML to per-slide PNG images via headless Chrome.
+    /// Export carousel HTML to per-slide PNG images via the embedded blitz renderer.
     #[tool(
         name = "export_carousel_slides",
-        description = "Render carousel HTML to PNG images using headless Chrome. Returns file paths to each exported slide."
+        description = "Render carousel HTML to PNG images using the embedded blitz renderer (no browser needed). Returns file paths to each exported slide."
     )]
     pub async fn export_carousel_slides(
         &self,
         Parameters(req): Parameters<ExportCarouselSlidesRequest>,
     ) -> Result<Json<ExportResponse>, ErrorData> {
-        // Pre-flight: verify Chrome is available before doing any work
-        export::ensure_chrome_available()
-            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
-
         let (state_platform, state_aspect_ratio) = {
             let state = self.state.lock().unwrap();
             (state.platform.clone(), state.aspect_ratio.clone())
@@ -1276,18 +1272,26 @@ impl Server {
         let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
             .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
-        let paths = export::export_slides(
-            &req.html_path,
-            &req.output_dir,
-            req.total_slides,
-            canvas.width,
-            canvas.height,
-        )
+        // Run the synchronous blitz render on the blocking pool: it holds the
+        // (non-Send) HtmlDocument internally for seconds at a time, so it must
+        // never occupy a tokio worker thread. Only owned Strings cross the
+        // closure boundary — all Send.
+        let html_path = req.html_path.clone();
+        let output_dir = req.output_dir.clone();
+        let w = canvas.width;
+        let h = canvas.height;
+        let n = req.total_slides;
+        let paths = tokio::task::spawn_blocking(move || {
+            export::export_slides(&html_path, &output_dir, n, w, h)
+        })
         .await
+        .map_err(|e| {
+            ErrorData::internal_error(format!("Blitz export task failed: {}", e), None)
+        })?
         .map_err(|e| ErrorData::internal_error(humanize_error(&e), None))?;
 
         let total = paths.len();
-        let dimensions = format!("{}×{}", canvas.width, canvas.height);
+        let dimensions = format!("{}×{}", w, h);
         Ok(Json(ExportResponse {
             exported_slides: paths,
             dimensions,
@@ -1734,20 +1738,16 @@ impl Server {
     // ── preview_slide ────────────────────────────────────────────────────────
 
     /// Render a single slide's HTML to a PNG for quick preview without
-    /// exporting the full carousel. Uses headless Chrome.
+    /// exporting the full carousel. Uses the embedded blitz renderer.
     #[tool(
         name = "preview_slide",
-        description = "Render a single slide's HTML to a PNG file for quick visual preview. Faster than export_carousel_slides for iterating on one slide. Pass the html (from generate_slide) and an output_path; returns the PNG file path."
+        description = "Render a single slide's HTML to a PNG file for quick visual preview. Faster than export_carousel_slides for iterating on one slide. Pass the html (from generate_slide) and an output_path; returns the PNG file path. Uses the embedded blitz renderer (no browser needed)."
     )]
     pub async fn preview_slide(
         &self,
         Parameters(req): Parameters<PreviewSlideRequest>,
     ) -> Result<Json<RawJson>, ErrorData> {
         use std::fs;
-
-        // Pre-flight: verify Chrome is available before doing any work
-        export::ensure_chrome_available()
-            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
 
         if req.html.is_empty() {
             return Err(ErrorData::invalid_request(
@@ -1761,7 +1761,7 @@ impl Server {
             _ => "/tmp/slideforge-preview.png".to_string(),
         };
 
-        // Wrap the slide HTML in a minimal full HTML document for Chrome
+        // Wrap the slide HTML in a minimal full HTML document for the blitz renderer
         let full_html = format!(
             r#"<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
 body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:center; align-items:center; min-height:100vh; }}
@@ -1778,17 +1778,29 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
             ));
         }
 
-        // Render via headless Chrome
-        match export::render_html_to_png(temp_html, &output_path, 1.0) {
-            Ok(_) => Ok(Json(RawJson(serde_json::json!({
+        // Render via the embedded blitz renderer on the blocking pool (the
+        // render holds a non-Send HtmlDocument internally — never on a tokio
+        // worker). Owned paths cross the closure boundary.
+        let html_in = temp_html.to_string();
+        let out_path = output_path.clone();
+        match tokio::task::spawn_blocking(move || {
+            export::render_html_to_png(&html_in, &out_path, 1.0)
+        })
+        .await
+        {
+            Ok(Ok(_)) => Ok(Json(RawJson(serde_json::json!({
                 "png_path": output_path,
                 "message": format!("Preview saved to {}", output_path)
             })))),
-            Err(e) => Err(ErrorData::internal_error(
+            Ok(Err(e)) => Err(ErrorData::internal_error(
                 format!(
-                    "Chrome render failed: {}. Ensure Chrome/Chromium is installed.",
+                    "Blitz render failed: {}. The renderer is embedded — no browser install is needed.",
                     e
                 ),
+                None,
+            )),
+            Err(e) => Err(ErrorData::internal_error(
+                format!("Blitz render task failed: {}", e),
                 None,
             )),
         }

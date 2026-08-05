@@ -5,7 +5,7 @@ description: Use when assembling individual slide JSON components into a rendere
 
 # SlideForge Rendering & Export Pipeline
 
-This leaf skill guides the final stage of carousel creation: combining slides into a single HTML document and rendering them as PNG images using headless Chromium.
+This leaf skill guides the final stage of carousel creation: combining slides into a single HTML document and rendering them as PNG images using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed).
 
 ## The Assembly & Render Pipeline
 
@@ -62,7 +62,7 @@ Choose the correct platform preset for exporting. Height and width are strictly 
 
 ## Actionable Constraints & Design Rules
 
-- [ ] **Chromium Check:** Ensure Chromium is installed. In offline or CI/CD environments, run `slideforge-rust setup` first to download Chromium locally.
+- [ ] **Renderer:** PNG export uses the embedded Blitz renderer — no Chromium install or download is required (the `setup` command is a no-op).
 - [ ] **Overlay Matching:** Ensure the `--brand-name` and `--brand-handle` parameters passed to `render-carousel` match the configurations in your design tokens.
 - [ ] **Slide Count Count:** Always pass the exact number of slides using the `--slides` parameter during export. Specifying an incorrect slide count will cause rendering errors or blank output pages.
 

@@ -982,14 +982,24 @@ body {
     // Each slide may carry its own Google Fonts URL (its typology pairing). Emit one
     // <link> per distinct URL so every typology's fonts actually load; the
     // carousel-level spec.google_fonts_url remains the fallback for older inputs.
+    //
+    // URLs are sanitized at emission: the Google Fonts CSS2 API requires
+    // `+`-encoded family names and semicolon-separated weight lists. Legacy
+    // tokens (and any hand-authored input) may contain raw spaces or commas
+    // (`wght@300,600`), which Chrome tolerates but the blitz-net URL parser and
+    // Google's server reject — spaces break the fetch and white-wash the whole
+    // render; commas return HTTP 400. Normalizing here fixes both old compiled
+    // JSON and new data without touching token generation.
     let mut font_urls: Vec<String> = Vec::new();
     if !spec.google_fonts_url.is_empty() {
-        font_urls.push(spec.google_fonts_url.clone());
+        let url = sanitize_font_url(&spec.google_fonts_url);
+        font_urls.push(url);
     }
     for slide in &spec.slides {
         if let Some(url) = slide.google_fonts_url.as_deref() {
-            if !url.is_empty() && !font_urls.iter().any(|u| u == url) {
-                font_urls.push(url.to_string());
+            let url = sanitize_font_url(url);
+            if !url.is_empty() && !font_urls.iter().any(|u| u == &url) {
+                font_urls.push(url);
             }
         }
     }
@@ -1078,6 +1088,39 @@ body {
         carousel = carousel_html,
         js = js_block,
     )
+}
+
+/// Normalize a Google Fonts CSS2 stylesheet URL so every rendering backend can
+/// fetch it. Replaces raw spaces with `+` (required for URL parsing) and
+/// converts comma-separated weight lists (`wght@300,600`) to the semicolon form
+/// (`wght@300;600`) that the CSS2 API accepts. The `ital,wght@0,400;1,400`
+/// axis-tuple form is left untouched (commas there are axis separators, which
+/// are correct).
+pub fn sanitize_font_url(url: &str) -> String {
+    let clean = url.replace(' ', "+");
+    // Rewrite `wght@A,B,...` weight lists to `wght@A;B;...` — but NEVER the
+    // `ital,wght@0,400;0,600;1,400` axis-tuple form, where commas separate the
+    // axis values within a tuple and are required. A comma immediately before
+    // `wght@` marks the tuple form; a colon marks a plain weight list.
+    let mut out = String::with_capacity(clean.len());
+    let mut rest = clean.as_str();
+    while let Some(pos) = rest.find("wght@") {
+        let is_axis_tuple = rest[..pos].ends_with(',');
+        out.push_str(&rest[..pos + 5]);
+        rest = &rest[pos + 5..];
+        let end = rest
+            .find(|c: char| c == '&' || c == '\"' || c == ' ')
+            .unwrap_or(rest.len());
+        let list = &rest[..end];
+        if is_axis_tuple {
+            out.push_str(list);
+        } else {
+            out.push_str(&list.replace(',', ";"));
+        }
+        rest = &rest[end..];
+    }
+    out.push_str(rest);
+    out
 }
 
 fn get_theme_css_overrides(theme: &str) -> &'static str {
@@ -1638,6 +1681,30 @@ mod tests {
         assert!(html.contains(r#"<style>#slide-1 {   --primary: #0F172A;"#));
         // Slide 2 has no css_vars -> no scoped block for it.
         assert!(!html.contains("#slide-2 {"));
+    }
+
+    #[test]
+    fn test_sanitize_font_url_encodes_spaces_and_semicolon_weights() {
+        // Raw spaces break blitz-net's URL parser (Chrome tolerates them);
+        // comma weight lists return HTTP 400 from the CSS2 API. Both must be
+        // normalized so every rendering backend can fetch the stylesheet.
+        let legacy = "https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap";
+        let fixed = sanitize_font_url(legacy);
+        assert_eq!(
+            fixed,
+            "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;600&family=DM+Sans:wght@400;500;600&display=swap"
+        );
+        assert!(!fixed.contains(' '), "spaces must be +-encoded: {fixed}");
+        assert!(
+            !fixed.contains("wght@300,600"),
+            "comma weight lists must become semicolons: {fixed}"
+        );
+        // The ital axis-tuple form is already valid and must stay untouched.
+        let ital = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap";
+        assert_eq!(sanitize_font_url(ital), ital);
+        // Already-clean URLs pass through unchanged.
+        let clean = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+        assert_eq!(sanitize_font_url(clean), clean);
     }
 
     #[test]

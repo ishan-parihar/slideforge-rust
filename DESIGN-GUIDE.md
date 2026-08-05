@@ -1,6 +1,6 @@
 # SlideForge Design Guide
 
-SlideForge is a Rust-native carousel generation engine and MCP server that produces pixel-perfect social media carousels using a headless Chrome renderer and a full design system derived from perceptual color science (OKLCH).
+SlideForge is a Rust-native carousel generation engine and MCP server that produces pixel-perfect social media carousels using the embedded Blitz rendering engine (stylo layout + vello raster — no browser dependency) and a full design system derived from perceptual color science (OKLCH).
 
 ---
 
@@ -16,7 +16,7 @@ configure_design → generate_slide(s) → render_carousel → export_carousel_s
 
 3. **`render_carousel`** — Assembles individual slide HTML into a full multi-slide HTML document with Google Fonts, CSS variables, progress indicators, and brand footer.
 
-4. **`export_carousel_slides`** — Uses headless Chrome (via `headless_chrome` crate) to render and screenshot each slide as a PNG at the target platform resolution.
+4. **`export_carousel_slides`** — Uses the embedded Blitz renderer (stylo layout + vello-cpu raster) to render each slide as a PNG at the target platform resolution. No browser subprocess; peak RSS ~110 MB vs ~550 MB for Chrome.
 
 ---
 

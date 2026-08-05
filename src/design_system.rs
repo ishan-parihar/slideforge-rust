@@ -477,31 +477,35 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
         ), // modern
     };
 
+    // Google Fonts CSS2 API requires URL-encoded family names (spaces → `+`) and
+    // semicolon-separated weight lists (`wght@300;600`). Commas return HTTP 400
+    // and raw spaces break URL parsing (Chrome is lenient; blitz-net is not).
+    let enc = |name: &str| name.replace(' ', "+");
     let mut heading_families = vec![format!(
         "{}:wght@{}",
-        h_font,
+        enc(h_font),
         h_weights
             .iter()
             .map(|w| w.to_string())
             .collect::<Vec<_>>()
-            .join(",")
+            .join(";")
     )];
     if h_font != b_font {
         // Italic body (e.g. nightlife: Playfair Display italic) needs the ital axis.
         let body_frag = if style_clean == "nightlife" {
             format!(
                 "{}:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600",
-                b_font
+                enc(b_font)
             )
         } else {
             format!(
                 "{}:wght@{}",
-                b_font,
+                enc(b_font),
                 b_weights
                     .iter()
                     .map(|w| w.to_string())
                     .collect::<Vec<_>>()
-                    .join(",")
+                    .join(";")
             )
         };
         heading_families.push(body_frag);

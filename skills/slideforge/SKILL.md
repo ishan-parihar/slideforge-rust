@@ -5,7 +5,7 @@ description: Use when generating professional social media carousels or presenta
 
 # SlideForge Designer — Meta-Skill Suite
 
-SlideForge is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using a headless Chromium browser.
+SlideForge is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed).
 
 This root router navigates you to the specialized sub-skills for using SlideForge in the most effective manner.
 
