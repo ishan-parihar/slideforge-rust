@@ -1,0 +1,296 @@
+{
+  "total_decks": 48,
+  "ok": 48,
+  "failed": 0,
+  "wall_seconds": 954.5550549030304,
+  "decks": [
+    {
+      "path": "dist/all_types_carousel.html",
+      "slides": 40,
+      "status": "OK",
+      "seconds": 55.4
+    },
+    {
+      "path": "dist/audit_carousel.html",
+      "slides": 21,
+      "status": "OK",
+      "seconds": 26.0
+    },
+    {
+      "path": "dist/blog_carousel.html",
+      "slides": 3,
+      "status": "OK",
+      "seconds": 3.1
+    },
+    {
+      "path": "dist/dataviz_carousel.html",
+      "slides": 27,
+      "status": "OK",
+      "seconds": 23.9
+    },
+    {
+      "path": "dist/full_scope_carousel.html",
+      "slides": 74,
+      "status": "OK",
+      "seconds": 68.3
+    },
+    {
+      "path": "dist/gender_studies_carousel.html",
+      "slides": 20,
+      "status": "OK",
+      "seconds": 16.5
+    },
+    {
+      "path": "dist/presets/announcement.html",
+      "slides": 4,
+      "status": "OK",
+      "seconds": 3.9
+    },
+    {
+      "path": "dist/presets/aspiration_ladder.html",
+      "slides": 7,
+      "status": "OK",
+      "seconds": 6.6
+    },
+    {
+      "path": "dist/presets/authority_introduction.html",
+      "slides": 8,
+      "status": "OK",
+      "seconds": 7.0
+    },
+    {
+      "path": "dist/presets/collective_mobilization.html",
+      "slides": 7,
+      "status": "OK",
+      "seconds": 5.7
+    },
+    {
+      "path": "dist/presets/contrast_demonstration.html",
+      "slides": 5,
+      "status": "OK",
+      "seconds": 4.7
+    },
+    {
+      "path": "dist/presets/credibility_cascade.html",
+      "slides": 7,
+      "status": "OK",
+      "seconds": 5.4
+    },
+    {
+      "path": "dist/presets/deep_dive.html",
+      "slides": 6,
+      "status": "OK",
+      "seconds": 8.2
+    },
+    {
+      "path": "dist/presets/emotional_engineering.html",
+      "slides": 9,
+      "status": "OK",
+      "seconds": 9.1
+    },
+    {
+      "path": "dist/presets/event_mobilization.html",
+      "slides": 4,
+      "status": "OK",
+      "seconds": 3.4
+    },
+    {
+      "path": "dist/presets/evidence_argument.html",
+      "slides": 8,
+      "status": "OK",
+      "seconds": 6.2
+    },
+    {
+      "path": "dist/presets/exposure_reveal.html",
+      "slides": 8,
+      "status": "OK",
+      "seconds": 6.2
+    },
+    {
+      "path": "dist/presets/guided_experience.html",
+      "slides": 7,
+      "status": "OK",
+      "seconds": 5.9
+    },
+    {
+      "path": "dist/presets/legacy_preservation.html",
+      "slides": 11,
+      "status": "OK",
+      "seconds": 8.5
+    },
+    {
+      "path": "dist/presets/nostalgia_engine.html",
+      "slides": 11,
+      "status": "OK",
+      "seconds": 8.5
+    },
+    {
+      "path": "dist/presets/origin_story.html",
+      "slides": 3,
+      "status": "OK",
+      "seconds": 2.5
+    },
+    {
+      "path": "dist/presets/outrage_catalyst.html",
+      "slides": 10,
+      "status": "OK",
+      "seconds": 7.9
+    },
+    {
+      "path": "dist/presets/paradigm_shift.html",
+      "slides": 7,
+      "status": "OK",
+      "seconds": 5.4
+    },
+    {
+      "path": "dist/presets/principle_education.html",
+      "slides": 13,
+      "status": "OK",
+      "seconds": 12.5
+    },
+    {
+      "path": "dist/presets/process_transparency.html",
+      "slides": 3,
+      "status": "OK",
+      "seconds": 2.8
+    },
+    {
+      "path": "dist/presets/product_showcase.html",
+      "slides": 8,
+      "status": "OK",
+      "seconds": 9.5
+    },
+    {
+      "path": "dist/presets/proof_stacking.html",
+      "slides": 15,
+      "status": "OK",
+      "seconds": 12.1
+    },
+    {
+      "path": "dist/presets/skill_transfer.html",
+      "slides": 17,
+      "status": "OK",
+      "seconds": 13.5
+    },
+    {
+      "path": "dist/presets/story_journey.html",
+      "slides": 13,
+      "status": "OK",
+      "seconds": 10.7
+    },
+    {
+      "path": "dist/presets/technique_mastery.html",
+      "slides": 5,
+      "status": "OK",
+      "seconds": 5.7
+    },
+    {
+      "path": "dist/presets/transformation_arc.html",
+      "slides": 13,
+      "status": "OK",
+      "seconds": 13.2
+    },
+    {
+      "path": "dist/presets/underdog_comeback.html",
+      "slides": 10,
+      "status": "OK",
+      "seconds": 7.7
+    },
+    {
+      "path": "dist/presets/urgency_mobilization.html",
+      "slides": 5,
+      "status": "OK",
+      "seconds": 4.2
+    },
+    {
+      "path": "dist/presets/wisdom_transmission.html",
+      "slides": 11,
+      "status": "OK",
+      "seconds": 8.3
+    },
+    {
+      "path": "dist/random_styles_carousel.html",
+      "slides": 40,
+      "status": "OK",
+      "seconds": 54.6
+    },
+    {
+      "path": "dist/remaining_types_carousel.html",
+      "slides": 32,
+      "status": "OK",
+      "seconds": 27.0
+    },
+    {
+      "path": "dist/stress_test/deck_devtool.html",
+      "slides": 23,
+      "status": "OK",
+      "seconds": 22.1
+    },
+    {
+      "path": "dist/stress_test/deck_elearning.html",
+      "slides": 17,
+      "status": "OK",
+      "seconds": 17.2
+    },
+    {
+      "path": "dist/stress_test/deck_finance.html",
+      "slides": 16,
+      "status": "OK",
+      "seconds": 13.0
+    },
+    {
+      "path": "dist/stress_test/deck_fitness.html",
+      "slides": 16,
+      "status": "OK",
+      "seconds": 14.8
+    },
+    {
+      "path": "dist/stress_test/deck_luxury.html",
+      "slides": 15,
+      "status": "OK",
+      "seconds": 15.6
+    },
+    {
+      "path": "dist/stress_test/deck_nonprofit.html",
+      "slides": 18,
+      "status": "OK",
+      "seconds": 17.1
+    },
+    {
+      "path": "dist/stress_test/deck_realestate.html",
+      "slides": 17,
+      "status": "OK",
+      "seconds": 14.1
+    },
+    {
+      "path": "dist/stress_test/deck_saas_launch.html",
+      "slides": 19,
+      "status": "OK",
+      "seconds": 16.1
+    },
+    {
+      "path": "dist/stress_test/deck_travel.html",
+      "slides": 16,
+      "status": "OK",
+      "seconds": 17.3
+    },
+    {
+      "path": "dist/stress_test/deck_wellness.html",
+      "slides": 16,
+      "status": "OK",
+      "seconds": 15.8
+    },
+    {
+      "path": "dist/text_layout_carousel.html",
+      "slides": 24,
+      "status": "OK",
+      "seconds": 25.1
+    },
+    {
+      "path": "dist/typology_carousel.html",
+      "slides": 210,
+      "status": "OK",
+      "seconds": 286.0
+    }
+  ]
+}
