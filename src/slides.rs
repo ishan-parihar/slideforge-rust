@@ -192,6 +192,20 @@ body {
   overflow: hidden;
 }
 .slide--full-bleed { overflow: hidden; }
+/* The stretched full-bleed background layer must escape the .slide-body clip:
+   .slide-body keeps overflow:hidden for normal slides (so slide content is
+   hard-clipped to the body), but the full-bleed layer is explicitly positioned
+   and sized to the WHOLE slide (left=(comp-w−slide-w)/2, width=slide-w,
+   top=−header-h, height=slide-h). With the body still clipping, the layer was
+   truncated at the composition bounds — leaving the side bands on 1:1 canvases
+   (and the header/footer bands on 3:4 / 9:16) showing the slide-level mesh
+   background instead of the slide's own surface → a visible seam / "blur box".
+   Slide content cannot leak: .slide-content is itself absolutely positioned and
+   sized to the body region (see below), and the layer's own overflow:hidden
+   clips its decorative children to the layer bounds. */
+.slide--full-bleed .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+  overflow: visible !important;
+}
 /* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
    render ONLY inside .slide-body; the corner text lives in the bands so slide
    content can never collide with it. The body is the only place slide-type
@@ -267,6 +281,22 @@ body {
   left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
   width: var(--composition-width) !important;
   height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
+  /* Body clip is lifted (see .slide--full-bleed .slide-body above); clip the
+     content itself so slide types can never paint outside the body region. */
+  overflow: hidden !important;
+}
+/* Image/glass (slide_base_bleed) on full-bleed canvases: the bleed wrapper
+   fills the stretched layer, so its IMAGE bleeds edge-to-edge (desired) — but
+   its text overlay (the last positioned child) currently spans the full slide
+   too, pushing text past the composition into the side bands on 1:1 (or top/
+   bottom bands on 3:4 / 9:16). Constrain the overlay to the composition box:
+   backgrounds bleed, content stays on the 420×525 grid. For 4:5 this rule
+   never applies (not full-bleed), so behavior is unchanged there. */
+.slide--full-bleed .slide-content--bleed > div > div:last-child {
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  right: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  bottom: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
 }
 /* Full-bleed light/mesh: .slide--light already carries the mesh gradient
    (defined above), so no extra rule is needed — kept as a defensive alias. */
