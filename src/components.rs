@@ -3103,10 +3103,12 @@ pub fn timeline_slide(
     // ~203px too tall under the new 41px-body type tiers. Scale item fonts,
     // padding, and gaps by step count so the stack fits the 405px safe height.
     let step_count = steps.len();
+    // item_phase_size now sizes the number inside the 32px circular badge — it
+    // needs to be legible there (12-13px), unlike the old 8.5px text chip.
     let (item_title_size, item_desc_size, item_pad, item_gap, item_phase_size) = match step_count {
-        5 => (11.5, 9.5, 8, 3, 8.5),
-        4 => (12.5, 10.5, 10, 4, 9.0),
-        _ => (13.0, 11.0, 12, 6, 9.5),
+        5 => (12.0, 10.0, 8, 3, 12.0),
+        4 => (12.5, 10.5, 10, 4, 12.5),
+        _ => (13.0, 11.0, 12, 6, 13.0),
     };
     let step_desc_text: usize = steps
         .iter()
@@ -3121,20 +3123,29 @@ pub fn timeline_slide(
     let item_desc_size = if step_desc_text > 180 { item_desc_size - 1.0 } else { item_desc_size };
 
     let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
-        let step_title = step.get("title").and_then(|v| v.as_str()).unwrap_or("");
-        let step_desc = step.get("description").and_then(|v| v.as_str()).unwrap_or("");
+        // Data keys mirror process_map: label/title/number for the step name and
+        // description/caption for the body. Every timeline harness (stress decks,
+        // audit viewer) uses label+description — reading only `title` produced
+        // empty step names and left the PHASE chip as the sole differentiator.
+        let step_title = simple_text(step, &["label", "title", "number"]);
+        let step_desc = simple_text(step, &["description", "caption"]);
+        let num_str = format!("{:02}", idx + 1);
+        // process_map-style tile: circular number badge + bold title + muted
+        // description. The badge gives each tile a strong visual anchor and the
+        // title/description type hierarchy (800 vs 400 weight, larger vs smaller)
+        // reads clearly — unlike the old tiny PHASE chip + same-size text.
         format!(
-            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{}px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:3px;position:relative;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-family:{};font-size:{}px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;">PHASE 0{}</span>
-                    <h3 style="font-family:{};font-size:{}px;font-weight:800;color:{};margin:0;line-height:1.2;">{}</h3>
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{}px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:{};font-size:{}px;font-weight:800;color:{};line-height:1.2;">{}</div>
+                    <div style="font-family:{};font-size:{}px;color:{};line-height:1.4;margin-top:2px;overflow-wrap:break-word;">{}</div>
                 </div>
-                <p style="font-family:{};font-size:{}px;color:{};margin:0;line-height:1.4;">{}</p>
             </div>"#,
             card_bg, border, radius, item_pad,
-            tokens.heading_font, item_phase_size, colors.primary, colors.primary, idx + 1,
-            tokens.heading_font, item_title_size, colors.text_primary, escape_html(step_title),
-            tokens.body_font, item_desc_size, colors.text_secondary, escape_html(step_desc)
+            colors.primary, colors.button_text, tokens.heading_font, item_phase_size, num_str,
+            tokens.heading_font, item_title_size, colors.text_primary, escape_html(&step_title),
+            tokens.body_font, item_desc_size, colors.text_secondary, escape_html(&step_desc)
         )
     }).collect();
 
@@ -6965,6 +6976,40 @@ mod tests {
         // 4 plans → balanced 2×2 grid, no centered-span wrapper.
         assert!(!html4.contains("grid-column:1 / -1"), "4-plan grid must not center-wrap");
         assert_eq!(html4.matches("Get Started").count() + html4.matches("Upgrade Now").count(), 4);
+    }
+
+    #[test]
+    fn test_timeline_tiles_read_label_and_use_badge_composition() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        ).unwrap();
+        let steps = json!([
+            {"label": "v1", "description": "Initial release"},
+            {"label": "v2", "description": "Pool composition"},
+            {"label": "v3", "description": "Validation suite"},
+            {"label": "v4", "description": "27 presets + audit"}
+        ]);
+        let res = timeline_slide(
+            &tokens,
+            "Release history",
+            steps.as_array().unwrap().clone(),
+            "dark",
+            "vertical",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // Step labels (label key, not title) must render as tile headings.
+        assert!(html.contains("v1"), "timeline must read step `label` into the title");
+        assert!(html.contains("v4"), "timeline must render all step labels");
+        // process_map-style circular number badge (32px circle + number).
+        assert!(html.contains("border-radius:50%"), "tile must use a circular number badge");
+        assert!(html.contains("01"), "badge must show a zero-padded step number");
+        // Old tiny PHASE text chip must be gone.
+        assert!(!html.contains("PHASE 0"), "old PHASE text chip removed");
+        // Type hierarchy: title (800 weight) is visually distinct from desc.
+        assert!(html.contains("font-weight:800"), "tile title carries bold weight");
     }
 }
 
