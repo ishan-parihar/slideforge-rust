@@ -203,13 +203,19 @@ fn extract_carousel_parts(html: &str, slide_index: usize) -> (String, String, St
     let style_re = Regex::new(r"(?s)<style[^>]*>.*?</style>").unwrap();
     let mut global_styles = Vec::new();
     let mut per_slide = String::new();
-    let slide_css_marker = format!("#slide-{}", slide_index);
+    // Match `#slide-{idx}` only when NOT followed by another digit, so the
+    // marker for slide 1 (`#slide-1`) does not also match `#slide-10`…`#slide-19`.
+    // (The `regex` crate has no look-around, so a `[^0-9]|$` boundary is used.)
+    let slide_css_re =
+        Regex::new(&format!(r"#slide-{}([^0-9]|$)", slide_index)).unwrap();
     for m in style_re.find_iter(html) {
         let block = m.as_str();
         if block.contains("#slide-") {
-            // Only keep the scoped block that targets THIS slide.
-            if block.contains(&slide_css_marker) {
-                per_slide = block.to_string();
+            // Only keep the scoped block(s) that target THIS slide. Append
+            // rather than overwrite in case more than one block applies.
+            if slide_css_re.is_match(block) {
+                per_slide.push_str(block);
+                per_slide.push('\n');
             }
         } else {
             global_styles.push(block.to_string());
@@ -334,4 +340,53 @@ pub fn export_slides(
     }
 
     Ok(paths)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::extract_carousel_parts;
+
+    /// The per-slide marker must match exactly — `#slide-1` must not also pull
+    /// in the `#slide-10`…`#slide-19` scoped blocks (substring collision).
+    #[test]
+    fn per_slide_marker_matches_exact_slide() {
+        let html = r#"<html><head>
+<style>:root { --slide-width: 420px; --slide-height: 525px; }</style>
+</head><body>
+<div id="slide-1" class="slide slide--dark"><div class="slide-composition">ONE</div></div>
+<style>#slide-1 { --surface: #123456; }</style>
+<div id="slide-10" class="slide slide--dark"><div class="slide-composition">TEN</div></div>
+<style>#slide-10 { --surface: #abcdef; }</style>
+<div id="slide-19" class="slide slide--dark"><div class="slide-composition">NINETEEN</div></div>
+<style>#slide-19 { --surface: #fedcba; }</style>
+</body></html>"#;
+
+        // Slide index 1 must only carry its own block, not slide 10's or 19's.
+        let (global, per_slide, _, w, h) = extract_carousel_parts(html, 1);
+        assert!(per_slide.contains("--surface: #123456"), "own block kept");
+        assert!(!per_slide.contains("--surface: #abcdef"), "slide-10 block excluded");
+        assert!(!per_slide.contains("--surface: #fedcba"), "slide-19 block excluded");
+        assert!(global.contains("--slide-width"), "global :root kept");
+        assert_eq!((w, h), (420, 525));
+
+        // And slide 10 gets ITS block, not slide 1's.
+        let (_, per_slide10, ..) = extract_carousel_parts(html, 10);
+        assert!(per_slide10.contains("--surface: #abcdef"));
+        assert!(!per_slide10.contains("--surface: #123456"));
+    }
+
+    /// Legacy carousels have no `#slide-` blocks — every style block is global.
+    #[test]
+    fn legacy_carousel_all_styles_global() {
+        let html = r#"<html><head>
+<style>:root { --slide-width: 420px; --slide-height: 525px; }
+.slide--dark { background: var(--surface-dark, #010105); }</style>
+</head><body>
+<div class="slide slide--dark"><div class="slide-composition">X</div></div>
+</body></html>"#;
+        let (global, per_slide, ..) = extract_carousel_parts(html, 0);
+        assert!(per_slide.is_empty(), "no per-slide block in legacy deck");
+        assert!(global.contains(".slide--dark"));
+        assert!(global.contains("--slide-width"));
+    }
 }
