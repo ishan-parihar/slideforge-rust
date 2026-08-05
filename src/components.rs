@@ -1096,11 +1096,11 @@ pub fn quote_slide(
 
     let html = match effective_variant {
         "left-accent" => {
-            let quote_mark_color = if is_dark {
-                format!("{}20", tokens.primary)
-            } else {
-                format!("{}30", tokens.primary)
-            };
+            // Contrast-safe accent: `colors.primary` is derived to hold ≥4.5:1
+            // (light) / ≥5.5:1 (dark) against the slide surface, so the mark
+            // stays visible on glass + image backdrops. (Was a ~12-19% alpha
+            // tint of `tokens.primary` that vanished against the surface.)
+            let quote_mark_color = colors.primary.clone();
             let decorative_quote = format!(
                 r#"<div style="font-family:Georgia,serif;font-size:48px;line-height:1;color:{};margin-bottom:-4px;user-select:none;" aria-hidden="true">❝</div>"#,
                 quote_mark_color
@@ -1145,11 +1145,11 @@ pub fn quote_slide(
             )
         }
         "attribution-below" => {
-            let quote_mark_color = if is_dark {
-                format!("{}20", tokens.primary)
-            } else {
-                format!("{}30", tokens.primary)
-            };
+            // Contrast-safe accent: `colors.primary` is derived to hold ≥4.5:1
+            // (light) / ≥5.5:1 (dark) against the slide surface, so the mark
+            // stays visible on glass + image backdrops. (Was a ~12-19% alpha
+            // tint of `tokens.primary` that vanished against the surface.)
+            let quote_mark_color = colors.primary.clone();
             let decorative_quote = format!(
                 r#"<div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:{};text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div>"#,
                 quote_mark_color
@@ -1189,11 +1189,11 @@ pub fn quote_slide(
         }
         _ => {
             // centered (default) — editorial style with decorative quote mark
-            let quote_mark_color = if is_dark {
-                format!("{}20", tokens.primary)
-            } else {
-                format!("{}30", tokens.primary)
-            };
+            // Contrast-safe accent: `colors.primary` is derived to hold ≥4.5:1
+            // (light) / ≥5.5:1 (dark) against the slide surface, so the mark
+            // stays visible on glass + image backdrops. (Was a ~12-19% alpha
+            // tint of `tokens.primary` that vanished against the surface.)
+            let quote_mark_color = colors.primary.clone();
             let decorative_quote = format!(
                 r#"<div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:{};text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div>"#,
                 quote_mark_color
@@ -2545,14 +2545,14 @@ fn metric_grid_slide(
         let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
         let trend = item.get("trend").and_then(|v| v.as_str()).unwrap_or("");
 
-        // Progress-bar fill is DATA-DRIVEN per tile (never a static 75%):
+        // Progress-bar fill is driven ONLY by explicit per-tile config that
+        // mirrors what the metric demonstrates — never inferred abstractly:
         //   1. `progress` — fraction 0..1 or percent 0..100 (number or "72%")
         //   2. `current` + `total` — current/total as a fraction
-        //   3. numeric `value` — e.g. value "72" → 72% (keeps bars meaningful
-        //      even when the caller only supplies a number)
-        //   4. fallback 100%
-        let mut bar_pct: f64 = 100.0;
-        if let Some(p) = item
+        // A tile with no explicit progress config renders NO bar. There is no
+        // numeric-`value` fallback (e.g. value "4.2x" must not become 4.2%)
+        // and no silent 100% default — an abstract fill is worse than none.
+        let bar_fill: Option<f64> = item
             .get("progress")
             .and_then(|v| v.as_f64())
             .or_else(|| {
@@ -2560,30 +2560,31 @@ fn metric_grid_slide(
                     s.trim().trim_end_matches('%').parse::<f64>().ok()
                 })
             })
-        {
-            bar_pct = if p <= 1.0 { p * 100.0 } else { p };
-        } else if let (Some(c), Some(t)) = (
-            item.get("current")
-                .and_then(|v| v.as_f64())
-                .or_else(|| item.get("current").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok())),
-            item.get("total")
-                .and_then(|v| v.as_f64())
-                .or_else(|| item.get("total").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok())),
-        ) {
-            if t > 0.0 {
-                bar_pct = c / t * 100.0;
-            }
-        } else if let Some(n) = val
-            .chars()
-            .filter(|c| c.is_ascii_digit() || *c == '.')
-            .collect::<String>()
-            .parse::<f64>()
-            .ok()
-        {
-            bar_pct = n.min(100.0);
-        }
-        let bar_pct = bar_pct.clamp(0.0, 100.0);
-        let bar_pct_int = bar_pct.round() as u32;
+            .map(|p| if p <= 1.0 { p * 100.0 } else { p })
+            .or_else(|| {
+                let c = item
+                    .get("current")
+                    .and_then(|v| v.as_f64())
+                    .or_else(|| item.get("current").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok()));
+                let t = item
+                    .get("total")
+                    .and_then(|v| v.as_f64())
+                    .or_else(|| item.get("total").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok()));
+                match (c, t) {
+                    (Some(c), Some(t)) if t > 0.0 => Some((c / t * 100.0).clamp(0.0, 100.0)),
+                    _ => None,
+                }
+            });
+        let bar_pct = bar_fill.map(|p| p.clamp(0.0, 100.0));
+        let bar_html = match bar_pct {
+            Some(pct) => format!(
+                r#"<div style="width:100%;height:3px;background:{}20;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:{:.0}%;height:100%;background:{};border-radius:999px;"></div>
+                </div>"#,
+                colors.primary, pct, colors.primary
+            ),
+            None => String::new(),
+        };
 
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
@@ -2598,20 +2599,14 @@ fn metric_grid_slide(
                     <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;">{}</span>
                     {}
                 </div>
-                <div style="display:flex;align-items:baseline;justify-content:space-between;width:100%;gap:6px;">
-                    <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
-                    <span style="font-family:{};font-size:9.5px;font-weight:800;color:{};letter-spacing:0.04em;">{}%</span>
-                </div>
-                <div style="width:100%;height:3px;background:{}20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:{}%;height:100%;background:{};border-radius:999px;"></div>
-                </div>
+                <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
+                {}
             </div>"#,
             card_bg, card_border, radius,
             tokens.body_font, colors.text_secondary, escape_html(lbl),
             trend_badge,
             tokens.heading_font, colors.primary, escape_html(val),
-            tokens.body_font, colors.text_secondary, bar_pct_int,
-            colors.primary, bar_pct_int, colors.primary
+            bar_html
         )
     }).collect();
 
@@ -6891,7 +6886,7 @@ mod tests {
         )
         .unwrap();
         // Tile 1 uses current/total, tile 2 uses progress fraction, tile 3 uses
-        // progress percent, tile 4 has a numeric value fallback.
+        // progress percent, tile 4 has NO explicit progress config (no bar).
         let metrics = json!([
             {"value": "12/50", "label": "Compiled", "current": 12, "total": 50},
             {"value": "3/4", "label": "Adopted", "progress": 0.25},
@@ -6919,8 +6914,57 @@ mod tests {
         assert!(html.contains("width:25%;height:100%;background"), "expected 25% fill from progress fraction");
         // progress "88%" = 88%
         assert!(html.contains("width:88%;height:100%;background"), "expected 88% fill from progress percent");
-        // numeric value 47 = 47%
-        assert!(html.contains("width:47%;height:100%;background"), "expected 47% fill from numeric value");
+        // A numeric value alone must NOT imply a bar (no abstract fallback).
+        assert!(
+            !html.contains("width:47%;height:100%;background"),
+            "numeric value must not become an abstract bar fill"
+        );
+        // The redundant percentage counter is gone from the frontend.
+        assert!(
+            !html.contains(">47%<")
+                && !html.contains("font-size:9.5px;font-weight:800;color:"),
+            "the % counter next to the value must be removed"
+        );
+    }
+
+    #[test]
+    fn test_quote_mark_uses_contrast_safe_primary() {
+        // The decorative mark must use the contrast-safe `colors.primary`
+        // (solid, >=4.5:1 on light / >=5.5:1 on dark) instead of a faint
+        // alpha-suffixed tint of `tokens.primary` that disappears on glass.
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let res = quote_slide(
+            &tokens,
+            "The best interface is the one you forget.",
+            "Ada",
+            "Design Lead",
+            "light",
+            "default",
+            "editorial",
+            "",
+            0.0,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(html.contains('\u{275d}'), "quote mark must render");
+        // Extract the color declaration that precedes the mark glyph.
+        let mark_color = html
+            .find('\u{275d}')
+            .and_then(|i| html[..i].rfind("color:"))
+            .map(|c| &html[c..html.find('\u{275d}').unwrap()])
+            .unwrap_or("");
+        assert!(
+            !mark_color.contains("#0066FF"),
+            "mark must not use raw tokens.primary: {}",
+            mark_color
+        );
+        assert!(
+            mark_color.trim_end_matches('"').len() >= 15,
+            "mark color must be a full hex (no alpha suffix), got: {}",
+            mark_color
+        );
     }
 
     #[test]

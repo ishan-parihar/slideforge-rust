@@ -439,9 +439,10 @@ pub fn get_registry() -> Value {
             "description": "2x2 grid of key metrics with values, labels, trends, and data-driven progress bars",
             "required_params": ["title", "metrics"],
             "optional_params": ["variant", "background_image", "image_opacity", "padding"],
-            // Each metric item may carry `progress` (0..1 or 0..100) or
-            // `current` + `total` to drive its tile's progress bar; a numeric
-            // `value` is used as a fallback percent, else the bar fills 100%.
+            // Each metric item drives its tile's progress bar ONLY through
+            // explicit per-tile config: `progress` (0..1 or 0..100) or
+            // `current` + `total`. No abstract fallback — a tile without
+            // explicit progress config renders no bar.
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
