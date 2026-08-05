@@ -5588,6 +5588,17 @@ pub fn image_headline_slide(
         _ => "flex-end",
     };
 
+    // Bottom-anchored overlay clearance: the full-bleed image layer bleeds
+    // behind the transparent footer band, so the text overlay must carry extra
+    // bottom padding to keep headline/subheadline above the footer chrome
+    // (40px band + 8px progress strip). Measured overlap on a bottom-aligned
+    // image_headline: subheadline bottom sat ~16px inside the footer band.
+    let overlay_padding = match overlay_position {
+        "top" => "76px 28px 60px",
+        "center" => "60px 28px",
+        _ => "60px 28px calc(96px + var(--chrome-footer-h, 40px))",
+    };
+
     let headline_style = format!(
         "font-family:{};font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);",
         tokens.heading_font
@@ -5600,18 +5611,20 @@ pub fn image_headline_slide(
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;">
             {}
-            <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:{};z-index:3;">
+            <div style="position:absolute;inset:0;padding:{};display:flex;flex-direction:column;justify-content:{};z-index:3;">
                 <h2 style="{}">{}</h2>
                 {}
             </div>
-        </div>"#,
+        </div>        "#,
         img_html,
+        overlay_padding,
         v_align,
         headline_style,
         escape_html(headline),
         if !subheadline.is_empty() {
             format!(
                 r#"<p style="{}">{}</p>"#,
+
                 sub_style,
                 escape_html(subheadline)
             )
