@@ -127,14 +127,43 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
 
 // ── Carousel → per-slide extraction ──────────────────────────────────────────
 
-/// Extract the complete `<div id="slide-{index}" ...>...</div>` element from a
-/// carousel document, using balanced `<div>` matching so nested slide markup is
-/// captured whole.
-fn extract_slide_element(html: &str, index: usize) -> Option<String> {
+/// Locate the opening-tag index of the slide element for a given slide index.
+///
+/// New-format carousels tag every slide with `id="slide-{index}"`. Legacy
+/// decks (older harness output, campaign presets) only carry `class="slide ..."`
+/// on each slide div — so when the id marker is absent we fall back to matching
+/// the N-th `<div class="slide` element (slides are emitted in order, 0-based).
+fn find_slide_open(html: &str, index: usize) -> Option<usize> {
     let marker = format!("id=\"slide-{}\"", index);
-    let start = html.find(&marker)?;
-    // Backtrack to the opening '<' of this element's start tag.
-    let open = html[..start].rfind('<')?;
+    if let Some(start) = html.find(&marker) {
+        return html[..start].rfind('<');
+    }
+    // Legacy fallback: count `class="slide` (with a word boundary so nested
+    // `slide-composition`/`slide-content` divs are skipped) until index.
+    let class_marker = "class=\"slide";
+    let mut seen = 0usize;
+    let mut search_from = 0usize;
+    while let Some(pos) = html[search_from..].find(class_marker) {
+        let abs = search_from + pos;
+        // The char after `class="slide` must not be `-` or ` ` + more class
+        // words like `slide-composition`; exact `slide` then space/quote/\n.
+        let after = html[abs + class_marker.len()..].chars().next();
+        if matches!(after, Some(' ') | Some('\"') | Some('\n') | Some('\t')) {
+            if seen == index {
+                return html[..abs].rfind('<');
+            }
+            seen += 1;
+        }
+        search_from = abs + class_marker.len();
+    }
+    None
+}
+
+/// Extract the complete slide element (from its opening `<div ...>` through the
+/// matching closing `</div>`) from a carousel document, using balanced `<div>`
+/// matching so nested slide markup is captured whole.
+fn extract_slide_element(html: &str, index: usize) -> Option<String> {
+    let open = find_slide_open(html, index)?;
     let bytes = html.as_bytes();
     let mut depth = 0i32;
     let mut i = open;
@@ -161,17 +190,52 @@ fn extract_slide_element(html: &str, index: usize) -> Option<String> {
 }
 
 /// Extract the carousel-level assets a standalone slide render needs:
-/// (all `<style>` blocks, all stylesheet `<link>` tags, composition width, composition height).
-fn extract_carousel_parts(html: &str) -> (String, String, u32, u32) {
+/// (base `<style>` blocks WITHOUT the per-slide `#slide-N` scoped blocks, the
+/// target slide's own per-slide style block, all stylesheet `<link>` tags,
+/// composition width, composition height).
+///
+/// Per-slide `#slide-N { ... }` blocks are emitted AFTER each slide div. Only
+/// the block matching the target slide index is kept — including all N blocks
+/// on a 210-slide deck made every standalone doc re-parse the full carousel
+/// CSS (≈11s/slide). Global styles carry the layout/chrome rules; the per-slide
+/// block carries that slide's css_vars (surface/type/font tokens).
+fn extract_carousel_parts(html: &str, slide_index: usize) -> (String, String, String, u32, u32) {
     let style_re = Regex::new(r"(?s)<style[^>]*>.*?</style>").unwrap();
-    let styles: Vec<String> = style_re
-        .find_iter(html)
-        .map(|m| m.as_str().to_string())
-        .collect();
+    let mut global_styles = Vec::new();
+    let mut per_slide = String::new();
+    let slide_css_marker = format!("#slide-{}", slide_index);
+    for m in style_re.find_iter(html) {
+        let block = m.as_str();
+        if block.contains("#slide-") {
+            // Only keep the scoped block that targets THIS slide.
+            if block.contains(&slide_css_marker) {
+                per_slide = block.to_string();
+            }
+        } else {
+            global_styles.push(block.to_string());
+        }
+    }
     let link_re = Regex::new(r#"(?i)<link[^>]*rel=["']stylesheet["'][^>]*>"#).unwrap();
     let links: Vec<String> = link_re
         .find_iter(html)
-        .map(|m| m.as_str().to_string())
+        .map(|m| {
+            // Legacy carousels may embed raw-space / comma-weight font URLs that
+            // render fine in Chrome but break blitz-net's fetch (white render).
+            // Sanitize the href the same way render_carousel_html does.
+            let tag = m.as_str();
+            if let Some(href_start) = tag.find("href=\"") {
+                let href_start = href_start + "href=\"".len();
+                if let Some(href_end) = tag[href_start..].find('\"') {
+                    let href = &tag[href_start..href_start + href_end];
+                    let fixed = crate::slides::sanitize_font_url(href);
+                    let mut out = String::from(&tag[..href_start]);
+                    out.push_str(&fixed);
+                    out.push_str(&tag[href_start + href_end..]);
+                    return out;
+                }
+            }
+            tag.to_string()
+        })
         .collect();
     // Composition dimensions come from the carousel's :root block
     // (`--slide-width` / `--slide-height`), which the renderer sets to the
@@ -188,7 +252,7 @@ fn extract_carousel_parts(html: &str) -> (String, String, u32, u32) {
         .and_then(|c| c.get(1))
         .and_then(|m| m.as_str().parse().ok())
         .unwrap_or(525);
-    (styles.join("\n"), links.join("\n"), base_w, base_h)
+    (global_styles.join("\n"), per_slide, links.join("\n"), base_w, base_h)
 }
 
 /// Build a standalone document that renders exactly ONE slide at the target
@@ -199,11 +263,12 @@ fn extract_carousel_parts(html: &str) -> (String, String, u32, u32) {
 /// export exactly.
 fn build_standalone_slide_doc(
     carousel: &str,
+    slide_index: usize,
     slide_element: &str,
     canvas_w: u32,
     canvas_h: u32,
 ) -> String {
-    let (styles, links, base_w, base_h) = extract_carousel_parts(carousel);
+    let (styles, per_slide, links, base_w, base_h) = extract_carousel_parts(carousel, slide_index);
     let scale = canvas_w as f64 / base_w as f64;
     let sf = format!("{:.6}", scale);
     format!(
@@ -214,6 +279,7 @@ fn build_standalone_slide_doc(
 {links}
 <style>
 {styles}
+{per_slide}
 </style>
 </head>
 <body style="margin:0;padding:0;overflow:hidden;">
@@ -258,7 +324,7 @@ pub fn export_slides(
         let slide_element = extract_slide_element(&carousel, i).ok_or_else(|| {
             format!("Could not locate slide #{} in the carousel document", i + 1)
         })?;
-        let doc = build_standalone_slide_doc(&carousel, &slide_element, width, height);
+        let doc = build_standalone_slide_doc(&carousel, i, &slide_element, width, height);
         let png = render_document_to_png(&doc, &base_url, width, height, 1.0)?;
 
         let slide_name = format!("slide_{}.png", i + 1);
