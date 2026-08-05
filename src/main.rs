@@ -69,6 +69,304 @@ fn dirs_or_fallback() -> Option<String> {
     })
 }
 
+// ── AXI §7: ambient session context (SessionStart dashboard) ───────────────
+
+/// Quote a string for shell-safe interpolation into a hook command. Single
+/// quotes are fully literal in POSIX shells (no $, backtick, or \ expansion),
+/// which is the safe choice for arbitrary executable paths. Embedded single
+/// quotes use the '\'' idiom.
+fn shell_quote(s: &str) -> String {
+    format!("'{}'", s.replace('\'', "'\\''"))
+}
+
+/// Resolve the command string for a session hook: the PATH-verified binary name
+/// when `slideforge` on PATH resolves to the current executable (portable
+/// across renames), otherwise the full absolute path.
+fn hook_command() -> String {
+    let exe = std::env::current_exe().ok();
+    let bin_name = exe
+        .as_ref()
+        .and_then(|p| p.file_name().map(|s| s.to_string_lossy().to_string()))
+        .unwrap_or_else(|| "slideforge".to_string());
+    let resolved = exe.as_ref().and_then(|p| p.canonicalize().ok());
+    let portable = which_binary_on_path(&bin_name)
+        .and_then(|p| p.canonicalize().ok())
+        .zip(resolved.as_ref())
+        .map(|(a, b)| a == *b)
+        .unwrap_or(false);
+    if portable {
+        bin_name
+    } else {
+        exe.map(|p| p.display().to_string())
+            .unwrap_or_else(|| bin_name)
+    }
+}
+
+fn which_binary_on_path(name: &str) -> Option<std::path::PathBuf> {
+    let path = std::env::var_os("PATH")?;
+    for dir in std::env::split_paths(&path) {
+        let candidate = dir.join(name);
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+    None
+}
+
+/// Merge the SessionStart hook into an existing settings/hooks JSON document.
+/// Idempotent (same command → unchanged) and path-repairing (a stale slideforge
+/// path in an existing hook is replaced). Returns the merged document and
+/// whether it actually changed.
+fn merge_session_hook(
+    existing: serde_json::Value,
+    command: &str,
+    agent: &str,
+) -> (serde_json::Value, bool) {
+    let is_codex = agent == "codex";
+    let target_cmd = format!("{} session-start", shell_quote(command));
+    let mut root = if existing.is_object() {
+        existing
+    } else {
+        serde_json::json!({})
+    };
+
+    let arr: &mut serde_json::Value = if is_codex {
+        root.as_object_mut()
+            .expect("root is an object")
+            .entry("SessionStart")
+            .or_insert_with(|| serde_json::json!([]))
+    } else {
+        root.as_object_mut()
+            .expect("root is an object")
+            .entry("hooks")
+            .or_insert_with(|| serde_json::json!({}))
+            .as_object_mut()
+            .expect("hooks is an object")
+            .entry("SessionStart")
+            .or_insert_with(|| serde_json::json!([]))
+    };
+    let items = arr.as_array_mut().expect("SessionStart is an array");
+
+    let mut found = false; // any existing slideforge session-start entry
+    let mut exact = false; // existing entry already matches target_cmd
+    if is_codex {
+        for item in items.iter_mut() {
+            if let Some(c) = item.get("command").and_then(|v| v.as_str()) {
+                if c.contains("session-start") {
+                    found = true;
+                    if c == target_cmd {
+                        exact = true;
+                    } else {
+                        item["command"] = serde_json::json!(target_cmd);
+                    }
+                    break;
+                }
+            }
+        }
+    } else {
+        'outer: for entry in items.iter_mut() {
+            if let Some(hooks) = entry.get_mut("hooks").and_then(|v| v.as_array_mut()) {
+                for h in hooks.iter_mut() {
+                    if let Some(c) = h.get("command").and_then(|v| v.as_str()) {
+                        if c.contains("session-start") {
+                            found = true;
+                            if c == target_cmd {
+                                exact = true;
+                            } else {
+                                h["command"] = serde_json::json!(target_cmd);
+                            }
+                            break 'outer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if !found {
+        let entry = if is_codex {
+            serde_json::json!({ "type": "command", "command": target_cmd })
+        } else {
+            serde_json::json!({ "hooks": [{ "type": "command", "command": target_cmd }] })
+        };
+        items.push(entry);
+    }
+    (root, !exact)
+}
+
+/// Install the SessionStart hook (directory-scoped) for the given agent.
+fn session_setup(agent: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let is_codex = agent == "codex";
+    let file = if is_codex {
+        std::path::PathBuf::from(".codex/hooks.json")
+    } else {
+        std::path::PathBuf::from(".claude/settings.json")
+    };
+    let command = hook_command();
+    let existing = if file.exists() {
+        fs::read_to_string(&file)
+            .ok()
+            .and_then(|raw| serde_json::from_str(&raw).ok())
+            .unwrap_or_else(|| serde_json::json!({}))
+    } else {
+        serde_json::json!({})
+    };
+    let (merged, changed) = merge_session_hook(existing, &command, agent);
+    let event = "SessionStart";
+    if changed {
+        if let Some(parent) = file.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::write(&file, serde_json::to_string_pretty(&merged)?)?;
+        output_toon(&json!({
+            "status": "installed",
+            "event": event,
+            "command": format!("{} session-start", shell_quote(&command)),
+            "file": file.display().to_string(),
+        }));
+        if is_codex {
+            println!("help[1]: Codex also requires `[features] hooks = true` in config.toml");
+        }
+    } else {
+        output_toon(&json!({
+            "status": "already-installed",
+            "event": event,
+            "file": file.display().to_string(),
+        }));
+    }
+    Ok(())
+}
+
+/// True for files that are actual carousel decks the validator can audit
+/// (deck_*.html / *_carousel.html), excluding iframe viewer/master wrappers.
+fn is_carousel_deck(name: &str) -> bool {
+    (name.contains("carousel") || name.contains("deck_"))
+        && !name.contains("_viewer")
+        && !name.contains("_master")
+}
+
+/// Scan the current directory (bounded recursive walk) for recently modified
+/// carousel/deck HTML files. Returns (path, relative-age) newest first.
+fn recent_carousels(limit: usize) -> Vec<(String, String)> {
+    let mut hits: Vec<(std::time::SystemTime, String)> = Vec::new();
+    let mut stack = vec![std::path::PathBuf::from(".")];
+    let mut scanned = 0usize;
+    while let Some(dir) = stack.pop() {
+        if scanned > 20_000 {
+            break;
+        }
+        let Ok(entries) = std::fs::read_dir(&dir) else {
+            continue;
+        };
+        for e in entries.flatten() {
+            scanned += 1;
+            if scanned > 20_000 {
+                break;
+            }
+            let path = e.path();
+            if path.is_dir() {
+                let name = e.file_name().to_string_lossy().to_string();
+                if matches!(name.as_str(), "target" | ".git" | "node_modules" | ".devin") {
+                    continue;
+                }
+                stack.push(path);
+                continue;
+            }
+            let name = path.to_string_lossy().to_string();
+            if !name.ends_with(".html") {
+                continue;
+            }
+            let is_deck = ["carousel", "_viewer", "_master", "deck_"]
+                .iter()
+                .any(|p| name.contains(p));
+            if !is_deck {
+                continue;
+            }
+            if let Ok(meta) = e.metadata() {
+                if let Ok(mt) = meta.modified() {
+                    hits.push((mt, name));
+                }
+            }
+        }
+    }
+    hits.sort_by(|a, b| b.0.cmp(&a.0));
+    hits.truncate(limit);
+    let now = std::time::SystemTime::now();
+    hits.into_iter()
+        .map(|(t, name)| (name, relative_time(&t, &now)))
+        .collect()
+}
+
+fn relative_time(t: &std::time::SystemTime, now: &std::time::SystemTime) -> String {
+    let secs = now.duration_since(*t).map(|d| d.as_secs()).unwrap_or(0);
+    if secs < 60 {
+        format!("{}s ago", secs)
+    } else if secs < 3600 {
+        format!("{}m ago", secs / 60)
+    } else if secs < 86400 {
+        format!("{}h ago", secs / 3600)
+    } else {
+        format!("{}d ago", secs / 86400)
+    }
+}
+
+/// Print the session-start dashboard: tool identity, recent decks, and
+/// validator health on the newest deck. Token-minimal for ambient context.
+fn session_start_dashboard() -> Result<(), Box<dyn std::error::Error>> {
+    let bin_path = std::env::current_exe()
+        .map(|p| {
+            let s = p.display().to_string();
+            if let Ok(home) = std::env::var("HOME") {
+                s.replace(&home, "~")
+            } else {
+                s
+            }
+        })
+        .unwrap_or_else(|_| "slideforge".to_string());
+    println!("bin: {}", bin_path);
+    println!("description: Generate social media carousel slides with AI-grade design systems");
+    println!();
+
+    let decks = recent_carousels(5);
+    if decks.is_empty() {
+        // AXI §5: definitive empty state.
+        println!("decks: 0 carousel HTML files found in this directory");
+    } else {
+        println!("decks[{}]{{file,updated}}:", decks.len());
+        for (file, rel) in &decks {
+            println!("  {},{}", file, rel);
+        }
+        // AXI §4: derived status — validator health on the newest deck that is
+        // an actual carousel (viewer/master pages are iframe wrappers, not
+        // validatable decks). Bounded: only pay the validation cost for decks
+        // recent enough to matter (skip stale ones).
+        if let Some((file, _)) = decks.iter().find(|(f, _)| is_carousel_deck(f)) {
+            let recent_enough = fs::metadata(file)
+                .and_then(|m| m.modified())
+                .map(|t| t.elapsed().map(|d| d.as_secs() < 7 * 86400).unwrap_or(false))
+                .unwrap_or(true);
+            if recent_enough {
+                if let Ok(html) = fs::read_to_string(file) {
+                    let report = validate::validate_design(&html);
+                    let status = if report.error_count == 0 { "pass" } else { "FAIL" };
+                    println!(
+                        "health: {} ({} slides, {}E/{}W)",
+                        status, report.slide_count, report.error_count, report.warning_count
+                    );
+                }
+            } else {
+                println!("health: n/a (newest deck older than 7 days)");
+            }
+        }
+    }
+    println!();
+    println!("help[4]:");
+    println!("  Run `slideforge list-slides` to see all slide types");
+    println!("  Run `slideforge slide-types-for-context \"<context>\"` to pick types for a brief");
+    println!("  Run `slideforge generate-slide <type> --primary-color <hex>` to create a slide");
+    println!("  Run `slideforge mcp` to start the MCP server");
+    Ok(())
+}
+
 #[derive(Subcommand)]
 enum Commands {
     /// Download Chromium to ~/.slideforge/chromium/ for offline/CI installs
@@ -303,6 +601,14 @@ enum Commands {
         #[arg(long, default_value = "/tmp/slideforge-preview.png")]
         output: String,
     },
+    /// Install the SessionStart hook so agents get a SlideForge dashboard at session start (AXI §7)
+    SessionSetup {
+        /// Agent harness: claude-code (default) or codex
+        #[arg(long, default_value = "claude-code")]
+        agent: String,
+    },
+    /// Print the session-start dashboard (recent decks + validator health) — the SessionStart hook target
+    SessionStart,
     /// Load the design guide and skill documentation
     SkillGuide,
     /// Run an exhaustive full-scope test generating 24 carousels covering all archetypes, themes, and slide types
@@ -782,6 +1088,8 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
                 }
             }
         }
+        Some(Commands::SessionSetup { agent }) => session_setup(agent)?,
+        Some(Commands::SessionStart) => session_start_dashboard()?,
         Some(Commands::SkillGuide) => {
             let content = include_str!("../DESIGN-GUIDE.md");
             println!("{}", content);
@@ -1916,5 +2224,63 @@ mod tests {
         assert!(one_edit_apart("accent", "accint"), "single substitution");
         assert!(!one_edit_apart("accent", "primary"), "unrelated keys");
         assert!(!one_edit_apart("accent", "verydifferentkey"), "far apart");
+    }
+
+    #[test]
+    fn test_merge_session_hook_claude_code() {
+        // Fresh install: adds the SessionStart hook under `hooks`.
+        let (merged, changed) = merge_session_hook(serde_json::json!({}), "slideforge", "claude-code");
+        assert!(changed, "fresh install must report a change");
+        let cmd = merged["hooks"]["SessionStart"][0]["hooks"][0]["command"]
+            .as_str()
+            .unwrap();
+        assert_eq!(cmd, "'slideforge' session-start");
+        // Idempotent: identical command is a silent no-op.
+        let (merged2, changed2) = merge_session_hook(merged, "slideforge", "claude-code");
+        assert!(!changed2, "same command must be a no-op");
+        assert_eq!(
+            merged2["hooks"]["SessionStart"][0]["hooks"][0]["command"].as_str().unwrap(),
+            "'slideforge' session-start"
+        );
+        // Path repair: a stale absolute path is replaced with the current cmd.
+        let stale = serde_json::json!({
+            "hooks": {
+                "SessionStart": [
+                    { "hooks": [{ "type": "command", "command": "/old/path/slideforge session-start" }] }
+                ]
+            }
+        });
+        let (merged3, changed3) = merge_session_hook(stale, "slideforge", "claude-code");
+        assert!(changed3, "stale path must be repaired");
+        assert_eq!(
+            merged3["hooks"]["SessionStart"][0]["hooks"][0]["command"].as_str().unwrap(),
+            "'slideforge' session-start"
+        );
+        // Existing unrelated settings are preserved.
+        let with_extra = serde_json::json!({"permissions": {"allow": ["Bash"]}});
+        let (merged4, _) = merge_session_hook(with_extra, "slideforge", "claude-code");
+        assert_eq!(merged4["permissions"]["allow"][0].as_str().unwrap(), "Bash");
+    }
+
+    #[test]
+    fn test_merge_session_hook_codex() {
+        let (merged, changed) = merge_session_hook(serde_json::json!({}), "slideforge", "codex");
+        assert!(changed);
+        assert_eq!(
+            merged["SessionStart"][0]["command"].as_str().unwrap(),
+            "'slideforge' session-start"
+        );
+        let (_, changed2) = merge_session_hook(merged, "slideforge", "codex");
+        assert!(!changed2, "codex idempotency");
+    }
+
+    #[test]
+    fn test_relative_time() {
+        let now = std::time::SystemTime::now();
+        let secs = std::time::Duration::from_secs;
+        assert_eq!(relative_time(&(now - secs(30)), &now), "30s ago");
+        assert_eq!(relative_time(&(now - secs(5 * 60)), &now), "5m ago");
+        assert_eq!(relative_time(&(now - secs(3 * 3600)), &now), "3h ago");
+        assert_eq!(relative_time(&(now - secs(2 * 86400)), &now), "2d ago");
     }
 }

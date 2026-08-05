@@ -1426,6 +1426,22 @@ mod tests {
     }
 
     #[test]
+    #[test]
+    fn test_truncate_chars_is_utf8_safe() {
+        // Multi-byte glyphs (em-dash) must never panic byte-slicing; display
+        // truncation must stay on char boundaries.
+        let s = "Vitality Protocol — 12 Weeks — Plan";
+        let t = truncate_chars(s, 20);
+        assert!(t.chars().count() <= 20, "truncated to 20 chars");
+        assert!(s.starts_with(&t), "truncation preserves the prefix");
+        assert_eq!(truncate_chars("short", 10), "short");
+        assert_eq!(truncate_chars("abcdef", 3), "abc");
+        // The exact master-viewer string that previously panicked at
+        // validate.rs:3233 (byte index 20 inside the em-dash).
+        let emdash = "Vitality Protocol — 12 Weeks";
+        assert_eq!(truncate_chars(emdash, 20).chars().count(), 20);
+    }
+
     fn test_validate_design_flags_113px_quote_overflow() {
         // The harness quote (40 chars at the display tier) renders at 113px in a
         // narrow column and overflows by ~400px. The shared overflow model must
@@ -1820,6 +1836,13 @@ fn style_value<'a>(style: &'a str, property: &str) -> Option<&'a str> {
             None
         }
     })
+}
+
+/// Truncate a string to `n` characters on a UTF-8 char boundary. Byte slicing
+/// a multi-byte string (e.g. em-dashes in slide copy) panics — this is the
+/// char-safe replacement for `&s[..n]` in issue display text.
+fn truncate_chars(s: &str, n: usize) -> String {
+    s.chars().take(n).collect::<String>()
 }
 
 fn first_hex_color(value: &str) -> Option<String> {
@@ -3192,7 +3215,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
 
             if is_text_bypass {
                 let display_text = if plain_text.len() > 20 {
-                    format!("{}...", &plain_text[..20])
+                    format!("{}...", truncate_chars(&plain_text, 20))
                 } else {
                     plain_text.clone()
                 };
@@ -3209,7 +3232,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
             if let Some(ratio) = inline_contrast(style_str) {
                 if ratio < 4.5 {
                     let display_text = if plain_text.len() > 20 {
-                        format!("{}...", &plain_text[..20])
+                        format!("{}...", truncate_chars(&plain_text, 20))
                     } else {
                         plain_text.clone()
                     };
@@ -3230,7 +3253,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                 && !has_recent_backing_container(slide_html, element_start)
             {
                 let display_text = if plain_text.len() > 20 {
-                    format!("{}...", &plain_text[..20])
+                    format!("{}...", truncate_chars(&plain_text, 20))
                 } else {
                     plain_text.clone()
                 };
