@@ -33,14 +33,14 @@
    }
   },
   {
-   "type": "section_divider",
+   "type": "hero",
    "variant": "chapter",
    "theme": "technical",
    "bg": "dark",
    "params": {
-    "kicker": "THE PROBLEM",
-    "title": "Reps lose 40% of pipeline to missed follow-ups",
-    "subtitle": "Every un-answered email is revenue quietly evaporating."
+    "headline": "Reps lose 40% of pipeline to missed follow-ups",
+    "subheadline": "Every un-answered email is revenue quietly evaporating.",
+    "badge": "THE PROBLEM"
    }
   },
   {

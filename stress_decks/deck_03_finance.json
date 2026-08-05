@@ -1,441 +1,441 @@
 {
-  "id": "finance",
-  "name": "Compound \u2014 Money That Works",
-  "deck_caption": "Financial literacy arc: concept \u2192 evidence \u2192 allocation \u2192 discipline \u2192 start",
-  "primary": "#B45309",
-  "style": "classic",
-  "preset": "monochrome",
-  "typology": "data",
-  "color_scheme": "triadic",
-  "theme": "editorial",
-  "archetype": "data_analyst",
-  "brand": "Compound",
-  "topic": "Indexing, patience, 7%",
-  "url": "https://compound.fin/start",
-  "hashtags": [
-    "Investing",
-    "FIRE",
-    "Index"
-  ],
-  "aspect_ratio": "4:5",
-  "progress": "line",
-  "slides": [
-    {
-      "type": "hero",
-      "variant": "left-aligned",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "headline": "Time in the market beats timing the market",
-        "subheadline": "A plain-language case for boring, compounding money",
-        "badge": "The 7% Rule",
-        "tagline": "Read time: 4 minutes"
-      }
-    },
-    {
-      "type": "definition",
-      "variant": "highlighted",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "term": "Compound interest",
-        "definition": "Interest earned on interest \u2014 the eighth wonder of the world, per legend.",
-        "phonetic": "/k\u0259m\u02c8pa\u028and \u02c8\u026antr\u0259st/",
-        "context": "The longer money stays invested, the more the curve bends upward.",
-        "example": "$500/mo at 7% for 30 years \u2248 $590K \u2014 $410K of it pure compounding."
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "line",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "The long curve",
-        "chart_type": "line",
-        "description": "A $10K lump sum at a 7% real return grows past $100K in 35 years.",
-        "data": [
-          {
-            "label": "Yr5",
-            "value": 14
-          },
-          {
-            "label": "Yr10",
-            "value": 20
-          },
-          {
-            "label": "Yr15",
-            "value": 28
-          },
-          {
-            "label": "Yr20",
-            "value": 39
-          },
-          {
-            "label": "Yr25",
-            "value": 54
-          },
-          {
-            "label": "Yr30",
-            "value": 76
-          },
-          {
-            "label": "Yr35",
-            "value": 107
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "area",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Contributions vs growth",
-        "chart_type": "area",
-        "description": "After year 20, market growth out-earns your own contributions every single year.",
-        "data": [
-          {
-            "label": "Yr5",
-            "value": 30
-          },
-          {
-            "label": "Yr10",
-            "value": 60
-          },
-          {
-            "label": "Yr15",
-            "value": 90
-          },
-          {
-            "label": "Yr20",
-            "value": 120
-          },
-          {
-            "label": "Yr25",
-            "value": 150
-          },
-          {
-            "label": "Yr30",
-            "value": 180
-          }
-        ]
-      }
-    },
-    {
-      "type": "scatter_plot",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Risk vs expected return",
-        "data": [
-          {
-            "x": 2,
-            "y": 4
-          },
-          {
-            "x": 4,
-            "y": 6
-          },
-          {
-            "x": 5,
-            "y": 7
-          },
-          {
-            "x": 7,
-            "y": 9
-          },
-          {
-            "x": 9,
-            "y": 11
-          },
-          {
-            "x": 12,
-            "y": 14
-          }
-        ],
-        "x_label": "Volatility",
-        "y_label": "Expected return"
-      }
-    },
-    {
-      "type": "radar_chart",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "The balanced portfolio",
-        "description": "A 60/40 mix scores well on the four dimensions that matter to most savers.",
-        "data": [
-          {
-            "axis": "Growth",
-            "value": 80
-          },
-          {
-            "axis": "Safety",
-            "value": 85
-          },
-          {
-            "axis": "Liquidity",
-            "value": 70
-          },
-          {
-            "axis": "Simplicity",
-            "value": 90
-          },
-          {
-            "axis": "Cost",
-            "value": 95
-          }
-        ]
-      }
-    },
-    {
-      "type": "funnel_chart",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Where savings leak",
-        "description": "Of every $100 of income, only $12 survives the journey to invested capital.",
-        "steps": [
-          {
-            "label": "Income",
-            "value": 100
-          },
-          {
-            "label": "After tax",
-            "value": 72
-          },
-          {
-            "label": "After spend",
-            "value": 31
-          },
-          {
-            "label": "Actually invested",
-            "value": 12
-          }
-        ]
-      }
-    },
-    {
-      "type": "comparison_bars",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Index vs active, after fees",
-        "description": "Over 20 years, a low-cost index beat the average active fund by a wide margin.",
-        "comparison": {
-          "entity_a": "Index fund",
-          "value_a": 62,
-          "entity_b": "Avg active fund",
-          "value_b": 38,
-          "metric": "% of decades that beat the market"
-        }
-      }
-    },
-    {
-      "type": "table",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "A boring allocation",
-        "headers": [
-          "Asset",
-          "Target",
-          "Role"
-        ],
-        "rows": [
-          [
-            "Global equity index",
-            "60%",
-            "Growth engine"
-          ],
-          [
-            "Bond index",
-            "30%",
-            "Cushion"
-          ],
-          [
-            "Cash / T-bills",
-            "10%",
-            "Opportunity"
-          ],
-          [
-            "Total",
-            "100%",
-            "Set & rebalance"
-          ]
-        ]
-      }
-    },
-    {
-      "type": "gauge",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Current inflation drag",
-        "value": 3,
-        "label": "% \u2014 your cash loses this much yearly"
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "donut",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Where your dollar goes",
-        "chart_type": "donut",
-        "description": "Housing dominates; investing is the quiet 12% that does the heavy lifting later.",
-        "data": [
-          {
-            "label": "Housing",
-            "value": 33
-          },
-          {
-            "label": "Food",
-            "value": 14
-          },
-          {
-            "label": "Transport",
-            "value": 12
-          },
-          {
-            "label": "Taxes",
-            "value": 15
-          },
-          {
-            "label": "Invested",
-            "value": 12
-          },
-          {
-            "label": "Everything else",
-            "value": 14
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "horizontal-bar",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Returns by decade, S&P 500",
-        "chart_type": "horizontal-bar",
-        "description": "Even the 'lost' decades recovered \u2014 the reason to never sell on the way down.",
-        "data": [
-          {
-            "label": "1950s",
-            "value": 19
-          },
-          {
-            "label": "1960s",
-            "value": 8
-          },
-          {
-            "label": "1970s",
-            "value": 6
-          },
-          {
-            "label": "1980s",
-            "value": 17
-          },
-          {
-            "label": "1990s",
-            "value": 18
-          },
-          {
-            "label": "2000s",
-            "value": -1
-          },
-          {
-            "label": "2010s",
-            "value": 13
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "scatter",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Every point compounds",
-        "chart_type": "scatter",
-        "description": "Same 7% return, 20 different savers \u2014 starting month is the only variable.",
-        "data": [
-          {
-            "x": 1,
-            "y": 12
-          },
-          {
-            "x": 3,
-            "y": 35
-          },
-          {
-            "x": 5,
-            "y": 62
-          },
-          {
-            "x": 7,
-            "y": 92
-          },
-          {
-            "x": 10,
-            "y": 148
-          },
-          {
-            "x": 14,
-            "y": 230
-          }
-        ],
-        "x_label": "Years",
-        "y_label": "$K"
-      }
-    },
-    {
-      "type": "big_statement",
-      "variant": "stat",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "heading": "The rule is simple",
-        "stat_value": "7%",
-        "stat_label": "average real return \u2014 kept, not timed",
-        "cta_text": "Start with $50"
-      }
-    },
-    {
-      "type": "section_divider",
-      "variant": "statement",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "kicker": "YOUR MOVE",
-        "title": "Boring is the strategy.",
-        "subtitle": "Set the allocation, automate the deposit, ignore the noise."
-      }
-    },
-    {
-      "type": "qr_destination",
-      "variant": "compact",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "destination_url": "https://compound.fin/start",
-        "cta_text": "Open an account",
-        "heading": "The 7% rule, automated",
-        "caption": "5 minutes to set up",
-        "short_url": "compound.fin"
-      }
+ "id": "finance",
+ "name": "Compound — Money That Works",
+ "deck_caption": "Financial literacy arc: concept → evidence → allocation → discipline → start",
+ "primary": "#B45309",
+ "style": "classic",
+ "preset": "monochrome",
+ "typology": "data",
+ "color_scheme": "triadic",
+ "theme": "editorial",
+ "archetype": "data_analyst",
+ "brand": "Compound",
+ "topic": "Indexing, patience, 7%",
+ "url": "https://compound.fin/start",
+ "hashtags": [
+  "Investing",
+  "FIRE",
+  "Index"
+ ],
+ "aspect_ratio": "4:5",
+ "progress": "line",
+ "slides": [
+  {
+   "type": "hero",
+   "variant": "centered",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "headline": "Time in the market beats timing the market",
+    "subheadline": "A plain-language case for boring, compounding money",
+    "badge": "The 7% Rule",
+    "tagline": "Read time: 4 minutes"
+   }
+  },
+  {
+   "type": "definition",
+   "variant": "highlighted",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "term": "Compound interest",
+    "definition": "Interest earned on interest — the eighth wonder of the world, per legend.",
+    "phonetic": "/kəmˈpaʊnd ˈɪntrəst/",
+    "context": "The longer money stays invested, the more the curve bends upward.",
+    "example": "$500/mo at 7% for 30 years ≈ $590K — $410K of it pure compounding."
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "line",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "The long curve",
+    "chart_type": "line",
+    "description": "A $10K lump sum at a 7% real return grows past $100K in 35 years.",
+    "data": [
+     {
+      "label": "Yr5",
+      "value": 14
+     },
+     {
+      "label": "Yr10",
+      "value": 20
+     },
+     {
+      "label": "Yr15",
+      "value": 28
+     },
+     {
+      "label": "Yr20",
+      "value": 39
+     },
+     {
+      "label": "Yr25",
+      "value": 54
+     },
+     {
+      "label": "Yr30",
+      "value": 76
+     },
+     {
+      "label": "Yr35",
+      "value": 107
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "area",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Contributions vs growth",
+    "chart_type": "area",
+    "description": "After year 20, market growth out-earns your own contributions every single year.",
+    "data": [
+     {
+      "label": "Yr5",
+      "value": 30
+     },
+     {
+      "label": "Yr10",
+      "value": 60
+     },
+     {
+      "label": "Yr15",
+      "value": 90
+     },
+     {
+      "label": "Yr20",
+      "value": 120
+     },
+     {
+      "label": "Yr25",
+      "value": 150
+     },
+     {
+      "label": "Yr30",
+      "value": 180
+     }
+    ]
+   }
+  },
+  {
+   "type": "scatter_plot",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Risk vs expected return",
+    "data": [
+     {
+      "x": 2,
+      "y": 4
+     },
+     {
+      "x": 4,
+      "y": 6
+     },
+     {
+      "x": 5,
+      "y": 7
+     },
+     {
+      "x": 7,
+      "y": 9
+     },
+     {
+      "x": 9,
+      "y": 11
+     },
+     {
+      "x": 12,
+      "y": 14
+     }
+    ],
+    "x_label": "Volatility",
+    "y_label": "Expected return"
+   }
+  },
+  {
+   "type": "radar_chart",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "The balanced portfolio",
+    "description": "A 60/40 mix scores well on the four dimensions that matter to most savers.",
+    "data": [
+     {
+      "axis": "Growth",
+      "value": 80
+     },
+     {
+      "axis": "Safety",
+      "value": 85
+     },
+     {
+      "axis": "Liquidity",
+      "value": 70
+     },
+     {
+      "axis": "Simplicity",
+      "value": 90
+     },
+     {
+      "axis": "Cost",
+      "value": 95
+     }
+    ]
+   }
+  },
+  {
+   "type": "funnel_chart",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Where savings leak",
+    "description": "Of every $100 of income, only $12 survives the journey to invested capital.",
+    "steps": [
+     {
+      "label": "Income",
+      "value": 100
+     },
+     {
+      "label": "After tax",
+      "value": 72
+     },
+     {
+      "label": "After spend",
+      "value": 31
+     },
+     {
+      "label": "Actually invested",
+      "value": 12
+     }
+    ]
+   }
+  },
+  {
+   "type": "comparison_bars",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Index vs active, after fees",
+    "description": "Over 20 years, a low-cost index beat the average active fund by a wide margin.",
+    "comparison": {
+     "entity_a": "Index fund",
+     "value_a": 62,
+     "entity_b": "Avg active fund",
+     "value_b": 38,
+     "metric": "% of decades that beat the market"
     }
-  ]
+   }
+  },
+  {
+   "type": "table",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "A boring allocation",
+    "headers": [
+     "Asset",
+     "Target",
+     "Role"
+    ],
+    "rows": [
+     [
+      "Global equity index",
+      "60%",
+      "Growth engine"
+     ],
+     [
+      "Bond index",
+      "30%",
+      "Cushion"
+     ],
+     [
+      "Cash / T-bills",
+      "10%",
+      "Opportunity"
+     ],
+     [
+      "Total",
+      "100%",
+      "Set & rebalance"
+     ]
+    ]
+   }
+  },
+  {
+   "type": "gauge",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Current inflation drag",
+    "value": 3,
+    "label": "% — your cash loses this much yearly"
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "donut",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Where your dollar goes",
+    "chart_type": "donut",
+    "description": "Housing dominates; investing is the quiet 12% that does the heavy lifting later.",
+    "data": [
+     {
+      "label": "Housing",
+      "value": 33
+     },
+     {
+      "label": "Food",
+      "value": 14
+     },
+     {
+      "label": "Transport",
+      "value": 12
+     },
+     {
+      "label": "Taxes",
+      "value": 15
+     },
+     {
+      "label": "Invested",
+      "value": 12
+     },
+     {
+      "label": "Everything else",
+      "value": 14
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "horizontal-bar",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Returns by decade, S&P 500",
+    "chart_type": "horizontal-bar",
+    "description": "Even the 'lost' decades recovered — the reason to never sell on the way down.",
+    "data": [
+     {
+      "label": "1950s",
+      "value": 19
+     },
+     {
+      "label": "1960s",
+      "value": 8
+     },
+     {
+      "label": "1970s",
+      "value": 6
+     },
+     {
+      "label": "1980s",
+      "value": 17
+     },
+     {
+      "label": "1990s",
+      "value": 18
+     },
+     {
+      "label": "2000s",
+      "value": -1
+     },
+     {
+      "label": "2010s",
+      "value": 13
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "scatter",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Every point compounds",
+    "chart_type": "scatter",
+    "description": "Same 7% return, 20 different savers — starting month is the only variable.",
+    "data": [
+     {
+      "x": 1,
+      "y": 12
+     },
+     {
+      "x": 3,
+      "y": 35
+     },
+     {
+      "x": 5,
+      "y": 62
+     },
+     {
+      "x": 7,
+      "y": 92
+     },
+     {
+      "x": 10,
+      "y": 148
+     },
+     {
+      "x": 14,
+      "y": 230
+     }
+    ],
+    "x_label": "Years",
+    "y_label": "$K"
+   }
+  },
+  {
+   "type": "big_statement",
+   "variant": "stat",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "heading": "The rule is simple",
+    "stat_value": "7%",
+    "stat_label": "average real return — kept, not timed",
+    "cta_text": "Start with $50"
+   }
+  },
+  {
+   "type": "hero",
+   "variant": "chapter",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "headline": "Boring is the strategy.",
+    "subheadline": "Set the allocation, automate the deposit, ignore the noise.",
+    "badge": "YOUR MOVE"
+   }
+  },
+  {
+   "type": "qr_destination",
+   "variant": "compact",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "destination_url": "https://compound.fin/start",
+    "cta_text": "Open an account",
+    "heading": "The 7% rule, automated",
+    "caption": "5 minutes to set up",
+    "short_url": "compound.fin"
+   }
+  }
+ ]
 }

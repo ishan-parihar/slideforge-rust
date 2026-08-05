@@ -256,13 +256,12 @@ def main():
     # Full active-type inventory for the coverage report (type -> variants).
     # Variant lists mirror src/slide_registry.rs exactly.
     INVENTORY = {
-        "hero": ["centered", "left-aligned", "split", "dark", "gradient"],
+        "hero": ["centered", "split", "chapter"],
         "quote": ["centered", "card", "large-quote", "with-avatar", "minimal"],
         "timeline": ["horizontal", "vertical", "numbered", "arrow-chain"],
         "split_features": ["two-column", "three-column", "icon-grid", "minimal"],
         "definition": ["card", "inline", "highlighted", "minimal"],
         "text_block": ["left", "centered", "narrow", "wide"],
-        "section_divider": ["chapter", "minimal", "statement"],
         "problem_solution": ["split", "proof-grid"],
         "myth_fact": ["debunk"],
         "case_study_result": ["summary", "results-grid"],

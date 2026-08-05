@@ -33,14 +33,14 @@
    }
   },
   {
-   "type": "section_divider",
+   "type": "hero",
    "variant": "chapter",
    "theme": "playful",
    "bg": "dark",
    "params": {
-    "kicker": "THE METHOD",
-    "title": "Learn by shipping, not by watching",
-    "subtitle": "Every week ends with something you can show someone."
+    "headline": "Learn by shipping, not by watching",
+    "subheadline": "Every week ends with something you can show someone.",
+    "badge": "THE METHOD"
    }
   },
   {

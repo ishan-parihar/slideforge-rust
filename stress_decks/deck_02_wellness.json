@@ -1,275 +1,275 @@
 {
-  "id": "wellness",
-  "name": "Vitality Protocol \u2014 12 Weeks",
-  "deck_caption": "Health coach arc: myth-bust \u2192 science \u2192 protocol \u2192 progress \u2192 enroll",
-  "primary": "#2F855A",
-  "style": "warm",
-  "preset": "neutral",
-  "typology": "nature",
-  "color_scheme": "analogous",
-  "theme": "warm",
-  "archetype": "educator",
-  "brand": "Vitality",
-  "topic": "Sleep, fuel, strength, calm",
-  "url": "https://vitality.protocol/join",
-  "hashtags": [
-    "Wellness",
-    "Sleep",
-    "Habits"
-  ],
-  "aspect_ratio": "3:4",
-  "progress": "dots",
-  "slides": [
-    {
-      "type": "hero",
-      "variant": "split",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "headline": "You don't need more willpower",
-        "subheadline": "You need a protocol your body can actually follow",
-        "badge": "12-Week Program",
-        "background_image": "https://picsum.photos/seed/vitality-hero/520/650",
-        "tagline": "Sleep \u00b7 Fuel \u00b7 Strength \u00b7 Calm"
-      }
-    },
-    {
-      "type": "myth_fact",
-      "variant": "debunk",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "myth": "More cardio is the fastest route to fat loss.",
-        "fact": "Recovery drives adaptation. Sleep and rest are when your body actually changes.",
-        "explanation": "In our cohort, members who prioritized sleep lost 2.3x more body fat than the cardio-only group."
-      }
-    },
-    {
-      "type": "definition",
-      "variant": "card",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "term": "Cortisol",
-        "definition": "The stress hormone that, chronically elevated, blocks fat loss and disrupts sleep.",
-        "phonetic": "/\u02c8k\u0254\u02d0rt\u026as\u0252l/",
-        "context": "Spiking it with dawn cardio while sleep-deprived is the fastest way to stall progress.",
-        "example": "Replace the 5am sprint with a 10-minute walk until your sleep debt clears."
-      }
-    },
-    {
-      "type": "definition",
-      "variant": "inline",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "term": "Zone 2",
-        "definition": "Easy-effort cardio (conversation pace) that builds aerobic base without frying recovery.",
-        "phonetic": "/zo\u028an tu\u02d0/",
-        "context": "80% of your cardio volume should live here.",
-        "example": "Brisk walk, easy spin, or incline hike at a 3/10 effort."
-      }
-    },
-    {
-      "type": "process_map",
-      "variant": "numbered",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "The daily protocol",
-        "steps": [
-          {
-            "label": "Wake",
-            "description": "10 min sunlight, no phone"
-          },
-          {
-            "label": "Fuel",
-            "description": "Protein-forward breakfast"
-          },
-          {
-            "label": "Move",
-            "description": "Zone 2 or strength session"
-          },
-          {
-            "label": "Wind",
-            "description": "Screen cutoff 90 min before bed"
-          },
-          {
-            "label": "Sleep",
-            "description": "Same bedtime, 7.5+ hours"
-          }
-        ]
-      }
-    },
-    {
-      "type": "before_after_story",
-      "variant": "metric",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "The 12-week shift",
-        "before": "Waking exhausted, 2 cups of coffee by 9am, cardio-only training",
-        "after": "Deep sleep nightly, 3 strength sessions, steady energy all day",
-        "metric": "41%",
-        "metric_label": "better deep-sleep score",
-        "description": "Measured change, not a vibe \u2014 the numbers moved because the habits did."
-      }
-    },
-    {
-      "type": "progress_rings",
-      "variant": "default",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "Cohort completion",
-        "description": "Members track four pillars weekly; the protocol adapts as they improve.",
-        "items": [
-          {
-            "label": "Sleep",
-            "value": 86
-          },
-          {
-            "label": "Fuel",
-            "value": 78
-          },
-          {
-            "label": "Strength",
-            "value": 72
-          },
-          {
-            "label": "Calm",
-            "value": 81
-          }
-        ]
-      }
-    },
-    {
-      "type": "gauge",
-      "variant": "default",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "Average sleep score",
-        "value": 84,
-        "label": "out of 100 by week 12"
-      }
-    },
-    {
-      "type": "quote",
-      "variant": "large-quote",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "quote": "I stopped chasing a six-pack and started chasing a 7.5-hour night. Everything else followed.",
-        "author": "Priya",
-        "role": "Vitality member, week 9"
-      }
-    },
-    {
-      "type": "image_caption",
-      "variant": "image-top",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "image_url": "https://picsum.photos/seed/vitality-food/800/500",
-        "caption": "The fuel plate",
-        "description": "Protein, fiber and color at every meal \u2014 no counting required beyond a palm-and-fist template."
-      }
-    },
-    {
-      "type": "image_gallery",
-      "variant": "2-grid",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "Life inside the protocol",
-        "section_caption": "Morning walks, kitchen prep, and honest rest \u2014 the habits that stick.",
-        "images": [
-          {
-            "url": "https://picsum.photos/seed/vitality-walk/400"
-          },
-          {
-            "url": "https://picsum.photos/seed/vitality-meal/400"
-          }
-        ]
-      }
-    },
-    {
-      "type": "image_comparison",
-      "variant": "line",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "before_image": "https://picsum.photos/seed/vitality-before/400/300",
-        "after_image": "https://picsum.photos/seed/vitality-after/400/300",
-        "before_label": "Week 0",
-        "after_label": "Week 12",
-        "description": "Same person, different protocol. No extremes \u2014 just consistency and recovery."
-      }
-    },
-    {
-      "type": "timeline",
-      "variant": "vertical",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "What changes each month",
-        "steps": [
-          {
-            "label": "Month 1",
-            "description": "Stabilize sleep and morning light"
-          },
-          {
-            "label": "Month 2",
-            "description": "Build strength habit, 3x weekly"
-          },
-          {
-            "label": "Month 3",
-            "description": "Dial nutrition and taper cardio"
-          },
-          {
-            "label": "Maintain",
-            "description": "Off-ramp plan that keeps it all"
-          }
-        ]
-      }
-    },
-    {
-      "type": "text_block",
-      "variant": "narrow",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "title": "No extremes",
-        "body": "No 6-meal days, no dawn sprints, no shame. The protocol is built on the smallest change you can keep forever \u2014 then layered, week by week.",
-        "eyebrow": "PHILOSOPHY",
-        "meta": "Cohort starts first Monday of each month"
-      }
-    },
-    {
-      "type": "comment_cta",
-      "variant": "default",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "heading": "Which pillar breaks first for you?",
-        "sub_heading": "Sleep, food, movement or stress \u2014 comment below.",
-        "cta_text": "Comment SLEEP and I'll DM you the starter checklist.",
-        "keyword": "SLEEP"
-      }
-    },
-    {
-      "type": "qr_destination",
-      "variant": "theme-bg",
-      "theme": "warm",
-      "bg": "dark",
-      "params": {
-        "destination_url": "https://vitality.protocol/join",
-        "cta_text": "Join the next cohort",
-        "heading": "12 weeks, one protocol, real change",
-        "caption": "Limited to 30 spots per cohort",
-        "short_url": "vitality.run"
-      }
-    }
-  ]
+ "id": "wellness",
+ "name": "Vitality Protocol — 12 Weeks",
+ "deck_caption": "Health coach arc: myth-bust → science → protocol → progress → enroll",
+ "primary": "#2F855A",
+ "style": "warm",
+ "preset": "neutral",
+ "typology": "nature",
+ "color_scheme": "analogous",
+ "theme": "warm",
+ "archetype": "educator",
+ "brand": "Vitality",
+ "topic": "Sleep, fuel, strength, calm",
+ "url": "https://vitality.protocol/join",
+ "hashtags": [
+  "Wellness",
+  "Sleep",
+  "Habits"
+ ],
+ "aspect_ratio": "3:4",
+ "progress": "dots",
+ "slides": [
+  {
+   "type": "hero",
+   "variant": "split",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "headline": "You don't need more willpower",
+    "subheadline": "You need a protocol your body can actually follow",
+    "badge": "12-Week Program",
+    "background_image": "https://picsum.photos/seed/vitality-hero/520/650",
+    "tagline": "Sleep · Fuel · Strength · Calm"
+   }
+  },
+  {
+   "type": "myth_fact",
+   "variant": "debunk",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "myth": "More cardio is the fastest route to fat loss.",
+    "fact": "Recovery drives adaptation. Sleep and rest are when your body actually changes.",
+    "explanation": "In our cohort, members who prioritized sleep lost 2.3x more body fat than the cardio-only group."
+   }
+  },
+  {
+   "type": "definition",
+   "variant": "card",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "term": "Cortisol",
+    "definition": "The stress hormone that, chronically elevated, blocks fat loss and disrupts sleep.",
+    "phonetic": "/ˈkɔːrtɪsɒl/",
+    "context": "Spiking it with dawn cardio while sleep-deprived is the fastest way to stall progress.",
+    "example": "Replace the 5am sprint with a 10-minute walk until your sleep debt clears."
+   }
+  },
+  {
+   "type": "definition",
+   "variant": "inline",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "term": "Zone 2",
+    "definition": "Easy-effort cardio (conversation pace) that builds aerobic base without frying recovery.",
+    "phonetic": "/zoʊn tuː/",
+    "context": "80% of your cardio volume should live here.",
+    "example": "Brisk walk, easy spin, or incline hike at a 3/10 effort."
+   }
+  },
+  {
+   "type": "process_map",
+   "variant": "numbered",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "The daily protocol",
+    "steps": [
+     {
+      "label": "Wake",
+      "description": "10 min sunlight, no phone"
+     },
+     {
+      "label": "Fuel",
+      "description": "Protein-forward breakfast"
+     },
+     {
+      "label": "Move",
+      "description": "Zone 2 or strength session"
+     },
+     {
+      "label": "Wind",
+      "description": "Screen cutoff 90 min before bed"
+     },
+     {
+      "label": "Sleep",
+      "description": "Same bedtime, 7.5+ hours"
+     }
+    ]
+   }
+  },
+  {
+   "type": "before_after_story",
+   "variant": "metric",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "The 12-week shift",
+    "before": "Waking exhausted, 2 cups of coffee by 9am, cardio-only training",
+    "after": "Deep sleep nightly, 3 strength sessions, steady energy all day",
+    "metric": "41%",
+    "metric_label": "better deep-sleep score",
+    "description": "Measured change, not a vibe — the numbers moved because the habits did."
+   }
+  },
+  {
+   "type": "progress_rings",
+   "variant": "default",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "Cohort completion",
+    "description": "Members track four pillars weekly; the protocol adapts as they improve.",
+    "items": [
+     {
+      "label": "Sleep",
+      "value": 86
+     },
+     {
+      "label": "Fuel",
+      "value": 78
+     },
+     {
+      "label": "Strength",
+      "value": 72
+     },
+     {
+      "label": "Calm",
+      "value": 81
+     }
+    ]
+   }
+  },
+  {
+   "type": "gauge",
+   "variant": "default",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "Average sleep score",
+    "value": 84,
+    "label": "out of 100 by week 12"
+   }
+  },
+  {
+   "type": "quote",
+   "variant": "large-quote",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "quote": "I stopped chasing a six-pack and started chasing a 7.5-hour night. Everything else followed.",
+    "author": "Priya",
+    "role": "Vitality member, week 9"
+   }
+  },
+  {
+   "type": "image_caption",
+   "variant": "image-top",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "image_url": "https://picsum.photos/seed/vitality-food/800/500",
+    "caption": "The fuel plate",
+    "description": "Protein, fiber and color at every meal — no counting required beyond a palm-and-fist template."
+   }
+  },
+  {
+   "type": "image_gallery",
+   "variant": "2-grid",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "Life inside the protocol",
+    "section_caption": "Morning walks, kitchen prep, and honest rest — the habits that stick.",
+    "images": [
+     {
+      "url": "https://picsum.photos/seed/vitality-walk/400"
+     },
+     {
+      "url": "https://picsum.photos/seed/vitality-meal/400"
+     }
+    ]
+   }
+  },
+  {
+   "type": "image_comparison",
+   "variant": "line",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "before_image": "https://picsum.photos/seed/vitality-before/400/300",
+    "after_image": "https://picsum.photos/seed/vitality-after/400/300",
+    "before_label": "Week 0",
+    "after_label": "Week 12",
+    "description": "Same person, different protocol. No extremes — just consistency and recovery."
+   }
+  },
+  {
+   "type": "timeline",
+   "variant": "vertical",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "What changes each month",
+    "steps": [
+     {
+      "label": "Month 1",
+      "description": "Stabilize sleep and morning light"
+     },
+     {
+      "label": "Month 2",
+      "description": "Build strength habit, 3x weekly"
+     },
+     {
+      "label": "Month 3",
+      "description": "Dial nutrition and taper cardio"
+     },
+     {
+      "label": "Maintain",
+      "description": "Off-ramp plan that keeps it all"
+     }
+    ]
+   }
+  },
+  {
+   "type": "text_block",
+   "variant": "narrow",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "title": "No extremes",
+    "body": "No 6-meal days, no dawn sprints, no shame. The protocol is built on the smallest change you can keep forever — then layered, week by week.",
+    "eyebrow": "PHILOSOPHY",
+    "meta": "Cohort starts first Monday of each month"
+   }
+  },
+  {
+   "type": "comment_cta",
+   "variant": "default",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "heading": "Which pillar breaks first for you?",
+    "sub_heading": "Sleep, food, movement or stress — comment below.",
+    "cta_text": "Comment SLEEP and I'll DM you the starter checklist.",
+    "keyword": "SLEEP"
+   }
+  },
+  {
+   "type": "qr_destination",
+   "variant": "theme-bg",
+   "theme": "warm",
+   "bg": "dark",
+   "params": {
+    "destination_url": "https://vitality.protocol/join",
+    "cta_text": "Join the next cohort",
+    "heading": "12 weeks, one protocol, real change",
+    "caption": "Limited to 30 spots per cohort",
+    "short_url": "vitality.run"
+   }
+  }
+ ]
 }

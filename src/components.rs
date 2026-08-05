@@ -2901,46 +2901,6 @@ fn metric_sparkline_slide(
 // JSON through chart_slide for backwards compatibility.
 
 
-pub fn section_divider_slide(
-    tokens: &DesignTokens,
-    title: &str,
-    subtitle: &str,
-    kicker: &str,
-    bg_style: &str,
-    theme: &str,
-    background_image: &str,
-    image_opacity: f32,
-) -> Value {
-    let colors = get_slide_colors(tokens, bg_style, theme);
-    let content = format!(
-        r#"<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;">
-            <div style="font-family:{};font-size:12px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">{}</div>
-            <h1 style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.02;margin:0;max-width:320px;">{}</h1>
-            <div style="width:76px;height:4px;background:{};border-radius:{};margin:var(--space-3) 0;"></div>
-            <p style="font-family:{};font-size:15px;color:{};line-height:1.45;margin:0;max-width:300px;">{}</p>
-        </div>"#,
-        tokens.body_font,
-        colors.primary,
-        escape_html(kicker),
-        tokens.heading_font,
-        tokens
-            .type_scale
-            .get("display")
-            .map(|t| t.font_size)
-            .unwrap_or(40),
-        colors.text_primary,
-        escape_html(title),
-        colors.primary,
-        current_component_radius(tokens, "chip"),
-        tokens.body_font,
-        colors.text_secondary,
-        escape_html(subtitle)
-    );
-    let html = slide_base(&content, tokens, bg_style, true, "16px 52px", "center");
-    let html = inject_background_image(html, background_image, image_opacity, colors.is_dark);
-    json!({"html": html, "background": bg_style, "variant": "section_divider", "theme": theme})
-}
-
 pub fn problem_solution_slide(
     tokens: &DesignTokens,
     title: &str,
@@ -4671,7 +4631,7 @@ pub fn dispatch_slide(
             &s("badge"),
             bg_style,
             b("decorations", true),
-            &s("variant").if_empty("left-aligned"),
+            &s("variant").if_empty("centered"),
             theme,
             &bg_img,
             img_opacity,
@@ -5061,16 +5021,26 @@ pub fn dispatch_slide(
                 img_opacity,
             ))
         }
-        "section_divider" => Ok(section_divider_slide(
-            tokens,
-            &s("title").if_empty(&s("headline")),
-            &s("subtitle").if_empty(&s("subheadline")),
-            &s("kicker").if_empty(&s("label")),
-            bg_style,
-            theme,
-            &bg_img,
-            img_opacity,
-        )),
+        "section_divider" => {
+            // section_divider REMOVED (2026-08): redundant with hero (chapter
+            // variant), which renders the same kicker + accent bar + title +
+            // subtitle layout. Redirect legacy callers to hero chapter.
+            Ok(hero_slide(
+                tokens,
+                &s("title").if_empty(&s("headline")),
+                &s("subtitle").if_empty(&s("subheadline")),
+                &s("kicker").if_empty(&s("label")),
+                bg_style,
+                true,
+                "chapter",
+                theme,
+                &bg_img,
+                img_opacity,
+                "",
+                "",
+                "",
+            ))
+        }
         "problem_solution" => {
             let proof_points = p
                 .get("proof_points")

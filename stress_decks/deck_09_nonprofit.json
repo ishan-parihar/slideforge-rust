@@ -22,7 +22,7 @@
  "slides": [
   {
    "type": "hero",
-   "variant": "dark",
+   "variant": "centered",
    "theme": "editorial",
    "bg": "dark",
    "params": {

@@ -7,7 +7,7 @@ pub fn get_registry() -> Value {
             "description": "Hook slide with bold headline — grabs attention at the opening",
             "required_params": ["headline"],
             "optional_params": ["subheadline", "background_color", "text_color", "badge", "cta_text", "cta_url"],
-            "variants": ["centered", "left-aligned", "split", "dark", "gradient"],
+            "variants": ["centered", "split", "chapter"],
             "default_variant": "centered",
             "layout_family": "hero",
             "best_for": ["opening", "section-intro"],
@@ -15,7 +15,7 @@ pub fn get_registry() -> Value {
                 "headline": "Ship slides in minutes, not days",
                 "subheadline": "AI-driven carousel composition",
                 "badge": "NEW",
-                "variant": "gradient"
+                "variant": "chapter"
             }
         },
         "feature": {
@@ -164,13 +164,13 @@ pub fn get_registry() -> Value {
             "best_for": []
         },
         "section_divider": {
-            "description": "Chapter opener or section break with kicker, title, and subtitle",
-            "required_params": ["title"],
-            "optional_params": ["subtitle", "kicker", "background_image", "image_opacity", "variant"],
-            "variants": ["chapter", "minimal", "statement"],
-            "default_variant": "chapter",
-            "layout_family": "hero",
-            "best_for": ["opening", "section-intro", "chapter-break"]
+            "description": "REMOVED (2026-08): redundant with hero (chapter variant) which renders the same kicker + accent bar + title + subtitle layout. Use hero with variant=chapter instead.",
+            "required_params": [],
+            "optional_params": [],
+            "variants": [],
+            "default_variant": null,
+            "layout_family": "removed",
+            "best_for": []
         },
         "problem_solution": {
             "description": "Problem and solution pair with proof points",
