@@ -149,9 +149,16 @@ pub fn render_carousel_html(spec: &CarouselSpec) -> String {
     let scale_factor = target_w as f32 / base_w as f32;
     let sf = format!("{:.6}", scale_factor);
 
-    // IG frame overhead at base scale (header ~56px + footer ~90px = ~146px, rounded to 150)
-    // This prevents clipping of the IG header and footer elements below the viewport
-    let ig_overhead: u32 = if spec.include_ig_frame { 150 } else { 0 };
+    // IG frame overhead at base scale. Measured from rendered chrome:
+    //   ig-header (avatar 32 + padding 24 + border 1 ≈ 57px)
+    //   ig-dots   (padding 8×2 + dot 6 ≈ 22px)
+    //   ig-actions (padding 8×2 + icon 22 ≈ 38px)
+    //   ig-caption (padding 14 + text ≈ 49px)
+    // Total ≈ 166px. We reserve 175 so the IG footer NEVER overflows the
+    // canvas bottom — an undersized overhead produced a clipped/empty band
+    // below the slide (the "blur box") on 1:1 decks where the square slide
+    // leaves a large chrome region underneath.
+    let ig_overhead: u32 = if spec.include_ig_frame { 175 } else { 0 };
     let total_base_height = base_h + ig_overhead;
     let total_target_height = (total_base_height as f32 * scale_factor).round() as u32;
 

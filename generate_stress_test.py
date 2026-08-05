@@ -122,8 +122,12 @@ def build_master_viewer(deck_results):
         types_used = ", ".join(dr["used"])
         m = _re.search(r'id="sf-canvas"[^>]*width:(\d+)px;height:(\d+)px', dr["carousel_html"])
         cw, ch = (int(m.group(1)), int(m.group(2))) if m else (1080, 1736)
+        # Pre-seed the CSS aspect var so the preview iframe is sized to the
+        # deck's ACTUAL canvas ratio before the zoom JS runs (the .carousel-frame
+        # CSS otherwise defaults to --ar:1.6, flashing a wrong-height box).
+        deck_ar = (ch / cw) if cw else 1.6
         cards.append(f"""
-<div class="deck" id="deck-{i}" data-cw="{cw}" data-ch="{ch}">
+<div class="deck" id="deck-{i}" data-cw="{cw}" data-ch="{ch}" style="--ar: {deck_ar:.4f}">
   <div class="deck-head">
     <div class="deck-index">{i+1:02d}</div>
     <div class="deck-title">
