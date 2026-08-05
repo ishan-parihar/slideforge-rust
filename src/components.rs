@@ -38,6 +38,10 @@ pub struct ImageTreatment {
     pub image_position: String,
     pub image_frame: String,
     pub image_overlay: String,
+    /// Which vertical zone the overlaid text occupies ("top" | "center" |
+    /// "bottom"). The scrim gradient's dark end anchors to this zone so white
+    /// text stays legible on bright/high-key images. Defaults to "bottom".
+    pub overlay_anchor: String,
     pub image_mix_blend: String,
     pub image_mask: String,
     pub image_animation: String,
@@ -52,6 +56,7 @@ impl Default for ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "none".to_string(),
@@ -68,6 +73,7 @@ impl ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "none".to_string(),
@@ -81,6 +87,7 @@ impl ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -94,6 +101,7 @@ impl ImageTreatment {
             image_position: "center".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "none".to_string(),
@@ -107,6 +115,7 @@ impl ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "subtle-zoom".to_string(),
@@ -120,6 +129,7 @@ impl ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "none".to_string(),
             image_animation: "ken-burns".to_string(),
@@ -133,6 +143,7 @@ impl ImageTreatment {
             image_position: "full-bleed".to_string(),
             image_frame: "sharp".to_string(),
             image_overlay: "none".to_string(),
+            overlay_anchor: "bottom".to_string(),
             image_mix_blend: "normal".to_string(),
             image_mask: "fade-bottom".to_string(),
             image_animation: "fade-in".to_string(),
@@ -356,13 +367,23 @@ pub fn render_themed_image(
         frame_css = "border-radius: 0;".to_string();
     }
 
-    // Overlay mapping
+    // Overlay mapping — position-aware scrim: the dark end of the gradient
+    // always sits under the text zone (top/center/bottom), anchored by
+    // `treatment.overlay_anchor`. Minimum darkening inside the text band is
+    // ~0.45 so bright/high-key photos never wash out white text; the rest of
+    // the frame stays light to preserve the photo. Previously the gradient was
+    // fixed bottom-heavy (0.15 top), so top/center text floated over the
+    // weakest scrim zone.
     let mut overlay_html = String::new();
     match treatment.image_overlay.as_str() {
         "none" => {}
         _ => {
             if is_dark {
-                overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.68));z-index:2;"></div>"#.to_string();
+                overlay_html = match treatment.overlay_anchor.as_str() {
+                    "top" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.12));z-index:2;"></div>"#.to_string(),
+                    "center" => r#"<div style="position:absolute;inset:0;background:radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.20) 72%, rgba(0,0,0,0.10));z-index:2;"></div>"#.to_string(),
+                    _ => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.30) 55%, rgba(0,0,0,0.72));z-index:2;"></div>"#.to_string(),
+                };
             } else {
                 overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.55));z-index:2;"></div>"#.to_string();
             }
@@ -5583,6 +5604,14 @@ pub fn image_headline_slide(
     treatment.image_frame = "sharp".to_string();
     treatment.image_mask = "none".to_string();
     treatment.image_overlay = "gradient".to_string();
+    // Anchor the scrim under the text zone: top/center/bottom text placement
+    // each get a gradient whose dark end tracks them (bright-image safety).
+    treatment.overlay_anchor = match overlay_position {
+        "top" => "top",
+        "center" => "center",
+        _ => "bottom",
+    }
+    .to_string();
 
     let img_html = render_themed_image(
         image_url, tokens, &treatment, "100%", "100%", headline, true,
@@ -5605,12 +5634,14 @@ pub fn image_headline_slide(
         _ => "60px 28px calc(96px + var(--chrome-footer-h, 40px))",
     };
 
+    // Layered text-shadow stack: crisp 1px edge hold + mid offset + soft halo
+    // keeps glyphs readable even where the scrim is deliberately light.
     let headline_style = format!(
-        "font-family:{};font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 2px 10px rgba(0,0,0,0.7);",
+        "font-family:{};font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 6px rgba(0,0,0,0.55),0 4px 18px rgba(0,0,0,0.45);",
         tokens.heading_font
     );
     let sub_style = format!(
-        "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 2px 8px rgba(0,0,0,0.6);",
+        "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 1px 2px rgba(0,0,0,0.8),0 2px 8px rgba(0,0,0,0.5);",
         tokens.body_font
     );
 
@@ -5666,6 +5697,9 @@ pub fn image_quote_slide(
     treatment.image_frame = "sharp".to_string();
     treatment.image_mask = "none".to_string();
     treatment.image_overlay = "gradient".to_string();
+    // Centered multi-line quote -> center-weighted scrim (radial), so bright
+    // image regions behind and between quote lines stay darkened.
+    treatment.overlay_anchor = "center".to_string();
 
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
@@ -5676,8 +5710,8 @@ pub fn image_quote_slide(
         r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
-                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 2px 8px rgba(0,0,0,0.75);">“</div>
-                <p style="font-family:{};font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,0.85);">{}</p>
+                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
+                <p style="font-family:{};font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
                 {}
                 {}
             </div>
@@ -5686,12 +5720,12 @@ pub fn image_quote_slide(
         tokens.heading_font,
         escape_html(quote),
         if !author.is_empty() {
-            format!(r#"<p style="font-family:{};font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 2px 8px rgba(0,0,0,0.75);">{}</p>"#, tokens.body_font, escape_html(author))
+            format!(r#"<p style="font-family:{};font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 6px rgba(0,0,0,0.5);">{}</p>"#, tokens.body_font, escape_html(author))
         } else {
             String::new()
         },
         if !role.is_empty() {
-            format!(r#"<p style="font-family:{};font-size:11px;color:rgba(255,255,255,0.95);margin:4px 0 0;text-shadow:0 2px 6px rgba(0,0,0,0.65);">{}</p>"#, tokens.body_font, escape_html(role))
+            format!(r#"<p style="font-family:{};font-size:11px;color:rgba(255,255,255,0.95);margin:4px 0 0;text-shadow:0 1px 2px rgba(0,0,0,0.8),0 2px 6px rgba(0,0,0,0.45);">{}</p>"#, tokens.body_font, escape_html(role))
         } else {
             String::new()
         }
@@ -6964,6 +6998,73 @@ mod tests {
             mark_color.trim_end_matches('"').len() >= 15,
             "mark color must be a full hex (no alpha suffix), got: {}",
             mark_color
+        );
+    }
+
+    #[test]
+    fn test_image_headline_scrim_tracks_text_position() {
+        // The overlay scrim must be position-aware so bright images never wash
+        // out white text: top -> top-heavy gradient, center -> radial scrim,
+        // bottom -> bottom-heavy gradient (with a raised mid-scrim).
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let url = "https://example.com/photo.jpg";
+        for (pos, expect_frag) in [
+            ("top", "linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.12))"),
+            ("center", "radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.20) 72%, rgba(0,0,0,0.10))"),
+            ("bottom", "linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.30) 55%, rgba(0,0,0,0.72))"),
+        ] {
+            let res = image_headline_slide(
+                &tokens, url, "Built for carousels", "Sub line", pos, "dark", "", 0.0,
+                "editorial", "", "",
+            );
+            let html = res["html"].as_str().unwrap();
+            assert!(
+                html.contains(expect_frag),
+                "{}: expected position-aware scrim {}",
+                pos,
+                expect_frag
+            );
+            // Layered text-shadow on the headline (crisp edge + halo).
+            assert!(
+                html.contains("0 1px 2px rgba(0,0,0,0.85),0 2px 6px"),
+                "{}: headline must use layered text-shadow",
+                pos
+            );
+        }
+    }
+
+    #[test]
+    fn test_image_quote_center_scrim_and_shadows() {
+        // Centered multi-line quote -> center-weighted radial scrim + layered
+        // shadows on the quote and attribution.
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let res = image_quote_slide(
+            &tokens,
+            "https://example.com/photo.jpg",
+            "Composition is a constraint problem.",
+            "System",
+            "Design",
+            "dark",
+            "",
+            0.0,
+            "editorial",
+            "",
+            "",
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(
+            html.contains("radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55)"),
+            "image_quote must use center-weighted radial scrim"
+        );
+        assert!(
+            html.contains("0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px"),
+            "quote text must use layered text-shadow"
         );
     }
 
