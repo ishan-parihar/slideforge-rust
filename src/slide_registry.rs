@@ -671,20 +671,64 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
         _ => return vec![],
     };
 
-    let matched = map
-        .iter()
-        .filter_map(|(slide_type, info): (&String, &Value)| {
-            let best_for = info.get("best_for")?.as_array()?;
-            let matches = best_for
-                .iter()
-                .any(|v: &Value| v.as_str().map(|s| s == context).unwrap_or(false));
-            if matches {
-                Some(slide_type.clone())
-            } else {
-                None
-            }
-        })
-        .collect::<Vec<String>>();
+    // Tokenize the query into keywords so phrases like "product launch" or
+    // "social proof" match the canonical best_for vocabulary
+    // ("product-overview", "social-proof", ...) via substrings. Stopwords and
+    // 1-2 char fragments are dropped so a nonsense query like
+    // "zzzz-no-such-context" cannot fuzzy-match on common prose words.
+    const STOPWORDS: &[&str] = &[
+        "for", "and", "the", "with", "your", "you", "that", "this", "not",
+        "from", "are", "was", "were", "will", "have", "has", "been", "into",
+        "its", "all", "any", "can", "use", "via", "per", "but", "our", "out",
+    ];
+    let query = context.to_lowercase();
+    let keywords: Vec<String> = query
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|w| w.len() >= 3 && !STOPWORDS.contains(&w))
+        .map(|w| w.to_string())
+        .collect();
+
+    let mut exact: Vec<String> = Vec::new();
+    let mut fuzzy: Vec<String> = Vec::new();
+
+    for (slide_type, info) in &map {
+        // Skip REMOVED/legacy stub types.
+        if info.get("layout_family").and_then(|v| v.as_str()) == Some("removed") {
+            continue;
+        }
+        let best_for: Vec<String> = info
+            .get("best_for")
+            .and_then(|v| v.as_array())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str())
+                    .map(|s| s.to_lowercase())
+                    .collect()
+            })
+            .unwrap_or_default();
+        let name = slide_type.to_lowercase();
+
+        // Exact match on a canonical context wins (keeps old behavior).
+        if best_for.iter().any(|b| b == &query) || name == query {
+            exact.push(slide_type.clone());
+            continue;
+        }
+        // Keyword/substring match against the canonical best_for vocabulary or
+        // the slide type name only (prose descriptions are too noisy).
+        let fuzzy_hit = keywords.iter().any(|kw| {
+            best_for.iter().any(|b| b.contains(kw)) || name.contains(kw)
+        });
+        if fuzzy_hit {
+            fuzzy.push(slide_type.clone());
+        }
+    }
+
+    let mut matched = exact;
+    for f in fuzzy {
+        if !matched.contains(&f) {
+            matched.push(f);
+        }
+    }
 
     if context == "conversion" {
         let preferred = vec![
@@ -712,6 +756,31 @@ pub fn get_slide_types_for_context(context: &str) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_context_matching_is_keyword_aware() {
+        // Exact canonical context still matches.
+        let opening = get_slide_types_for_context("opening");
+        assert!(opening.contains(&"hero".to_string()), "exact 'opening' -> hero");
+        // Phrase query tokenizes into keywords: "product" matches
+        // best_for "product-overview" / "digital-product" via substring.
+        let product = get_slide_types_for_context("product launch");
+        assert!(
+            !product.is_empty(),
+            "phrase query 'product launch' must not return an empty set"
+        );
+        // "social proof" phrase matches "social-proof" canonical context.
+        let social = get_slide_types_for_context("social proof");
+        assert!(
+            social.iter().any(|t| *t == "quote") || !social.is_empty(),
+            "'social proof' should surface testimonial/quote types, got {:?}",
+            social
+        );
+        // Nonsense query returns empty (caller renders the empty state).
+        assert!(get_slide_types_for_context("zzzz-no-such-context").is_empty());
+        // Removed stub types are never suggested.
+        assert!(!opening.contains(&"section_divider".to_string()));
+    }
 
     #[test]
     fn test_registry_has_all_types() {

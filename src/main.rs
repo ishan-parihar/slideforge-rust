@@ -32,6 +32,9 @@ mod validate;
 #[derive(Parser)]
 #[command(name = "slideforge", version = "0.1.0")]
 #[command(about = "SlideForge CLI & MCP Server", long_about = None)]
+// AXI §6: usage errors are redirected to stdout — force plain text so ANSI
+// codes captured for stderr never leak into agent-readable piped output.
+#[command(color = clap::ColorChoice::Never)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
@@ -312,7 +315,25 @@ enum Commands {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let cli = Cli::parse();
+    // AXI §6: usage/flag errors must reach the agent on stdout (with exit 2).
+    // clap defaults these to stderr; try_parse lets us redirect them and keep
+    // --help / --version on stdout with exit 0.
+    let cli = match Cli::try_parse() {
+        Ok(c) => c,
+        Err(e) => {
+            use clap::error::ErrorKind;
+            match e.kind() {
+                ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
+                    print!("{}", e);
+                    std::process::exit(0);
+                }
+                _ => {
+                    println!("{}", e);
+                    std::process::exit(2);
+                }
+            }
+        }
+    };
 
     match &cli.command {
         // ── AXI §8 + §10: no-args home view shows live state + tool identity ──
@@ -563,9 +584,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }            Some(Commands::SlideTypesForContext { context }) => {
-            let types = slide_registry::get_slide_types_for_context(context);
-            output_toon(&serde_json::json!(types));
-        }
+                let types = slide_registry::get_slide_types_for_context(context);
+                if types.is_empty() {
+                    // AXI §5: definitive empty state — "nothing" is the answer.
+                    println!(
+                        "slide_types: 0 slide types match context '{}' (known contexts: opening, data, process, conversion, social-proof, comparison, ...)",
+                        context
+                    );
+                    println!("help[1]: Run `slideforge list-slides` to see every slide type");
+                } else {
+                    println!("count: {} slide types match context '{}'", types.len(), context);
+                    output_toon(&serde_json::json!(types));
+                }
+            }
         Some(Commands::GenerateSlide {
             slide_type,
             primary_color,
@@ -1118,7 +1149,8 @@ fn cli_generate_slide(
             },
             "hint": format!("Run 'slideforge slide-info {}' to see required params.", slide_type),
         });
-        eprintln!("{}", serde_json::to_string_pretty(&response)?);
+        // AXI §6: structured errors go to stdout (exit 1) so agents see them.
+        println!("{}", serde_json::to_string_pretty(&response)?);
         std::process::exit(1);
     }
 
@@ -1158,7 +1190,8 @@ fn cli_generate_slide(
             },
             "hint": "The rendered slide overflows the 420x525 slide body. The component already auto-scaled to its fitted minimum, so retrying with the same copy will fail identically — shorten the copy (or use a slide type better suited to the content length).",
         });
-        eprintln!("{}", serde_json::to_string_pretty(&response)?);
+        // AXI §6: structured errors go to stdout (exit 1) so agents see them.
+        println!("{}", serde_json::to_string_pretty(&response)?);
         std::process::exit(1);
     }
 
