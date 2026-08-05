@@ -1,237 +1,337 @@
 {
-  "id": "elearning",
-  "name": "CodeCraft Academy — Learn Python in 8 Weeks",
-  "deck_caption": "E-learning arc: promise → syllabus → method → outcomes → enroll",
-  "primary": "#EC4899",
-  "style": "rounded",
-  "preset": "expressive",
-  "typology": "playful",
-  "color_scheme": "neutral",
-  "theme": "playful",
-  "archetype": "educator",
-  "brand": "CodeCraft",
-  "topic": "Your first 8 weeks of Python",
-  "url": "https://codecraft.academy/python",
-  "hashtags": ["LearnToCode", "Python", "Career"],
-  "aspect_ratio": "4:5",
-  "progress": "chips",
-  "slides": [
-    {
-      "type": "hero",
-      "variant": "chapter",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "headline": "Code in 8 weeks. No prior experience.",
-        "subheadline": "A guided path from your first print() to a portfolio project",
-        "badge": "Week 1 of 8",
-        "tagline": "Learn Python with CodeCraft"
-      }
-    },
-    {
-      "type": "section_divider",
-      "variant": "chapter",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "kicker": "THE METHOD",
-        "title": "Learn by shipping, not by watching",
-        "subtitle": "Every week ends with something you can show someone."
-      }
-    },
-    {
-      "type": "text_block",
-      "variant": "left",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Why this course exists",
-        "body": "Most Python courses dump syntax at you and call it teaching. We flip it: you build one small real thing per week — a quiz, a budget tracker, a tiny web scraper — and the syntax shows up exactly when you need it.",
-        "eyebrow": "THE SHORT VERSION"
-      }
-    },
-    {
-      "type": "text_block",
-      "variant": "centered",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Cohorts over cramming",
-        "body": "You're never alone. Every cohort has a live weekly call, a private channel, and a mentor who reviews your code within 24 hours.",
-        "eyebrow": "COMMUNITY"
-      }
-    },
-    {
-      "type": "text_block",
-      "variant": "narrow",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "The 20-minute rule",
-        "body": "New concept? You watch a 3-minute explainer, then practice for 20 minutes in a real editor. If you're stuck longer than 20 minutes, you ping the cohort.",
-        "eyebrow": "HOW IT WORKS"
-      }
-    },
-    {
-      "type": "text_block",
-      "variant": "wide",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "What you'll build",
-        "body": "Week 1: a greeting script. Week 2: a quiz game. Week 3: a budget tracker. Week 4: a weather CLI. Week 5: data analysis on real CSV. Week 6: a web scraper. Week 7: an API. Week 8: your portfolio project, deployed.",
-        "eyebrow": "THE BUILD LIST"
-      }
-    },
-    {
-      "type": "definition",
-      "variant": "minimal",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "term": "Idiomatic Python",
-        "definition": "Code that follows the community's conventions — readable, Pythonic, and easy to maintain.",
-        "phonetic": "/ˌɪdiəˈmætɪk ˈpaɪθən/",
-        "context": "What mentors are always pushing you toward in reviews.",
-        "example": "Using list comprehensions instead of clunky loops."
-      }
-    },
-    {
-      "type": "timeline",
-      "variant": "numbered",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Your 8-week path",
-        "steps": [
-          {"label": "1-2", "description": "Syntax & your first script"},
-          {"label": "3-4", "description": "Data structures & files"},
-          {"label": "5-6", "description": "Real-world data & scraping"},
-          {"label": "7-8", "description": "APIs, deployment & portfolio"}
-        ]
-      }
-    },
-    {
-      "type": "process_map",
-      "variant": "numbered",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Your weekly loop",
-        "steps": [
-          {"label": "Watch", "description": "3-min explainer"},
-          {"label": "Practice", "description": "20-min exercise"},
-          {"label": "Build", "description": "Weekly mini-project"},
-          {"label": "Review", "description": "Mentor feedback"},
-          {"label": "Ship", "description": "Show the cohort"}
-        ]
-      }
-    },
-    {
-      "type": "faq",
-      "variant": "stack",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Before you enroll",
-        "questions": [
-          {"q": "Do I need any math background?", "a": "No. If you can add two numbers, you have enough math for this course."},
-          {"q": "How much time per week?", "a": "4-6 hours: one live call, three practice blocks, and the weekly build."},
-          {"q": "What if I fall behind?", "a": "Lifetime access plus cohort catch-up weeks — you never miss the path."},
-          {"q": "Do I get a certificate?", "a": "Yes, with your deployed portfolio project as the real proof."}
-        ]
-      }
-    },
-    {
-      "type": "pricing_plan",
-      "variant": "offer-stack",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Choose your cohort",
-        "plans": [
-          {"name": "Self-paced", "price": "$149", "features": ["Full syllabus", "Forum access", "No deadline"]},
-          {"name": "Guided", "price": "$349", "features": ["Everything + live calls", "Mentor reviews", "Portfolio review"], "featured": true},
-          {"name": "Career", "price": "$699", "features": ["Everything + 1:1 mentor", "Resume & mock interview", "Job search support"]}
-        ]
-      }
-    },
-    {
-      "type": "testimonial_avatar",
-      "variant": "centered",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "quote": "I went from 'what is a variable?' to a deployed weather app in eight weeks. The builds made it stick.",
-        "author": "Diego R.",
-        "role": "Guided cohort, 2026",
-        "avatar_url": "https://picsum.photos/seed/diego/120/120"
-      }
-    },
-    {
-      "type": "metric_grid",
-      "variant": "default",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Cohort outcomes",
-        "metrics": [
-          {"value": "91%", "label": "Finish the course"},
-          {"value": "8", "label": "Projects shipped"},
-          {"value": "24h", "label": "Mentor response"},
-          {"value": "1", "label": "Deployed portfolio"}
-        ]
-      }
-    },
-    {
-      "type": "progress_rings",
-      "variant": "default",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Where your time goes",
-        "description": "Practice beats watching — and the numbers prove it.",
-        "items": [
-          {"label": "Practice", "value": 55},
-          {"label": "Build", "value": 30},
-          {"label": "Watch", "value": 15}
-        ]
-      }
-    },
-    {
-      "type": "logo_cloud",
-      "variant": "strip",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "title": "Graduates now work at",
-        "logos": ["CloudBase", "DataDrive", "FinTechCo", "AIWorks", "WebShop", "LaunchPad"]
-      }
-    },
-    {
-      "type": "comment_cta",
-      "variant": "default",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "heading": "What's the #1 thing blocking you from learning to code?",
-        "sub_heading": "Time, fear, or 'where do I even start?' — comment below.",
-        "cta_text": "Comment START and I'll DM you the Week 1 syllabus.",
-        "keyword": "START"
-      }
-    },
-    {
-      "type": "qr_destination",
-      "variant": "minimal",
-      "theme": "playful",
-      "bg": "dark",
-      "params": {
-        "destination_url": "https://codecraft.academy/python",
-        "cta_text": "Enroll now",
-        "heading": "8 weeks to your first shipped project",
-        "caption": "Next cohort starts Monday",
-        "short_url": "cc.academy/py"
-      }
-    }
-  ]
+ "id": "elearning",
+ "name": "CodeCraft Academy — Learn Python in 8 Weeks",
+ "deck_caption": "E-learning arc: promise → syllabus → method → outcomes → enroll",
+ "primary": "#EC4899",
+ "style": "rounded",
+ "preset": "expressive",
+ "typology": "playful",
+ "color_scheme": "neutral",
+ "theme": "playful",
+ "archetype": "educator",
+ "brand": "CodeCraft",
+ "topic": "Your first 8 weeks of Python",
+ "url": "https://codecraft.academy/python",
+ "hashtags": [
+  "LearnToCode",
+  "Python",
+  "Career"
+ ],
+ "aspect_ratio": "4:5",
+ "progress": "chips",
+ "slides": [
+  {
+   "type": "hero",
+   "variant": "chapter",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "headline": "Code in 8 weeks. No prior experience.",
+    "subheadline": "A guided path from your first print() to a portfolio project",
+    "badge": "Week 1 of 8",
+    "tagline": "Learn Python with CodeCraft"
+   }
+  },
+  {
+   "type": "section_divider",
+   "variant": "chapter",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "kicker": "THE METHOD",
+    "title": "Learn by shipping, not by watching",
+    "subtitle": "Every week ends with something you can show someone."
+   }
+  },
+  {
+   "type": "text_block",
+   "variant": "left",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Why this course exists",
+    "body": "Most Python courses dump syntax at you and call it teaching. We flip it: you build one small real thing per week — a quiz, a budget tracker, a tiny web scraper — and the syntax shows up exactly when you need it.",
+    "eyebrow": "THE SHORT VERSION"
+   }
+  },
+  {
+   "type": "text_block",
+   "variant": "centered",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Cohorts over cramming",
+    "body": "You're never alone. Every cohort has a live weekly call, a private channel, and a mentor who reviews your code within 24 hours.",
+    "eyebrow": "COMMUNITY"
+   }
+  },
+  {
+   "type": "text_block",
+   "variant": "narrow",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "The 20-minute rule",
+    "body": "New concept? You watch a 3-minute explainer, then practice for 20 minutes in a real editor. If you're stuck longer than 20 minutes, you ping the cohort.",
+    "eyebrow": "HOW IT WORKS"
+   }
+  },
+  {
+   "type": "text_block",
+   "variant": "wide",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "What you'll build",
+    "body": "Week 1: a greeting script. Week 2: a quiz game. Week 3: a budget tracker. Week 4: a weather CLI. Week 5: data analysis on real CSV. Week 6: a web scraper. Week 7: an API. Week 8: your portfolio project, deployed.",
+    "eyebrow": "THE BUILD LIST"
+   }
+  },
+  {
+   "type": "definition",
+   "variant": "minimal",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "term": "Idiomatic Python",
+    "definition": "Code that follows the community's conventions — readable, Pythonic, and easy to maintain.",
+    "phonetic": "/ˌɪdiəˈmætɪk ˈpaɪθən/",
+    "context": "What mentors are always pushing you toward in reviews.",
+    "example": "Using list comprehensions instead of clunky loops."
+   }
+  },
+  {
+   "type": "timeline",
+   "variant": "numbered",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Your 8-week path",
+    "steps": [
+     {
+      "label": "1-2",
+      "description": "Syntax & your first script"
+     },
+     {
+      "label": "3-4",
+      "description": "Data structures & files"
+     },
+     {
+      "label": "5-6",
+      "description": "Real-world data & scraping"
+     },
+     {
+      "label": "7-8",
+      "description": "APIs, deployment & portfolio"
+     }
+    ]
+   }
+  },
+  {
+   "type": "process_map",
+   "variant": "numbered",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Your weekly loop",
+    "steps": [
+     {
+      "label": "Watch",
+      "description": "3-min explainer"
+     },
+     {
+      "label": "Practice",
+      "description": "20-min exercise"
+     },
+     {
+      "label": "Build",
+      "description": "Weekly mini-project"
+     },
+     {
+      "label": "Review",
+      "description": "Mentor feedback"
+     },
+     {
+      "label": "Ship",
+      "description": "Show the cohort"
+     }
+    ]
+   }
+  },
+  {
+   "type": "faq",
+   "variant": "stack",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Before you enroll",
+    "questions": [
+     {
+      "q": "Do I need any math background?",
+      "a": "No. If you can add two numbers, you have enough math for this course."
+     },
+     {
+      "q": "How much time per week?",
+      "a": "4-6 hours: one live call, three practice blocks, and the weekly build."
+     },
+     {
+      "q": "What if I fall behind?",
+      "a": "Lifetime access plus cohort catch-up weeks — you never miss the path."
+     },
+     {
+      "q": "Do I get a certificate?",
+      "a": "Yes, with your deployed portfolio project as the real proof."
+     }
+    ]
+   }
+  },
+  {
+   "type": "pricing_plan",
+   "variant": "offer-stack",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Choose your cohort",
+    "plans": [
+     {
+      "name": "Self-paced",
+      "price": "$149",
+      "features": [
+       "Full syllabus",
+       "Forum access",
+       "No deadline"
+      ]
+     },
+     {
+      "name": "Guided",
+      "price": "$349",
+      "features": [
+       "Everything + live calls",
+       "Mentor reviews",
+       "Portfolio review"
+      ],
+      "featured": true
+     },
+     {
+      "name": "Career",
+      "price": "$699",
+      "features": [
+       "Everything + 1:1 mentor",
+       "Resume & mock interview",
+       "Job search support"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "testimonial_avatar",
+   "variant": "centered",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "quote": "I went from 'what is a variable?' to a deployed weather app in eight weeks. The builds made it stick.",
+    "author": "Diego R.",
+    "role": "Guided cohort, 2026",
+    "avatar_url": "https://picsum.photos/seed/diego/120/120"
+   }
+  },
+  {
+   "type": "metric_grid",
+   "variant": "default",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Cohort outcomes",
+    "metrics": [
+     {
+      "value": "91%",
+      "label": "Finish the course",
+      "progress": 91
+     },
+     {
+      "value": "8",
+      "label": "Projects shipped",
+      "progress": 80
+     },
+     {
+      "value": "24h",
+      "label": "Mentor response",
+      "progress": 45
+     },
+     {
+      "value": "1",
+      "label": "Deployed portfolio",
+      "progress": 35
+     }
+    ]
+   }
+  },
+  {
+   "type": "progress_rings",
+   "variant": "default",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Where your time goes",
+    "description": "Practice beats watching — and the numbers prove it.",
+    "items": [
+     {
+      "label": "Practice",
+      "value": 55
+     },
+     {
+      "label": "Build",
+      "value": 30
+     },
+     {
+      "label": "Watch",
+      "value": 15
+     }
+    ]
+   }
+  },
+  {
+   "type": "logo_cloud",
+   "variant": "strip",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "title": "Graduates now work at",
+    "logos": [
+     "CloudBase",
+     "DataDrive",
+     "FinTechCo",
+     "AIWorks",
+     "WebShop",
+     "LaunchPad"
+    ]
+   }
+  },
+  {
+   "type": "comment_cta",
+   "variant": "default",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "heading": "What's the #1 thing blocking you from learning to code?",
+    "sub_heading": "Time, fear, or 'where do I even start?' — comment below.",
+    "cta_text": "Comment START and I'll DM you the Week 1 syllabus.",
+    "keyword": "START"
+   }
+  },
+  {
+   "type": "qr_destination",
+   "variant": "minimal",
+   "theme": "playful",
+   "bg": "dark",
+   "params": {
+    "destination_url": "https://codecraft.academy/python",
+    "cta_text": "Enroll now",
+    "heading": "8 weeks to your first shipped project",
+    "caption": "Next cohort starts Monday",
+    "short_url": "cc.academy/py"
+   }
+  }
+ ]
 }

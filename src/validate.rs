@@ -2479,7 +2479,9 @@ pub fn validate_design(html: &str) -> ValidationReport {
         // redirect target) is 3-tile by definition so it cannot overflow.
         let multi_item_indicators = [
             ("process_map", 6, "steps"),
-            ("pricing_plan", 3, "plans"),
+            // pricing_plan supports 2–4 tiles (2/4 balanced grids, 3 centered);
+            // a 5th tile cannot fit the 449px body, so it is a hard error.
+            ("pricing_plan", 4, "plans"),
         ];
 
         for (slide_type, threshold, item_name) in multi_item_indicators {

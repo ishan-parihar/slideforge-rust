@@ -2545,6 +2545,46 @@ fn metric_grid_slide(
         let lbl = item.get("label").and_then(|v| v.as_str()).unwrap_or("");
         let trend = item.get("trend").and_then(|v| v.as_str()).unwrap_or("");
 
+        // Progress-bar fill is DATA-DRIVEN per tile (never a static 75%):
+        //   1. `progress` — fraction 0..1 or percent 0..100 (number or "72%")
+        //   2. `current` + `total` — current/total as a fraction
+        //   3. numeric `value` — e.g. value "72" → 72% (keeps bars meaningful
+        //      even when the caller only supplies a number)
+        //   4. fallback 100%
+        let mut bar_pct: f64 = 100.0;
+        if let Some(p) = item
+            .get("progress")
+            .and_then(|v| v.as_f64())
+            .or_else(|| {
+                item.get("progress").and_then(|v| v.as_str()).and_then(|s| {
+                    s.trim().trim_end_matches('%').parse::<f64>().ok()
+                })
+            })
+        {
+            bar_pct = if p <= 1.0 { p * 100.0 } else { p };
+        } else if let (Some(c), Some(t)) = (
+            item.get("current")
+                .and_then(|v| v.as_f64())
+                .or_else(|| item.get("current").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok())),
+            item.get("total")
+                .and_then(|v| v.as_f64())
+                .or_else(|| item.get("total").and_then(|v| v.as_str()).and_then(|s| s.trim().parse::<f64>().ok())),
+        ) {
+            if t > 0.0 {
+                bar_pct = c / t * 100.0;
+            }
+        } else if let Some(n) = val
+            .chars()
+            .filter(|c| c.is_ascii_digit() || *c == '.')
+            .collect::<String>()
+            .parse::<f64>()
+            .ok()
+        {
+            bar_pct = n.min(100.0);
+        }
+        let bar_pct = bar_pct.clamp(0.0, 100.0);
+        let bar_pct_int = bar_pct.round() as u32;
+
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
             format!(r#"<span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:auto;">{}</span>"#, trend_color, trend_color, escape_html(trend))
@@ -2558,16 +2598,20 @@ fn metric_grid_slide(
                     <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;">{}</span>
                     {}
                 </div>
-                <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
+                <div style="display:flex;align-items:baseline;justify-content:space-between;width:100%;gap:6px;">
+                    <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
+                    <span style="font-family:{};font-size:9.5px;font-weight:800;color:{};letter-spacing:0.04em;">{}%</span>
+                </div>
                 <div style="width:100%;height:3px;background:{}20;border-radius:999px;margin-top:2px;overflow:hidden;">
-                    <div style="width:75%;height:100%;background:{};border-radius:999px;"></div>
+                    <div style="width:{}%;height:100%;background:{};border-radius:999px;"></div>
                 </div>
             </div>"#,
             card_bg, card_border, radius,
             tokens.body_font, colors.text_secondary, escape_html(lbl),
             trend_badge,
             tokens.heading_font, colors.primary, escape_html(val),
-            colors.primary, colors.primary
+            tokens.body_font, colors.text_secondary, bar_pct_int,
+            colors.primary, bar_pct_int, colors.primary
         )
     }).collect();
 
@@ -3569,20 +3613,22 @@ pub fn pricing_plan_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let radius = current_component_radius(tokens, "card");
-    let plan_count = plans.len().min(3).max(1);
+    // Supported tile counts: 1, 2, 3 or 4. 3 plans render as a 2-column grid
+    // with the 3rd tile centered below (no compositional asymmetry); 4 plans
+    // render as a balanced 2×2 grid. Configs with >4 plans are rejected by the
+    // validator gate (see validate_slide_spec pricing_plan check).
+    let plan_count = plans.len().min(4).max(1);
     
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
     
     // Calculate total content and plan count for aggressive scaling
-    let total_content_len: usize = plans.iter().take(3).map(|plan| {
+    let total_content_len: usize = plans.iter().take(plan_count).map(|plan| {
         let name = simple_text(plan, &["name", "title"]);
         let features_arr = plan.get("features").and_then(|v| v.as_array()).cloned().unwrap_or_default();
         let features_len: usize = features_arr.iter().map(|f| f.as_str().unwrap_or("").len()).sum();
         name.len() + features_len
     }).sum();
-
-    let plan_count = plans.len();
     
     // Calculate actual content requirements
     // Shared banded-chrome model: body region = composition − 36px header band
@@ -3592,14 +3638,16 @@ pub fn pricing_plan_slide(
     
     // Estimate required height: title + plans + gaps
     let title_height = 30.0; // 15px font + 15px margin
-    let plan_height_estimate = if plan_count == 3 {
+    let plan_height_estimate = if plan_count >= 4 {
+        110.0 // 2×2 grid — compact cards: 10px name + 12px price + 8px header + 8px x 3 features + 7px footer + 12px padding + 14px gap
+    } else if plan_count == 3 {
         120.0 // 12px name + 14px price + 10px header + 9px x 4 features + 8px footer + 16px padding + 20px gap
     } else if plan_count == 2 {
         140.0 // 14px name + 16px price + 12px header + 11px x 4 features + 10px footer + 20px padding + 24px gap
     } else {
         160.0 // 16px name + 18px price + 14px header + 12px x 4 features + 12px footer + 24px padding + 28px gap
     };
-    let gap_estimate = if plan_count == 3 { 12.0 } else if plan_count == 2 { 16.0 } else { 20.0 };
+    let gap_estimate = if plan_count >= 4 { 10.0 } else if plan_count == 3 { 12.0 } else if plan_count == 2 { 16.0 } else { 20.0 };
     let estimated_content_height = title_height + (plan_count as f32 * plan_height_estimate) + ((plan_count - 1) as f32 * gap_estimate);
     
     // Calculate required padding to fit within safe content height
@@ -3635,7 +3683,7 @@ pub fn pricing_plan_slide(
 
     let cards: Vec<String> = plans
         .iter()
-        .take(3)
+        .take(plan_count)
         .enumerate()
         .map(|(idx, plan)| {
             let name = simple_text(plan, &["name", "title"]);
@@ -3729,12 +3777,34 @@ pub fn pricing_plan_slide(
         })
         .collect();
 
-    let grid_cols = if plan_count == 1 { 1 } else { 2 };
-    let plan_grid = format!(
-        r#"<div style="display:grid;grid-template-columns:repeat({}, minmax(0, 1fr));gap:12px;width:100%;min-width:0;">{}</div>"#,
-        grid_cols,
-        cards.join("")
-    );
+    // Grid composition:
+    //   1 plan  → single column, one row
+    //   2 plans → two columns, one row
+    //   3 plans → two columns; the 3rd tile is CENTERED below the first pair
+    //             (grid-column 1/-1 with a half-column max-width) so the
+    //             composition stays balanced instead of leaving a left-aligned
+    //             orphan tile.
+    //   4 plans → balanced 2×2 grid.
+    let plan_grid = if plan_count == 3 {
+        format!(
+            r#"<div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;width:100%;min-width:0;">
+                {}{}
+                <div style="grid-column:1 / -1;display:flex;justify-content:center;min-width:0;">
+                    <div style="width:100%;max-width:calc(50% - 6px);min-width:0;">{}</div>
+                </div>
+            </div>"#,
+            cards[0],
+            cards[1],
+            cards[2]
+        )
+    } else {
+        let grid_cols = if plan_count == 1 { 1 } else { 2 };
+        format!(
+            r#"<div style="display:grid;grid-template-columns:repeat({}, minmax(0, 1fr));gap:12px;width:100%;min-width:0;">{}</div>"#,
+            grid_cols,
+            cards.join("")
+        )
+    };
 
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
@@ -6818,6 +6888,100 @@ mod tests {
             !html.contains("backdrop-filter:blur"),
             "myth_fact slide should not use glass container blur wrapper"
         );
+    }
+
+    #[test]
+    fn test_metric_grid_progress_bars_data_driven() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        // Tile 1 uses current/total, tile 2 uses progress fraction, tile 3 uses
+        // progress percent, tile 4 has a numeric value fallback.
+        let metrics = json!([
+            {"value": "12/50", "label": "Compiled", "current": 12, "total": 50},
+            {"value": "3/4", "label": "Adopted", "progress": 0.25},
+            {"value": "88", "label": "Speed", "progress": "88%"},
+            {"value": "47", "label": "Types"}
+        ]);
+        let res = metric_grid_slide(
+            &tokens,
+            metrics.as_array().unwrap().clone(),
+            "Pipeline",
+            "dark",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // The static 75% fill must be gone.
+        assert!(
+            !html.contains("width:75%;height:100%;background"),
+            "metric_grid must not use the old static 75% bar fill"
+        );
+        // current/total 12/50 = 24%
+        assert!(html.contains("width:24%;height:100%;background"), "expected 24% fill from current/total");
+        // progress 0.25 = 25%
+        assert!(html.contains("width:25%;height:100%;background"), "expected 25% fill from progress fraction");
+        // progress "88%" = 88%
+        assert!(html.contains("width:88%;height:100%;background"), "expected 88% fill from progress percent");
+        // numeric value 47 = 47%
+        assert!(html.contains("width:47%;height:100%;background"), "expected 47% fill from numeric value");
+    }
+
+    #[test]
+    fn test_pricing_plan_three_tiles_center_last() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let plans = json!([
+            {"name": "CLI", "price": "Free", "features": ["A", "B"]},
+            {"name": "Pro", "price": "$29/mo", "features": ["A", "B"], "featured": true},
+            {"name": "Team", "price": "$99/mo", "features": ["A", "B"]}
+        ]);
+        let res = pricing_plan_slide(
+            &tokens, "Plans", plans.as_array().unwrap().clone(), "dark", "editorial", "", 0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // The 3rd tile must be wrapped in a centered grid-span container.
+        assert!(
+            html.contains("grid-column:1 / -1") && html.contains("justify-content:center"),
+            "3-plan pricing must center the 3rd tile (found centered span wrapper)"
+        );
+    }
+
+    #[test]
+    fn test_pricing_plan_supports_two_and_four_tiles() {
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let plans2 = json!([
+            {"name": "CLI", "price": "Free", "features": ["A"]},
+            {"name": "Pro", "price": "$29/mo", "features": ["A"]}
+        ]);
+        let res2 = pricing_plan_slide(
+            &tokens, "Plans", plans2.as_array().unwrap().clone(), "dark", "editorial", "", 0.4,
+        );
+        let html2 = res2["html"].as_str().unwrap();
+        // 2 plans → plain 2-column grid, NO centered-span wrapper.
+        assert!(!html2.contains("grid-column:1 / -1"), "2-plan grid must not center-wrap");
+        assert_eq!(html2.matches("Get Started").count() + html2.matches("Upgrade Now").count(), 2);
+
+        let plans4 = json!([
+            {"name": "A", "price": "1", "features": ["a"]},
+            {"name": "B", "price": "2", "features": ["a"]},
+            {"name": "C", "price": "3", "features": ["a"]},
+            {"name": "D", "price": "4", "features": ["a"]}
+        ]);
+        let res4 = pricing_plan_slide(
+            &tokens, "Plans", plans4.as_array().unwrap().clone(), "dark", "editorial", "", 0.4,
+        );
+        let html4 = res4["html"].as_str().unwrap();
+        // 4 plans → balanced 2×2 grid, no centered-span wrapper.
+        assert!(!html4.contains("grid-column:1 / -1"), "4-plan grid must not center-wrap");
+        assert_eq!(html4.matches("Get Started").count() + html4.matches("Upgrade Now").count(), 4);
     }
 }
 

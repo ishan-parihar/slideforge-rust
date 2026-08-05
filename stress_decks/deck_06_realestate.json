@@ -1,408 +1,412 @@
 {
-  "id": "realestate",
-  "name": "Harbor Index \u2014 Q3 Market Report",
-  "deck_caption": "Real estate arc: headline \u2192 macro \u2192 districts \u2192 buy-vs-rent \u2192 act",
-  "primary": "#0E7490",
-  "style": "classic",
-  "preset": "neutral",
-  "typology": "data",
-  "color_scheme": "split_complement",
-  "theme": "editorial",
-  "archetype": "data_analyst",
-  "brand": "Harbor Index",
-  "topic": "Q3 2026 market report",
-  "url": "https://harborindex.re/report",
-  "hashtags": [
-    "RealEstate",
-    "MarketReport",
-    "Q3"
-  ],
-  "aspect_ratio": "4:5",
-  "progress": "line",
-  "slides": [
-    {
-      "type": "hero",
-      "variant": "centered",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "headline": "The Harbor Market, Quarter Three",
-        "subheadline": "Median prices rose 4.8%; the surprising value moved to the east bank",
-        "badge": "Q3 2026 Report",
-        "tagline": "Data through September 30"
-      }
-    },
-    {
-      "type": "metric_grid",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Quarter at a glance",
-        "metrics": [
-          {
-            "value": "4.8%",
-            "label": "Median price growth"
-          },
-          {
-            "value": "$612K",
-            "label": "Median sale price"
-          },
-          {
-            "value": "38",
-            "label": "Days on market"
-          },
-          {
-            "value": "-11%",
-            "label": "Inventory vs last year"
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "bar",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Median price by district",
-        "chart_type": "bar",
-        "description": "Old Town leads; East Bank is closing the gap fastest.",
-        "data": [
-          {
-            "label": "OldTown",
-            "value": 720
-          },
-          {
-            "label": "Westside",
-            "value": 640
-          },
-          {
-            "label": "Harbor",
-            "value": 585
-          },
-          {
-            "label": "EastBank",
-            "value": 512
-          },
-          {
-            "label": "Airport",
-            "value": 410
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "line",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Median price, trailing 5 years",
-        "chart_type": "line",
-        "description": "The market has compounded ~6% annually with two soft quarters in 2024.",
-        "data": [
-          {
-            "label": "2022",
-            "value": 468
-          },
-          {
-            "label": "2023",
-            "value": 495
-          },
-          {
-            "label": "2024",
-            "value": 521
-          },
-          {
-            "label": "2025",
-            "value": 584
-          },
-          {
-            "label": "2026",
-            "value": 612
-          }
-        ]
-      }
-    },
-    {
-      "type": "chart",
-      "variant": "pie",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Who's buying",
-        "chart_type": "pie",
-        "description": "First-time buyers are back \u2014 34% of Q3 purchases.",
-        "data": [
-          {
-            "label": "First-time",
-            "value": 34
-          },
-          {
-            "label": "Move-up",
-            "value": 28
-          },
-          {
-            "label": "Investors",
-            "value": 22
-          },
-          {
-            "label": "Cash buyers",
-            "value": 16
-          }
-        ]
-      }
-    },
-    {
-      "type": "funnel_chart",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "The buyer journey",
-        "description": "From tour to closing, the funnel tightened as inventory fell.",
-        "steps": [
-          {
-            "label": "Tours",
-            "value": 1000
-          },
-          {
-            "label": "Offers",
-            "value": 410
-          },
-          {
-            "label": "Accepted",
-            "value": 232
-          },
-          {
-            "label": "Closed",
-            "value": 190
-          }
-        ]
-      }
-    },
-    {
-      "type": "gauge",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Inventory health",
-        "value": 41,
-        "label": "months of supply \u2014 a strong seller's market"
-      }
-    },
-    {
-      "type": "comparison_bars",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Buy vs rent, 10-year view",
-        "description": "For a typical 2-bed, buying beats renting by year six at current spreads.",
-        "comparison": {
-          "entity_a": "Buying",
-          "value_a": 78,
-          "entity_b": "Renting",
-          "value_b": 52,
-          "metric": "$K net position after 10 years"
-        }
-      }
-    },
-    {
-      "type": "table",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "District scorecard",
-        "headers": [
-          "District",
-          "YoY",
-          "DOM"
-        ],
-        "rows": [
-          [
-            "Old Town",
-            "+6.2%",
-            "31"
-          ],
-          [
-            "Westside",
-            "+5.1%",
-            "36"
-          ],
-          [
-            "East Bank",
-            "+7.8%",
-            "33"
-          ],
-          [
-            "Airport",
-            "+2.9%",
-            "51"
-          ]
-        ]
-      }
-    },
-    {
-      "type": "scatter_plot",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "Price vs size, Q3 sales",
-        "data": [
-          {
-            "x": 700,
-            "y": 410
-          },
-          {
-            "x": 950,
-            "y": 500
-          },
-          {
-            "x": 1100,
-            "y": 560
-          },
-          {
-            "x": 1350,
-            "y": 640
-          },
-          {
-            "x": 1600,
-            "y": 720
-          },
-          {
-            "x": 1900,
-            "y": 810
-          }
-        ],
-        "x_label": "Sq ft",
-        "y_label": "Price $K"
-      }
-    },
-    {
-      "type": "radar_chart",
-      "variant": "default",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "East Bank scores",
-        "description": "The district winning on value, schools and commute \u2014 its only weak spot is nightlife.",
-        "data": [
-          {
-            "axis": "Price",
-            "value": 85
-          },
-          {
-            "axis": "Schools",
-            "value": 90
-          },
-          {
-            "axis": "Commute",
-            "value": 78
-          },
-          {
-            "axis": "Growth",
-            "value": 82
-          },
-          {
-            "axis": "Amenities",
-            "value": 65
-          }
-        ]
-      }
-    },
-    {
-      "type": "image_comparison",
-      "variant": "arrow",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "before_image": "https://picsum.photos/seed/harbor-before/400/300",
-        "after_image": "https://picsum.photos/seed/harbor-after/400/300",
-        "before_label": "2024",
-        "after_label": "2026",
-        "description": "The East Bank waterfront \u2014 same block, two years of investment."
-      }
-    },
-    {
-      "type": "image_caption",
-      "variant": "image-right",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "image_url": "https://picsum.photos/seed/harbor-water/400/300",
-        "caption": "The East Bank waterfront",
-        "description": "New transit link + riverfront park = the strongest price growth in the city."
-      }
-    },
-    {
-      "type": "before_after_story",
-      "variant": "split",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "title": "What changed in a year",
-        "before": "Median 2025: $584K, 44 days on market, buyer's leverage",
-        "after": "Median 2026: $612K, 38 days on market, multiple offers",
-        "metric": "+4.8%",
-        "metric_label": "median price, YoY",
-        "description": "Measured change, not a vibe \u2014 the numbers moved because the habits did."
-      }
-    },
-    {
-      "type": "case_study_result",
-      "variant": "results-grid",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "client": "East Bank Portfolio",
-        "challenge": "6 units stuck on market through a slow spring",
-        "solution": "Repositioned pricing + staged the waterfront view",
-        "results": [
-          {
-            "metric": "9 days",
-            "label": "To first offer"
-          },
-          {
-            "metric": "102%",
-            "label": "Of list price"
-          },
-          {
-            "metric": "6/6",
-            "label": "Sold in 30 days"
-          }
-        ],
-        "description": "One engagement, three hard numbers \u2014 the kind of proof that survives a review."
-      }
-    },
-    {
-      "type": "big_statement",
-      "variant": "stat",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "heading": "The value has moved east",
-        "stat_value": "7.8%",
-        "stat_label": "East Bank growth \u2014 the city's fastest",
-        "cta_text": "Get the full report"
-      }
-    },
-    {
-      "type": "qr_destination",
-      "variant": "poster",
-      "theme": "editorial",
-      "bg": "dark",
-      "params": {
-        "destination_url": "https://harborindex.re/report",
-        "cta_text": "Download the PDF",
-        "heading": "The full Q3 report, district by district",
-        "caption": "42 pages of data \u2014 free",
-        "short_url": "harbor.re/q3"
-      }
+ "id": "realestate",
+ "name": "Harbor Index — Q3 Market Report",
+ "deck_caption": "Real estate arc: headline → macro → districts → buy-vs-rent → act",
+ "primary": "#0E7490",
+ "style": "classic",
+ "preset": "neutral",
+ "typology": "data",
+ "color_scheme": "split_complement",
+ "theme": "editorial",
+ "archetype": "data_analyst",
+ "brand": "Harbor Index",
+ "topic": "Q3 2026 market report",
+ "url": "https://harborindex.re/report",
+ "hashtags": [
+  "RealEstate",
+  "MarketReport",
+  "Q3"
+ ],
+ "aspect_ratio": "4:5",
+ "progress": "line",
+ "slides": [
+  {
+   "type": "hero",
+   "variant": "centered",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "headline": "The Harbor Market, Quarter Three",
+    "subheadline": "Median prices rose 4.8%; the surprising value moved to the east bank",
+    "badge": "Q3 2026 Report",
+    "tagline": "Data through September 30"
+   }
+  },
+  {
+   "type": "metric_grid",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Quarter at a glance",
+    "metrics": [
+     {
+      "value": "4.8%",
+      "label": "Median price growth",
+      "progress": 48
+     },
+     {
+      "value": "$612K",
+      "label": "Median sale price",
+      "progress": 72
+     },
+     {
+      "value": "38",
+      "label": "Days on market",
+      "progress": 62
+     },
+     {
+      "value": "-11%",
+      "label": "Inventory vs last year",
+      "progress": 30
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "bar",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Median price by district",
+    "chart_type": "bar",
+    "description": "Old Town leads; East Bank is closing the gap fastest.",
+    "data": [
+     {
+      "label": "OldTown",
+      "value": 720
+     },
+     {
+      "label": "Westside",
+      "value": 640
+     },
+     {
+      "label": "Harbor",
+      "value": 585
+     },
+     {
+      "label": "EastBank",
+      "value": 512
+     },
+     {
+      "label": "Airport",
+      "value": 410
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "line",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Median price, trailing 5 years",
+    "chart_type": "line",
+    "description": "The market has compounded ~6% annually with two soft quarters in 2024.",
+    "data": [
+     {
+      "label": "2022",
+      "value": 468
+     },
+     {
+      "label": "2023",
+      "value": 495
+     },
+     {
+      "label": "2024",
+      "value": 521
+     },
+     {
+      "label": "2025",
+      "value": 584
+     },
+     {
+      "label": "2026",
+      "value": 612
+     }
+    ]
+   }
+  },
+  {
+   "type": "chart",
+   "variant": "pie",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Who's buying",
+    "chart_type": "pie",
+    "description": "First-time buyers are back — 34% of Q3 purchases.",
+    "data": [
+     {
+      "label": "First-time",
+      "value": 34
+     },
+     {
+      "label": "Move-up",
+      "value": 28
+     },
+     {
+      "label": "Investors",
+      "value": 22
+     },
+     {
+      "label": "Cash buyers",
+      "value": 16
+     }
+    ]
+   }
+  },
+  {
+   "type": "funnel_chart",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "The buyer journey",
+    "description": "From tour to closing, the funnel tightened as inventory fell.",
+    "steps": [
+     {
+      "label": "Tours",
+      "value": 1000
+     },
+     {
+      "label": "Offers",
+      "value": 410
+     },
+     {
+      "label": "Accepted",
+      "value": 232
+     },
+     {
+      "label": "Closed",
+      "value": 190
+     }
+    ]
+   }
+  },
+  {
+   "type": "gauge",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Inventory health",
+    "value": 41,
+    "label": "months of supply — a strong seller's market"
+   }
+  },
+  {
+   "type": "comparison_bars",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Buy vs rent, 10-year view",
+    "description": "For a typical 2-bed, buying beats renting by year six at current spreads.",
+    "comparison": {
+     "entity_a": "Buying",
+     "value_a": 78,
+     "entity_b": "Renting",
+     "value_b": 52,
+     "metric": "$K net position after 10 years"
     }
-  ]
+   }
+  },
+  {
+   "type": "table",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "District scorecard",
+    "headers": [
+     "District",
+     "YoY",
+     "DOM"
+    ],
+    "rows": [
+     [
+      "Old Town",
+      "+6.2%",
+      "31"
+     ],
+     [
+      "Westside",
+      "+5.1%",
+      "36"
+     ],
+     [
+      "East Bank",
+      "+7.8%",
+      "33"
+     ],
+     [
+      "Airport",
+      "+2.9%",
+      "51"
+     ]
+    ]
+   }
+  },
+  {
+   "type": "scatter_plot",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "Price vs size, Q3 sales",
+    "data": [
+     {
+      "x": 700,
+      "y": 410
+     },
+     {
+      "x": 950,
+      "y": 500
+     },
+     {
+      "x": 1100,
+      "y": 560
+     },
+     {
+      "x": 1350,
+      "y": 640
+     },
+     {
+      "x": 1600,
+      "y": 720
+     },
+     {
+      "x": 1900,
+      "y": 810
+     }
+    ],
+    "x_label": "Sq ft",
+    "y_label": "Price $K"
+   }
+  },
+  {
+   "type": "radar_chart",
+   "variant": "default",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "East Bank scores",
+    "description": "The district winning on value, schools and commute — its only weak spot is nightlife.",
+    "data": [
+     {
+      "axis": "Price",
+      "value": 85
+     },
+     {
+      "axis": "Schools",
+      "value": 90
+     },
+     {
+      "axis": "Commute",
+      "value": 78
+     },
+     {
+      "axis": "Growth",
+      "value": 82
+     },
+     {
+      "axis": "Amenities",
+      "value": 65
+     }
+    ]
+   }
+  },
+  {
+   "type": "image_comparison",
+   "variant": "arrow",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "before_image": "https://picsum.photos/seed/harbor-before/400/300",
+    "after_image": "https://picsum.photos/seed/harbor-after/400/300",
+    "before_label": "2024",
+    "after_label": "2026",
+    "description": "The East Bank waterfront — same block, two years of investment."
+   }
+  },
+  {
+   "type": "image_caption",
+   "variant": "image-right",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "image_url": "https://picsum.photos/seed/harbor-water/400/300",
+    "caption": "The East Bank waterfront",
+    "description": "New transit link + riverfront park = the strongest price growth in the city."
+   }
+  },
+  {
+   "type": "before_after_story",
+   "variant": "split",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "title": "What changed in a year",
+    "before": "Median 2025: $584K, 44 days on market, buyer's leverage",
+    "after": "Median 2026: $612K, 38 days on market, multiple offers",
+    "metric": "+4.8%",
+    "metric_label": "median price, YoY",
+    "description": "Measured change, not a vibe — the numbers moved because the habits did."
+   }
+  },
+  {
+   "type": "case_study_result",
+   "variant": "results-grid",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "client": "East Bank Portfolio",
+    "challenge": "6 units stuck on market through a slow spring",
+    "solution": "Repositioned pricing + staged the waterfront view",
+    "results": [
+     {
+      "metric": "9 days",
+      "label": "To first offer"
+     },
+     {
+      "metric": "102%",
+      "label": "Of list price"
+     },
+     {
+      "metric": "6/6",
+      "label": "Sold in 30 days"
+     }
+    ],
+    "description": "One engagement, three hard numbers — the kind of proof that survives a review."
+   }
+  },
+  {
+   "type": "big_statement",
+   "variant": "stat",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "heading": "The value has moved east",
+    "stat_value": "7.8%",
+    "stat_label": "East Bank growth — the city's fastest",
+    "cta_text": "Get the full report"
+   }
+  },
+  {
+   "type": "qr_destination",
+   "variant": "poster",
+   "theme": "editorial",
+   "bg": "dark",
+   "params": {
+    "destination_url": "https://harborindex.re/report",
+    "cta_text": "Download the PDF",
+    "heading": "The full Q3 report, district by district",
+    "caption": "42 pages of data — free",
+    "short_url": "harbor.re/q3"
+   }
+  }
+ ]
 }

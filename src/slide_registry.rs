@@ -209,7 +209,7 @@ pub fn get_registry() -> Value {
             "best_for": ["case-study", "proof", "results"]
         },
         "pricing_plan": {
-            "description": "Pricing or offer stack with up to three plans",
+            "description": "Pricing or offer stack with 2–4 plan tiles (3 tiles render with the third centered; 4 render as a balanced 2×2 grid)",
             "required_params": ["title", "plans"],
             "optional_params": ["variant"],
             "variants": ["cards", "offer-stack"],
@@ -436,9 +436,12 @@ pub fn get_registry() -> Value {
             "best_for": ["comparison", "versus", "benchmark"]
         },
         "metric_grid": {
-            "description": "2x2 grid of key metrics with values, labels, and trends",
+            "description": "2x2 grid of key metrics with values, labels, trends, and data-driven progress bars",
             "required_params": ["title", "metrics"],
             "optional_params": ["variant", "background_image", "image_opacity", "padding"],
+            // Each metric item may carry `progress` (0..1 or 0..100) or
+            // `current` + `total` to drive its tile's progress bar; a numeric
+            // `value` is used as a fallback percent, else the bar fills 100%.
             "variants": ["default"],
             "default_variant": "default",
             "layout_family": "data-viz",
