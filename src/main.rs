@@ -593,7 +593,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                     println!("help[1]: Run `slideforge list-slides` to see every slide type");
                 } else {
-                    println!("count: {} slide types match context '{}'", types.len(), context);
+                    // AXI §4: the TOON array header `[N]:` already carries the
+                    // total count — no separate count line needed here.
                     output_toon(&serde_json::json!(types));
                 }
             }
