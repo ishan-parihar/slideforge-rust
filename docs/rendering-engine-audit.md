@@ -1,10 +1,32 @@
 # Rendering Engine Audit — blitz vs Servo vs Chrome
 
 > **Date:** 2026-08-06 · **Scope:** style-level and font-level rendering bugs in SlideForge
-> **Status:** Root causes confirmed empirically. **Phase 1 (marker-class bleed refactor) + Phase 3 (validator gate) IMPLEMENTED** (2026-08-06). Phase 2 (deterministic font loading) pending.
+> **Status:** Root causes confirmed empirically. **Phase 1 (marker-class bleed refactor) + Phase 2 (deterministic font loading) + Phase 3 (validator gate) IMPLEMENTED** (2026-08-06). Phase 4 (Servo) optional/later.
 > **Auditor:** Buffy (agent) on behalf of the maintainer.
 >
-> ### Implementation log — Phase 1 & 3 landed
+> ### Implementation log — Phase 2 landed (deterministic font loading)
+- `src/font_vendor.rs` (new): vendors Google Fonts CSS2 stylesheets into
+  inline `data:font/woff2;base64,…` `@font-face` rules so the blitz renderer
+  registers every glyph synchronously — zero async per-glyph fallback race.
+  Injectable fetchers for hermetic tests; shared reqwest blocking client (one
+  TLS session per vendor pass); FNV-1a disk cache under `~/.cache/slideforge/fonts`
+  or `$SLIDEFORGE_FONT_CACHE`; graceful fallback to the original `<link>` on any
+  fetch failure (exports never fail on fonts).
+- `src/export.rs`: `build_standalone_slide_doc` now filters the carousel's font
+  links per slide (keeps only the families the slide's `--font-heading` /
+  `--font-body` css_vars declare) and vendors those; `render_html_to_png`
+  (preview-slide) vendors the full document too. Per-slide subsetting is what
+  keeps render time sane (was ≈3× slower when every slide embedded all 10
+  pairings).
+- `Cargo.toml`: `reqwest` (blocking) + `base64` added as direct deps — both
+  already present in the lock as transitive deps, so zero version churn.
+- Verified: `cargo test` 156/156 green (8 new tests incl. network-blocked
+  fallback + standalone-doc zero-remote-refs regression); cold-cache export of
+  a 2-slide typology slice = ~21s, warm = ~5s/slide; PNGs byte-identical
+  across runs; cache entries carry only data-URI @font-face with zero
+  `fonts.gstatic.com` / `fonts.googleapis.com` references.
+
+### Implementation log — Phase 1 & 3 landed
 > - `src/layouts.rs`: `slide_base` / `hero_slide_base` / `slide_base_bleed` now emit `class="sf-bleed-layer"` on their root wrapper div.
 > - `src/slides.rs`: the three `:has()` rules (A/B/C below) were replaced with marker-class rules — `.slide--full-bleed .slide-body.sf-body-lift`, `.slide:not(.slide--full-bleed) .slide-body.sf-body-lift`, and `.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child`. `render_carousel_html` emits `sf-body-lift` on the body exactly when the slide root carries the marker (exact `class="sf-bleed-layer"` match), preserving the old gate semantics for non-conforming roots.
 > - `src/validate.rs`: `validate_design` hard-errors with `unsupported_css_selector` when any `<style>` block (CSS comments stripped) contains `:has(` — enforced at compile time and in `validate-design`.

@@ -20,6 +20,7 @@ mod dataviz;
 mod design_system;
 mod effects;
 mod export;
+mod font_vendor;
 mod layouts;
 mod mcp_server;
 mod overflow_model;

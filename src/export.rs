@@ -24,6 +24,7 @@
 
 use anyrender::{PaintScene as _, render_to_buffer};
 use anyrender_vello_cpu::VelloCpuImageRenderer;
+use base64::Engine as _;
 use blitz_dom::{DocumentConfig, util::Color};
 use blitz_html::HtmlDocument;
 use blitz_net::Provider;
@@ -33,7 +34,7 @@ use peniko::Fill;
 use peniko::kurbo::Rect;
 use regex::Regex;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use url::Url;
 
@@ -117,6 +118,9 @@ pub fn render_html_to_png(html_path: &str, output_path: &str, _scale: f32) -> Re
     let abs_html_path = fs::canonicalize(html_path)
         .map_err(|e| format!("Could not canonicalize HTML path: {}", e))?;
     let html = fs::read_to_string(&abs_html_path).map_err(|e| e.to_string())?;
+    // Deterministic fonts: inline every Google-Fonts stylesheet as data-URI
+    // @font-face rules so no per-glyph async-fetch race can hit the preview.
+    let html = crate::font_vendor::vendor_font_links(&html, crate::font_vendor::font_cache_dir().as_deref());
     let file_url = Url::from_file_path(&abs_html_path)
         .map_err(|_| "Could not build file:// URL for HTML path".to_string())?;
 
@@ -261,6 +265,72 @@ fn extract_carousel_parts(html: &str, slide_index: usize) -> (String, String, St
     (global_styles.join("\n"), per_slide, links.join("\n"), base_w, base_h)
 }
 
+/// Web-font family names a slide's own `#slide-N` css_vars declares, from
+/// `--font-heading` / `--font-body` (or legacy `--heading` / `--body`), e.g.
+/// `--font-heading: 'Playfair Display', serif;` → `playfair display`.
+fn slide_font_families(per_slide_css: &str) -> Vec<String> {
+    let var_re =
+        Regex::new(r#"--(?:font-)?(?:heading|body)\s*:\s*['\"]?([^,'\";]+)"#).unwrap();
+    var_re
+        .captures_iter(per_slide_css)
+        .map(|c| c.get(1).expect("family group").as_str().trim().to_lowercase())
+        .filter(|s| !s.is_empty())
+        .collect()
+}
+
+/// Keep only the stylesheet links whose `family=` params intersect the slide's
+/// own font families. A carousel can carry 10 font pairings, but each slide
+/// renders only ONE of them — embedding all 10 (each fanning out to many woff2
+/// subsets) made every standalone render ≈3× slower. Drops the unrelated links
+/// so the vendored doc carries only what this slide actually shapes.
+///
+/// Conservative by design: if no family could be parsed, or NO link matched,
+/// all links are returned (can't prove a family is unused → keep everything).
+fn filter_links_for_slide(links: &str, per_slide_css: &str) -> String {
+    let families = slide_font_families(per_slide_css);
+    if families.is_empty() || !links.contains("fonts.googleapis.com") {
+        return links.to_string();
+    }
+    let link_re = Regex::new(r#"(?i)<link[^>]*rel=["']stylesheet["'][^>]*>"#).unwrap();
+    let href_re = Regex::new(r#"href="([^"]+)""#).unwrap();
+    let mut kept: Vec<String> = Vec::new();
+    for m in link_re.find_iter(links) {
+        let tag = m.as_str();
+        let keep = href_re
+            .captures(tag)
+            .and_then(|c| c.get(1))
+            .map(|h| {
+                let href = h.as_str();
+                if !href.contains("fonts.googleapis.com") {
+                    return true;
+                }
+                let mut link_fams: Vec<String> = Vec::new();
+                // Parse the query string AFTER the ? — the first family= sits
+                // right after it, so splitting the whole href on & would skip
+                // the leading family pair.
+                let query = href.split('?').nth(1).unwrap_or("");
+                for part in query.split('&') {
+                    if let Some(f) = part.strip_prefix("family=") {
+                        // family=Playfair+Display is ONE family whose name is
+                        // URL-encoded with + for spaces — decode, don't split.
+                        let name = f.split(':').next().unwrap_or("");
+                        link_fams.push(name.replace("+", " ").trim().to_lowercase());
+                    }
+                }
+                link_fams.iter().any(|lf| families.iter().any(|f| f == lf))
+            })
+            .unwrap_or(true);
+        if keep {
+            kept.push(tag.to_string());
+        }
+    }
+    if kept.is_empty() {
+        links.to_string()
+    } else {
+        kept.join("\n")
+    }
+}
+
 /// Build a standalone document that renders exactly ONE slide at the target
 /// canvas size. The carousel's style blocks + font links are preserved so
 /// per-slide `#slide-N` css_vars, typology fonts, and bleed rules all apply;
@@ -275,6 +345,14 @@ fn build_standalone_slide_doc(
     canvas_h: u32,
 ) -> String {
     let (styles, per_slide, links, base_w, base_h) = extract_carousel_parts(carousel, slide_index);
+    // Per-slide font subsetting + deterministic vendoring: keep only the links
+    // for THIS slide's families, inline them as data-URI @font-face CSS so the
+    // render has zero remote font fetches and no per-glyph fallback race.
+    let slide_links = filter_links_for_slide(&links, &per_slide);
+    let fonts_html = crate::font_vendor::vendor_font_links(
+        &slide_links,
+        crate::font_vendor::font_cache_dir().as_deref(),
+    );
     let scale = canvas_w as f64 / base_w as f64;
     let sf = format!("{:.6}", scale);
     format!(
@@ -282,7 +360,7 @@ fn build_standalone_slide_doc(
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-{links}
+{fonts_html}
 <style>
 {styles}
 {per_slide}
@@ -388,5 +466,73 @@ mod tests {
         assert!(per_slide.is_empty(), "no per-slide block in legacy deck");
         assert!(global.contains(".slide--dark"));
         assert!(global.contains("--slide-width"));
+    }
+
+    /// Per-slide font subsetting: a slide declaring `--font-heading: Playfair
+    /// Display` keeps only the link that carries that family, dropping the
+    /// other nine pairings.
+    #[test]
+    fn filter_links_for_slide_keeps_only_needed_families() {
+        let links = [
+            r#"<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">"#,
+            r#"<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">"#,
+            r#"<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;600&display=swap" rel="stylesheet">"#,
+        ]
+        .join("\n");
+        let per_slide = "--font-heading: 'Playfair Display', serif;\n--font-body: 'DM Sans', sans-serif;";
+        let out = super::filter_links_for_slide(&links, per_slide);
+        assert!(out.contains("Playfair+Display"), "heading family link kept");
+        assert!(out.contains("DM+Sans"), "body family link kept");
+        assert!(!out.contains("Jakarta"), "unrelated link dropped");
+        assert!(!out.contains("Grotesk"), "unrelated link dropped");
+    }
+
+    /// When no family can be parsed from the per-slide block, ALL links are
+    /// kept (conservative — can't prove a family is unused).
+    #[test]
+    fn filter_links_for_slide_falls_back_to_all_on_unknown_families() {
+        let links = r#"<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">"#;
+        let out = super::filter_links_for_slide(links, "--primary: #123;");
+        assert!(out.contains("Space+Grotesk"), "all links kept when unknown");
+    }
+
+    /// Phase-2 regression: a standalone slide doc built from a carousel with a
+    /// Google-Fonts link must carry the vendored data-URI @font-face CSS and
+    /// ZERO remote font references (fonts.googleapis / fonts.gstatic) — the
+    /// network-blocked guarantee. The font cache is seeded so no real fetch
+    /// happens during the test.
+    #[test]
+    fn standalone_doc_vendors_fonts_and_has_no_remote_refs() {
+        use super::build_standalone_slide_doc;
+
+        let font_url = "https://fonts.googleapis.com/css2?family=Bangers&display=swap";
+        // Seed the font cache with a canned vendored stylesheet for that URL.
+        let cache = std::env::temp_dir().join(format!("sf_export_font_test_{}", std::process::id()));
+        let _ = std::fs::create_dir_all(&cache);
+        let key = format!("{:016x}.css", crate::font_vendor::fnv1a64(font_url));
+        let vendored_css = "<style>@font-face { font-family:'Bangers'; src: url(data:font/woff2;base64,AAAA) format('woff2'); }</style>";
+        std::fs::write(cache.join(&key), vendored_css).unwrap();
+
+        let html = format!(
+            r#"<html><head>
+<link rel="stylesheet" href="{font_url}">
+<style>:root {{ --slide-width: 420px; --slide-height: 525px; }}</style>
+</head><body>
+<div id="slide-0" class="slide slide--dark"><div class="slide-composition">X</div></div>
+</body></html>"#
+        );
+        let slide_element = super::extract_slide_element(&html, 0).expect("slide 0");
+
+        // SAFETY: single-threaded test; env mutation is scoped to this test.
+        unsafe { std::env::set_var("SLIDEFORGE_FONT_CACHE", &cache) };
+        let doc = build_standalone_slide_doc(&html, 0, &slide_element, 420, 525);
+        unsafe { std::env::remove_var("SLIDEFORGE_FONT_CACHE") };
+        let _ = std::fs::remove_dir_all(&cache);
+
+        assert!(doc.contains("data:font/woff2;base64,AAAA"), "vendored font CSS present");
+        assert!(
+            !doc.contains("fonts.googleapis.com") && !doc.contains("fonts.gstatic.com"),
+            "no remote font reference survives in the standalone doc"
+        );
     }
 }
