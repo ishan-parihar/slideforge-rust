@@ -17,7 +17,7 @@
   "temperature": "cool",
   "heading_font": "Space Grotesk",
   "body_font": "IBM Plex Mono",
-  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
+  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Space+Grotesk:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap",
   "type_scale": {
     "display": {
       "font_size": 24,

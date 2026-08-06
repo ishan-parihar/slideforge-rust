@@ -480,35 +480,30 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
     // Google Fonts CSS2 API requires URL-encoded family names (spaces → `+`) and
     // semicolon-separated weight lists (`wght@300;600`). Commas return HTTP 400
     // and raw spaces break URL parsing (Chrome is lenient; blitz-net is not).
+    // Every family requests the full `ital` axis (normal + italic per weight):
+    // slide types like comment_cta, quote, image_quote and testimonial set
+    // `font-style: italic`, and blitz's faux-italic synthesis skews BACKWARDS
+    // (verified empirically — top centroid left of bottom). A true italic face
+    // must be loaded so italic text leans forward correctly.
     let enc = |name: &str| name.replace(' ', "+");
-    let mut heading_families = vec![format!(
-        "{}:wght@{}",
-        enc(h_font),
-        h_weights
+    // Each weight appears twice: once with axis `0,` (normal) and once with
+    // axis `1,` (italic), e.g. `ital,wght@0,300;0,600;1,300;1,600`.
+    let ital_frag = |name: &str, weights: &[i32]| {
+        let normals = weights
             .iter()
-            .map(|w| w.to_string())
+            .map(|w| format!("0,{}", w))
             .collect::<Vec<_>>()
-            .join(";")
-    )];
+            .join(";");
+        let italics = weights
+            .iter()
+            .map(|w| format!("1,{}", w))
+            .collect::<Vec<_>>()
+            .join(";");
+        format!("{}:ital,wght@{};{}", enc(name), normals, italics)
+    };
+    let mut heading_families = vec![ital_frag(h_font, &h_weights)];
     if h_font != b_font {
-        // Italic body (e.g. nightlife: Playfair Display italic) needs the ital axis.
-        let body_frag = if style_clean == "nightlife" {
-            format!(
-                "{}:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600",
-                enc(b_font)
-            )
-        } else {
-            format!(
-                "{}:wght@{}",
-                enc(b_font),
-                b_weights
-                    .iter()
-                    .map(|w| w.to_string())
-                    .collect::<Vec<_>>()
-                    .join(";")
-            )
-        };
-        heading_families.push(body_frag);
+        heading_families.push(ital_frag(b_font, &b_weights));
     }
     let families = heading_families.join("&family=");
     let url = format!(
@@ -1155,4 +1150,63 @@ pub fn get_contrast_safe_color(
     }
 
     Ok(oklch_to_hex(current_l, c, h))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Regression: the Google Fonts CSS2 `ital` axis tuple form must be
+    /// `ital,wght@0,300;0,600;1,300;1,600` — a malformed `0,300;600;1,300;600`
+    /// (weight listed once per axis group) returns HTTP 400 and the vendor
+    /// falls back to raw links, re-triggering blitz's backwards-italic
+    /// synthesis. This exact bug shipped once; keep it guarded.
+    #[test]
+    fn test_font_pairing_ital_axis_tuple_form() {
+        let pairing = get_font_pairing("editorial");
+        let url = &pairing.google_fonts_url;
+        assert!(
+            url.contains("ital,wght@0,300;0,600;1,300;1,600"),
+            "heading ital tuple malformed: {url}"
+        );
+        assert!(
+            !url.contains("0,300;600"),
+            "weights collapsed into wrong axis tuple: {url}"
+        );
+        assert!(
+            url.contains("DM+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600"),
+            "body ital tuple malformed: {url}"
+        );
+    }
+
+    /// Every pairing must request the ital axis for its families: slide types
+    /// like comment_cta, quote, image_quote and testimonial set
+    /// `font-style: italic`, and blitz cannot synthesize a forward slant
+    /// (it skews the other way).
+    #[test]
+    fn test_all_font_pairings_request_italic_axis() {
+        for style in [
+            "editorial",
+            "warm",
+            "technical",
+            "bold",
+            "classic",
+            "rounded",
+            "luxury",
+            "vintage",
+            "data",
+            "nightlife",
+            "geometric",
+            "humanist",
+            "slab",
+            "display",
+            "modern",
+        ] {
+            let url = get_font_pairing(style).google_fonts_url;
+            assert!(
+                url.contains("ital,wght@"),
+                "pairing {style} missing ital axis: {url}"
+            );
+        }
+    }
 }

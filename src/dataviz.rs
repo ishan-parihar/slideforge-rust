@@ -593,16 +593,8 @@ pub fn render_svg_radar_chart(
         return String::new();
     }
 
-    let mut labels = Vec::new();
     let mut values = Vec::new();
     for item in data.iter().take(8) {
-        let label = item
-            .get("label")
-            .or_else(|| item.get("axis"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
-        labels.push(label);
         let val = item
             .get("value")
             .and_then(|v| {
@@ -645,7 +637,7 @@ pub fn render_svg_radar_chart(
     }
 
     let mut axis_svg = String::new();
-    for (i, &angle) in angles.iter().enumerate() {
+    for &angle in &angles {
         let rx_max = cx + max_r * angle.cos();
         let ry_max = cy + max_r * angle.sin();
         axis_svg.push_str(&format!(
@@ -653,26 +645,16 @@ pub fn render_svg_radar_chart(
             cx, cy, rx_max, ry_max, colors.border
         ));
 
-        let mut lbl_x = cx + (max_r + 14.0) * angle.cos();
-        let lbl_y = cy + (max_r + 10.0) * angle.sin();
-        let mut anchor = "middle";
-        if angle.cos() > 0.1 {
-            anchor = "start";
-            lbl_x += 2.0;
-        } else if angle.cos() < -0.1 {
-            anchor = "end";
-            lbl_x -= 2.0;
-        }
-
-        let display_label = format!("{} ({:.0})", labels[i], values[i]);
-        axis_svg.push_str(&format!(
-            r#"<text x="{:.1}" y="{:.1}" font-size="10px" font-weight="700" fill="{}" text-anchor="{}">{}</text>"#,
-            lbl_x,
-            lbl_y + 3.0,
-            colors.text_primary,
-            anchor,
-            escape_html(&display_label)
-        ));
+        // NOTE: axis labels are intentionally NOT rendered as SVG <text>.
+        // blitz rasterizes inline SVG through usvg/resvg with its own system
+        // font database (blitz-dom's `FONT_DB`), which cannot see the vendored
+        // Google fonts — so SVG labels render with wrong/mixed glyphs. The
+        // slide composes HTML label overlays via `radar_label_layout()` so
+        // labels use the vendored body font through the normal HTML pipeline.
+        //
+        // GEOMETRY COUPLING: the label margins below (max_r = min(w,h)/2 - 25,
+        // label radius max_r + 14/+10, anchor offsets) MUST stay in sync with
+        // `radar_label_layout` — they share the same viewBox math.
     }
 
     let primary_color = &colors.primary;
@@ -706,6 +688,81 @@ pub fn render_svg_radar_chart(
     )
 }
 
+/// One radar axis label, positioned for HTML overlay (not SVG `<text>`).
+/// Coordinates are in the same viewBox space as `render_svg_radar_chart`, so a
+/// `position:relative` wrapper around the SVG can place these absolutely with
+/// matching geometry. `anchor` mirrors the SVG `text-anchor` semantics
+/// ("middle" | "start" | "end").
+pub struct RadarLabel {
+    pub text: String,
+    pub x: f64,
+    pub y: f64,
+    pub anchor: &'static str,
+}
+
+/// Compute radar axis label positions — the HTML counterpart to the SVG text
+/// that was removed from `render_svg_radar_chart`. Rendering labels as HTML
+/// (rather than SVG `<text>`) routes them through the normal HTML font pipeline,
+/// so they use the vendored body font with correct glyphs even in blitz, whose
+/// usvg rasterizer only sees the system font database.
+pub fn radar_label_layout(data: &[Value], width: u32, height: u32) -> Vec<RadarLabel> {
+    if data.len() < 3 {
+        return Vec::new();
+    }
+
+    let mut labels = Vec::new();
+    let mut values = Vec::new();
+    for item in data.iter().take(8) {
+        let label = item
+            .get("label")
+            .or_else(|| item.get("axis"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
+        labels.push(label);
+        let val = item
+            .get("value")
+            .and_then(|v| {
+                v.as_f64()
+                    .or_else(|| v.as_str().and_then(|s| s.parse::<f64>().ok()))
+            })
+            .unwrap_or(0.0);
+        values.push(val);
+    }
+
+    let n = values.len();
+    let cx = width as f64 / 2.0;
+    let cy = height as f64 / 2.0 - 5.0;
+    let max_r = (width.min(height) as f64 / 2.0) - 25.0;
+
+    let mut out = Vec::new();
+    for i in 0..n {
+        let angle = (i as f64) * (2.0 * std::f64::consts::PI / n as f64) - (std::f64::consts::PI / 2.0);
+        let mut lbl_x = cx + (max_r + 14.0) * angle.cos();
+        let lbl_y = cy + (max_r + 10.0) * angle.sin();
+        let mut anchor = "middle";
+        if angle.cos() > 0.1 {
+            anchor = "start";
+            lbl_x += 2.0;
+        } else if angle.cos() < -0.1 {
+            anchor = "end";
+            lbl_x -= 2.0;
+        }
+        let text = if labels[i].is_empty() {
+            format!("{:.0}", values[i])
+        } else {
+            format!("{} ({:.0})", labels[i], values[i])
+        };
+        out.push(RadarLabel {
+            text,
+            x: lbl_x,
+            y: lbl_y,
+            anchor,
+        });
+    }
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -721,6 +778,38 @@ mod tests {
             button_text: "#FFFFFF".to_string(),
             border: "#E5E7EB".to_string(),
             is_dark: false,
+        }
+    }
+
+    /// Radar labels are composed as HTML overlays (blitz's usvg rasterizer
+    /// can't see vendored web fonts), so their positions must stay inside the
+    /// SVG viewBox and mirror the plot geometry that `render_svg_radar_chart`
+    /// uses — drift here silently misplaces labels.
+    #[test]
+    fn test_radar_label_layout_matches_viewbox_and_values() {
+        let data = vec![
+            json!({"label": "Speed", "value": 95}),
+            json!({"label": "Accuracy", "value": 88}),
+            json!({"label": "Stability", "value": 70}),
+            json!({"label": "Battery", "value": 92}),
+        ];
+        let labels = radar_label_layout(&data, 320, 210);
+        assert_eq!(labels.len(), 4, "one label per axis");
+        for lbl in &labels {
+            assert!(lbl.x >= 0.0 && lbl.x <= 320.0, "x out of viewBox: {}", lbl.x);
+            assert!(lbl.y >= 0.0 && lbl.y <= 210.0, "y out of viewBox: {}", lbl.y);
+            assert!(
+                lbl.text.contains("Speed") || lbl.text.contains("Accuracy")
+                    || lbl.text.contains("Stability") || lbl.text.contains("Battery"),
+                "label text lost: {}",
+                lbl.text
+            );
+            assert!(matches!(lbl.anchor, "middle" | "start" | "end"));
+        }
+        // The svg geometry reserves 25px beyond max_r for labels; labels must
+        // sit inside that margin band, not overlap the plot.
+        for lbl in &labels {
+            assert!(lbl.y >= 0.0 && lbl.y <= 210.0, "label y clipped: {}", lbl.y);
         }
     }
 

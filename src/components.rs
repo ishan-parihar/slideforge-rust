@@ -1630,15 +1630,19 @@ pub fn text_block_slide(
         let p = para.trim();
         if !p.is_empty() {
             if !first_done {
-                // Drop-cap first paragraph: first letter oversized
+                // Drop-cap first paragraph: first letter oversized. The initial
+                // must NOT use float — blitz/taffy has no float layout, so the
+                // 36px letter would sit inline and wreck the first-line
+                // baseline (the reported "first letter positioning" bug). A
+                // flex row keeps the cap + body deterministic in blitz+Chrome.
                 let chars: Vec<char> = p.chars().collect();
-                if chars.len() > 1 {
+                if chars.len() > 1 && align == "left" {
                     let first_char = chars[0];
                     let rest: String = chars[1..].iter().collect();
                     body_html.push_str(&format!(
-                        r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};"><span style="font-size:36px;font-weight:900;color:{};float:left;line-height:0.85;margin:2px 8px 0 0;font-family:{};">{}</span>{}</p>"#,
-                        tokens.body_font, body_fs, colors.text_secondary, align,
-                        colors.primary, tokens.heading_font,
+                        r#"<p style="display:flex;gap:10px;align-items:flex-start;font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:left;"><span style="font-family:{};font-size:36px;font-weight:900;color:{};line-height:0.78;flex-shrink:0;margin-top:2px;">{}</span><span style="flex:1;">{}</span></p>"#,
+                        tokens.body_font, body_fs, colors.text_secondary,
+                        tokens.heading_font, colors.primary,
                         escape_html(&first_char.to_string()),
                         escape_html(&rest)
                     ));
@@ -2338,6 +2342,27 @@ fn radar_chart_slide(
         title, tokens, "title", None, true, None, "left", "0 0 10px", false,
     );
     let svg = render_svg_radar_chart(&data, 320, 210, &colors);
+    // HTML label overlay: the SVG deliberately omits <text> (blitz's usvg
+    // rasterizer can only see the system font database, not the vendored web
+    // fonts), so axis labels are composed here as absolutely-positioned spans
+    // that route through the normal HTML font pipeline with correct glyphs.
+    let mut label_html = String::new();
+    for lbl in crate::dataviz::radar_label_layout(&data, 320, 210) {
+        let (tx, lx) = match lbl.anchor {
+            "start" => ("translate(0%, -50%)", lbl.x + 3.0),
+            "end" => ("translate(-100%, -50%)", lbl.x - 3.0),
+            _ => ("translate(-50%, -50%)", lbl.x),
+        };
+        label_html.push_str(&format!(
+            r#"<span style="position:absolute;left:{:.1}px;top:{:.1}px;transform:{};font-family:{};font-size:10px;font-weight:700;color:{};white-space:nowrap;line-height:1.2;">{}</span>"#,
+            lx,
+            lbl.y,
+            tx,
+            tokens.body_font,
+            colors.text_primary,
+            escape_html(&lbl.text)
+        ));
+    }
     let desc_html = if !description.is_empty() {
         format!(
             r#"<p style="font-family:{};font-size:11px;color:{};margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">{}</p>"#,
@@ -2347,8 +2372,8 @@ fn radar_chart_slide(
         String::new()
     };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;">{}</div>{}</div>"#,
-        title_html, svg, desc_html
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;">{}<div style="position:relative;width:100%;max-width:320px;height:210px;margin:4px auto 0;">{}{}</div>{}</div>"#,
+        title_html, svg, label_html, desc_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -2763,10 +2788,23 @@ fn table_slide(
     let heading = heading_block(title, tokens, "headline", None, true, None, "left", "0 0 12px", false);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
+    // Hairline frames: the full-strength border token + 18% header band read as
+    // broad/heavy on dark slides. Use subtle hairlines that separate without
+    // drawing a thick rectangle around the whole table.
+    let card_border = if is_dark {
+        "1px solid rgba(255,255,255,0.10)"
+    } else {
+        "1px solid rgba(0,0,0,0.08)"
+    };
+    let row_sep = if is_dark {
+        "1px solid rgba(255,255,255,0.05)"
+    } else {
+        "1px solid rgba(0,0,0,0.05)"
+    };
 
     let header_cells: Vec<String> = headers.iter().map(|h| {
         let text = h.as_str().unwrap_or("");
-        format!("<th style=\"padding:10px 14px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};border-bottom:1px solid {};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "18", colors.border, escape_html(text))
+        format!("<th style=\"padding:9px 12px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};border-bottom:{};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "12", card_border, escape_html(text))
     }).collect();
 
     let body_rows: String = rows.iter().enumerate().map(|(idx, row)| {
@@ -2785,7 +2823,7 @@ fn table_slide(
                     format!(r#"<span style="font-family:{};color:{};">{}</span>"#, tokens.body_font, colors.text_secondary, escape_html(text))
                 };
                 let bg = if idx % 2 == 0 { "transparent" } else { "rgba(255,255,255,0.02)" };
-                format!("<td style=\"padding:9px 14px;font-size:11px;background:{};border-bottom:1px solid {}18;\">{}</td>", bg, colors.border, cell_html)
+                format!("<td style=\"padding:8px 12px;font-size:11px;background:{};border-bottom:{};\">{}</td>", bg, row_sep, cell_html)
             }).collect()
         }).unwrap_or_default();
         format!("<tr>{}</tr>", cells.join(""))
@@ -2796,7 +2834,7 @@ fn table_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="width:100%;background:{};border:1px solid {};border-radius:{};overflow:hidden;box-sizing:border-box;">
+            <div style="width:100%;background:{};border:{};border-radius:{};overflow:hidden;box-sizing:border-box;">
                 <table style="width:100%;border-collapse:collapse;">
                     <thead><tr>{}</tr></thead>
                     <tbody>{}</tbody>
@@ -2804,7 +2842,7 @@ fn table_slide(
             </div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>
         </div>"#,
-        heading, card_bg, colors.border, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
+        heading, card_bg, card_border, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
@@ -6377,8 +6415,22 @@ pub fn image_collage_slide(
             is_dark,
         );
 
+        // Hairline photo frames: the previous 2px @ 0.82-alpha white border +
+        // 3px padding read as a thick bright outline around every tile. A 1px
+        // low-alpha border + 2px padding keeps the polaroid feel without the
+        // chunky frame.
+        let frame_border = if is_dark {
+            "1px solid rgba(255,255,255,0.32)"
+        } else {
+            "1px solid rgba(0,0,0,0.12)"
+        };
+        let frame_bg = if is_dark {
+            "rgba(255,255,255,0.05)"
+        } else {
+            "#ffffff"
+        };
         img_html.push_str(&format!(
-            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;border:2px solid {};background:{};padding:3px;box-sizing:border-box;">
+            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;border:{};background:{};padding:2px;box-sizing:border-box;">
                 {}
             </div>"#,
             x,
@@ -6389,8 +6441,8 @@ pub fn image_collage_slide(
             z,
             shadow_md,
             radius_md,
-            if is_dark { "rgba(255,255,255,0.82)" } else { "rgba(255,255,255,0.96)" },
-            if is_dark { "rgba(255,255,255,0.08)" } else { "rgba(255,255,255,0.94)" },
+            frame_border,
+            frame_bg,
             themed_img
         ));
     }
