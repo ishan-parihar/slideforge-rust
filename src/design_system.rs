@@ -338,8 +338,9 @@ pub fn generate_type_scale(base_size: i32, ratio: f32) -> IndexMap<String, TypeL
 pub fn get_font_pairing(style: &str) -> FontPairing {
     let style_clean = style.to_lowercase().trim().to_string();
 
-    let (h_font, b_font, h_weights, b_weights, desc, h_class, b_class) = match style_clean.as_str()
-    {
+    let (h_font, b_font, mut h_weights, mut b_weights, desc, h_class, b_class) =
+        match style_clean.as_str()
+        {
         "editorial" => (
             "Playfair Display",
             "DM Sans",
@@ -485,6 +486,29 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
     // `font-style: italic`, and blitz's faux-italic synthesis skews BACKWARDS
     // (verified empirically — top centroid left of bottom). A true italic face
     // must be loaded so italic text leans forward correctly.
+    //
+    // RENDER-WEIGHT COVERAGE: the pairing lists above are design intents (e.g.
+    // editorial headings at 300/600), but slide types hardcode `font-weight` up
+    // to 900 (definition terms, comment_cta headlines, stat values, chart
+    // labels). If the requested set stops short of the rendered weight,
+    // fontique falls back to the nearest loaded face — and for italic requests
+    // it can land on the NORMAL face entirely (measured backwards/upright
+    // italics on comment_cta's 900-italic headline). Variable Google Fonts
+    // serve every weight from the same woff2 file, so widening the list costs
+    // ~nothing; static fonts simply omit unsupported weights.
+    for w in [600, 700, 800, 900] {
+        if !h_weights.contains(&w) {
+            h_weights.push(w);
+        }
+    }
+    for w in [700, 800] {
+        if !b_weights.contains(&w) {
+            b_weights.push(w);
+        }
+    }
+    h_weights.sort_unstable();
+    b_weights.sort_unstable();
+
     let enc = |name: &str| name.replace(' ', "+");
     // Each weight appears twice: once with axis `0,` (normal) and once with
     // axis `1,` (italic), e.g. `ital,wght@0,300;0,600;1,300;1,600`.
@@ -1165,8 +1189,9 @@ mod tests {
     fn test_font_pairing_ital_axis_tuple_form() {
         let pairing = get_font_pairing("editorial");
         let url = &pairing.google_fonts_url;
+        // Both axis groups must list every weight (`0,` normal + `1,` italic).
         assert!(
-            url.contains("ital,wght@0,300;0,600;1,300;1,600"),
+            url.contains("ital,wght@0,300;0,600;0,700;0,800;0,900;1,300;1,600;1,700;1,800;1,900"),
             "heading ital tuple malformed: {url}"
         );
         assert!(
@@ -1174,9 +1199,45 @@ mod tests {
             "weights collapsed into wrong axis tuple: {url}"
         );
         assert!(
-            url.contains("DM+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600"),
+            url.contains("DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800"),
             "body ital tuple malformed: {url}"
         );
+    }
+
+    /// Slides render headings at font-weight up to 900 (definition terms,
+    /// comment_cta headlines, stat values) but the pairing weight lists are
+    /// design intents that stop at 600/700. If the vendored CSS doesn't cover
+    /// the rendered weight, fontique falls back to a nearby face — and for
+    /// italic requests it can land on the NORMAL face (measured backwards /
+    /// upright italics on comment_cta). Guard the render-weight coverage.
+    #[test]
+    fn test_font_pairing_covers_render_weights() {
+        for style in [
+            "editorial",
+            "warm",
+            "technical",
+            "bold",
+            "classic",
+            "rounded",
+            "luxury",
+            "vintage",
+            "data",
+            "nightlife",
+            "geometric",
+            "humanist",
+            "slab",
+            "display",
+            "modern",
+        ] {
+            let url = get_font_pairing(style).google_fonts_url;
+            for w in [800, 900] {
+                assert!(
+                    url.contains(&format!("0,{}", w))
+                        && url.contains(&format!("1,{}", w)),
+                    "pairing {style} missing weight {w} (normal + italic): {url}"
+                );
+            }
+        }
     }
 
     /// Every pairing must request the ital axis for its families: slide types

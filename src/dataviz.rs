@@ -19,6 +19,58 @@ fn escape_html(input: &str) -> String {
     s
 }
 
+/// One chart text label, positioned for HTML overlay (not SVG `<text>`).
+/// Coordinates live in the same viewBox space as the SVG the label belongs
+/// to, so a `position:relative` wrapper sized to the SVG box places them with
+/// matching geometry. `anchor` mirrors the SVG `text-anchor` semantics
+/// ("middle" | "start" | "end"). `swatch` renders a small colored square
+/// before the text (used for chart legends).
+pub struct ChartLabel {
+    pub text: String,
+    pub x: f64,
+    pub y: f64,
+    pub anchor: &'static str,
+    pub weight: u16,
+    pub size_px: f64,
+    pub color: String,
+    pub swatch: Option<String>,
+}
+
+/// Render `ChartLabel`s as absolutely-positioned HTML spans. Blitz's usvg
+/// rasterizer can only see the system font database (not the vendored web
+/// fonts), so SVG `<text>` renders with wrong/mixed glyphs; composing the text
+/// as HTML routes it through the normal font pipeline with correct glyphs.
+pub fn chart_label_overlay(labels: &[ChartLabel], font_family: &str) -> String {
+    let mut html = String::new();
+    for lbl in labels {
+        let (tx, lx) = match lbl.anchor {
+            "start" => ("translate(0%, -50%)", lbl.x + 3.0),
+            "end" => ("translate(-100%, -50%)", lbl.x - 3.0),
+            _ => ("translate(-50%, -50%)", lbl.x),
+        };
+        let swatch = match &lbl.swatch {
+            Some(c) => format!(
+                r#"<span style="display:inline-block;width:9px;height:4px;border-radius:1px;background:{};margin-right:5px;vertical-align:middle;"></span>"#,
+                c
+            ),
+            None => String::new(),
+        };
+        html.push_str(&format!(
+            r#"<span style="position:absolute;left:{:.1}px;top:{:.1}px;transform:{};font-family:{};font-size:{}px;font-weight:{};color:{};white-space:nowrap;line-height:1.2;">{}{}</span>"#,
+            lx,
+            lbl.y,
+            tx,
+            font_family,
+            lbl.size_px,
+            lbl.weight,
+            lbl.color,
+            swatch,
+            escape_html(&lbl.text)
+        ));
+    }
+    html
+}
+
 pub fn render_svg_line_chart(
     data: &[Value],
     width: u32,
@@ -27,8 +79,24 @@ pub fn render_svg_line_chart(
     is_dark: bool,
     draw_area: bool,
 ) -> String {
+    line_chart_parts(data, width, height, colors, is_dark, draw_area).0
+}
+
+/// Compose the line/area chart SVG plus its text labels. The SVG deliberately
+/// omits every `<text>` element (blitz's usvg rasterizer cannot see vendored
+/// web fonts), and the returned labels are overlaid as HTML by the caller via
+/// `chart_label_overlay`. GEOMETRY COUPLING: label coordinates are computed in
+/// the same viewBox space as the SVG, so they stay aligned automatically.
+pub fn line_chart_parts(
+    data: &[Value],
+    width: u32,
+    height: u32,
+    colors: &SlideColors,
+    is_dark: bool,
+    draw_area: bool,
+) -> (String, Vec<ChartLabel>) {
     if data.is_empty() {
-        return String::new();
+        return (String::new(), Vec::new());
     }
 
     // Detect multi-series: each item has a "series" array [{name, value}]
@@ -45,6 +113,8 @@ pub fn render_svg_line_chart(
     let pad_bottom = 22;
     let chart_w = width as f64 - pad_left as f64 - pad_right as f64;
     let chart_h = height as f64 - pad_top as f64 - pad_bottom as f64;
+
+    let mut labels_out: Vec<ChartLabel> = Vec::new();
 
     // ── Shared: extract labels from the top-level items ──
     let labels: Vec<String> = data
@@ -103,10 +173,17 @@ pub fn render_svg_line_chart(
             r#"<line x1="{}" y1="{:.1}" x2="{}" y2="{:.1}" stroke="{}55" stroke-dasharray="3,3" stroke-width="1" />"#,
             pad_left, y_pos, width - pad_right, y_pos, colors.border
         ));
-        grid_lines.push_str(&format!(
-            r#"<text x="{}" y="{:.1}" font-size="9px" fill="{}" text-anchor="end" font-weight="600">{:.1}</text>"#,
-            pad_left - 8, y_pos + 4.0, colors.text_secondary, y_val
-        ));
+        // Y-axis grid value (HTML overlay — see line_chart_parts doc).
+        labels_out.push(ChartLabel {
+            text: format!("{:.1}", y_val),
+            x: pad_left as f64 - 8.0,
+            y: y_pos + 4.0,
+            anchor: "end",
+            weight: 600,
+            size_px: 9.0,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
     }
 
     // ── Build line paths ──
@@ -290,17 +367,18 @@ pub fn render_svg_line_chart(
         }
     }
 
-    // ── X-axis labels ──
-    let mut labels_svg = String::new();
+    // ── X-axis labels (HTML overlay — see line_chart_parts doc) ──
     for (i, lbl) in labels.iter().enumerate() {
-        let x = x_of(i);
-        labels_svg.push_str(&format!(
-            r#"<text x="{:.1}" y="{}" font-size="9px" fill="{}" text-anchor="middle">{}</text>"#,
-            x,
-            height - 4,
-            colors.text_secondary,
-            escape_html(lbl)
-        ));
+        labels_out.push(ChartLabel {
+            text: lbl.clone(),
+            x: x_of(i),
+            y: height as f64 - 4.0,
+            anchor: "middle",
+            weight: 400,
+            size_px: 9.0,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
     }
 
     // ── Legend (multi-series only, SVG-native <text> elements) ──
@@ -337,9 +415,20 @@ pub fn render_svg_line_chart(
                 let rect_x = cur_x;
                 let text_x = rect_x + 12.0;
                 legend_svg_parts.push_str(&format!(
-                    r#"<rect x="{:.1}" y="10" width="9" height="4" rx="1" fill="{}" /><text x="{:.1}" y="14.5" font-size="9px" font-weight="700" fill="{}" font-family="sans-serif">{}</text>"#,
-                    rect_x, col, text_x, colors.text_secondary, escape_html(name)
+                    r#"<rect x="{:.1}" y="10" width="9" height="4" rx="1" fill="{}" />"#,
+                    rect_x, col
                 ));
+                // Legend label (HTML overlay — see line_chart_parts doc).
+                labels_out.push(ChartLabel {
+                    text: name.to_string(),
+                    x: text_x,
+                    y: 14.5,
+                    anchor: "start",
+                    weight: 700,
+                    size_px: 9.0,
+                    color: colors.text_secondary.clone(),
+                    swatch: Some(col.to_string()),
+                });
                 cur_x += widths[si];
             }
         }
@@ -370,7 +459,7 @@ pub fn render_svg_line_chart(
         String::new()
     };
 
-    format!(
+    let svg = format!(
         r#"<svg width="100%" height="{}px" viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg">
             {}
             {}
@@ -378,10 +467,10 @@ pub fn render_svg_line_chart(
             {}
             {}
             {}
-            {}
         </svg>"#,
-        height, width, height, defs_block, legend_g, grid_lines, area_paths, all_paths, all_markers, labels_svg
-    )
+        height, width, height, defs_block, legend_g, grid_lines, area_paths, all_paths, all_markers
+    );
+    (svg, labels_out)
 }
 
 pub fn render_svg_scatter_plot(
@@ -392,8 +481,21 @@ pub fn render_svg_scatter_plot(
     x_label: &str,
     y_label: &str,
 ) -> String {
+    scatter_parts(data, width, height, colors, x_label, y_label).0
+}
+
+/// Compose the scatter SVG plus its text labels (HTML overlay — see
+/// `line_chart_parts` doc; blitz's usvg rasterizer cannot see vendored fonts).
+pub fn scatter_parts(
+    data: &[Value],
+    width: u32,
+    height: u32,
+    colors: &SlideColors,
+    x_label: &str,
+    y_label: &str,
+) -> (String, Vec<ChartLabel>) {
     if data.is_empty() {
-        return String::new();
+        return (String::new(), Vec::new());
     }
 
     let mut x_vals = Vec::new();
@@ -443,6 +545,7 @@ pub fn render_svg_scatter_plot(
     let plot_w = chart_w - 2.0 * inner_pad_x;
     let plot_h = chart_h - 2.0 * inner_pad_y;
 
+    let mut labels_out: Vec<ChartLabel> = Vec::new();
     let mut grid_lines = String::new();
     // Y grid
     for i in 0..3 {
@@ -453,13 +556,16 @@ pub fn render_svg_scatter_plot(
             r#"<line x1="{}" y1="{:.1}" x2="{}" y2="{:.1}" stroke="{}44" stroke-dasharray="3,3" stroke-width="1" />"#,
             pad_left, y_pos, width - pad_right, y_pos, colors.border
         ));
-        grid_lines.push_str(&format!(
-            r#"<text x="{}" y="{:.1}" font-size="8.5px" font-weight="600" fill="{}" text-anchor="end">{:.1}</text>"#,
-            pad_left - 6,
-            y_pos + 3.0,
-            colors.text_secondary,
-            y_val
-        ));
+        labels_out.push(ChartLabel {
+            text: format!("{:.1}", y_val),
+            x: pad_left as f64 - 6.0,
+            y: y_pos + 3.0,
+            anchor: "end",
+            weight: 600,
+            size_px: 8.5,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
     }
 
     // X grid
@@ -471,13 +577,16 @@ pub fn render_svg_scatter_plot(
             r#"<line x1="{:.1}" y1="{}" x2="{:.1}" y2="{}" stroke="{}44" stroke-dasharray="3,3" stroke-width="1" />"#,
             x_pos, pad_top, x_pos, height as f64 - pad_bottom as f64, colors.border
         ));
-        grid_lines.push_str(&format!(
-            r#"<text x="{:.1}" y="{}" font-size="8.5px" font-weight="600" fill="{}" text-anchor="middle">{:.0}</text>"#,
-            x_pos,
-            height as f64 - pad_bottom as f64 + 14.0,
-            colors.text_secondary,
-            x_val
-        ));
+        labels_out.push(ChartLabel {
+            text: format!("{:.0}", x_val),
+            x: x_pos,
+            y: height as f64 - pad_bottom as f64 + 14.0,
+            anchor: "middle",
+            weight: 600,
+            size_px: 8.5,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
     }
 
     let primary_color = &colors.primary;
@@ -501,13 +610,20 @@ pub fn render_svg_scatter_plot(
         }
 
         points_svg.push_str(&format!(
-            r#"<g>
-                <circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.85" stroke="white" stroke-width="1.5" />
-                <text x="{:.1}" y="{:.1}" font-size="8px" fill="{}" text-anchor="middle" font-weight="800">{}</text>
-            </g>"#,
-            x_pos, y_pos, r, primary_color,
-            x_pos, y_pos - r - 4.0, colors.text_primary, escape_html(&labels[i])
+            r#"<circle cx="{:.1}" cy="{:.1}" r="{:.1}" fill="{}" fill-opacity="0.85" stroke="white" stroke-width="1.5" />"#,
+            x_pos, y_pos, r, primary_color
         ));
+        // Point label (HTML overlay — see line_chart_parts doc).
+        labels_out.push(ChartLabel {
+            text: labels[i].clone(),
+            x: x_pos,
+            y: y_pos - r - 4.0,
+            anchor: "middle",
+            weight: 800,
+            size_px: 8.0,
+            color: colors.text_primary.clone(),
+            swatch: None,
+        });
     }
 
     let trendline = format!(
@@ -515,42 +631,54 @@ pub fn render_svg_scatter_plot(
         path_d, primary_color
     );
 
-    let x_axis_title = if !x_label.is_empty() {
-        format!(
-            r#"<text x="{}" y="{}" font-size="9px" font-weight="800" fill="{}" text-anchor="middle" letter-spacing="0.05em">{}</text>"#,
-            pad_left as f64 + chart_w / 2.0,
-            height - 2,
-            colors.text_secondary,
-            escape_html(x_label)
-        )
-    } else {
-        String::new()
-    };
+    if !x_label.is_empty() {
+        labels_out.push(ChartLabel {
+            text: x_label.to_string(),
+            x: pad_left as f64 + chart_w / 2.0,
+            y: height as f64 - 2.0,
+            anchor: "middle",
+            weight: 800,
+            size_px: 9.0,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
+    }
+    if !y_label.is_empty() {
+        labels_out.push(ChartLabel {
+            text: y_label.to_string(),
+            x: pad_left as f64,
+            y: 14.0,
+            anchor: "start",
+            weight: 800,
+            size_px: 9.0,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        });
+    }
 
-    let y_axis_title = if !y_label.is_empty() {
-        format!(
-            r#"<text x="{}" y="14" font-size="9px" font-weight="800" fill="{}" text-anchor="start" letter-spacing="0.05em">{}</text>"#,
-            pad_left,
-            colors.text_secondary,
-            escape_html(y_label)
-        )
-    } else {
-        String::new()
-    };
-
-    format!(
+    let svg = format!(
         r#"<svg width="100%" height="{}px" viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg">
             {}
             {}
             {}
-            {}
-            {}
         </svg>"#,
-        height, width, height, grid_lines, trendline, points_svg, x_axis_title, y_axis_title
-    )
+        height, width, height, grid_lines, trendline, points_svg
+    );
+    (svg, labels_out)
 }
 
 pub fn render_svg_gauge_chart(value: f64, target: f64, unit: &str, colors: &SlideColors) -> String {
+    gauge_parts(value, target, unit, colors).0
+}
+
+/// Compose the gauge SVG plus its value/TARGET labels (HTML overlay — see
+/// `line_chart_parts` doc; blitz's usvg rasterizer cannot see vendored fonts).
+pub fn gauge_parts(
+    value: f64,
+    target: f64,
+    unit: &str,
+    colors: &SlideColors,
+) -> (String, Vec<ChartLabel>) {
     let r = 52.0;
     let cx = 100.0;
     let cy = 80.0;
@@ -560,10 +688,9 @@ pub fn render_svg_gauge_chart(value: f64, target: f64, unit: &str, colors: &Slid
     let offset = circ * (1.0 - pct);
 
     let primary_color = &colors.primary;
-    let text_color = &colors.text_primary;
     let clean_unit = if unit.len() <= 5 { escape_html(unit) } else { "%".to_string() };
 
-    format!(
+    let svg = format!(
         r#"<svg width="100%" height="115px" viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
             <!-- Background Arc -->
             <path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1}" fill="none" stroke="{}44" stroke-width="12" stroke-linecap="round" />
@@ -571,16 +698,35 @@ pub fn render_svg_gauge_chart(value: f64, target: f64, unit: &str, colors: &Slid
             <!-- Foreground Filled Arc -->
             <path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1}" fill="none" stroke="{}" stroke-width="12" stroke-linecap="round"
                   stroke-dasharray="{:.2}" stroke-dashoffset="{:.2}" opacity="0.9" />
-                  
-            <!-- Central Metric Value -->
-            <text x="{:.1}" y="{:.1}" font-size="26px" fill="{}" font-weight="900" text-anchor="middle">{:.1}{}</text>
-            <text x="{:.1}" y="{:.1}" font-size="9px" font-weight="700" fill="{}" text-anchor="middle" letter-spacing="0.04em">TARGET: {:.0}{}</text>
         </svg>"#,
         cx - r, cy, r, r, cx + r, cy, colors.border,
-        cx - r, cy, r, r, cx + r, cy, primary_color, circ, offset,
-        cx, cy - 6.0, text_color, value, clean_unit,
-        cx, cy + 18.0, colors.text_secondary, target, clean_unit
-    )
+        cx - r, cy, r, r, cx + r, cy, primary_color, circ, offset
+    );
+
+    // Central metric + TARGET (HTML overlay — see line_chart_parts doc).
+    let labels = vec![
+        ChartLabel {
+            text: format!("{:.1}{}", value, clean_unit),
+            x: cx,
+            y: cy - 6.0,
+            anchor: "middle",
+            weight: 900,
+            size_px: 26.0,
+            color: colors.text_primary.clone(),
+            swatch: None,
+        },
+        ChartLabel {
+            text: format!("TARGET: {:.0}{}", target, clean_unit),
+            x: cx,
+            y: cy + 18.0,
+            anchor: "middle",
+            weight: 700,
+            size_px: 9.0,
+            color: colors.text_secondary.clone(),
+            swatch: None,
+        },
+    ];
+    (svg, labels)
 }
 
 pub fn render_svg_radar_chart(
@@ -848,7 +994,7 @@ mod tests {
             }),
         ];
         let colors = make_test_colors();
-        let svg = render_svg_line_chart(&data, 300, 150, &colors, false, false);
+        let (svg, labels) = line_chart_parts(&data, 300, 150, &colors, false, false);
 
         // Multi-series should produce at least 2 path elements
         let path_count = svg.matches("<path").count();
@@ -858,18 +1004,62 @@ mod tests {
             path_count
         );
 
-        // Should have a legend with series names
-        assert!(svg.contains("Men"), "legend should include Men series name");
-        assert!(svg.contains("Women"), "legend should include Women series name");
+        // Legend names are HTML overlay labels (blitz's usvg can't see
+        // vendored fonts), so they must be present in the label list — with
+        // the correct series-color swatch for each.
+        let men = labels
+            .iter()
+            .find(|l| l.text == "Men")
+            .expect("legend should include Men series name");
+        let women = labels
+            .iter()
+            .find(|l| l.text == "Women")
+            .expect("legend should include Women series name");
+        assert!(men.swatch.is_some(), "Men legend should carry a color swatch");
+        assert!(women.swatch.is_some(), "Women legend should carry a color swatch");
 
-        // Should NOT be in <defs> (legend must be visible)
-        // The legend <g> should appear after the <defs> block
-        let defs_end = svg.find("</defs>").unwrap_or(0);
-        let men_pos = svg.find("Men").unwrap_or(0);
+        // No SVG-native <text> should be emitted: it renders with system
+        // fonts under blitz (vendored Google fonts are invisible to usvg).
         assert!(
-            men_pos > defs_end,
-            "legend (Men) should appear after </defs>, not inside it"
+            !svg.contains("<text"),
+            "line chart must not emit SVG <text> (glyph bug class)"
         );
+    }
+
+    /// Regression: gauge value + TARGET labels are HTML overlays positioned in
+    /// the SVG viewBox space; they must exist and stay inside the 200x115 box.
+    #[test]
+    fn test_gauge_parts_emits_html_labels() {
+        let colors = make_test_colors();
+        let (svg, labels) = gauge_parts(72.0, 100.0, "%", &colors);
+        assert!(!svg.contains("<text"), "gauge SVG must not emit <text>");
+        assert_eq!(labels.len(), 2, "value + TARGET labels");
+        assert!(labels[0].text.contains("72.0"), "value label lost: {}", labels[0].text);
+        assert!(labels[1].text.contains("TARGET"), "TARGET label lost: {}", labels[1].text);
+        for l in &labels {
+            assert!(l.x >= 0.0 && l.x <= 200.0, "x out of viewBox: {}", l.x);
+            assert!(l.y >= 0.0 && l.y <= 115.0, "y out of viewBox: {}", l.y);
+        }
+        let overlay = chart_label_overlay(&labels, "DM Sans");
+        assert!(overlay.contains("72.0") && overlay.contains("TARGET"), "overlay HTML missing labels");
+        assert!(overlay.contains("position:absolute"), "labels must be absolute spans");
+    }
+
+    /// Regression: scatter labels are HTML overlays; SVG must stay text-free.
+    #[test]
+    fn test_scatter_parts_emits_html_labels() {
+        let data = vec![
+            json!({"x": 1, "y": 2, "label": "Alpha"}),
+            json!({"x": 2, "y": 5, "label": "Beta"}),
+            json!({"x": 3, "y": 3, "label": "Gamma"}),
+        ];
+        let colors = make_test_colors();
+        let (svg, labels) = scatter_parts(&data, 320, 185, &colors, "X Axis", "Y Axis");
+        assert!(!svg.contains("<text"), "scatter SVG must not emit <text>");
+        let texts: Vec<&str> = labels.iter().map(|l| l.text.as_str()).collect();
+        assert!(texts.contains(&"Alpha"), "point label lost: {texts:?}");
+        assert!(texts.contains(&"X Axis"), "x-axis title lost: {texts:?}");
+        assert!(texts.contains(&"Y Axis"), "y-axis title lost: {texts:?}");
     }
 
     #[test]

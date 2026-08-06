@@ -60,7 +60,7 @@ pub(crate) fn fnv1a64(s: &str) -> u64 {
 /// fix (latin-subset collapse) changed the payload shape, so `v2` forces a
 /// refetch+rewrite of every cached stylesheet once. `pub(crate)` so the export
 /// tests can seed cache files with the exact on-disk key.
-pub(crate) const CACHE_VERSION: &str = "v2";
+pub(crate) const CACHE_VERSION: &str = "v3";
 
 /// Collapse Google Fonts' per-subset `@font-face` fan-out to ONE face per
 /// (family, weight, style): the face whose `unicode-range` covers the basic

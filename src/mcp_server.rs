@@ -279,6 +279,12 @@ pub struct ExportCarouselSlidesRequest {
     pub html_path: String,
     pub output_dir: String,
     pub total_slides: usize,
+    /// 1-based index of the first slide to render (default 1). Enables
+    /// chunked exports: each invocation is a fresh process, which resets the
+    /// blitz fontdb that pathologically spins after ~100 slides in one
+    /// process.
+    #[serde(default)]
+    pub start: Option<usize>,
     /// Platform name (e.g. "instagram_portrait", "tiktok_vertical"). Call
     /// list_platforms to see all valid values. Note: this field was
     /// previously named "preset" which was misleading — it has always been
@@ -1280,9 +1286,10 @@ impl Server {
         let output_dir = req.output_dir.clone();
         let w = canvas.width;
         let h = canvas.height;
+        let start = req.start.unwrap_or(1).max(1);
         let n = req.total_slides;
         let paths = tokio::task::spawn_blocking(move || {
-            export::export_slides(&html_path, &output_dir, n, w, h)
+            export::export_slides(&html_path, &output_dir, start, n, w, h)
         })
         .await
         .map_err(|e| {
@@ -1951,6 +1958,7 @@ mod tests {
             html_path: "nonexistent.html".to_string(),
             output_dir: "./nonexistent_dir".to_string(),
             total_slides: 1,
+            start: None,
             platform: Some("".to_string()), // empty platform -> instagram_portrait
             aspect_ratio: Some("".to_string()), // empty aspect_ratio -> None
         };

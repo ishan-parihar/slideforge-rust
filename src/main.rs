@@ -428,9 +428,15 @@ enum Commands {
         /// Output directory for PNG slides
         #[arg(long, default_value = "./exports")]
         output_dir: String,
-        /// Total slides count
+        /// Total slides count (or chunk size when --start is used)
         #[arg(long)]
         slides: usize,
+        /// 1-based index of the first slide to render (default 1).
+        /// Enables chunked/resumable exports: each invocation is a fresh
+        /// process, so long 210+ slide decks never accumulate the blitz
+        /// fontdb that pathologically spins after ~100 slides.
+        #[arg(long, default_value_t = 1)]
+        start: usize,
         /// Platform preset: instagram_portrait, instagram_square, instagram_story,
         /// tiktok_vertical, linkedin_landscape, twitter_card, facebook_post,
         /// presentation_16_9, presentation_4_3
@@ -787,13 +793,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             html,
             output_dir,
             slides,
+            start,
             preset,
             aspect_ratio,
         }) => {
             let canvas = platforms::resolve_canvas(preset, aspect_ratio.as_deref())?;
             println!(
-                "Exporting {} slides from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
+                "Exporting {} slides starting at #{} from {} → {} at {}×{} (platform: {}, aspect ratio: {})...",
                 slides,
+                start,
                 html,
                 output_dir,
                 canvas.width,
@@ -801,8 +809,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 canvas.platform,
                 canvas.aspect_ratio
             );
-            let paths =
-                export::export_slides(html, output_dir, *slides, canvas.width, canvas.height)?;
+            let paths = export::export_slides(
+                html,
+                output_dir,
+                *start,
+                *slides,
+                canvas.width,
+                canvas.height,
+            )?;
             println!("Export complete! Slides saved:");
             for p in paths {
                 println!(" - {}", p);

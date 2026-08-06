@@ -12,9 +12,7 @@ use crate::blocks::{
     attribution_block, badge_block, button_block, divider_block, dot_marker, escape_html,
     gradient_text, heading_block, icon_block, list_item_block, quote_block, stat_block, text_block,
 };
-use crate::dataviz::{
-    render_svg_gauge_chart, render_svg_line_chart, render_svg_radar_chart, render_svg_scatter_plot,
-};
+use crate::dataviz::render_svg_radar_chart;
 #[allow(unused_imports)]
 use crate::design_system::DesignTokens;
 #[allow(unused_imports)]
@@ -2162,16 +2160,19 @@ pub fn chart_slide(
             circle_style, inner_circle, legend_items
         );
     } else if chart_type == "line" || chart_type == "area" {
-        chart_html = render_svg_line_chart(&data, 320, 130, &colors, is_dark, chart_type == "area");
+        let (svg, labels) =
+            crate::dataviz::line_chart_parts(&data, 320, 130, &colors, is_dark, chart_type == "area");
+        let overlay = crate::dataviz::chart_label_overlay(&labels, &tokens.body_font);
         chart_html = format!(
-            r#"<div style="width:100%;margin-top:16px;">{}</div>"#,
-            chart_html
+            r#"<div style="position:relative;width:100%;max-width:320px;height:130px;margin-top:16px;">{}{}</div>"#,
+            svg, overlay
         );
     } else if chart_type == "scatter" {
-        chart_html = render_svg_scatter_plot(&data, 320, 130, &colors, "", "");
+        let (svg, labels) = crate::dataviz::scatter_parts(&data, 320, 130, &colors, "", "");
+        let overlay = crate::dataviz::chart_label_overlay(&labels, &tokens.body_font);
         chart_html = format!(
-            r#"<div style="width:100%;margin-top:16px;">{}</div>"#,
-            chart_html
+            r#"<div style="position:relative;width:100%;max-width:320px;height:130px;margin-top:16px;">{}{}</div>"#,
+            svg, overlay
         );
     } else {
         // Fallback column chart
@@ -2263,7 +2264,8 @@ fn scatter_plot_slide(
     let title_html = heading_block(
         title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true,
     );
-    let svg = render_svg_scatter_plot(&data, 320, 185, &colors, x_label, y_label);
+    let (svg, labels) = crate::dataviz::scatter_parts(&data, 320, 185, &colors, x_label, y_label);
+    let overlay = crate::dataviz::chart_label_overlay(&labels, &tokens.body_font);
     let radius = current_component_radius(tokens, "card");
     let chart_bg = if colors.is_dark {
         "rgba(255,255,255,0.05)"
@@ -2274,10 +2276,10 @@ fn scatter_plot_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="width:100%;height:195px;border-radius:{};overflow:hidden;background:{};border:{};padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;">{}</div>
+            <div style="width:100%;height:205px;border-radius:{};overflow:hidden;background:{};border:{};padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><div style="position:relative;width:320px;height:185px;margin:0 auto;">{}{}</div></div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
         </div>"#,
-        title_html, radius, chart_bg, chart_border, svg, tokens.body_font, colors.text_secondary
+        title_html, radius, chart_bg, chart_border, svg, overlay, tokens.body_font, colors.text_secondary
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -2298,7 +2300,8 @@ fn gauge_slide(
     let title_html = heading_block(
         title, tokens, "headline", Some(&colors.text_primary), false, None, "center", "0 0 12px", true,
     );
-    let svg = render_svg_gauge_chart(value, 100.0, "%", &colors);
+    let (svg, labels) = crate::dataviz::gauge_parts(value, 100.0, "%", &colors);
+    let overlay = crate::dataviz::chart_label_overlay(&labels, &tokens.heading_font);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let subtext = if !label.is_empty() { label.to_string() } else { "Optimal Range".to_string() };
@@ -2307,7 +2310,7 @@ fn gauge_slide(
         r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
             {}
             <div style="width:100%;background:{};border:1px solid {};border-radius:{};padding:20px 16px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;">
-                <div style="width:100%;max-width:240px;height:120px;margin:0 auto;display:flex;justify-content:center;">{}</div>
+                <div style="position:relative;width:200px;height:115px;margin:0 auto;">{}{}</div>
                 <div style="font-family:{};font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: {}</div>
             </div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
@@ -2317,6 +2320,7 @@ fn gauge_slide(
         colors.border,
         radius,
         svg,
+        overlay,
         tokens.heading_font,
         escape_html(&subtext.to_uppercase()),
         tokens.body_font,
