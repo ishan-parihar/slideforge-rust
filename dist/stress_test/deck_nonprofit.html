@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -138,7 +138,13 @@ body {
    Slide content cannot leak: .slide-content is itself absolutely positioned and
    sized to the body region (see below), and the layer's own overflow:hidden
    clips its decorative children to the layer bounds. */
-.slide--full-bleed .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+/* The body-clip lift is gated on an explicit marker class (`sf-body-lift`,
+   emitted by render_carousel_html when the slide's root wrapper carries the
+   `sf-bleed-layer` marker). blitz/stylo servo-mode silently drops the `:has`
+   relative selector — any such rule here would be dead CSS in the export
+   renderer, breaking the bleed behind the chrome bands
+   (see docs/rendering-engine-audit.md §3). */
+.slide--full-bleed .slide-body.sf-body-lift {
   overflow: visible !important;
 }
 /* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
@@ -255,10 +261,10 @@ body {
    layer — the image/glass covers the full composition including the bands.
    Gated on those wrappers so non-conforming slide roots keep the old hard
    clip instead of leaking into the chrome bands. */
-.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body.sf-body-lift {
   overflow: visible !important;
 }
-.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child {
   position: absolute !important;
   top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: 0 !important;
@@ -570,10 +576,10 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1; pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -80px; background: #0F766E; height: 320px; position: absolute; width: 320px; border-radius: 50%; pointer-events: none; opacity: 0.07; top: -80px"></div><div style="background: #90505E; left: auto; width: 120px; right: -40px; height: 120px; opacity: 0.05; top: 60%; pointer-events: none; border-radius: 4px; position: absolute; transform: rotate(60deg)"></div></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; background: #0F766E; opacity: 0.07; top: -80px; width: 320px; border-radius: 50%; pointer-events: none; left: -80px; height: 320px"></div><div style="right: -40px; left: auto; height: 120px; border-radius: 4px; background: #90505E; top: 60%; opacity: 0.05; position: absolute; transform: rotate(60deg); pointer-events: none; width: 120px"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;"><div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#3E978E;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">3 regions · 214 villages · 1 mission</div><h1 style="font-family:Playfair Display;font-size:30px;font-weight:900;color:#E7F1EF;line-height:1.05;margin:0;max-width:320px;">Every $1 becomes clean water for a decade</h1><div style="width:76px;height:4px;background:#3E978E;border-radius:16px;margin:var(--space-3) 0;"></div><p style="font-family:DM Sans;font-size:15px;color:#C3D1CF;line-height:1.45;margin:0;max-width:320px;">The 2026 impact report of ClearWater Initiative</p><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div>
             </div>
@@ -690,9 +696,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); z-index: 1; pointer-events: none; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); z-index: 1; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
@@ -819,9 +825,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -979,9 +985,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -1114,9 +1120,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -1252,9 +1258,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute; opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -1390,9 +1396,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -1535,9 +1541,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain); inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1666,9 +1672,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1804,9 +1810,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -1933,9 +1939,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; background: var(--texture-grain); z-index: 1; position: absolute; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -2064,9 +2070,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; inset: 0; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2214,9 +2220,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2360,9 +2366,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); position: absolute; pointer-events: none; opacity: 0.04; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2501,9 +2507,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -2648,12 +2654,12 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; inset: 0; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="border: 1px solid #1B333040; border-radius: 16px; background: #000600CC;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#3E978E;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Playfair Display;font-size:26px;font-weight:600;line-height:1.25;color:#E7F1EF;margin:0;text-align:center;text-wrap:balance;font-style:italic;">ClearWater doesn&#x27;t drop a well and leave. They train the people who will maintain it for thirty years.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#0F766E;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="border: 1px solid #1B333040; background: #000600CC; border-radius: 16px;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#3E978E;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Playfair Display;font-size:26px;font-weight:600;line-height:1.25;color:#E7F1EF;margin:0;text-align:center;text-wrap:balance;font-style:italic;">ClearWater doesn&#x27;t drop a well and leave. They train the people who will maintain it for thirty years.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#0F766E;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #E7F1EF20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #E7F1EF; flex-shrink: 0;">D</div>
             <div>
                 <div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#E7F1EF;">Dr. Amara Osei</div>
@@ -2774,9 +2780,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:44px 44px 36px;position:relative;overflow:hidden;">
@@ -2899,9 +2905,9 @@ body {
     <span class="overlay__brand">ClearWater</span>
     <span class="overlay__topic">Clean water, one village</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">

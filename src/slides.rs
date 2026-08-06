@@ -203,7 +203,13 @@ body {
    Slide content cannot leak: .slide-content is itself absolutely positioned and
    sized to the body region (see below), and the layer's own overflow:hidden
    clips its decorative children to the layer bounds. */
-.slide--full-bleed .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+/* The body-clip lift is gated on an explicit marker class (`sf-body-lift`,
+   emitted by render_carousel_html when the slide's root wrapper carries the
+   `sf-bleed-layer` marker). blitz/stylo servo-mode silently drops the `:has`
+   relative selector — any such rule here would be dead CSS in the export
+   renderer, breaking the bleed behind the chrome bands
+   (see docs/rendering-engine-audit.md §3). */
+.slide--full-bleed .slide-body.sf-body-lift {
   overflow: visible !important;
 }
 /* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
@@ -320,10 +326,10 @@ body {
    layer — the image/glass covers the full composition including the bands.
    Gated on those wrappers so non-conforming slide roots keep the old hard
    clip instead of leaking into the chrome bands. */
-.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body.sf-body-lift {
   overflow: visible !important;
 }
-.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child {
   position: absolute !important;
   top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: 0 !important;
@@ -866,10 +872,22 @@ body {
             ),
             _ => String::new(),
         };
+        // sf-body-lift: the body's overflow:hidden clip is lifted ONLY for slides
+        // whose root wrapper carries the sf-bleed-layer marker (emitted by
+        // slide_base / slide_base_bleed / hero_slide_base). Non-conforming roots
+        // keep the hard clip. This replaces the old `:has()` gate, which the
+        // blitz/stylo export renderer silently drops (rendering-engine-audit §3).
+        // Match the class attribute exactly so slide copy containing the literal
+        // string "sf-bleed-layer" can never lift the body clip spuriously.
+        let body_class = if slide.html.contains("class=\"sf-bleed-layer\"") {
+            " sf-body-lift"
+        } else {
+            ""
+        };
         slides_html.push_str(&format!(
             r#"<div id="{slide_id}" class="slide {bg_class}{full_bleed_class}"{bg_style}><div class="slide-composition">
 {header_html}
-  <div class="slide-body">
+  <div class="slide-body{body_class}">
 {slide_html}
   </div>
 {footer_html}
@@ -884,7 +902,8 @@ body {
             slide_html = slide.html,
             footer_html = footer_html,
             arrow_html = arrow_html,
-            per_slide_css = per_slide_css
+            per_slide_css = per_slide_css,
+            body_class = body_class
         ));
     }
 
@@ -1400,6 +1419,51 @@ mod tests {
         spec.progress_style = "none".to_string();
         let errors = validate_corner_chrome(&spec);
         assert!(errors.is_empty(), "got {:?}", errors);
+    }
+
+    #[test]
+    fn test_carousel_emits_marker_classes_instead_of_has_selector() {
+        // Regression: blitz/stylo servo-mode silently drops `:has()` rules, so
+        // the emitted CSS must contain ZERO `:has(` and instead gate the body
+        // clip lift on the explicit `sf-body-lift` marker class (driven by the
+        // `sf-bleed-layer` marker on slide_base-family wrappers).
+        let mut spec = base_spec();
+        spec.slides = vec![
+            SlideSpec {
+                html: r#"<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;"><div class="slide-content">Hi</div></div>"#
+                    .to_string(),
+                background: "light".to_string(),
+                variant: "default".to_string(),
+                theme: "editorial".to_string(),
+                archetype: "educator".to_string(),
+                ..Default::default()
+            },
+            // Non-conforming root (no marker) must keep the hard body clip.
+            SlideSpec {
+                html: r#"<div style="position:relative;width:100%;height:100%;"><p>raw</p></div>"#
+                    .to_string(),
+                background: "light".to_string(),
+                variant: "default".to_string(),
+                theme: "editorial".to_string(),
+                archetype: "educator".to_string(),
+                ..Default::default()
+            },
+        ];
+        let html = render_carousel_html(&spec);
+        assert!(!html.contains(":has("), "no :has() may remain in emitted CSS");
+        assert!(html.contains("sf-bleed-layer"));
+        // Conforming slide's body carries the lift marker; raw slide's does not.
+        assert!(
+            html.contains("class=\"slide-body sf-body-lift\""),
+            "conforming slide body must be lifted"
+        );
+        assert!(
+            html.contains("class=\"slide-body\">"),
+            "non-conforming slide body must keep the plain class"
+        );
+        // The CSS rules target the markers directly — no :has anywhere.
+        assert!(html.contains(".slide--full-bleed .slide-body.sf-body-lift"));
+        assert!(html.contains(".slide-body > div.sf-bleed-layer:first-child"));
     }
 
     #[test]

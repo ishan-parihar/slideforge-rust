@@ -17,7 +17,7 @@
   "temperature": "cool",
   "heading_font": "Cormorant Garamond",
   "body_font": "DM Sans",
-  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant Garamond:wght@400,600&family=DM Sans:wght@400,500,600&display=swap",
+  "google_fonts_url": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap",
   "type_scale": {
     "display": {
       "font_size": 44,

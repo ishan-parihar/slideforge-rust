@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair Display:wght@300,600&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400,600&family=Nunito Sans:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@300,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300,600&family=Outfit:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Libre Baskerville:wght@400,700&family=Work Sans:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage Grotesque:wght@600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300,600&family=Inter:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300,600&family=Source Serif 4:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Roboto Slab:wght@400,700&family=Inter:wght@400,500,600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500,700&family=DM Sans:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;600&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,7 +147,13 @@ body {
    Slide content cannot leak: .slide-content is itself absolutely positioned and
    sized to the body region (see below), and the layer's own overflow:hidden
    clips its decorative children to the layer bounds. */
-.slide--full-bleed .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+/* The body-clip lift is gated on an explicit marker class (`sf-body-lift`,
+   emitted by render_carousel_html when the slide's root wrapper carries the
+   `sf-bleed-layer` marker). blitz/stylo servo-mode silently drops the `:has`
+   relative selector — any such rule here would be dead CSS in the export
+   renderer, breaking the bleed behind the chrome bands
+   (see docs/rendering-engine-audit.md §3). */
+.slide--full-bleed .slide-body.sf-body-lift {
   overflow: visible !important;
 }
 /* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
@@ -264,10 +270,10 @@ body {
    layer — the image/glass covers the full composition including the bands.
    Gated on those wrappers so non-conforming slide roots keep the old hard
    clip instead of leaking into the chrome bands. */
-.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body.sf-body-lift {
   overflow: visible !important;
 }
-.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child {
   position: absolute !important;
   top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: 0 !important;
@@ -579,10 +585,10 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none; position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 320px; opacity: 0.07; left: -80px; top: -80px; border-radius: 50%; background: #5E5FE0; position: absolute; height: 320px; pointer-events: none"></div><div style="right: -40px; position: absolute; height: 120px; opacity: 0.05; width: 120px; transform: rotate(60deg); left: auto; pointer-events: none; top: 60%; border-radius: 4px; background: #937000"></div></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #5E5FE0; position: absolute; width: 320px; opacity: 0.07; height: 320px; top: -80px; pointer-events: none; left: -80px; border-radius: 50%"></div><div style="left: auto; position: absolute; height: 120px; border-radius: 4px; transform: rotate(60deg); top: 60%; pointer-events: none; right: -40px; width: 120px; opacity: 0.05; background: #937000"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;"><div style="font-family:DM Sans;font-size:11px;font-weight:700;color:#767CFF;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">Design system CLI</div><h1 style="font-family:Playfair Display;font-size:44px;font-weight:900;color:#EDEEF5;line-height:1.05;margin:0;max-width:320px;">Ship slides in minutes</h1><div style="width:76px;height:4px;background:#767CFF;border-radius:0;margin:var(--space-3) 0;"></div><p style="font-family:DM Sans;font-size:15px;color:#CBCDD8;line-height:1.45;margin:0;max-width:320px;">47 types, 28 presets, 1 CLI</p><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div>
             </div>
@@ -697,10 +703,10 @@ body {
     <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">SlideForge</span>
     <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); position: absolute"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 300px; opacity: 0.06; left: -70px; border-radius: 50%; position: absolute; height: 300px; top: -70px; pointer-events: none; background: #CE2C31"></div><div style="opacity: 0.04; border-radius: 9999px; position: absolute; right: -40px; width: 160px; left: auto; pointer-events: none; background: #008FAA; top: 65%; height: 160px"></div></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="left: -70px; position: absolute; top: -70px; border-radius: 50%; pointer-events: none; background: #CE2C31; width: 300px; opacity: 0.06; height: 300px"></div><div style="height: 160px; border-radius: 9999px; right: -40px; width: 160px; position: absolute; background: #008FAA; pointer-events: none; opacity: 0.04; top: 65%; left: auto"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-3);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;"><div style="font-family:Nunito Sans;font-size:11px;font-weight:700;color:#CE2C31;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Visual proof</div><h1 style="font-family:Lora;font-size:32px;font-weight:900;color:#0F0A09;line-height:1.08;margin:0 0 8px;overflow-wrap:break-word;">Beautiful by default</h1><p style="font-family:Nunito Sans;font-size:15px;color:#4A3F3E;line-height:1.5;margin:0;max-width:320px;">Editorial themes tuned for carousels</p></div><div style="min-width:0;overflow:hidden;"><div style="position:relative;width:100%;height:var(--space-28);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop&auto=format');background-size:cover;background-position:center;opacity:0.4;"></div><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div></div>
             </div>
@@ -826,10 +832,10 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="position: absolute; background: #168061; width: 320px; left: -80px; border-radius: 50%; pointer-events: none; top: -80px; height: 320px; opacity: 0.07"></div><div style="left: auto; width: 120px; border-radius: 4px; height: 120px; right: -40px; top: 60%; pointer-events: none; opacity: 0.05; transform: rotate(60deg); position: absolute; background: #985378"></div></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1; opacity: 0.04"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="opacity: 0.07; width: 320px; border-radius: 50%; height: 320px; position: absolute; background: #168061; top: -80px; pointer-events: none; left: -80px"></div><div style="border-radius: 4px; right: -40px; width: 120px; pointer-events: none; position: absolute; left: auto; height: 120px; top: 60%; opacity: 0.05; background: #985378; transform: rotate(60deg)"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;"><div style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#7EDCB8;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">Chapter 3</div><h1 style="font-family:Space Grotesk;font-size:44px;font-weight:900;color:#E8F1ED;line-height:1.05;margin:0;max-width:320px;">The Composition Layer</h1><div style="width:76px;height:4px;background:#7EDCB8;border-radius:0;margin:var(--space-3) 0;"></div><p style="font-family:Space Grotesk;font-size:15px;color:#C5D1CC;line-height:1.45;margin:0;max-width:300px;">How slides are authored</p><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div>
             </div>
@@ -946,9 +952,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1072,9 +1078,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; inset: 0; opacity: 0.04; z-index: 1; pointer-events: none; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:20px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
@@ -1215,9 +1221,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain); z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1353,9 +1359,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; opacity: 0.04; z-index: 1; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -1482,9 +1488,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);"><div style="width:72px;height:72px;border-radius:50%;background:#7CE0AF;color:white;display:flex;align-items:center;justify-content:center;font-family:Urbanist;font-size:24px;font-weight:900;">J</div><p style="font-family:Urbanist;font-size:28px;font-weight:800;color:#E9F1EC;line-height:1.2;margin:0;">“Our marketing team generates 3x more content since adopting SlideForge.”</p><div><div style="font-family:Source Serif 4;font-size:15px;font-weight:900;color:#E9F1EC;">James Park</div><div style="font-family:Source Serif 4;font-size:12px;color:#C6D1CA;">CMO, GrowthCo</div></div></div>
@@ -1611,9 +1617,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); z-index: 1; pointer-events: none; position: absolute; inset: 0; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:Roboto Slab;font-size:28px;font-weight:900;color:#0B0A0F;margin:0;text-align:center;">Trusted by</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);"><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">T</div>TechCorp</div><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">S</div>ScaleUp</div><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">G</div>GrowthCo</div><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">I</div>InnovateLabs</div><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">C</div>CloudBase</div><div style="height:58px;border-radius:0;border:1px solid #C7C6D0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:Inter;font-size:var(--text-sm);font-weight:800;color:#42414A;box-sizing:border-box;"><div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0B0A0F;flex-shrink:0;">D</div>DataDrive</div></div></div>
@@ -1731,12 +1737,12 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0; opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1; inset: 0; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="background: #000708CC; border: 1px solid #3B2E2040; border-radius: var(--radius-md);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#FFBC70;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Syne;font-size:26px;font-weight:600;line-height:1.25;color:#F3EDE8;margin:0;text-align:center;text-wrap:balance;font-style:italic;">We replaced our entire slide toolchain with a single CLI command.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#A06200;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="background: #000708CC; border-radius: var(--radius-md); border: 1px solid #3B2E2040;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#FFBC70;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Syne;font-size:26px;font-weight:600;line-height:1.25;color:#F3EDE8;margin:0;text-align:center;text-wrap:balance;font-style:italic;">We replaced our entire slide toolchain with a single CLI command.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#A06200;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #F3EDE820; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #F3EDE8; flex-shrink: 0;">E</div>
             <div>
                 <div style="font-family:DM Sans;font-size:11px;font-weight:600;color:#F3EDE8;">Elena Rodriguez</div>
@@ -1855,9 +1861,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); pointer-events: none; inset: 0; opacity: 0.04; position: absolute; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1; position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -2020,9 +2026,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; pointer-events: none; opacity: 0.04; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; z-index: 1; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -2167,9 +2173,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute; inset: 0; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); inset: 0; z-index: 1; opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -2297,9 +2303,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; position: absolute; inset: 0; z-index: 1; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -2454,9 +2460,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; background: var(--texture-grain); inset: 0; opacity: 0.04; position: absolute; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -2599,9 +2605,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; z-index: 1; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -2735,9 +2741,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; pointer-events: none; opacity: 0.04; background: var(--texture-grain); z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); z-index: 1; inset: 0; opacity: 0.04; pointer-events: none; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Sora; font-size: 22px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Capability matrix</h2><div style="width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
@@ -2869,9 +2875,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; pointer-events: none; inset: 0; position: absolute; z-index: 1; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; pointer-events: none; opacity: 0.04; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -2998,9 +3004,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); z-index: 1; pointer-events: none; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -3156,9 +3162,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); z-index: 1; inset: 0; pointer-events: none; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -3310,9 +3316,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; opacity: 0.04; pointer-events: none; position: absolute; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -3446,9 +3452,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); position: absolute; z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-light);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;">
@@ -3582,9 +3588,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; z-index: 1; position: absolute; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
@@ -3735,9 +3741,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; z-index: 1; opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;background:rgba(255,255,255,0.92);border:1px solid #CCC2BB;border-radius:var(--radius-md) var(--radius-lg) var(--radius-md) var(--radius-lg);padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
@@ -3863,9 +3869,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 48px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="max-width:340px;margin:0 auto;text-align:left;width:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;height:100%;overflow:hidden;padding-bottom:var(--space-2);">
@@ -3986,9 +3992,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -4149,9 +4155,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; position: absolute; inset: 0; pointer-events: none; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -4296,9 +4302,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; inset: 0; position: absolute; background: var(--texture-grain); pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
@@ -4435,9 +4441,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); inset: 0; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 16px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
@@ -4619,9 +4625,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:flex;flex-direction:column;gap:12px;width:100%;height:100%;justify-content:center;">
@@ -4748,9 +4754,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); position: absolute; inset: 0; z-index: 1; opacity: 0.04; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
                 <div style="position:relative;width:100%;height:100%;">
@@ -4875,15 +4881,15 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="opacity: 0.04; inset: 0; position: absolute; pointer-events: none; z-index: 1; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #CE2C3138 0px, transparent 50%), radial-gradient(at 80% 0%, #008FAA28 0px, transparent 50%), radial-gradient(at 0% 50%, #FF9F9530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0"></div>
             
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:stretch;height:100%;width:100%;box-sizing:border-box;">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             <div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
-                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&amp;h=500&amp;fit=crop" alt="Composition is a constraint problem." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.02) brightness(1.02);" />
-                
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&amp;h=500&amp;fit=crop" alt="Composition is a constraint problem." style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                <div style="position:absolute;inset:0;background:radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.20) 72%, rgba(0,0,0,0.10));z-index:2;"></div>
             </div>
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
@@ -5015,9 +5021,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; inset: 0; opacity: 0.04; z-index: 1; background: var(--texture-grain); position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -5150,9 +5156,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute; z-index: 1; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -5298,9 +5304,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; pointer-events: none; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -5448,9 +5454,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; inset: 0; pointer-events: none; opacity: 0.04; background: var(--texture-grain); z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; inset: 0; pointer-events: none; background: var(--texture-grain); z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
@@ -5588,9 +5594,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; inset: 0; background: var(--texture-grain); pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:radial-gradient(at 40% 20%, #D51B1F38 0px, transparent 50%), radial-gradient(at 80% 0%, #0090B328 0px, transparent 50%), radial-gradient(at 0% 50%, #FFA69530 0px, transparent 50%), var(--surface-light);background-color:var(--surface-light);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; inset: 0; pointer-events: none; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
@@ -5716,9 +5722,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; background: var(--texture-grain); pointer-events: none; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
@@ -5854,9 +5860,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
-            <div style="pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-light);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); pointer-events: none; opacity: 0.04; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
@@ -5983,9 +5989,9 @@ body {
     <span class="overlay__brand">SlideForge</span>
     <span class="overlay__topic">RANDOMIZED-STYLES-AUDIT</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; position: absolute; background: var(--texture-grain); inset: 0; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; z-index: 1; background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:44px 44px 36px;position:relative;overflow:hidden;">

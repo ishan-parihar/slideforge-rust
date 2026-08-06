@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300,600&family=Outfit:wght@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -138,7 +138,13 @@ body {
    Slide content cannot leak: .slide-content is itself absolutely positioned and
    sized to the body region (see below), and the layer's own overflow:hidden
    clips its decorative children to the layer bounds. */
-.slide--full-bleed .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+/* The body-clip lift is gated on an explicit marker class (`sf-body-lift`,
+   emitted by render_carousel_html when the slide's root wrapper carries the
+   `sf-bleed-layer` marker). blitz/stylo servo-mode silently drops the `:has`
+   relative selector — any such rule here would be dead CSS in the export
+   renderer, breaking the bleed behind the chrome bands
+   (see docs/rendering-engine-audit.md §3). */
+.slide--full-bleed .slide-body.sf-body-lift {
   overflow: visible !important;
 }
 /* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
@@ -255,10 +261,10 @@ body {
    layer — the image/glass covers the full composition including the bands.
    Gated on those wrappers so non-conforming slide roots keep the old hard
    clip instead of leaking into the chrome bands. */
-.slide:not(.slide--full-bleed) .slide-body:has(> div:first-of-type > .slide-content, > div:first-of-type > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body.sf-body-lift {
   overflow: visible !important;
 }
-.slide:not(.slide--full-bleed) .slide-body > div:first-of-type:has(> .slide-content, > .slide-content--bleed) {
+.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child {
   position: absolute !important;
   top: calc(-1 * var(--chrome-header-h, 36px)) !important;
   left: 0 !important;
@@ -570,10 +576,10 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; position: absolute; inset: 0; pointer-events: none; z-index: 1"></div>
-            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="height: 320px; width: 320px; top: -80px; border-radius: 50%; left: -80px; position: absolute; pointer-events: none; background: #C93F00; opacity: 0.07"></div><div style="background: #008ABC; opacity: 0.05; left: auto; width: 120px; transform: rotate(60deg); pointer-events: none; position: absolute; height: 120px; border-radius: 4px; right: -40px; top: 60%"></div></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1; inset: 0"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="width: 320px; position: absolute; background: #C93F00; top: -80px; height: 320px; pointer-events: none; opacity: 0.07; border-radius: 50%; left: -80px"></div><div style="width: 120px; height: 120px; pointer-events: none; border-radius: 4px; transform: rotate(60deg); top: 60%; right: -40px; opacity: 0.05; position: absolute; background: #008ABC; left: auto"></div></div>
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 52px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;"><div style="font-family:Outfit;font-size:11px;font-weight:700;color:#E55A2A;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;">Strength you can keep</div><h1 style="font-family:Fraunces;font-size:30px;font-weight:900;color:#F5ECEA;line-height:1.05;margin:0;max-width:320px;">Stop starting over</h1><div style="width:76px;height:4px;background:#E55A2A;border-radius:9999px;margin:var(--space-3) 0;"></div><p style="font-family:Outfit;font-size:15px;color:#D7CBC7;line-height:1.45;margin:0;max-width:320px;">8 weeks. 3 lifts a week. One rule: show up.</p><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div>
             </div>
@@ -699,9 +705,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; inset: 0; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; opacity: 0.04; pointer-events: none; background: var(--texture-grain); position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
@@ -846,9 +852,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:20px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
@@ -984,9 +990,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; position: absolute; pointer-events: none; opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -1147,9 +1153,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); inset: 0; position: absolute; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
@@ -1300,9 +1306,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="inset: 0; z-index: 1; opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; inset: 0; z-index: 1; pointer-events: none; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -1469,9 +1475,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="pointer-events: none; z-index: 1; background: var(--texture-grain); position: absolute; opacity: 0.04; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; inset: 0; position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -1623,9 +1629,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="background: var(--texture-grain); z-index: 1; opacity: 0.04; inset: 0; pointer-events: none; position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; opacity: 0.04; background: var(--texture-grain); position: absolute; inset: 0; z-index: 1"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -1770,9 +1776,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; z-index: 1; inset: 0; pointer-events: none; background: var(--texture-grain); position: absolute"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; inset: 0; background: var(--texture-grain); opacity: 0.04; pointer-events: none"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
@@ -1926,12 +1932,12 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="opacity: 0.04; background: var(--texture-grain); position: absolute; pointer-events: none; z-index: 1; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain); opacity: 0.04; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
-                <div style="border: 1px solid #3E2B2540; background: #000510CC; border-radius: var(--radius-lg);padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#E55A2A;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Fraunces;font-size:26px;font-weight:600;line-height:1.25;color:#F5ECEA;margin:0;text-align:center;text-wrap:balance;font-style:italic;">I stopped negotiating with myself. The app told me what to lift and I lifted it.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#C93F00;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+                <div style="background: #000510CC; border-radius: var(--radius-lg); border: 1px solid #3E2B2540;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#E55A2A;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-family:Fraunces;font-size:26px;font-weight:600;line-height:1.25;color:#F5ECEA;margin:0;text-align:center;text-wrap:balance;font-style:italic;">I stopped negotiating with myself. The app told me what to lift and I lifted it.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#C93F00;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #F5ECEA20; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #F5ECEA; flex-shrink: 0;">S</div>
             <div>
                 <div style="font-family:Outfit;font-size:14px;font-weight:600;color:#F5ECEA;">Sam</div>
@@ -2061,9 +2067,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; pointer-events: none; opacity: 0.04; background: var(--texture-grain); inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; z-index: 1; pointer-events: none; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);"><img src="https://picsum.photos/seed/alexk/120/120" alt="Alex K." style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.16);"><p style="font-family:Fraunces;font-size:28px;font-weight:800;color:#F5ECEA;line-height:1.2;margin:0;">“First time in a decade I can deadlift double bodyweight. The weekly cadence is the whole secret.”</p><div><div style="font-family:Outfit;font-size:15px;font-weight:900;color:#F5ECEA;">Alex K.</div><div style="font-family:Outfit;font-size:12px;color:#D7CBC7;">Member since Jan</div></div></div>
@@ -2190,9 +2196,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; opacity: 0.04; z-index: 1; inset: 0; background: var(--texture-grain); pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); inset: 0; pointer-events: none; position: absolute; z-index: 1; opacity: 0.04"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
@@ -2337,9 +2343,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; position: absolute; opacity: 0.04; inset: 0; pointer-events: none; background: var(--texture-grain)"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; background: var(--texture-grain); pointer-events: none; z-index: 1; position: absolute"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;">
@@ -2486,9 +2492,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="z-index: 1; opacity: 0.04; background: var(--texture-grain); pointer-events: none; position: absolute; inset: 0"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; position: absolute; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 16px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;display:flex;flex-direction:column;gap:16px;min-width:0;">
@@ -2674,9 +2680,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); inset: 0; opacity: 0.04; z-index: 1; pointer-events: none"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); pointer-events: none; opacity: 0.04; position: absolute; inset: 0"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:44px 44px 36px;position:relative;overflow:hidden;">
@@ -2808,9 +2814,9 @@ body {
     <span class="overlay__brand">ForgeFit</span>
     <span class="overlay__topic">Rebuild strength in 8 weeks</span>
   </div>
-  <div class="slide-body">
-<div style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
-            <div style="position: absolute; background: var(--texture-grain); opacity: 0.04; inset: 0; pointer-events: none; z-index: 1"></div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; background: var(--texture-grain)"></div>
             
             <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
                 <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">

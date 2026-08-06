@@ -1404,6 +1404,63 @@ mod tests {
     }
 
     #[test]
+    fn test_validate_design_flags_has_selector() {
+        // blitz/stylo servo-mode drops `:has()` wholesale — the validator must
+        // hard-error on it so the class never ships (see rendering-engine-audit).
+        let html = r#"
+            <style>
+              .slide--full-bleed .slide-body:has(> div:first-of-type) { overflow: visible; }
+            </style>
+            <div class="slide slide--full-bleed"><div class="slide-composition">x</div></div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            report.issues.iter().any(|i| {
+                i.r#type == "unsupported_css_selector" && i.severity == "error"
+            }),
+            "expected unsupported_css_selector error, got {:?}",
+            report.issues.iter().map(|i| &i.r#type).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_validate_design_passes_marker_class_css() {
+        // The marker-class replacement (sf-bleed-layer / sf-body-lift) must pass
+        // cleanly — no :has anywhere.
+        let html = r#"
+            <style>
+              .slide--full-bleed .slide-body.sf-body-lift { overflow: visible !important; }
+              .slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child { position: absolute; }
+            </style>
+            <div class="slide slide--full-bleed"><div class="slide-composition">x</div></div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            !report.issues.iter().any(|i| i.r#type == "unsupported_css_selector"),
+            "marker-class CSS must not trip the :has() gate"
+        );
+    }
+
+    #[test]
+    fn test_validate_design_ignores_has_in_css_comment() {
+        // CSS comments mentioning `:has(` are harmless (comments are not parsed
+        // as selectors) and must NOT trip the gate — future editors documenting
+        // the rule in a style block should not break the build.
+        let html = r#"
+            <style>
+              /* blitz drops `:has(` rules — use sf-body-lift markers instead. */
+              .slide--full-bleed .slide-body.sf-body-lift { overflow: visible !important; }
+            </style>
+            <div class="slide slide--full-bleed"><div class="slide-composition">x</div></div>
+        "#;
+        let report = validate_design(html);
+        assert!(
+            !report.issues.iter().any(|i| i.r#type == "unsupported_css_selector"),
+            "CSS comments mentioning :has( must not trip the gate"
+        );
+    }
+
+    #[test]
     fn test_validate_design_warns_when_carousel_split_fails() {
         // A carousel whose slide divs carry a `class` attribute WITHOUT the exact
         // `slide` token (e.g. class="slide--light" only) — the split regex requires
@@ -2385,7 +2442,42 @@ pub fn debug_layout(html: &str) -> serde_json::Value {
 }
 
 pub fn validate_design(html: &str) -> ValidationReport {
-    let mut issues = Vec::new();    // Split the HTML into slides. Attribute-order agnostic: the renderer emits
+    let mut issues = Vec::new();
+
+    // blitz/stylo servo-mode silently drops `:has()` selectors — every rule
+    // gated on `:has()` is dead CSS in the export renderer (background bleed,
+    // chrome transparency, aspect-ratio seams — see
+    // docs/rendering-engine-audit.md §3). Hard error at both compile-time and
+    // `validate-design` so this class of bug is caught at the gate, never in
+    // review. Scope to <style> blocks so slide copy containing ":has(" never
+    // false-positives.
+    let style_block_re = Regex::new(r#"(?is)<style[^>]*>(.*?)</style>"#).unwrap();
+    // CSS comments are harmless to the renderer (comments are not parsed as
+    // selectors) — strip them before scanning so a comment that merely
+    // *documents* `:has(` never false-positives the gate.
+    let css_comment_re = Regex::new(r"(?s)/\*.*?\*/").unwrap();
+    let mut uses_has_selector = false;
+    for cap in style_block_re.captures_iter(html) {
+        if let Some(m) = cap.get(1) {
+            let css = css_comment_re.replace_all(m.as_str(), "");
+            if css.contains(":has(") {
+                uses_has_selector = true;
+                break;
+            }
+        }
+    }
+    if uses_has_selector {
+        issues.push(DesignIssue {
+            slide: 1,
+            r#type: "unsupported_css_selector".to_string(),
+            severity: "error".to_string(),
+            detail: "Compiled CSS uses the :has() selector, which the blitz/stylo export renderer silently drops.".to_string(),
+            message: "Replace :has() rules with explicit marker classes (sf-bleed-layer / sf-body-lift).".to_string(),
+            suggestion: "Emit marker classes from the renderer (slide_base emits sf-bleed-layer; render_carousel_html emits sf-body-lift) and target those instead of :has().".to_string(),
+        });
+    }
+
+    // Split the HTML into slides. Attribute-order agnostic: the renderer emits
     // `<div id="slide-0" class="slide slide--light">` (id BEFORE class), so the
     // matcher cannot require `class=` to be the first attribute. The exact
     // whitespace-token check below keeps slide-content / slide-composition /

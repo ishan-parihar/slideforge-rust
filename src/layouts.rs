@@ -209,7 +209,7 @@ pub fn slide_base(
         .join("; ");
 
     format!(
-        r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
+        r#"<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
             <div style="{}"></div>
             {}
             <div class="slide-content" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;">
@@ -268,7 +268,7 @@ pub fn hero_slide_base(
         .join("; ");
 
     format!(
-        r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
+        r#"<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
             <div style="{}"></div>
             {}
             <div class="slide-content" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;">
@@ -352,7 +352,7 @@ pub fn slide_base_bleed(
         .join("; ");
 
     format!(
-        r#"<div style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
+        r#"<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:{};background-color:{};overflow:hidden;">
             <div style="{}"></div>
             {}
             <div class="slide-content--bleed" style="position:relative;z-index:10;padding:{};display:flex;flex-direction:column;justify-content:{};height:100%;width:100%;box-sizing:border-box;">
@@ -548,6 +548,35 @@ mod tests {
             textures: IndexMap::new(),
             glass: serde_json::json!({}),
         }
+    }
+
+    /// The root wrapper emitted by every slide_base-family function must carry
+    /// the `sf-bleed-layer` marker so render_carousel_html can lift the body
+    /// clip (sf-body-lift) without `:has()` (which blitz/stylo drops).
+    #[test]
+    fn slide_base_family_emits_bleed_marker() {
+        let tk = tokens();
+        let base = slide_base("<p>x</p>", &tk, "light", false, "16px", "center");
+        assert!(
+            base.contains("sf-bleed-layer"),
+            "slide_base root must carry sf-bleed-layer"
+        );
+        let hero = hero_slide_base("<p>x</p>", &tk, "light", false, "16px", "center");
+        assert!(
+            hero.contains("sf-bleed-layer"),
+            "hero_slide_base root must carry sf-bleed-layer"
+        );
+        let bleed = slide_base_bleed("<p>x</p>", &tk, "dark", false, "0", "stretch");
+        assert!(
+            bleed.contains("sf-bleed-layer"),
+            "slide_base_bleed root must carry sf-bleed-layer"
+        );
+        // The marker must be on the ROOT wrapper (first child), not the inner
+        // slide-content wrapper.
+        assert!(
+            base.find("sf-bleed-layer").unwrap() < base.find("slide-content").unwrap(),
+            "marker must precede the slide-content wrapper"
+        );
     }
 
     /// The painted surface in `slide_base` MUST agree with the text colors
