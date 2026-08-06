@@ -58,8 +58,9 @@ pub(crate) fn fnv1a64(s: &str) -> u64 {
 /// Bump this whenever the vendored CSS post-processing changes so stale cache
 /// files (written by an older binary) are not served verbatim. The glyph-race
 /// fix (latin-subset collapse) changed the payload shape, so `v2` forces a
-/// refetch+rewrite of every cached stylesheet once.
-const CACHE_VERSION: &str = "v2";
+/// refetch+rewrite of every cached stylesheet once. `pub(crate)` so the export
+/// tests can seed cache files with the exact on-disk key.
+pub(crate) const CACHE_VERSION: &str = "v2";
 
 /// Collapse Google Fonts' per-subset `@font-face` fan-out to ONE face per
 /// (family, weight, style): the face whose `unicode-range` covers the basic
@@ -80,47 +81,87 @@ const CACHE_VERSION: &str = "v2";
 /// emoji/fallback stacks (see `select_font`'s `is_emoji` branch), and our
 /// generated content is ASCII + Latin-1 + common punctuation.
 ///
-/// Conservative: if no face covers `U+0000-00FF` (e.g. a non-Latin-only
-/// family), the stylesheet is returned unchanged.
+/// Conservative: faces of a family that has NO latin subset at all (e.g. a
+/// non-Latin-only family) are preserved verbatim — collapse only drops the
+/// non-latin subset faces of families that DO ship a latin face.
 fn collapse_to_latin_faces(css: &str) -> String {
     let face_re = Regex::new(r"(?s)@font-face\s*\{[^{}]*\}").unwrap();
-    let mut kept: Vec<String> = Vec::new();
-    let mut seen: Vec<(String, String, String)> = Vec::new();
-    let mut any_latin = false;
+    let fam_re = Regex::new(r"(?i)font-family:\s*'([^']+)'").unwrap();
+    let wt_re = Regex::new(r"(?i)font-weight:\s*([^;]+)").unwrap();
+    let st_re = Regex::new(r"(?i)font-style:\s*([^;]+)").unwrap();
+    let ur_re = Regex::new(r"(?i)unicode-range:\s*([^;]+)").unwrap();
+
+    // First pass: parse every block; decide per-family whether a latin face
+    // exists for that family.
+    struct Parsed {
+        family: String,
+        weight: String,
+        style: String,
+        is_latin: bool,
+        block: String,
+    }
+    let mut parsed: Vec<Parsed> = Vec::new();
+    let mut families_with_latin: Vec<String> = Vec::new();
+    let mut any = false;
     let mut last = 0usize;
     for face in face_re.find_iter(css) {
         let block = face.as_str();
         last = face.end();
-        let fam = Regex::new(r"(?i)font-family:\s*'([^']+)'").unwrap();
-        let wt = Regex::new(r"(?i)font-weight:\s*([^;]+)").unwrap();
-        let st = Regex::new(r"(?i)font-style:\s*([^;]+)").unwrap();
-        let ur = Regex::new(r"(?i)unicode-range:\s*([^;]+)").unwrap();
-        let family = fam
+        let family = fam_re
             .captures(block)
             .and_then(|c| c.get(1))
-            .map(|m| m.as_str().trim().to_string());
-        let weight = wt
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        // Skip blocks without a parseable family (never collapse those away).
+        if family.is_empty() {
+            continue;
+        }
+        any = true;
+        let weight = wt_re
             .captures(block)
             .and_then(|c| c.get(1))
-            .map(|m| m.as_str().trim().to_string());
-        let style = st
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        let style = st_re
             .captures(block)
             .and_then(|c| c.get(1))
-            .map(|m| m.as_str().trim().to_string());
-        let is_latin = ur
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        let is_latin = ur_re
             .captures(block)
             .map(|c| c.get(1).is_some_and(|m| m.as_str().contains("U+0000-00FF")))
             .unwrap_or(false);
-        let key = (family.unwrap_or_default(), weight.unwrap_or_default(), style.unwrap_or_default());
-        if is_latin {
-            any_latin = true;
+        if is_latin && !families_with_latin.contains(&family) {
+            families_with_latin.push(family.clone());
+        }
+        parsed.push(Parsed { family, weight, style, is_latin, block: block.to_string() });
+    }
+    if !any {
+        return css.to_string();
+    }
+    // If NO family ships a latin face, keep everything unchanged.
+    if families_with_latin.is_empty() {
+        return css.to_string();
+    }
+    // Second pass: keep latin faces (one per family+weight+style) plus EVERY
+    // face of families that have no latin alternative (their subsets are all
+    // they have — dropping them would strand those families entirely).
+    let mut kept: Vec<String> = Vec::new();
+    let mut seen: Vec<(String, String, String)> = Vec::new();
+    for p in &parsed {
+        let key = (p.family.clone(), p.weight.clone(), p.style.clone());
+        let family_has_latin = families_with_latin.contains(&p.family);
+        if p.is_latin {
             if !seen.contains(&key) {
                 seen.push(key);
-                kept.push(block.to_string());
+                kept.push(p.block.clone());
             }
+        } else if !family_has_latin {
+            // Non-latin family: keep all its faces.
+            kept.push(p.block.clone());
         }
     }
-    if !any_latin || kept.is_empty() {
+    if kept.is_empty() {
         return css.to_string();
     }
     // Preserve any trailing content after the last @font-face (comments etc.)
@@ -500,6 +541,25 @@ mod tests {
         let css = r#"@font-face { font-family: 'Noto Sans JP'; src: url(data:font/woff2;base64,AAAA); unicode-range: U+3040-30FF; }"#;
         let out = collapse_to_latin_faces(css);
         assert!(out.contains("Noto Sans JP"), "no-latin family preserved");
+        assert!(out.contains("U+3040-30FF"));
+    }
+
+    /// Mixed payload: a latin-capable family gets collapsed to its latin faces,
+    /// while a separate non-latin family keeps ALL its faces (it has no latin
+    /// alternative to fall back on — dropping them would strand the family).
+    #[test]
+    fn collapse_keeps_non_latin_family_faces_when_other_family_has_latin() {
+        let css = r#"
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-style: normal; src: url(data:font/woff2;base64,AAAA); unicode-range: U+0100-02BA; }
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-style: normal; src: url(data:font/woff2;base64,BBBB); unicode-range: U+0000-00FF; }
+@font-face { font-family: 'Noto Sans JP'; font-weight: 400; font-style: normal; src: url(data:font/woff2;base64,CCCC); unicode-range: U+3040-30FF; }
+"#;
+        let out = collapse_to_latin_faces(css);
+        // DM Sans: latin-ext dropped, latin kept.
+        assert!(!out.contains("AAAA"), "DM Sans latin-ext dropped");
+        assert!(out.contains("BBBB"), "DM Sans latin face kept");
+        // Noto Sans JP: preserved entirely.
+        assert!(out.contains("CCCC"), "non-latin family faces preserved");
         assert!(out.contains("U+3040-30FF"));
     }
 

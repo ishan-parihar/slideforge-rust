@@ -518,7 +518,7 @@ mod tests {
         // Seed the font cache with a canned vendored stylesheet for that URL.
         let cache = std::env::temp_dir().join(format!("sf_export_font_test_{}", std::process::id()));
         let _ = std::fs::create_dir_all(&cache);
-        let key = format!("v2-{:016x}.css", crate::font_vendor::fnv1a64(font_url));
+        let key = format!("{}-{:016x}.css", crate::font_vendor::CACHE_VERSION, crate::font_vendor::fnv1a64(font_url));
         let vendored_css = "<style>@font-face { font-family:'Bangers'; src: url(data:font/woff2;base64,AAAA) format('woff2'); }</style>";
         std::fs::write(cache.join(&key), vendored_css).unwrap();
 
