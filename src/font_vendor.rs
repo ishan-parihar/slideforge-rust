@@ -228,7 +228,14 @@ fn vendor_font_links_with_fetch(
                 if let Some(style) =
                     vendor_font_css_with_fetch(href.as_str(), cache_dir, fetch_css, fetch_bytes)
                 {
+                    // The vendored payload is raw CSS (`/* latin */\n@font-face{...}`),
+                    // NOT a full <style> element. Injecting it bare into the <head>
+                    // makes the HTML parser treat `@font-face{...}` as malformed
+                    // markup, which can collapse the whole document into a raw-text
+                    // render (flat body-gray + source text) in blitz. Wrap it.
+                    out.push_str("<style>\n");
                     out.push_str(&style);
+                    out.push_str("\n</style>");
                     last = m.end();
                     continue;
                 }
@@ -336,6 +343,35 @@ mod tests {
         assert!(out.contains("data:font/woff2;base64,"), "vendored data-URI style present");
         assert!(out.contains("styles.css"), "non-font link kept");
         assert!(!out.contains("fonts.googleapis.com/css2"), "font link replaced");
+    }
+
+    /// Regression: the vendored payload is raw CSS, so it MUST be injected
+    /// wrapped in a `<style>` element. Injecting it bare into the `<head>`
+    /// makes the HTML parser treat `@font-face{...}` as malformed markup,
+    /// collapsing the whole document into a raw-text render in blitz (the
+    /// flat-body-gray + source-text export bug).
+    #[test]
+    fn vendor_links_wraps_vendored_css_in_style_tags() {
+        let css = "/* latin */\n@font-face { src: url(https://fonts.gstatic.com/x.woff2) format('woff2'); }\n";
+        let links = r#"<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&display=swap">"#;
+        let out = vendor_font_links_with_fetch(
+            &links,
+            None,
+            &|_| Some(css.to_string()),
+            &|_| Some(vec![1, 2, 3]),
+        );
+        assert!(
+            out.contains("<style>\n/* latin */") && out.trim_end().ends_with("</style>"),
+            "vendored CSS wrapped in <style>…</style>: {out}"
+        );
+        assert!(
+            !out.starts_with("/* latin */"),
+            "raw CSS must not be injected bare at the document start"
+        );
+        assert!(
+            !out.contains("\n@font-face") || out.contains("<style>"),
+            "@font-face must live inside a <style> element: {out}"
+        );
     }
 
     /// A seeded cache file must be served without any fetch (fetchers would
