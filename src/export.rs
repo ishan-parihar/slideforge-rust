@@ -383,13 +383,21 @@ fn build_standalone_slide_doc(
     )
 }
 
-/// Export every slide in a carousel HTML document to a PNG of the target canvas
+/// Export slides from a carousel HTML document to PNGs of the target canvas
 /// size. Each slide is extracted from the carousel and rendered standalone at
 /// `width`×`height` via Blitz (no JS / no browser subprocess).
+///
+/// `start` is a 1-based slide number to begin at; `count` is how many slides to
+/// render from `start` onward (slides `[start, start+count)`, 1-based). Output
+/// files keep their GLOBAL carousel index (`slide_{global}.png`) so chunked
+/// exports can be invoked repeatedly into the same directory. Defaulting
+/// `start=1` keeps `export_slides(path, dir, 1, N, w, h)` identical to the
+/// pre-chunk behavior (renders slides 1..N).
 pub fn export_slides(
     html_path: &str,
     output_dir: &str,
-    total_slides: usize,
+    start: usize,
+    count: usize,
     width: u32,
     height: u32,
 ) -> Result<Vec<String>, String> {
@@ -404,7 +412,8 @@ pub fn export_slides(
     let base_url = file_url.to_string();
 
     let mut paths = Vec::new();
-    for i in 0..total_slides {
+    // 0-based loop range for the requested 1-based [start, start+count) span.
+    for i in (start - 1)..(start - 1 + count) {
         let slide_element = extract_slide_element(&carousel, i).ok_or_else(|| {
             format!("Could not locate slide #{} in the carousel document", i + 1)
         })?;
@@ -509,7 +518,7 @@ mod tests {
         // Seed the font cache with a canned vendored stylesheet for that URL.
         let cache = std::env::temp_dir().join(format!("sf_export_font_test_{}", std::process::id()));
         let _ = std::fs::create_dir_all(&cache);
-        let key = format!("{:016x}.css", crate::font_vendor::fnv1a64(font_url));
+        let key = format!("v2-{:016x}.css", crate::font_vendor::fnv1a64(font_url));
         let vendored_css = "<style>@font-face { font-family:'Bangers'; src: url(data:font/woff2;base64,AAAA) format('woff2'); }</style>";
         std::fs::write(cache.join(&key), vendored_css).unwrap();
 

@@ -55,6 +55,79 @@ pub(crate) fn fnv1a64(s: &str) -> u64 {
     h
 }
 
+/// Bump this whenever the vendored CSS post-processing changes so stale cache
+/// files (written by an older binary) are not served verbatim. The glyph-race
+/// fix (latin-subset collapse) changed the payload shape, so `v2` forces a
+/// refetch+rewrite of every cached stylesheet once.
+const CACHE_VERSION: &str = "v2";
+
+/// Collapse Google Fonts' per-subset `@font-face` fan-out to ONE face per
+/// (family, weight, style): the face whose `unicode-range` covers the basic
+/// Latin block (`U+0000-00FF`).
+///
+/// WHY: Google Fonts CSS2 serves a family as several subset faces (latin,
+/// latin-ext, vietnamese, cyrillic…) with different `unicode-range`s. The
+/// export renderer (blitz/stylo) does NOT implement `unicode-range` — it
+/// registers every face and fontdb/parley matches by family+weight+style only,
+/// so a family may resolve to a *non-latin* subset (e.g. latin-ext). Those
+/// subsets contain letters but often lack ASCII digits (`0x30` is absent from
+/// latin-ext), so digits and other missing glyphs silently fall back to system
+/// fonts — the "mixed A / numbers / whole-word lettering" export bug.
+/// Keeping only the Latin face per weight makes font resolution deterministic
+/// and gives every ASCII/Latin-1/punctuation glyph a single source.
+///
+/// Emoji and rare scripts are unaffected: parley routes them through its own
+/// emoji/fallback stacks (see `select_font`'s `is_emoji` branch), and our
+/// generated content is ASCII + Latin-1 + common punctuation.
+///
+/// Conservative: if no face covers `U+0000-00FF` (e.g. a non-Latin-only
+/// family), the stylesheet is returned unchanged.
+fn collapse_to_latin_faces(css: &str) -> String {
+    let face_re = Regex::new(r"(?s)@font-face\s*\{[^{}]*\}").unwrap();
+    let mut kept: Vec<String> = Vec::new();
+    let mut seen: Vec<(String, String, String)> = Vec::new();
+    let mut any_latin = false;
+    let mut last = 0usize;
+    for face in face_re.find_iter(css) {
+        let block = face.as_str();
+        last = face.end();
+        let fam = Regex::new(r"(?i)font-family:\s*'([^']+)'").unwrap();
+        let wt = Regex::new(r"(?i)font-weight:\s*([^;]+)").unwrap();
+        let st = Regex::new(r"(?i)font-style:\s*([^;]+)").unwrap();
+        let ur = Regex::new(r"(?i)unicode-range:\s*([^;]+)").unwrap();
+        let family = fam
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string());
+        let weight = wt
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string());
+        let style = st
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string());
+        let is_latin = ur
+            .captures(block)
+            .map(|c| c.get(1).is_some_and(|m| m.as_str().contains("U+0000-00FF")))
+            .unwrap_or(false);
+        let key = (family.unwrap_or_default(), weight.unwrap_or_default(), style.unwrap_or_default());
+        if is_latin {
+            any_latin = true;
+            if !seen.contains(&key) {
+                seen.push(key);
+                kept.push(block.to_string());
+            }
+        }
+    }
+    if !any_latin || kept.is_empty() {
+        return css.to_string();
+    }
+    // Preserve any trailing content after the last @font-face (comments etc.)
+    let tail = &css[last..];
+    format!("{}\n{}", kept.join("\n"), tail)
+}
+
 /// Rewrite a Google Fonts CSS2 stylesheet so every `@font-face` `src` that
 /// points at a remote `http(s)` URL becomes a `data:font/woff2;base64,…` URI.
 ///
@@ -176,7 +249,7 @@ fn vendor_font_css_with_fetch(
     fetch_css: &dyn Fn(&str) -> Option<String>,
     fetch_bytes: &dyn Fn(&str) -> Option<Vec<u8>>,
 ) -> Option<String> {
-    let key = format!("{:016x}.css", fnv1a64(url));
+    let key = format!("{}-{:016x}.css", CACHE_VERSION, fnv1a64(url));
     if let Some(file) = cache_dir.map(|d| d.join(&key)) {
         if let Ok(cached) = fs::read_to_string(&file) {
             if !cached.trim().is_empty() {
@@ -186,13 +259,16 @@ fn vendor_font_css_with_fetch(
     }
     let css = fetch_css(url)?;
     let inline = inline_font_css(&css, fetch_bytes)?;
+    // Collapse the per-subset fan-out to a single latin face per weight BEFORE
+    // caching, so cache hits and fresh fetches both ship the deterministic set.
+    let collapsed = collapse_to_latin_faces(&inline);
     if let Some(file) = cache_dir.map(|d| d.join(&key)) {
         if let Some(dir) = file.parent() {
             let _ = fs::create_dir_all(dir);
         }
-        let _ = fs::write(file, &inline);
+        let _ = fs::write(file, &collapsed);
     }
-    Some(inline)
+    Some(collapsed)
 }
 
 /// Replace every Google-Fonts stylesheet `<link>` in a document fragment
@@ -381,7 +457,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sf_font_cache_hit_{}", std::process::id()));
         let _ = fs::create_dir_all(&dir);
         let url = "https://fonts.googleapis.com/css2?family=Roboto&display=swap";
-        let key = format!("{:016x}.css", fnv1a64(url));
+        let key = format!("{}-{:016x}.css", CACHE_VERSION, fnv1a64(url));
         fs::write(dir.join(&key), "<style>/* cached */</style>").unwrap();
 
         let got = vendor_font_css_with_fetch(
@@ -393,5 +469,47 @@ mod tests {
         .expect("cache hit");
         let _ = fs::remove_dir_all(&dir);
         assert_eq!(got, "<style>/* cached */</style>");
+    }
+
+    /// The latin-subset collapse keeps exactly one face per (family, weight,
+    /// style) — the face whose unicode-range covers U+0000-00FF — dropping the
+    /// latin-ext/cyrillic/vietnamese subset faces that lack ASCII digits and
+    /// would otherwise cause per-glyph system fallback in blitz.
+    #[test]
+    fn collapse_keeps_only_latin_face_per_weight() {
+        let css = r#"
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-style: normal; src: url(data:font/woff2;base64,AAAA); unicode-range: U+0100-02BA, U+02BD-02C5; }
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-style: normal; src: url(data:font/woff2;base64,BBBB); unicode-range: U+0000-00FF, U+0131, U+2000-206F; }
+@font-face { font-family: 'DM Sans'; font-weight: 500; font-style: normal; src: url(data:font/woff2;base64,CCCC); unicode-range: U+0000-00FF; }
+@font-face { font-family: 'DM Sans'; font-weight: 500; font-style: normal; src: url(data:font/woff2;base64,DDDD); unicode-range: U+0400-045F; }
+"#;
+        let out = collapse_to_latin_faces(css);
+        // latin faces kept (BBBB for 400, CCCC for 500); latin-ext (AAAA) and
+        // cyrillic (DDDD) dropped.
+        assert!(out.contains("BBBB"), "latin 400 face kept");
+        assert!(out.contains("CCCC"), "latin 500 face kept");
+        assert!(!out.contains("AAAA"), "latin-ext face dropped");
+        assert!(!out.contains("DDDD"), "cyrillic face dropped");
+        assert_eq!(out.matches("@font-face").count(), 2, "one face per weight");
+    }
+
+    /// When NO face covers the basic Latin block (non-Latin-only family), the
+    /// stylesheet must pass through unchanged — never dropped to empty.
+    #[test]
+    fn collapse_passthrough_when_no_latin_face() {
+        let css = r#"@font-face { font-family: 'Noto Sans JP'; src: url(data:font/woff2;base64,AAAA); unicode-range: U+3040-30FF; }"#;
+        let out = collapse_to_latin_faces(css);
+        assert!(out.contains("Noto Sans JP"), "no-latin family preserved");
+        assert!(out.contains("U+3040-30FF"));
+    }
+
+    /// Collapse must survive a Google Fonts payload with no unicode-range at
+    /// all (some CDNs omit it) — every face is kept.
+    #[test]
+    fn collapse_passthrough_when_no_unicode_range() {
+        let css = r#"@font-face { font-family: 'X'; src: url(data:font/woff2;base64,AAAA); }"#;
+        let out = collapse_to_latin_faces(css);
+        assert!(out.contains("@font-face"));
+        assert!(out.contains("'X'"));
     }
 }
