@@ -7,6 +7,7 @@
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-1.8.0-purple.svg)](https://modelcontextprotocol.io)
+[![Release](https://img.shields.io/github/v/release/ishan-parihar/slideforge-rust)](https://github.com/ishan-parihar/slideforge-rust/releases)
 
 </div>
 
@@ -14,7 +15,7 @@
 
 ## ✨ Features
 
-- **47 slide types** across 6 categories: Text & Layout, Data Viz, Metrics, Story, Image, Conversion
+- **46 slide types** across 6 categories: Text & Layout, Data Viz, Metrics, Story, Image, Conversion
 - **MCP server** — integrate with Claude, Cursor, or any MCP client for AI-driven slide generation
 - **CLI** — scriptable, CI-friendly commands for batch generation
 - **Design system** — tokens, themes, archetypes, Google Fonts, CSS variables
@@ -29,9 +30,12 @@
 ### Install (pre-built binary)
 
 ```bash
-# Download latest release from GitHub Releases
+# Static musl binary (runs on any Linux, no dependencies) — grab from Releases:
+curl -fsSL https://github.com/ishan-parihar/slideforge-rust/releases/download/v0.4.0/slideforge-x86_64-unknown-linux-musl \
+  -o ~/.local/bin/slideforge-rust && chmod +x ~/.local/bin/slideforge-rust
+
 # Or build from source:
-cargo install --git https://github.com/your-org/slideforge-rust
+cargo install --git https://github.com/ishan-parihar/slideforge-rust
 ```
 
 ### CLI Usage
@@ -87,7 +91,7 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.):
 
 ---
 
-## 🎨 Slide Types (47 total)
+## 🎨 Slide Types (46 total)
 
 | Category | Types |
 |----------|-------|
@@ -170,13 +174,17 @@ Checks: overflow, contrast, descender clipping, squished components, distorted i
 
 ## 💾 Memory Profile
 
-| Component | RSS (idle) | RSS (export) |
-|-----------|------------|--------------|
-| MCP server | **~8.5 MB** | — |
-| CLI (generate-slide) | **~4 MB** | — |
-| Export (Blitz renderer) | — | **~110 MB** (one-shot per export) |
+The Blitz rendering engine (stylo layout + vello-cpu raster) is embedded in the binary — no Chromium subprocess, no browser download, no persistent browser pool. Measured against the legacy headless-Chrome build on the same 8-slide export workload:
 
-The Blitz rendering engine (stylo layout + vello-cpu raster) is embedded in the binary — no Chromium subprocess, no browser download, no persistent browser pool. Peak export RSS is ~110 MB vs ~550 MB for headless Chrome.
+| Metric | Blitz (v0.4.0) | Legacy Chrome | Delta |
+|--------|----------------|---------------|-------|
+| Peak RSS | **132 MB** | 599 MB | **4.5× less** |
+| Wall time | 13.3 s | 15.4 s | 1.2× faster |
+
+| Component | RSS (idle) |
+|-----------|------------|
+| MCP server | **~8.5 MB** |
+| CLI (generate-slide) | **~4 MB** |
 
 ---
 
@@ -190,7 +198,9 @@ cargo build --release
 cargo build --release --target x86_64-unknown-linux-musl
 ```
 
-Requires: Rust 1.75+, `clang`/`lld` for musl target.
+Requires: Rust 1.75+, `clang`/`lld` for the musl target (aws-lc-sys).
+
+The build uses **rustls-only TLS** — a vendored `blitz-net` ([`[patch.crates-io]`](./Cargo.toml)) swaps its hardcoded `native-tls` for `rustls` so no `libssl`/`libcrypto` is ever linked. The musl artifact is a fully static ~21 MB binary (verified `statically linked` via `ldd`).
 
 ---
 
@@ -240,9 +250,9 @@ At session start, SlideForge prints a compact dashboard:
 
 ```
 bin: ~/.local/bin/slideforge
-description: Instagram/LinkedIn/TikTok carousel generator — 47 slide types, 8 platform presets
+description: Instagram/LinkedIn/TikTok carousel generator — 46 slide types, 8 platform presets
 
-slides[47]{type,description}:
+slides[46]{type,description}:
   hero,Opening hook with headline and subheadline
   ...
 
@@ -252,7 +262,7 @@ design_tokens:
   archetype: startup_pitch
 
 help[4]:
-  Run `slideforge list-slides` to see all 47 slide types
+  Run `slideforge list-slides` to see all 46 slide types
   Run `slideforge generate-slide hero --params '{...}'` to create a slide
   Run `slideforge render-carousel slides.json --tokens-file tokens.json` to render
   Run `slideforge export carousel.html --output-dir ./exports` to export PNGs
