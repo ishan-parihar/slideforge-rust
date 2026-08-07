@@ -1116,9 +1116,10 @@ pub fn quote_slide(
     let glass_close = "</div>";
 
     let effective_variant = variant;
-    // Quote text is italic by design; only apply when the heading font ships a
-    // true italic face (blitz faux-italic leans backwards otherwise).
-    let quote_italic = crate::design_system::italic_style_for(&tokens.heading_font);
+    // Quote text is italic by design — render TRUE italic glyphs (heading font,
+    // else the body font's real italic face; skew only as a last resort).
+    let quote_italic =
+        crate::design_system::italic_text_css(&tokens.heading_font, &tokens.body_font);
 
     let html = match effective_variant {
         "left-accent" => {
@@ -1131,15 +1132,29 @@ pub fn quote_slide(
                 r#"<div style="font-family:Georgia,serif;font-size:48px;line-height:1;color:{};margin-bottom:-4px;user-select:none;" aria-hidden="true">❝</div>"#,
                 quote_mark_color
             );
+            // Last-resort skew must not tilt the 4px accent border: when the
+            // skew fallback is active, keep font+style on the blockquote and
+            // skew ONLY the glyphs via an inner inline-block span.
+            let (bq_style, quote_body) = if quote_italic.contains("transform:") {
+                let font_style = quote_italic.replace("transform:skewX(-10deg);", "");
+                (
+                    font_style,
+                    format!(
+                        r#"<span style="display:inline-block;transform:skewX(-10deg);">{}</span>"#,
+                        escape_html(quote)
+                    ),
+                )
+            } else {
+                (quote_italic, escape_html(quote))
+            };
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;{}">{}</blockquote>"#,
-                tokens.heading_font,
+                r#"<blockquote style="font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;{}">{}</blockquote>"#,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
                 tokens.primary,
-                quote_italic,
-                escape_html(quote)
+                bq_style,
+                quote_body
             );
             let accent_and_attr = if !author.is_empty() {
                 let attr = attribution_block(
@@ -1182,8 +1197,7 @@ pub fn quote_slide(
                 quote_mark_color
             );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
-                tokens.heading_font,
+                r#"<blockquote style="font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
@@ -1227,8 +1241,7 @@ pub fn quote_slide(
                 quote_mark_color
             );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
-                tokens.heading_font,
+                r#"<blockquote style="font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
@@ -4582,14 +4595,16 @@ fn comment_cta_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
 
-    // Headline — always italic-leaning. True-italic families use `font-style`;
-    // no-italic families (Syne/Space Grotesk) get a geometric forward skew
-    // because blitz's faux-italic synthesis leans backwards (forward_italic_css).
-    let headline_italic = crate::design_system::forward_italic_css(&tokens.heading_font);
+    // Headline — always TRUE italic. Heading font when it ships an ital axis;
+    // otherwise the already-loaded body font when IT has italics (e.g. Syne →
+    // DM Sans italic); geometric skew only as a last resort. Synthetic oblique
+    // is never used (blitz leans backwards, Chrome is non-uniform per line).
+    let headline_style =
+        crate::design_system::italic_text_css(&tokens.heading_font, &tokens.body_font);
     let headline_html = if !heading.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;{}">{}</div>"#,
-            tokens.heading_font, colors.text_primary, headline_italic, escape_html(heading)
+            r#"<div style="font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;{}">{}</div>"#,
+            colors.text_primary, headline_style, escape_html(heading)
         )
     } else { String::new() };
 
@@ -5769,20 +5784,20 @@ pub fn image_quote_slide(
     // Quote text readability: blitz drops text-shadow, so contrast must come
     // from the scrim + weight, not the shadow. Use 700 (was 600 — thin lines
     // vanished on bright images) and keep the shadow only as a Chrome bonus.
-    // Forward-lean italics on every family (true italic or geometric skew).
-    let quote_italic = crate::design_system::forward_italic_css(&tokens.heading_font);
+    // TRUE italic glyphs: heading font, else the body font's real italic face.
+    let quote_italic =
+        crate::design_system::italic_text_css(&tokens.heading_font, &tokens.body_font);
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.95;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
-                <p style="font-family:{};font-size:22px;{};font-weight:700;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
+                <p style="font-size:22px;{};font-weight:700;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
                 {}
                 {}
             </div>
         </div>"#,
         img_html,
-        tokens.heading_font,
         quote_italic,
         escape_html(quote),
         if !author.is_empty() {
