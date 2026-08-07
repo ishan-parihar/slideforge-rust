@@ -1,440 +1,441 @@
 {
- "id": "saas_launch",
- "name": "Orbit CRM — Product Launch",
- "deck_caption": "B2B SaaS launch arc: problem → solution → proof → pricing → close",
- "primary": "#5E5FE0",
- "style": "technical",
- "preset": "vibrant",
- "typology": "startup",
- "color_scheme": "complementary",
- "theme": "technical",
- "archetype": "startup_pitch",
- "brand": "Orbit CRM",
- "topic": "The sales pipeline, automated",
- "url": "https://orbitcrm.dev/launch",
- "hashtags": [
-  "SaaS",
-  "CRM",
-  "Launch"
- ],
- "aspect_ratio": "4:5",
- "progress": "chips",
- "slides": [
-  {
-   "type": "hero",
-   "variant": "centered",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "headline": "Meet Orbit CRM",
-    "subheadline": "The sales pipeline that writes its own follow-ups",
-    "badge": "Product Launch",
-    "tagline": "CRM without the busywork"
-   }
-  },
-  {
-   "type": "hero",
-   "variant": "chapter",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "headline": "Reps lose 40% of pipeline to missed follow-ups",
-    "subheadline": "Every un-answered email is revenue quietly evaporating.",
-    "badge": "THE PROBLEM"
-   }
-  },
-  {
-   "type": "problem_solution",
-   "variant": "proof-grid",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "The gap",
-    "problem": "Teams juggle spreadsheets, email threads and sticky notes. Follow-ups slip, deals stall, and pipeline reports are fiction.",
-    "solution": "Orbit automates the entire cadence: capture every touchpoint, sequence the follow-up, and surface the one next action that matters.",
-    "proof_points": "4.2x more touches per deal. 63% faster close cycles. Live pipeline every morning.",
-    "description": "Every follow-up and touchpoint lands automatically, so the pipeline never goes quiet."
-   }
-  },
-  {
-   "type": "split_features",
-   "variant": "two-column",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Two engines, one flow",
-    "features": [
-     {
-      "title": "Auto-sequence",
-      "description": "Follow-ups schedule themselves based on deal health, not rep memory."
-     },
-     {
-      "title": "Live pipeline",
-      "description": "Every stage, owner and next action visible in one pane."
-     },
-     {
-      "title": "Smart reminders",
-      "description": "Nudges only when a deal actually needs a human move."
-     }
-    ]
-   }
-  },
-  {
-   "type": "split_features",
-   "variant": "two-column",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Two engines, one flow (more)",
-    "features": [
-     {
-      "title": "One inbox",
-      "description": "Email, calls and notes collapsed into a single timeline."
-     }
-    ]
-   }
-  },
-  {
-   "type": "split_features",
-   "variant": "icon-grid",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Built for the revenue team",
-    "features": [
-     {
-      "title": "API-first",
-      "description": "Push deals from any source with a REST webhook."
-     },
-     {
-      "title": "Forecast mode",
-      "description": "Predict close probability from historical velocity."
-     },
-     {
-      "title": "Templates",
-      "description": "Ship sequences in minutes, not days."
-     }
-    ]
-   }
-  },
-  {
-   "type": "split_features",
-   "variant": "icon-grid",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Built for the revenue team (more)",
-    "features": [
-     {
-      "title": "Audit log",
-      "description": "Every touch recorded, exportable on demand."
-     },
-     {
-      "title": "Role views",
-      "description": "Rep, manager and exec dashboards out of the box."
-     },
-     {
-      "title": "Integrations",
-      "description": "HubSpot, Slack, Stripe and 40+ more."
-     }
-    ]
-   }
-  },
-  {
-   "type": "chart",
-   "variant": "bar",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Pipeline visibility, month over month",
-    "chart_type": "bar",
-    "description": "Automated cadences added an average of $184K of tracked pipeline per month.",
-    "data": [
-     {
-      "label": "Jan",
-      "value": 340
-     },
-     {
-      "label": "Feb",
-      "value": 410
-     },
-     {
-      "label": "Mar",
-      "value": 505
-     },
-     {
-      "label": "Apr",
-      "value": 610
-     },
-     {
-      "label": "May",
-      "value": 742
-     },
-     {
-      "label": "Jun",
-      "value": 880
-     }
-    ]
-   }
-  },
-  {
-   "type": "chart",
-   "variant": "line",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Close cycle, compressed",
-    "chart_type": "line",
-    "description": "Median days from first touch to closed-won fell from 34 to 12 after switching to Orbit.",
-    "data": [
-     {
-      "label": "Wk1",
-      "value": 34
-     },
-     {
-      "label": "Wk3",
-      "value": 28
-     },
-     {
-      "label": "Wk6",
-      "value": 21
-     },
-     {
-      "label": "Wk9",
-      "value": 16
-     },
-     {
-      "label": "Wk12",
-      "value": 12
-     }
-    ]
-   }
-  },
-  {
-   "type": "metric_grid",
-   "variant": "default",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "The Orbit effect",
-    "metrics": [
-     {
-      "value": "4.2x",
-      "label": "Touches per deal",
-      "progress": 0.84
-     },
-     {
-      "value": "63%",
-      "label": "Faster close",
-      "progress": 0.63
-     },
-     {
-      "value": "$880K",
-      "label": "Tracked pipeline",
-      "progress": 0.78
-     },
-     {
-      "value": "0",
-      "label": "Missed follow-ups",
-      "progress": 0.1
-     }
-    ]
-   }
-  },
-  {
-   "type": "table",
-   "variant": "default",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Starter vs Scale",
-    "headers": [
-     "Capability",
-     "Starter",
-     "Scale"
-    ],
-    "rows": [
-     [
-      "Deal records",
-      "500",
-      "Unlimited"
-     ],
-     [
-      "Sequences",
-      "3",
-      "Unlimited"
-     ],
-     [
-      "Forecasting",
-      "No",
-      "Yes"
-     ],
-     [
-      "API access",
-      "Read",
-      "Read + write"
-     ]
-    ]
-   }
-  },
-  {
-   "type": "timeline",
-   "variant": "horizontal",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "90-day roadmap",
-    "steps": [
-     {
-      "label": "Q3",
-      "description": "Mobile app beta"
-     },
-     {
-      "label": "Q3",
-      "description": "AI deal scoring"
-     },
-     {
-      "label": "Q4",
-      "description": "Territory planner"
-     },
-     {
-      "label": "Q1",
-      "description": "Marketplace"
-     }
-    ]
-   }
-  },
-  {
-   "type": "pricing_plan",
-   "variant": "cards",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Plans that scale with you",
-    "plans": [
-     {
-      "name": "Starter",
-      "price": "$29",
-      "features": [
-       "500 deals",
-       "3 sequences",
-       "Email sync"
-      ]
-     },
-     {
-      "name": "Scale",
-      "price": "$79",
-      "features": [
-       "Unlimited deals",
-       "Forecasting",
-       "40+ integrations"
-      ],
-      "featured": true
-     },
-     {
-      "name": "Enterprise",
-      "price": "Custom",
-      "features": [
-       "SSO + audit",
-       "Dedicated CSM",
-       "Custom SLA"
-      ]
-     }
-    ]
-   }
-  },
-  {
-   "type": "testimonial_avatar",
-   "variant": "profile",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "quote": "We stopped losing deals to silence. Orbit pays for itself every single month.",
-    "author": "Maya Chen",
-    "role": "VP Sales, Northwind",
-    "avatar_url": "https://picsum.photos/seed/maya/120/120"
-   }
-  },
-  {
-   "type": "logo_cloud",
-   "variant": "grid",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Trusted by revenue teams at",
-    "logos": [
-     "Northwind",
-     "Acme Corp",
-     "Globex",
-     "Initech",
-     "Umbrella",
-     "Stark Labs"
-    ]
-   }
-  },
-  {
-   "type": "faq",
-   "variant": "stack",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "title": "Before you ask",
-    "questions": [
-     {
-      "q": "Do we need to migrate our old CRM?",
-      "a": "No. Import CSV or connect via API; Orbit coexists with HubSpot today."
-     },
-     {
-      "q": "Is the AI scoring accurate?",
-      "a": "It is trained on your own close history, so it learns your deal shapes."
-     },
-     {
-      "q": "Can we try it before paying?",
-      "a": "Yes — 14-day free trial on Scale, no credit card required."
-     },
-     {
-      "q": "What about data security?",
-      "a": "SOC 2 Type II, encryption at rest, and full audit export."
-     }
-    ]
-   }
-  },
-  {
-   "type": "big_statement",
-   "variant": "stat",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "heading": "The average Orbit team closes 63% faster",
-    "stat_value": "63%",
-    "stat_label": "faster median close cycle",
-    "cta_text": "Start free"
-   }
-  },
-  {
-   "type": "comment_cta",
-   "variant": "default",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "heading": "What's your most missed follow-up?",
-    "sub_heading": "Comment your answer and we'll DM you a template that fixes it.",
-    "cta_text": "Comment PIPELINE to unlock the template pack.",
-    "keyword": "PIPELINE"
-   }
-  },
-  {
-   "type": "qr_destination",
-   "variant": "full-conversion",
-   "theme": "technical",
-   "bg": "dark",
-   "params": {
-    "destination_url": "https://orbitcrm.dev/launch",
-    "cta_text": "Start your free trial",
-    "heading": "See your pipeline write itself",
-    "caption": "14 days free — no credit card required",
-    "short_url": "orbitcrm.dev"
-   }
-  }
- ]
+  "id": "saas_launch",
+  "name": "Orbit CRM — Product Launch",
+  "deck_caption": "B2B SaaS launch arc: problem → solution → proof → pricing → close",
+  "primary": "#5E5FE0",
+  "style": "technical",
+  "preset": "vibrant",
+  "typology": "startup",
+  "color_scheme": "complementary",
+  "theme": "technical",
+  "archetype": "startup_pitch",
+  "brand": "Orbit CRM",
+  "topic": "The sales pipeline, automated",
+  "url": "https://orbitcrm.dev/launch",
+  "hashtags": [
+    "SaaS",
+    "CRM",
+    "Launch"
+  ],
+  "aspect_ratio": "4:5",
+  "progress": "chips",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "centered",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "headline": "Meet Orbit CRM",
+        "subheadline": "The sales pipeline that writes its own follow-ups",
+        "badge": "Product Launch",
+        "tagline": "CRM without the busywork"
+      }
+    },
+    {
+      "type": "hero",
+      "variant": "chapter",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "headline": "Reps lose 40% of pipeline to missed follow-ups",
+        "subheadline": "Every un-answered email is revenue quietly evaporating.",
+        "badge": "THE PROBLEM"
+      }
+    },
+    {
+      "type": "problem_solution",
+      "variant": "proof-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "The gap",
+        "problem": "Teams juggle spreadsheets, email threads and sticky notes. Follow-ups slip, deals stall, and pipeline reports are fiction.",
+        "solution": "Orbit automates the entire cadence: capture every touchpoint, sequence the follow-up, and surface the one next action that matters.",
+        "proof_points": "4.2x more touches per deal. 63% faster close cycles. Live pipeline every morning.",
+        "description": "Every follow-up and touchpoint lands automatically, so the pipeline never goes quiet."
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "two-column",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Two engines, one flow",
+        "features": [
+          {
+            "title": "Auto-sequence",
+            "description": "Follow-ups schedule themselves based on deal health, not rep memory."
+          },
+          {
+            "title": "Live pipeline",
+            "description": "Every stage, owner and next action visible in one pane."
+          },
+          {
+            "title": "Smart reminders",
+            "description": "Nudges only when a deal actually needs a human move."
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "two-column",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Two engines, one flow (more)",
+        "features": [
+          {
+            "title": "One inbox",
+            "description": "Email, calls and notes collapsed into a single timeline."
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "icon-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Built for the revenue team",
+        "features": [
+          {
+            "title": "API-first",
+            "description": "Push deals from any source with a REST webhook."
+          },
+          {
+            "title": "Forecast mode",
+            "description": "Predict close probability from historical velocity."
+          },
+          {
+            "title": "Templates",
+            "description": "Ship sequences in minutes, not days."
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "icon-grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Built for the revenue team (more)",
+        "features": [
+          {
+            "title": "Audit log",
+            "description": "Every touch recorded, exportable on demand."
+          },
+          {
+            "title": "Role views",
+            "description": "Rep, manager and exec dashboards out of the box."
+          },
+          {
+            "title": "Integrations",
+            "description": "HubSpot, Slack, Stripe and 40+ more."
+          }
+        ]
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "bar",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Pipeline visibility, month over month",
+        "chart_type": "bar",
+        "description": "Automated cadences added an average of $184K of tracked pipeline per month.",
+        "data": [
+          {
+            "label": "Jan",
+            "value": 340
+          },
+          {
+            "label": "Feb",
+            "value": 410
+          },
+          {
+            "label": "Mar",
+            "value": 505
+          },
+          {
+            "label": "Apr",
+            "value": 610
+          },
+          {
+            "label": "May",
+            "value": 742
+          },
+          {
+            "label": "Jun",
+            "value": 880
+          }
+        ]
+      }
+    },
+    {
+      "type": "chart",
+      "variant": "line",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Close cycle, compressed",
+        "chart_type": "line",
+        "description": "Median days from first touch to closed-won fell from 34 to 12 after switching to Orbit.",
+        "data": [
+          {
+            "label": "Wk1",
+            "value": 34
+          },
+          {
+            "label": "Wk3",
+            "value": 28
+          },
+          {
+            "label": "Wk6",
+            "value": 21
+          },
+          {
+            "label": "Wk9",
+            "value": 16
+          },
+          {
+            "label": "Wk12",
+            "value": 12
+          }
+        ]
+      }
+    },
+    {
+      "type": "metric_grid",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "The Orbit effect",
+        "metrics": [
+          {
+            "value": "4.2x",
+            "label": "Touches per deal",
+            "progress": 0.84
+          },
+          {
+            "value": "63%",
+            "label": "Faster close",
+            "progress": 0.63
+          },
+          {
+            "value": "$880K",
+            "label": "Tracked pipeline",
+            "progress": 0.78
+          },
+          {
+            "value": "0",
+            "label": "Missed follow-ups",
+            "progress": 0.1
+          }
+        ],
+        "description": "Four follow-up mechanics compound into a pipeline that never drops a deal."
+      }
+    },
+    {
+      "type": "table",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Starter vs Scale",
+        "headers": [
+          "Capability",
+          "Starter",
+          "Scale"
+        ],
+        "rows": [
+          [
+            "Deal records",
+            "500",
+            "Unlimited"
+          ],
+          [
+            "Sequences",
+            "3",
+            "Unlimited"
+          ],
+          [
+            "Forecasting",
+            "No",
+            "Yes"
+          ],
+          [
+            "API access",
+            "Read",
+            "Read + write"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "timeline",
+      "variant": "horizontal",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "90-day roadmap",
+        "steps": [
+          {
+            "label": "Q3",
+            "description": "Mobile app beta"
+          },
+          {
+            "label": "Q3",
+            "description": "AI deal scoring"
+          },
+          {
+            "label": "Q4",
+            "description": "Territory planner"
+          },
+          {
+            "label": "Q1",
+            "description": "Marketplace"
+          }
+        ]
+      }
+    },
+    {
+      "type": "pricing_plan",
+      "variant": "cards",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Plans that scale with you",
+        "plans": [
+          {
+            "name": "Starter",
+            "price": "$29",
+            "features": [
+              "500 deals",
+              "3 sequences",
+              "Email sync"
+            ]
+          },
+          {
+            "name": "Scale",
+            "price": "$79",
+            "features": [
+              "Unlimited deals",
+              "Forecasting",
+              "40+ integrations"
+            ],
+            "featured": true
+          },
+          {
+            "name": "Enterprise",
+            "price": "Custom",
+            "features": [
+              "SSO + audit",
+              "Dedicated CSM",
+              "Custom SLA"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "testimonial_avatar",
+      "variant": "profile",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "quote": "We stopped losing deals to silence. Orbit pays for itself every single month.",
+        "author": "Maya Chen",
+        "role": "VP Sales, Northwind",
+        "avatar_url": "https://picsum.photos/seed/maya/120/120"
+      }
+    },
+    {
+      "type": "logo_cloud",
+      "variant": "grid",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Trusted by revenue teams at",
+        "logos": [
+          "Northwind",
+          "Acme Corp",
+          "Globex",
+          "Initech",
+          "Umbrella",
+          "Stark Labs"
+        ]
+      }
+    },
+    {
+      "type": "faq",
+      "variant": "stack",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "title": "Before you ask",
+        "questions": [
+          {
+            "q": "Do we need to migrate our old CRM?",
+            "a": "No. Import CSV or connect via API; Orbit coexists with HubSpot today."
+          },
+          {
+            "q": "Is the AI scoring accurate?",
+            "a": "It is trained on your own close history, so it learns your deal shapes."
+          },
+          {
+            "q": "Can we try it before paying?",
+            "a": "Yes — 14-day free trial on Scale, no credit card required."
+          },
+          {
+            "q": "What about data security?",
+            "a": "SOC 2 Type II, encryption at rest, and full audit export."
+          }
+        ]
+      }
+    },
+    {
+      "type": "big_statement",
+      "variant": "stat",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "heading": "The average Orbit team closes 63% faster",
+        "stat_value": "63%",
+        "stat_label": "faster median close cycle",
+        "cta_text": "Start free"
+      }
+    },
+    {
+      "type": "comment_cta",
+      "variant": "default",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "heading": "What's your most missed follow-up?",
+        "sub_heading": "Comment your answer and we'll DM you a template that fixes it.",
+        "cta_text": "Comment PIPELINE to unlock the template pack.",
+        "keyword": "PIPELINE"
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "full-conversion",
+      "theme": "technical",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://orbitcrm.dev/launch",
+        "cta_text": "Start your free trial",
+        "heading": "See your pipeline write itself",
+        "caption": "14 days free — no credit card required",
+        "short_url": "orbitcrm.dev"
+      }
+    }
+  ]
 }

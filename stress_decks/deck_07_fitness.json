@@ -1,326 +1,327 @@
 {
- "id": "fitness",
- "name": "ForgeFit — The 8-Week Rebuild",
- "deck_caption": "Fitness arc: brutal truth → plan → weekly progression → results → join",
- "primary": "#DC2626",
- "style": "bold",
- "preset": "vibrant",
- "typology": "brutalist",
- "color_scheme": "complementary",
- "theme": "bold",
- "archetype": "creator",
- "brand": "ForgeFit",
- "topic": "Rebuild strength in 8 weeks",
- "url": "https://forgefit.app/rebuild",
- "hashtags": [
-  "Fitness",
-  "Strength",
-  "8Weeks"
- ],
- "aspect_ratio": "4:5",
- "progress": "dots",
- "slides": [
-  {
-   "type": "hero",
-   "variant": "centered",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "headline": "Stop starting over",
-    "subheadline": "8 weeks. 3 lifts a week. One rule: show up.",
-    "badge": "THE REBUILD",
-    "tagline": "Strength you can keep"
-   }
-  },
-  {
-   "type": "before_after_story",
-   "variant": "split",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "The average member, week 1 vs week 8",
-    "before": "Can't do a single pull-up, skips leg day, trains when motivated",
-    "after": "3 strict pull-ups, squats 1.5x bodyweight, trains on schedule",
-    "metric": "+41 lbs",
-    "metric_label": "average total on the big three",
-    "description": "Measured change, not a vibe — the numbers moved because the habits did."
-   }
-  },
-  {
-   "type": "myth_fact",
-   "variant": "debunk",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "myth": "You need a gym membership, supplements and a coach to get strong.",
-    "fact": "Three compound lifts, progressive overload, and sleep get you 90% of the way.",
-    "explanation": "The Rebuild requires exactly three sessions a week and zero supplements."
-   }
-  },
-  {
-   "type": "process_map",
-   "variant": "map",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "The weekly map",
-    "steps": [
-     {
-      "label": "Day 1",
-      "description": "Squat + hinge"
-     },
-     {
-      "label": "Day 2",
-      "description": "Rest or walk"
-     },
-     {
-      "label": "Day 3",
-      "description": "Press + pull"
-     },
-     {
-      "label": "Day 4",
-      "description": "Rest or walk"
-     },
-     {
-      "label": "Day 5",
-      "description": "Full body, lighter"
-     }
-    ]
-   }
-  },
-  {
-   "type": "split_features",
-   "variant": "three-column",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "The three rules",
-    "features": [
-     {
-      "title": "Progressive overload",
-      "description": "Add 2.5 lbs or one rep, every session."
-     },
-     {
-      "title": "Form first",
-      "description": "Video your top set. Fix before adding weight."
-     },
-     {
-      "title": "Recovery wins",
-      "description": "7 hours sleep beats an extra set."
-     }
-    ]
-   }
-  },
-  {
-   "type": "metric_grid",
-   "variant": "default",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "8 weeks, measured",
-    "metrics": [
-     {
-      "value": "+41",
-      "label": "Lbs on big three",
-      "progress": 82
-     },
-     {
-      "value": "3x",
-      "label": "Pull-ups (from 0)",
-      "progress": 60
-     },
-     {
-      "value": "-4.2%",
-      "label": "Body fat",
-      "progress": 68
-     },
-     {
-      "value": "97%",
-      "label": "Sessions completed",
-      "progress": 97
-     }
-    ]
-   }
-  },
-  {
-   "type": "progress_rings",
-   "variant": "default",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "Strength by the numbers",
-    "description": "Where the average member lands at the end of week 8.",
-    "items": [
-     {
-      "label": "Squat",
-      "value": 82
-     },
-     {
-      "label": "Bench",
-      "value": 70
-     },
-     {
-      "label": "Deadlift",
-      "value": 88
-     }
-    ]
-   }
-  },
-  {
-   "type": "gauge",
-   "variant": "default",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "Adherence rate",
-    "value": 97,
-    "label": "% of scheduled sessions completed"
-   }
-  },
-  {
-   "type": "timeline",
-   "variant": "arrow-chain",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "The 8-week progression",
-    "steps": [
-     {
-      "label": "W1-2",
-      "description": "Learn the lifts"
-     },
-     {
-      "label": "W3-4",
-      "description": "Add weight weekly"
-     },
-     {
-      "label": "W5-6",
-      "description": "Test new maxes"
-     },
-     {
-      "label": "W7-8",
-      "description": "Peak & deload"
-     }
-    ]
-   }
-  },
-  {
-   "type": "quote",
-   "variant": "minimal",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "quote": "I stopped negotiating with myself. The app told me what to lift and I lifted it.",
-    "author": "Sam",
-    "role": "The Rebuild, week 8"
-   }
-  },
-  {
-   "type": "testimonial_avatar",
-   "variant": "profile",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "quote": "First time in a decade I can deadlift double bodyweight. The weekly cadence is the whole secret.",
-    "author": "Alex K.",
-    "role": "Member since Jan",
-    "avatar_url": "https://picsum.photos/seed/alexk/120/120"
-   }
-  },
-  {
-   "type": "image_gallery",
-   "variant": "2-grid",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "The garage gym",
-    "section_caption": "Everything you need is a barbell, a rack and 200 sq ft.",
-    "images": [
-     {
-      "url": "https://picsum.photos/seed/forge-rack/400"
-     },
-     {
-      "url": "https://picsum.photos/seed/forge-barbell/400"
-     }
-    ]
-   }
-  },
-  {
-   "type": "image_comparison",
-   "variant": "line",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "before_image": "https://picsum.photos/seed/forge-week1/400/300",
-    "after_image": "https://picsum.photos/seed/forge-week8/400/300",
-    "before_label": "Week 1",
-    "after_label": "Week 8",
-    "description": "Same person, same camera, 8 weeks apart."
-   }
-  },
-  {
-   "type": "pricing_plan",
-   "variant": "cards",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "title": "Join the Rebuild",
-    "plans": [
-     {
-      "name": "App only",
-      "price": "$19",
-      "features": [
-       "8-week plan",
-       "Exercise videos",
-       "Progress tracker"
-      ]
-     },
-     {
-      "name": "Coached",
-      "price": "$89",
-      "features": [
-       "Everything + coach",
-       "Weekly form review",
-       "Custom adjustments"
-      ],
-      "featured": true
-     },
-     {
-      "name": "Team",
-      "price": "$249",
-      "features": [
-       "Up to 5 athletes",
-       "Shared tracking",
-       "Monthly check-in"
-      ]
-     }
-    ]
-   }
-  },
-  {
-   "type": "comment_cta",
-   "variant": "default",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "heading": "What's the lift you've been avoiding?",
-    "sub_heading": "Deadlift, pull-up, or the first session itself?",
-    "cta_text": "Comment DEADLIFT and I'll DM you the week-1 program.",
-    "keyword": "DEADLIFT"
-   }
-  },
-  {
-   "type": "qr_destination",
-   "variant": "stacked-badge",
-   "theme": "bold",
-   "bg": "dark",
-   "params": {
-    "destination_url": "https://forgefit.app/rebuild",
-    "cta_text": "Start the Rebuild",
-    "heading": "8 weeks. 3 lifts. No excuses.",
-    "caption": "New cohorts every Monday",
-    "short_url": "forgefit.app"
-   }
-  }
- ]
+  "id": "fitness",
+  "name": "ForgeFit — The 8-Week Rebuild",
+  "deck_caption": "Fitness arc: brutal truth → plan → weekly progression → results → join",
+  "primary": "#DC2626",
+  "style": "bold",
+  "preset": "vibrant",
+  "typology": "brutalist",
+  "color_scheme": "complementary",
+  "theme": "bold",
+  "archetype": "creator",
+  "brand": "ForgeFit",
+  "topic": "Rebuild strength in 8 weeks",
+  "url": "https://forgefit.app/rebuild",
+  "hashtags": [
+    "Fitness",
+    "Strength",
+    "8Weeks"
+  ],
+  "aspect_ratio": "4:5",
+  "progress": "dots",
+  "slides": [
+    {
+      "type": "hero",
+      "variant": "centered",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "headline": "Stop starting over",
+        "subheadline": "8 weeks. 3 lifts a week. One rule: show up.",
+        "badge": "THE REBUILD",
+        "tagline": "Strength you can keep"
+      }
+    },
+    {
+      "type": "before_after_story",
+      "variant": "split",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "The average member, week 1 vs week 8",
+        "before": "Can't do a single pull-up, skips leg day, trains when motivated",
+        "after": "3 strict pull-ups, squats 1.5x bodyweight, trains on schedule",
+        "metric": "+41 lbs",
+        "metric_label": "average total on the big three",
+        "description": "Measured change, not a vibe — the numbers moved because the habits did."
+      }
+    },
+    {
+      "type": "myth_fact",
+      "variant": "debunk",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "myth": "You need a gym membership, supplements and a coach to get strong.",
+        "fact": "Three compound lifts, progressive overload, and sleep get you 90% of the way.",
+        "explanation": "The Rebuild requires exactly three sessions a week and zero supplements."
+      }
+    },
+    {
+      "type": "process_map",
+      "variant": "map",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "The weekly map",
+        "steps": [
+          {
+            "label": "Day 1",
+            "description": "Squat + hinge"
+          },
+          {
+            "label": "Day 2",
+            "description": "Rest or walk"
+          },
+          {
+            "label": "Day 3",
+            "description": "Press + pull"
+          },
+          {
+            "label": "Day 4",
+            "description": "Rest or walk"
+          },
+          {
+            "label": "Day 5",
+            "description": "Full body, lighter"
+          }
+        ]
+      }
+    },
+    {
+      "type": "split_features",
+      "variant": "three-column",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "The three rules",
+        "features": [
+          {
+            "title": "Progressive overload",
+            "description": "Add 2.5 lbs or one rep, every session."
+          },
+          {
+            "title": "Form first",
+            "description": "Video your top set. Fix before adding weight."
+          },
+          {
+            "title": "Recovery wins",
+            "description": "7 hours sleep beats an extra set."
+          }
+        ]
+      }
+    },
+    {
+      "type": "metric_grid",
+      "variant": "default",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "8 weeks, measured",
+        "metrics": [
+          {
+            "value": "+41",
+            "label": "Lbs on big three",
+            "progress": 82
+          },
+          {
+            "value": "3x",
+            "label": "Pull-ups (from 0)",
+            "progress": 60
+          },
+          {
+            "value": "-4.2%",
+            "label": "Body fat",
+            "progress": 68
+          },
+          {
+            "value": "97%",
+            "label": "Sessions completed",
+            "progress": 97
+          }
+        ],
+        "description": "Consistency beats intensity — the numbers prove the arc."
+      }
+    },
+    {
+      "type": "progress_rings",
+      "variant": "default",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "Strength by the numbers",
+        "description": "Where the average member lands at the end of week 8.",
+        "items": [
+          {
+            "label": "Squat",
+            "value": 82
+          },
+          {
+            "label": "Bench",
+            "value": 70
+          },
+          {
+            "label": "Deadlift",
+            "value": 88
+          }
+        ]
+      }
+    },
+    {
+      "type": "gauge",
+      "variant": "default",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "Adherence rate",
+        "value": 97,
+        "label": "% of scheduled sessions completed"
+      }
+    },
+    {
+      "type": "timeline",
+      "variant": "arrow-chain",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "The 8-week progression",
+        "steps": [
+          {
+            "label": "W1-2",
+            "description": "Learn the lifts"
+          },
+          {
+            "label": "W3-4",
+            "description": "Add weight weekly"
+          },
+          {
+            "label": "W5-6",
+            "description": "Test new maxes"
+          },
+          {
+            "label": "W7-8",
+            "description": "Peak & deload"
+          }
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "variant": "minimal",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "quote": "I stopped negotiating with myself. The app told me what to lift and I lifted it.",
+        "author": "Sam",
+        "role": "The Rebuild, week 8"
+      }
+    },
+    {
+      "type": "testimonial_avatar",
+      "variant": "profile",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "quote": "First time in a decade I can deadlift double bodyweight. The weekly cadence is the whole secret.",
+        "author": "Alex K.",
+        "role": "Member since Jan",
+        "avatar_url": "https://picsum.photos/seed/alexk/120/120"
+      }
+    },
+    {
+      "type": "image_gallery",
+      "variant": "2-grid",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "The garage gym",
+        "section_caption": "Everything you need is a barbell, a rack and 200 sq ft.",
+        "images": [
+          {
+            "url": "https://picsum.photos/seed/forge-rack/400"
+          },
+          {
+            "url": "https://picsum.photos/seed/forge-barbell/400"
+          }
+        ]
+      }
+    },
+    {
+      "type": "image_comparison",
+      "variant": "line",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "before_image": "https://picsum.photos/seed/forge-week1/400/300",
+        "after_image": "https://picsum.photos/seed/forge-week8/400/300",
+        "before_label": "Week 1",
+        "after_label": "Week 8",
+        "description": "Same person, same camera, 8 weeks apart."
+      }
+    },
+    {
+      "type": "pricing_plan",
+      "variant": "cards",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "title": "Join the Rebuild",
+        "plans": [
+          {
+            "name": "App only",
+            "price": "$19",
+            "features": [
+              "8-week plan",
+              "Exercise videos",
+              "Progress tracker"
+            ]
+          },
+          {
+            "name": "Coached",
+            "price": "$89",
+            "features": [
+              "Everything + coach",
+              "Weekly form review",
+              "Custom adjustments"
+            ],
+            "featured": true
+          },
+          {
+            "name": "Team",
+            "price": "$249",
+            "features": [
+              "Up to 5 athletes",
+              "Shared tracking",
+              "Monthly check-in"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "comment_cta",
+      "variant": "default",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "heading": "What's the lift you've been avoiding?",
+        "sub_heading": "Deadlift, pull-up, or the first session itself?",
+        "cta_text": "Comment DEADLIFT and I'll DM you the week-1 program.",
+        "keyword": "DEADLIFT"
+      }
+    },
+    {
+      "type": "qr_destination",
+      "variant": "stacked-badge",
+      "theme": "bold",
+      "bg": "dark",
+      "params": {
+        "destination_url": "https://forgefit.app/rebuild",
+        "cta_text": "Start the Rebuild",
+        "heading": "8 weeks. 3 lifts. No excuses.",
+        "caption": "New cohorts every Monday",
+        "short_url": "forgefit.app"
+      }
+    }
+  ]
 }
