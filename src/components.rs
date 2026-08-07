@@ -2681,12 +2681,12 @@ fn metric_grid_slide(
         };
 
         format!(
-            r#"<div style="background:{};border:{};border-radius:{};padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+            r#"<div style="background:{};border:{};border-radius:{};padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;min-width:0;overflow:hidden;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;min-width:0;">
                     <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
                     {}
                 </div>
-                <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
+                <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;min-width:0;overflow:hidden;">{}</div>
                 {}
             </div>"#,
             card_bg, card_border, radius,
@@ -2713,7 +2713,7 @@ fn metric_grid_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">{}</div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;width:100%;">{}</div>
             {}
         </div>"#,
         heading, grid_html, desc_html
@@ -7152,6 +7152,21 @@ mod tests {
         assert!(html.contains("white-space:nowrap"), "badge must not wrap");
         assert!(html.contains("text-overflow:ellipsis"), "badge must ellipsize");
         assert!(html.contains("max-width:120px"), "badge must have a max-width");
+        // Structural segregation (regression): the 2-col grid must use
+        // minmax(0,1fr) tracks and every tile must be a shrinkable grid item
+        // (min-width:0 + overflow:hidden). blitz/stylo keeps `min-width:auto`
+        // on grid items, so a nowrap badge inflates the tile to its min-content
+        // width and blows the track past the slide edge (measured x=407/420).
+        assert!(
+            html.contains("grid-template-columns:minmax(0,1fr) minmax(0,1fr)"),
+            "metric_grid columns must be minmax(0,1fr) so tracks can never exceed their share"
+        );
+        let tile_count = html.matches("position:relative;min-width:0;overflow:hidden;").count();
+        assert_eq!(tile_count, 1, "each metric tile must be a shrinkable grid item");
+        assert!(
+            html.contains("line-height:1;min-width:0;overflow:hidden;"),
+            "metric value must be shrinkable"
+        );
         // The description param renders in the dedicated slot (no telemetry placeholder).
         assert!(
             html.contains("A two-line description slot below the metrics."),
