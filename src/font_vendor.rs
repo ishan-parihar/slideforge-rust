@@ -60,7 +60,7 @@ pub(crate) fn fnv1a64(s: &str) -> u64 {
 /// fix (latin-subset collapse) changed the payload shape, so `v2` forces a
 /// refetch+rewrite of every cached stylesheet once. `pub(crate)` so the export
 /// tests can seed cache files with the exact on-disk key.
-pub(crate) const CACHE_VERSION: &str = "v3";
+pub(crate) const CACHE_VERSION: &str = "v4";
 
 /// Collapse Google Fonts' per-subset `@font-face` fan-out to ONE face per
 /// (family, weight, style): the face whose `unicode-range` covers the basic
@@ -167,6 +167,141 @@ fn collapse_to_latin_faces(css: &str) -> String {
     // Preserve any trailing content after the last @font-face (comments etc.)
     let tail = &css[last..];
     format!("{}\n{}", kept.join("\n"), tail)
+}
+
+/// Merge per-weight `@font-face` rules that share the SAME variable-font blob
+/// into ONE face declaring a weight RANGE (`font-weight: min max`).
+///
+/// WHY: Google Fonts CSS2 serves a variable font as one woff2 file per
+/// (family, style) with a SEPARATE `@font-face` block per requested weight
+/// (same `src`, different `font-weight`). The export renderer's fontique
+/// registers faces keyed by blob and keeps only the FIRST weight for a given
+/// file, so a `font-weight: 900` request falls back to the lightest registered
+/// instance — headlines render thin (the "system-font / weak lineweight"
+/// export bug, visible on comment_cta/definition/stat slides). A single face
+/// with `font-weight: 600 900` (range syntax) lets the variable font serve any
+/// weight in the range: verified empirically — identical multi-face payload
+/// rendered at 14k dark pixels vs 26k for the range form at weight 900 (~2x
+/// ink). Static fonts have a distinct blob per weight, so they are never
+/// merged and keep their exact weight.
+///
+/// Runs AFTER `collapse_to_latin_faces` so the per-subset fan-out is already
+/// reduced; the merge then collapses the remaining per-weight fan-out.
+fn merge_variable_weight_faces(css: &str) -> String {
+    let face_re = Regex::new(r"(?s)@font-face\s*\{[^{}]*\}").unwrap();
+    let fam_re = Regex::new(r"(?i)font-family:\s*'([^']+)'").unwrap();
+    let wt_re = Regex::new(r"(?i)font-weight:\s*([^;]+)").unwrap();
+    let st_re = Regex::new(r"(?i)font-style:\s*([^;]+)").unwrap();
+    let src_re = Regex::new(r"(?i)url\(([^)]+)\)").unwrap();
+
+    struct Parsed {
+        key: (String, String, String),
+        weight: u32,
+        block: String,
+    }
+    let mut parsed: Vec<Parsed> = Vec::new();
+    let mut any = false;
+    for face in face_re.find_iter(css) {
+        let block = face.as_str();
+        let family = fam_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        if family.is_empty() {
+            continue;
+        }
+        any = true;
+        let weight = wt_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .and_then(|m| m.as_str().trim().parse::<u32>().ok())
+            .unwrap_or(400);
+        let style = st_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        let src = src_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().to_string())
+            .unwrap_or_default();
+        parsed.push(Parsed {
+            key: (family, style, src),
+            weight,
+            block: block.to_string(),
+        });
+    }
+    if !any {
+        return css.to_string();
+    }
+
+    // Group weights per (family, style, blob). Only groups with MORE than one
+    // weight are merged into a range — a single-face group is left untouched
+    // (its declared weight is already exact).
+    let mut groups: Vec<(String, String, String, u32, u32, String)> = Vec::new(); // key, min, max, sample block
+    let mut seen: Vec<(String, String, String)> = Vec::new();
+    for p in &parsed {
+        if let Some(g) = groups.iter_mut().find(|g| g.0 == p.key.0 && g.1 == p.key.1 && g.2 == p.key.2) {
+            if p.weight < g.3 {
+                g.3 = p.weight;
+            }
+            if p.weight > g.4 {
+                g.4 = p.weight;
+            }
+        } else {
+            groups.push((p.key.0.clone(), p.key.1.clone(), p.key.2.clone(), p.weight, p.weight, p.block.clone()));
+        }
+    }
+    if groups.len() == parsed.len() {
+        return css.to_string(); // no group has more than one weight → nothing to merge
+    }
+
+    // Rewrite one block per merged group: `font-weight: N;` → `font-weight: min max;`.
+    let weight_line_re =
+        Regex::new(r"(?i)font-weight:\s*[^;]+;").unwrap();
+    let mut out = String::with_capacity(css.len());
+    let mut last = 0usize;
+    for face in face_re.find_iter(css) {
+        let block = face.as_str();
+        out.push_str(&css[last..face.start()]);
+        last = face.end();
+        let family = fam_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        let style = st_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().trim().to_string())
+            .unwrap_or_default();
+        let src = src_re
+            .captures(block)
+            .and_then(|c| c.get(1))
+            .map(|m| m.as_str().to_string())
+            .unwrap_or_default();
+        let g = groups
+            .iter()
+            .find(|g| g.0 == family && g.1 == style && g.2 == src);
+        match g {
+            Some(g) if g.3 != g.4 => {
+                // Emit the merged range only for the FIRST face of the group
+                // (all blocks in a group are identical except font-weight, so
+                // comparing to the sample block identity via family/style/src
+                // is enough — subsequent faces of the group are skipped).
+                if block == g.5 {
+                    let merged = format!("font-weight: {} {};", g.3, g.4);
+                    let out_block = weight_line_re.replace(block, merged.as_str()).to_string();
+                    out.push_str(&out_block);
+                }
+            }
+            _ => out.push_str(block),
+        }
+    }
+    out.push_str(&css[last..]);
+    out
 }
 
 /// Rewrite a Google Fonts CSS2 stylesheet so every `@font-face` `src` that
@@ -300,16 +435,18 @@ fn vendor_font_css_with_fetch(
     }
     let css = fetch_css(url)?;
     let inline = inline_font_css(&css, fetch_bytes)?;
-    // Collapse the per-subset fan-out to a single latin face per weight BEFORE
-    // caching, so cache hits and fresh fetches both ship the deterministic set.
+    // Collapse the per-subset fan-out to a single latin face per weight, then
+    // merge same-blob variable-font weights into a range — both BEFORE
+    // caching, so cache hits and fresh fetches ship the deterministic set.
     let collapsed = collapse_to_latin_faces(&inline);
+    let merged = merge_variable_weight_faces(&collapsed);
     if let Some(file) = cache_dir.map(|d| d.join(&key)) {
         if let Some(dir) = file.parent() {
             let _ = fs::create_dir_all(dir);
         }
-        let _ = fs::write(file, &collapsed);
+        let _ = fs::write(file, &merged);
     }
-    Some(collapsed)
+    Some(merged)
 }
 
 /// Replace every Google-Fonts stylesheet `<link>` in a document fragment
@@ -571,5 +708,54 @@ mod tests {
         let out = collapse_to_latin_faces(css);
         assert!(out.contains("@font-face"));
         assert!(out.contains("'X'"));
+    }
+
+    /// Same-blob variable-font weights must merge into ONE face with a weight
+    /// RANGE. blitz/stylo's fontique keeps only the first face per blob, so the
+    /// multi-face form renders every request at the lightest weight (the
+    /// thin-headline export bug); the range form serves any weight in range.
+    #[test]
+    fn merge_collapses_same_blob_weights_to_range() {
+        let css = r#"
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 600; src: url(data:font/woff2;base64,XXXX); }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700; src: url(data:font/woff2;base64,XXXX); }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 900; src: url(data:font/woff2;base64,XXXX); }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 600; src: url(data:font/woff2;base64,YYYY); }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 900; src: url(data:font/woff2;base64,YYYY); }
+@font-face { font-family: 'Static'; font-style: normal; font-weight: 400; src: url(data:font/woff2;base64,ZZZZ); }
+"#;
+        let out = merge_variable_weight_faces(css);
+        // normal range 600 900 (single face emitted for the merged group)
+        assert!(out.contains("font-weight: 600 900;"), "merged normal range: {out}");
+        // italic range 600 900
+        assert!(out.contains("font-weight: 600 900;"), "merged italic range present");
+        // static single-weight face untouched (only its own weight declared)
+        assert!(
+            out.contains("'Static'") && out.contains("font-weight: 400;"),
+            "static single-face group preserved: {out}"
+        );
+        // exactly 3 faces remain (2 merged + 1 static)
+        assert_eq!(out.matches("@font-face").count(), 3, "merged count: {out}");
+    }
+
+    /// Faces with distinct blobs (static fonts, one blob per weight) must NOT
+    /// be merged — each keeps its exact declared weight.
+    #[test]
+    fn merge_keeps_distinct_blobs_separate() {
+        let css = r#"
+@font-face { font-family: 'Mono'; font-style: normal; font-weight: 400; src: url(data:font/woff2;base64,AAA); }
+@font-face { font-family: 'Mono'; font-style: normal; font-weight: 700; src: url(data:font/woff2;base64,BBB); }
+"#;
+        let out = merge_variable_weight_faces(css);
+        assert_eq!(out.matches("@font-face").count(), 2, "no merge for distinct blobs");
+        assert!(out.contains("font-weight: 400;"));
+        assert!(out.contains("font-weight: 700;"));
+    }
+
+    /// Payload with no @font-face blocks passes through unchanged.
+    #[test]
+    fn merge_passthrough_when_no_faces() {
+        let css = "/* latin */\nbody { color: red; }";
+        assert_eq!(merge_variable_weight_faces(css), css);
     }
 }

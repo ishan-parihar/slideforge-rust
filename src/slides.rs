@@ -570,6 +570,24 @@ body {
 .overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; line-height: 1.3; white-space: nowrap; }
 .slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
 .slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+/* Corner chrome on photo slides (has-bg-image): the header/footer bands sit
+   on top of the full-bleed photo, where thin dark text disappears. The export
+   renderer (blitz) drops text-shadow entirely, so contrast is guaranteed with
+   a translucent scrim pill behind each corner element — white 700 text on a
+   dark pill reads on ANY photo brightness, deterministically in every engine.
+   Higher specificity than the theme overrides' single-class rules, so the
+   pill always wins on photo slides. */
+.slide.has-bg-image .overlay__brand,
+.slide.has-bg-image .overlay__topic,
+.slide.has-bg-image .overlay__url,
+.slide.has-bg-image .overlay__hashtags {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  background: rgba(0,0,0,0.42);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
 "#.replace("[CSS_VARS]", &spec.css_variables)
         .replace("[BASE_WIDTH]", &base_w.to_string())
         .replace("[BASE_HEIGHT]", &base_h.to_string());
@@ -634,11 +652,19 @@ body {
             String::new()
         };
 
-        // Only a FULL-SLIDE injected background (inject_background_image emits
-        // position:absolute;inset:0;background-image) counts as has-bg-image.
-        // Per-element background-image (e.g. hero split's framed right column)
-        // must NOT trigger the bleed/stretch treatment.
-        if slide.html.contains("inset:0;background-image") {
+        // A photo that reaches the chrome bands = a FULL-SLIDE photo: either
+        // the injected full-slide background (inject_background_image emits
+        // position:absolute;inset:0;background-image) or the image/glass bleed
+        // wrapper (slide_base_bleed emits slide-content--bleed — the pattern
+        // image_headline/image_quote use, where the photo sits behind the
+        // transparent header/footer bands). Both need contrast-safe corner
+        // text. Per-element images (hero split's framed column, collage tiles)
+        // never reach the bands, so they must NOT trigger the treatment.
+        let has_full_slide_photo = slide.html.contains("inset:0;background-image")
+            || slide.html.contains("slide-content--bleed")
+            || slide.html.contains("background:url(")
+            || slide.html.contains("background-image:url(");
+        if has_full_slide_photo {
             // has-bg-image is always ADDITIVE: the bg identity class (slide--light,
             // slide--hero, etc.) is preserved so chrome theming rules still apply.
             // The only case where bg_class is empty is a custom hex background —
@@ -661,7 +687,11 @@ body {
         // Check if custom hex color
         if bg_class.is_empty() && slide.background.starts_with('#') && slide.background.len() == 7 {
             bg_style = format!(r#" style="background-color: {};""#, slide.background);
-            if slide.html.contains("inset:0;background-image") {
+            if slide.html.contains("inset:0;background-image")
+                || slide.html.contains("slide-content--bleed")
+                || slide.html.contains("background:url(")
+                || slide.html.contains("background-image:url(")
+            {
                 bg_class = "has-bg-image".to_string();
             }
         }
@@ -677,7 +707,7 @@ body {
         // progress bar, hashtags (right). The slide's HTML is wrapped in
         // .slide-body — the ONLY place slide types render. Corner text never
         // overlaps slide content by construction.
-        let has_bg_img = slide.html.contains("background-image");
+        let has_bg_img = has_full_slide_photo;
         let shadow_attr = if has_bg_img {
             r#" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);""#
         } else {
@@ -1107,6 +1137,22 @@ body {
         carousel = carousel_html,
         js = js_block,
     )
+}
+
+/// Render a carousel with fonts baked in as data-URI `@font-face` rules, so
+/// the produced HTML renders the typology fonts DETERMINISTICALLY — no
+/// network dependency, no per-glyph fallback race, identical in browsers and
+/// the export renderer. Replaces every Google-Fonts stylesheet `<link>` with an
+/// inline vendored `<style>` block (on-disk cache: repeat generations are
+/// offline after the first fetch). On vendor failure the original `<link>`s are
+/// kept — graceful degradation, never a broken render.
+///
+/// The pure `render_carousel_html` stays link-based (unit tests must not
+/// touch the network); CLI / MCP `render-carousel` use this wrapper so every
+/// generated deck ships self-contained fonts.
+pub fn render_carousel_html_vendored(spec: &CarouselSpec) -> String {
+    let html = render_carousel_html(spec);
+    crate::font_vendor::vendor_font_links(&html, crate::font_vendor::font_cache_dir().as_deref())
 }
 
 /// Normalize a Google Fonts CSS2 stylesheet URL so every rendering backend can

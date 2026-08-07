@@ -331,6 +331,40 @@ fn filter_links_for_slide(links: &str, per_slide_css: &str) -> String {
     }
 }
 
+/// Drop every `@font-face` rule whose family is not in `families` (lowercased
+/// match). Used when a carousel HTML carries ALL pairings' fonts inlined as
+/// data-URI `@font-face` styles (see `render_carousel_html_vendored`): each
+/// standalone slide doc must keep only the ONE pairing it actually shapes, or
+/// every slide render would re-parse the full multi-megabyte font CSS (the
+/// ~3x export slowdown the per-slide link filtering previously avoided).
+/// Blocks whose family cannot be parsed are kept (conservative).
+fn subset_font_faces(styles: &str, families: &[String]) -> String {
+    if families.is_empty() {
+        return styles.to_string();
+    }
+    let face_re = Regex::new(r"(?s)@font-face\s*\{[^{}]*\}").unwrap();
+    let fam_re = Regex::new(r"(?i)font-family:\s*'([^']+)'").unwrap();
+    let mut out = String::with_capacity(styles.len());
+    let mut last = 0usize;
+    for face in face_re.find_iter(styles) {
+        out.push_str(&styles[last..face.start()]);
+        last = face.end();
+        let keep = fam_re
+            .captures(face.as_str())
+            .and_then(|c| c.get(1))
+            .map(|m| {
+                let f = m.as_str().trim().to_lowercase();
+                families.iter().any(|fam| fam.eq_ignore_ascii_case(&f))
+            })
+            .unwrap_or(true);
+        if keep {
+            out.push_str(face.as_str());
+        }
+    }
+    out.push_str(&styles[last..]);
+    out
+}
+
 /// Build a standalone document that renders exactly ONE slide at the target
 /// canvas size. The carousel's style blocks + font links are preserved so
 /// per-slide `#slide-N` css_vars, typology fonts, and bleed rules all apply;
@@ -345,9 +379,13 @@ fn build_standalone_slide_doc(
     canvas_h: u32,
 ) -> String {
     let (styles, per_slide, links, base_w, base_h) = extract_carousel_parts(carousel, slide_index);
-    // Per-slide font subsetting + deterministic vendoring: keep only the links
-    // for THIS slide's families, inline them as data-URI @font-face CSS so the
-    // render has zero remote font fetches and no per-glyph fallback race.
+    // Per-slide font subsetting + deterministic vendoring: when the carousel
+    // HTML already carries inlined data-URI fonts (render_carousel_html_vendored),
+    // subset the global @font-face rules to THIS slide's families so standalone
+    // renders stay fast; when it still has <link>s, keep only the links for
+    // this slide and vendor them (zero remote fetches, no glyph race).
+    let families = slide_font_families(&per_slide);
+    let subset_styles = subset_font_faces(&styles, &families);
     let slide_links = filter_links_for_slide(&links, &per_slide);
     let fonts_html = crate::font_vendor::vendor_font_links(
         &slide_links,
@@ -362,7 +400,7 @@ fn build_standalone_slide_doc(
 <meta charset="UTF-8">
 {fonts_html}
 <style>
-{styles}
+{subset_styles}
 {per_slide}
 </style>
 </head>
@@ -503,6 +541,34 @@ mod tests {
         let links = r#"<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap" rel="stylesheet">"#;
         let out = super::filter_links_for_slide(links, "--primary: #123;");
         assert!(out.contains("Space+Grotesk"), "all links kept when unknown");
+    }
+
+    /// Per-slide font-face subsetting: a carousel with ALL pairings inlined as
+    /// data-URI @font-face styles must keep only the faces for THIS slide's
+    /// families — otherwise every standalone render re-parses multi-megabyte
+    /// font CSS (the ~3x slowdown per-slide link filtering used to avoid).
+    #[test]
+    fn subset_font_faces_keeps_only_slide_families() {
+        let styles = r#"
+@font-face { font-family: 'Playfair Display'; src: url(data:font/woff2;base64,AAAA); }
+@font-face { font-family: 'DM Sans'; src: url(data:font/woff2;base64,BBBB); }
+@font-face { font-family: 'Syne'; src: url(data:font/woff2;base64,CCCC); }
+"#;
+        let families = vec!["playfair display".to_string(), "dm sans".to_string()];
+        let out = super::subset_font_faces(styles, &families);
+        assert!(out.contains("Playfair Display"), "heading family kept");
+        assert!(out.contains("DM Sans"), "body family kept");
+        assert!(!out.contains("Syne"), "unrelated family dropped");
+        assert_eq!(out.matches("@font-face").count(), 2);
+    }
+
+    /// When no family can be derived, ALL faces are kept (conservative — can't
+    /// prove a family is unused).
+    #[test]
+    fn subset_font_faces_keeps_all_when_unknown_families() {
+        let styles = r#"@font-face { font-family: 'X'; src: url(data:font/woff2;base64,AAAA); }"#;
+        let out = super::subset_font_faces(styles, &[]);
+        assert!(out.contains("@font-face"));
     }
 
     /// Phase-2 regression: a standalone slide doc built from a carousel with a

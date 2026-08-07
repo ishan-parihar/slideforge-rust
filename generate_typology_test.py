@@ -140,11 +140,20 @@ def render_carousel(slides, tokens_file):
         "--hashtags", "#slides #typology",
         "--output", str(OUT_CAROUSEL),
     ], check=True, capture_output=True)
-    subprocess.run([
-        str(BIN), "export", str(OUT_CAROUSEL),
-        "--output-dir", str(OUT_DIR),
-        "--slides", str(len(slides)),
-    ], check=True, capture_output=True)
+    # Chunked export — blitz's fontdb accumulates across slides in one process
+    # and pathologically spins after ~100 slides (measured stalls at #94 and
+    # #128 of 210). Each chunk runs in a FRESH export process, resetting that
+    # state. `--start` keeps global slide numbering so chunks can overwrite the
+    # same output directory.
+    CHUNK = 40
+    for start in range(1, len(slides) + 1, CHUNK):
+        count = min(CHUNK, len(slides) - start + 1)
+        subprocess.run([
+            str(BIN), "export", str(OUT_CAROUSEL),
+            "--output-dir", str(OUT_DIR),
+            "--slides", str(count),
+            "--start", str(start),
+        ], check=True, capture_output=True)
 
 
 def validate_gate(carousel_path):

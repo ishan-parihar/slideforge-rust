@@ -1658,7 +1658,10 @@ fn cli_render_carousel(
         return Err(chrome_errors.join("\n").into());
     }
 
-    let html = slides::render_carousel_html(&spec);
+    // Bake fonts into the deck (data-URI @font-face) so the produced HTML is
+    // deterministic — browsers and exports render the typology fonts with zero
+    // network dependency (offline-safe after the first vendor).
+    let html = slides::render_carousel_html_vendored(&spec);
 
     match output {
         Some(path) => {
@@ -2114,7 +2117,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
             canvas_height: canvas.height,
         };
 
-        let html = slides::render_carousel_html(&spec);
+        let html = slides::render_carousel_html_vendored(&spec);
         let file_name = format!("carousel_{}_{}.html", carousel_id, archetype);
         let file_path = output_dir.join(file_name);
 

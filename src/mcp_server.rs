@@ -1137,84 +1137,88 @@ impl Server {
         &self,
         Parameters(req): Parameters<RenderCarouselRequest>,
     ) -> Result<Json<RenderCarouselResponse>, ErrorData> {
-        let state = self.state.lock().unwrap();
+        // Build the CarouselSpec. The state lock guard is scoped to this block
+        // so it is dropped before any await below — a std::sync::MutexGuard is
+        // not Send and cannot cross the spawn_blocking boundary.
+        let spec = {
+            let state = self.state.lock().unwrap();
 
-        let css_vars = req
-            .css_variables
-            .clone()
-            .filter(|s| !s.is_empty())
-            .unwrap_or_else(|| state.css_variables.clone());
-
-        if css_vars.is_empty() {
-            return Err(ErrorData::invalid_request(
-                "No css_variables. Call configure_design first or pass css_variables.",
-                None,
-            ));
-        }
-
-        let platform = req
-            .platform
-            .clone()
-            .filter(|s| !s.is_empty())
-            .unwrap_or_else(|| state.platform.clone());
-        let platform = if platform.is_empty() {
-            "instagram_portrait".to_string()
-        } else {
-            platform
-        };
-
-        let aspect_ratio = req
-            .aspect_ratio
-            .clone()
-            .filter(|s| !s.is_empty())
-            .or_else(|| Some(state.aspect_ratio.clone()))
-            .filter(|s| !s.is_empty());
-        let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
-            .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
-
-        let spec = CarouselSpec {
-            slides: req.slides,
-            css_variables: css_vars,
-            google_fonts_url: req
-                .google_fonts_url
-                .clone()
-                .unwrap_or_else(|| state.google_fonts_url.clone()),
-            heading_font: req
-                .heading_font
-                .clone()
-                .unwrap_or_else(|| state.heading_font.clone()),
-            body_font: req
-                .body_font
-                .clone()
-                .unwrap_or_else(|| state.body_font.clone()),
-            brand_name: req
-                .brand_name
-                .clone()
-                .unwrap_or_else(|| state.brand_name.clone()),
-            brand_handle: req
-                .brand_handle
-                .clone()
-                .unwrap_or_else(|| state.brand_handle.clone()),
-            topic: req.topic.clone().unwrap_or_else(|| state.topic.clone()),
-            url: req.url.clone().unwrap_or_else(|| state.url.clone()),
-            hashtags: req
-                .hashtags
-                .clone()
-                .unwrap_or_else(|| state.hashtags.clone()),
-            show_progress: req.show_progress.unwrap_or(state.show_progress),
-            progress_style: req
-                .progress_style
+            let css_vars = req
+                .css_variables
                 .clone()
                 .filter(|s| !s.is_empty())
-                .unwrap_or_else(|| "chips".to_string()),
-            visual_theme: state.visual_theme.clone(),
-            include_ig_frame: req.include_ig_frame.unwrap_or(true),
-            platform: canvas.platform.clone(),
-            aspect_ratio: canvas.aspect_ratio.clone(),
-            canvas_width: canvas.width,
-            canvas_height: canvas.height,
+                .unwrap_or_else(|| state.css_variables.clone());
+
+            if css_vars.is_empty() {
+                return Err(ErrorData::invalid_request(
+                    "No css_variables. Call configure_design first or pass css_variables.",
+                    None,
+                ));
+            }
+
+            let platform = req
+                .platform
+                .clone()
+                .filter(|s| !s.is_empty())
+                .unwrap_or_else(|| state.platform.clone());
+            let platform = if platform.is_empty() {
+                "instagram_portrait".to_string()
+            } else {
+                platform
+            };
+
+            let aspect_ratio = req
+                .aspect_ratio
+                .clone()
+                .filter(|s| !s.is_empty())
+                .or_else(|| Some(state.aspect_ratio.clone()))
+                .filter(|s| !s.is_empty());
+            let canvas = platforms::resolve_canvas(&platform, aspect_ratio.as_deref())
+                .map_err(|e| ErrorData::invalid_request(humanize_error(&e), None))?;
+
+            CarouselSpec {
+                slides: req.slides,
+                css_variables: css_vars,
+                google_fonts_url: req
+                    .google_fonts_url
+                    .clone()
+                    .unwrap_or_else(|| state.google_fonts_url.clone()),
+                heading_font: req
+                    .heading_font
+                    .clone()
+                    .unwrap_or_else(|| state.heading_font.clone()),
+                body_font: req
+                    .body_font
+                    .clone()
+                    .unwrap_or_else(|| state.body_font.clone()),
+                brand_name: req
+                    .brand_name
+                    .clone()
+                    .unwrap_or_else(|| state.brand_name.clone()),
+                brand_handle: req
+                    .brand_handle
+                    .clone()
+                    .unwrap_or_else(|| state.brand_handle.clone()),
+                topic: req.topic.clone().unwrap_or_else(|| state.topic.clone()),
+                url: req.url.clone().unwrap_or_else(|| state.url.clone()),
+                hashtags: req
+                    .hashtags
+                    .clone()
+                    .unwrap_or_else(|| state.hashtags.clone()),
+                show_progress: req.show_progress.unwrap_or(state.show_progress),
+                progress_style: req
+                    .progress_style
+                    .clone()
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or_else(|| "chips".to_string()),
+                visual_theme: state.visual_theme.clone(),
+                include_ig_frame: req.include_ig_frame.unwrap_or(true),
+                platform: canvas.platform.clone(),
+                aspect_ratio: canvas.aspect_ratio.clone(),
+                canvas_width: canvas.width,
+                canvas_height: canvas.height,
+            }
         };
-        drop(state);
 
         // Runtime gate: corner chrome char limits are ABSOLUTE — reject the
         // config instead of silently truncating with "…".
@@ -1224,8 +1228,19 @@ impl Server {
             return Err(ErrorData::invalid_request(msg, None));
         }
 
-        let html = slides::render_carousel_html(&spec);
+        // Bake fonts into the deck (data-URI @font-face) so the produced HTML
+        // is deterministic — no network dependency for the client renderer.
+        // The vendor call builds a blocking reqwest client (which owns a tokio
+        // runtime); dropping it inside an async context panics, so it must run
+        // on a blocking worker thread. Response fields are precomputed because
+        // `spec` is moved into the closure.
         let total = spec.slides.len();
+        let platform_ctx = platform_context_json(&spec.platform, &spec.aspect_ratio);
+        let html = tokio::task::spawn_blocking(move || slides::render_carousel_html_vendored(&spec))
+            .await
+            .map_err(|e| {
+                ErrorData::internal_error(format!("Carousel render task failed: {}", e), None)
+            })?;
         let output_path = req.output_path.clone();
 
         if let Some(ref path) = output_path {
@@ -1238,7 +1253,7 @@ impl Server {
             html,
             output_path,
             total_slides: total,
-            platform_context: platform_context_json(&spec.platform, &spec.aspect_ratio),
+            platform_context: platform_ctx,
         }))
     }
 

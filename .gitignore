@@ -8,3 +8,8 @@
 graphify-out/
 __pycache__/
 *.pyc
+
+# Harness scratch payloads (regenerable per run)
+dist/*_test/tmp*.json
+dist/*_test/compiled_*.json.tmp
+*.probe.png
