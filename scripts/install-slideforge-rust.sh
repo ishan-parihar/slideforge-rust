@@ -11,7 +11,7 @@
 set -euo pipefail
 
 REPO="ishan-parihar/slideforge-rust"
-VERSION="v0.4.0"
+VERSION="v0.5.0"
 BIN_DIR="${HOME}/.local/bin"
 SKILL_DIR="${HOME}/.agents/skills"
 INSTALL_NAME="slideforge"
