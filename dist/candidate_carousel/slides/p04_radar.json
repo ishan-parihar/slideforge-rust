@@ -1,0 +1,12 @@
+{
+  "title": "Skill assessment",
+  "description": "Self-assessed proficiency across the stack I ship with every day.",
+  "data": [
+    {"label": "Rust", "value": 95},
+    {"label": "MCP / Agent Infra", "value": 94},
+    {"label": "Multi-agent Systems", "value": 92},
+    {"label": "Systems Design", "value": 88},
+    {"label": "Full-Stack Web", "value": 85},
+    {"label": "Automation", "value": 90}
+  ]
+}

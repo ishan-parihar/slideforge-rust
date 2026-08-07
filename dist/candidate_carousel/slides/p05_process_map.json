@@ -1,0 +1,11 @@
+{
+  "title": "How I build",
+  "description": "A repeatable loop: first principles → bridge → orchestrate → ship, in the open.",
+  "steps": [
+    {"label": "First principles", "description": "Reduce goal to its essence."},
+    {"label": "Bridge", "description": "Bridge to existing infra."},
+    {"label": "Orchestrate", "description": "Wire multi-agent workflows."},
+    {"label": "Ship", "description": "Test, ship, iterate openly."}
+  ],
+  "variant": "numbered"
+}

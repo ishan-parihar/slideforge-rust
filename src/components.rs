@@ -2594,6 +2594,7 @@ fn metric_grid_slide(
     tokens: &DesignTokens,
     metrics: Vec<Value>,
     title: &str,
+    description: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -2659,17 +2660,30 @@ fn metric_grid_slide(
             None => String::new(),
         };
 
+        // Trend badge: hard cap + ellipsis so the chip can never push past the
+        // half-width card edge. `max-width` + `white-space:nowrap` + ellipsis is
+        // belt-and-suspenders: the char cap limits the source text, the CSS stops
+        // any future caller (or raw HTML injection) from overflowing regardless.
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
-            format!(r#"<span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:auto;">{}</span>"#, trend_color, trend_color, escape_html(trend))
+            let capped: String = trend.chars().take(18).collect();
+            let disp = if trend.chars().count() > 18 {
+                format!("{}…", capped)
+            } else {
+                trend.to_string()
+            };
+            format!(
+                r#"<span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">{}</span>"#,
+                trend_color, trend_color, escape_html(&disp)
+            )
         } else {
             String::new()
         };
 
         format!(
             r#"<div style="background:{};border:{};border-radius:{};padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                    <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;">{}</span>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+                    <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
                     {}
                 </div>
                 <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;">{}</div>
@@ -2683,13 +2697,26 @@ fn metric_grid_slide(
         )
     }).collect();
 
+    // Dedicated description slot below the metric tiles: a fixed 2-line space
+    // (min-height ≈ 2 × 11px × 1.5) so the grid never squeezes it and it never
+    // collides with the footer band. Param-driven — the old hardcoded telemetry
+    // placeholder is gone; empty descriptions render nothing.
+    let desc_html = if description.trim().is_empty() {
+        String::new()
+    } else {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;color:{};line-height:1.5;margin-top:8px;min-height:33px;opacity:0.9;overflow:hidden;">{}</div>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    };
+
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;">{}</div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Real-time performance telemetry metrics sampled across production worker threads.</p>
+            {}
         </div>"#,
-        heading, grid_html, tokens.body_font, colors.text_secondary
+        heading, grid_html, desc_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
@@ -4045,6 +4072,7 @@ pub fn process_map_slide(
     tokens: &DesignTokens,
     title: &str,
     steps: Vec<Value>,
+    description: &str,
     bg_style: &str,
     theme: &str,
     background_image: &str,
@@ -4054,62 +4082,85 @@ pub fn process_map_slide(
     let is_dark = colors.is_dark;
     let body_fs = tokens.type_scale.get("body").unwrap().font_size;
     let caption_fs = tokens.type_scale.get("caption").unwrap().font_size;
-    
-    // Calculate total content and step count for dynamic scaling
-    let step_count = steps.len();
-    let total_content_len: usize = steps.iter().map(|step| {
-        let step_title = simple_text(step, &["label", "title", "number"]);
-        let step_desc = simple_text(step, &["description", "caption"]);
-        step_title.len() + step_desc.len()
-    }).sum();
-    
-    // Calculate actual content requirements
+
     // Shared banded-chrome model: body region = composition − 36px header band
     // − 40px footer band. Single calibration point in overflow_model.rs so the
     // renderer's density scaling and the validator gate can never drift.
     const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
-    
-    // Estimate required height: title + items + gaps
+
+    // Wrap-aware density estimate. The old model used a FIXED per-item height
+    // (62px for 4+ steps) that assumed single-line descriptions — real
+    // descriptions wrap to 2–3 lines, so the stack silently exceeded the 449px
+    // body while the tiers believed it had ~130px of headroom (the exact
+    // "auto-scaling not working" bug). Now the estimate wraps every title and
+    // description at the planned font sizes in the tile's text column using the
+    // shared overflow model, so the tiers engage exactly when they must.
+    let step_count = steps.len();
+    let base_title_fs = body_fs + 1;
+    let base_desc_fs = caption_fs + 1;
+    // Tile text column: body column (332) − 34px badge − 12px gap − card padding.
+    let text_col_width = crate::overflow_model::DEFAULT_COLUMN_WIDTH - 34.0 - 12.0 - 26.0;
     let title_height = 37.0; // 25px font + 12px margin
-    let item_height_estimate = if step_count >= 6 {
-        55.0 // 17px title + 14px desc + 14px padding + 10px gap
-    } else if step_count >= 4 {
-        62.0 // 18px title + 16px desc + 18px padding + 10px gap
-    } else {
-        70.0 // 20px title + 18px desc + 22px padding + 10px gap
-    };
+    let mut estimated_content_height = title_height;
+    for step in &steps {
+        let step_title = simple_text(step, &["label", "title", "number"]);
+        let step_desc = simple_text(step, &["description", "caption"]);
+        let t_lines = crate::overflow_model::estimate_wrapped_lines(
+            &step_title,
+            base_title_fs as f32,
+            text_col_width,
+        )
+        .max(1) as f32;
+        let d_lines = crate::overflow_model::estimate_wrapped_lines(
+            &step_desc,
+            base_desc_fs as f32,
+            text_col_width,
+        )
+        .max(1) as f32;
+        // 28px vertical padding + title line + desc lines (line-height 1.2/1.4)
+        let tile_h = 28.0 + t_lines * base_title_fs as f32 * 1.2 + d_lines * base_desc_fs as f32 * 1.4;
+        estimated_content_height += tile_h;
+    }
     let gap_estimate = if step_count >= 6 { 10.0 } else if step_count >= 4 { 12.0 } else { 14.0 };
-    let estimated_content_height = title_height + (step_count as f32 * item_height_estimate) + ((step_count - 1) as f32 * gap_estimate);
-    
+    estimated_content_height += (step_count.saturating_sub(1)) as f32 * gap_estimate;
+    // Reserved 2-line caption space below the tiles when a description exists.
+    let has_desc = !description.trim().is_empty();
+    if has_desc {
+        estimated_content_height += 30.0;
+    }
+
     // Calculate required padding to fit within safe content height
     let total_padding_needed = SAFE_CONTENT_HEIGHT - estimated_content_height;
     let content_padding = if total_padding_needed < 40.0 {
-        "16px var(--space-6) 16px" // Very aggressive
+        "14px var(--space-6) 16px" // Very aggressive
     } else if total_padding_needed < 60.0 {
         "16px var(--space-6) 20px" // Aggressive
-    } else if total_padding_needed < 80.0 {
-        "16px var(--space-6) 20px" // Moderate
     } else {
         "16px var(--space-6) 20px" // Standard
     };
-    
-    // Scale fonts based on how tight the fit is
+
+    // Scale fonts based on how tight the fit is — the wrap-aware estimate makes
+    // space_usage reflect the REAL stack, so the tiers now fire when 2-line
+    // descriptions push the composition past the safe height.
     let space_usage = estimated_content_height / SAFE_CONTENT_HEIGHT; // 0.0 to 1.0+
-    let base_title_fs = body_fs + 1;
-    let base_desc_fs = caption_fs + 1;
     let base_num_fs = 13;
-    
-    let (title_fs, desc_fs, num_fs, card_padding, gap) = if space_usage > 0.85 {
+
+    // The number badge sits inside the 32px circle; 9px is below the validator's
+    // tiny_text floor (9.5px) so the floor for `num_fs` is 10px in every tier.
+    let (title_fs, desc_fs, num_fs, card_padding, gap) = if space_usage > 0.92 {
+        // Extreme: multiple 2–3 line descriptions — compress aggressively
+        ((base_title_fs as f32 * 0.70) as i32, (base_desc_fs as f32 * 0.70) as i32, 10, "6px 10px 6px", 4)
+    } else if space_usage > 0.82 {
         // Very tight fit - aggressive scaling
-        ((base_title_fs as f32 * 0.75) as i32, (base_desc_fs as f32 * 0.75) as i32, 10, "8px 10px 6px", 4)
-    } else if space_usage > 0.75 {
+        ((base_title_fs as f32 * 0.78) as i32, (base_desc_fs as f32 * 0.78) as i32, 10, "8px 10px 6px", 4)
+    } else if space_usage > 0.70 {
         // Tight fit - moderate scaling
-        ((base_title_fs as f32 * 0.85) as i32, (base_desc_fs as f32 * 0.85) as i32, 11, "10px 12px 8px", 6)
+        ((base_title_fs as f32 * 0.88) as i32, (base_desc_fs as f32 * 0.88) as i32, 11, "10px 12px 8px", 6)
     } else {
         // Normal fit - standard sizing
         (base_title_fs, base_desc_fs, base_num_fs, "14px 14px 12px", 10)
     };
-    
+
     let heading = heading_block(title, tokens, "headline", Some(&colors.text_primary), false, None, "left", "0 0 12px", true);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
@@ -4120,8 +4171,8 @@ pub fn process_map_slide(
         let step_desc = simple_text(step, &["description", "caption"]);
         let num_str = format!("0{}", idx + 1);
         format!(
-            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;align-items:center;gap:12px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>
+            r#"<div style="min-width:0;background:{};border:{};border-radius:{};padding:{};box-sizing:border-box;display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:{};color:{};display:flex;align-items:center;justify-content:center;font-family:{};font-size:{}px;font-weight:900;flex-shrink:0;">{}</div>
                 <div style="flex:1;min-width:0;">
                     <div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:2px;">{}</div>
                     <div style="font-family:{};font-size:{}px;color:{};line-height:1.4;overflow-wrap:break-word;">{}</div>
@@ -4134,13 +4185,22 @@ pub fn process_map_slide(
         )
     }).collect();
 
+    let desc_html = if has_desc {
+        format!(
+            r#"<div style="font-family:{};font-size:11px;color:{};line-height:1.5;margin-top:6px;min-height:30px;opacity:0.9;overflow:hidden;">{}</div>"#,
+            tokens.body_font, colors.text_secondary, escape_html(description)
+        )
+    } else {
+        String::new()
+    };
+
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:{}px;">
             {}
             <div style="display:flex;flex-direction:column;gap:{}px;width:100%;">{}</div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;line-height:1.4;opacity:0.85;">Automated 3-step compilation pipeline converting raw JSON specifications into production-ready carousel assets.</p>
+            {}
         </div>"#,
-        gap, heading, gap, rows, tokens.body_font, colors.text_secondary
+        gap, heading, gap, rows, desc_html
     );
     let html = slide_base(&content, tokens, bg_style, false, content_padding, "center");
     let html = inject_background_image(html, background_image, image_opacity, is_dark);
@@ -4823,6 +4883,7 @@ pub fn dispatch_slide(
                 tokens,
                 metrics,
                 &s("title"),
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -5043,6 +5104,7 @@ pub fn dispatch_slide(
                 tokens,
                 metrics,
                 &s("title"),
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -5277,6 +5339,7 @@ pub fn dispatch_slide(
                 tokens,
                 &s("title"),
                 steps,
+                &s("description"),
                 bg_style,
                 theme,
                 &bg_img,
@@ -7022,6 +7085,7 @@ mod tests {
             &tokens,
             metrics.as_array().unwrap().clone(),
             "Pipeline",
+            "Compiled 12 of 50 modules in the current release train.",
             "dark",
             "editorial",
             "",
@@ -7049,6 +7113,117 @@ mod tests {
             !html.contains(">47%<")
                 && !html.contains("font-size:9.5px;font-weight:800;color:"),
             "the % counter next to the value must be removed"
+        );
+    }
+
+    #[test]
+    fn test_metric_grid_trend_badge_capped_and_ellipsized() {
+        // Regression: long trend strings overflowed the half-width card (the
+        // badge pushed past the right edge). The badge must be char-capped with
+        // an ellipsis and carry nowrap + overflow + ellipsis CSS so it can never
+        // overflow regardless of source text length.
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let long_trend = "holosim: 9,509 tests · operant: 7,434 more";
+        let metrics = json!([
+            {"value": "700+", "label": "MCP tools", "trend": long_trend, "progress": 80}
+        ]);
+        let res = metric_grid_slide(
+            &tokens,
+            metrics.as_array().unwrap().clone(),
+            "Pipeline",
+            "A two-line description slot below the metrics.",
+            "dark",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // Char cap: "holosim: 9,509 tests" is 20 chars → only the first 18
+        // survive, followed by an ellipsis ("…"), and the tail is dropped.
+        assert!(html.contains("holosim: 9,509 tes…"), "trend must be char-capped");
+        assert!(
+            !html.contains("operant: 7,434"),
+            "trend beyond the 18-char cap must be dropped"
+        );
+        // Belt-and-suspenders CSS: nowrap + overflow + ellipsis + max-width.
+        assert!(html.contains("white-space:nowrap"), "badge must not wrap");
+        assert!(html.contains("text-overflow:ellipsis"), "badge must ellipsize");
+        assert!(html.contains("max-width:120px"), "badge must have a max-width");
+        // The description param renders in the dedicated slot (no telemetry placeholder).
+        assert!(
+            html.contains("A two-line description slot below the metrics."),
+            "metric_grid must render the description param"
+        );
+        assert!(
+            !html.contains("Real-time performance telemetry"),
+            "hardcoded telemetry placeholder must be gone"
+        );
+    }
+
+    #[test]
+    fn test_process_map_wrap_aware_density_scaling() {
+        // Regression: the old density model used a FIXED per-item height (62px)
+        // that assumed single-line descriptions, so 4 steps with 2-line
+        // descriptions silently overflowed the 449px body (content measured to
+        // y=561 vs body bottom 485). The wrap-aware estimate must engage the
+        // aggressive tier for long descriptions — verify the rendered font sizes
+        // and padding shrink accordingly, and that a description slot exists.
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let steps = json!([
+            {"label": "First principles", "description": "Decompose the goal to its essence before touching a single line of code."},
+            {"label": "Bridge", "description": "Map the requirements onto existing infrastructure and open tooling that already works."},
+            {"label": "Orchestrate", "description": "Wire multi-agent workflows together to operationalize large-scale execution across systems."},
+            {"label": "Ship", "description": "Test at production scale, publish in the open, and iterate hard on real usage data."}
+        ]);
+        let res = process_map_slide(
+            &tokens,
+            "How I build",
+            steps.as_array().unwrap().clone(),
+            "Four steps, each with a long two-line description that must be compressed to fit.",
+            "dark",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        // The description is rendered (param-driven, not the hardcoded placeholder).
+        assert!(
+            html.contains("Four steps, each with a long two-line description"),
+            "process_map must render the description param"
+        );
+        assert!(
+            !html.contains("Automated 3-step compilation pipeline"),
+            "hardcoded compilation-pipeline placeholder must be gone"
+        );
+        // Long descriptions must NOT render at the base body font size (16px)
+        // — the wrap-aware tier must have compressed them below that.
+        assert!(
+            !html.contains("font-size:16px;color"),
+            "dense process_map must not render descriptions at the base body size"
+        );
+        // Aggressive tier compresses description text to <= ~0.88 * base.
+        let desc_size = html
+            .find("overflow-wrap:break-word;\">")
+            .map(|i| &html[..i])
+            .and_then(|pre| pre.rfind("font-size:"))
+            .map(|i| {
+                let s = &html[i + 10..i + 13];
+                s.trim_end_matches("px").parse::<i32>().unwrap_or(16)
+            })
+            .unwrap_or(16);
+        // The aggressive tier compresses the description below the base body
+        // size (16px) while staying legible (>= 9px). The exact pixel value
+        // depends on the palette's caption tier, so assert the regression: it
+        // must be strictly below the base body size.
+        assert!(
+            desc_size <= 15 && desc_size >= 9,
+            "wrapped descriptions must be compressed below base body size, got {desc_size}px"
         );
     }
 

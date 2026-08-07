@@ -1,0 +1,31 @@
+{
+  "composition": [
+    {"slide_type": "hero", "arc": "hook", "bg_style": "hero"},
+    {"slide_type": "big_statement", "arc": "evidence", "bg_style": "mesh"},
+    {"slide_type": "metric_grid", "arc": "evidence", "bg_style": "dark"},
+    {"slide_type": "radar_chart", "arc": "evidence", "bg_style": "mesh"},
+    {"slide_type": "process_map", "arc": "evidence", "bg_style": "gradient"},
+    {"slide_type": "split_features", "arc": "evidence", "bg_style": "dark"},
+    {"slide_type": "timeline", "arc": "evidence", "bg_style": "gradient"},
+    {"slide_type": "split_features", "arc": "evidence", "bg_style": "dark"},
+    {"slide_type": "case_study_result", "arc": "proof", "bg_style": "gradient"},
+    {"slide_type": "definition", "arc": "evidence", "bg_style": "gradient"},
+    {"slide_type": "quote", "arc": "proof", "bg_style": "mesh"},
+    {"slide_type": "myth_fact", "arc": "proof", "bg_style": "gradient"},
+    {"slide_type": "comment_cta", "arc": "action", "bg_style": "hero"}
+  ],
+  "arc_structure": {
+    "hook": {"types": ["hero"], "count": {"min": 1, "max": 1}},
+    "evidence": {"pool": ["big_statement", "metric_grid", "radar_chart", "process_map", "split_features", "timeline", "definition"], "count": {"min": 6, "max": 8}},
+    "proof": {"pool": ["case_study_result", "quote", "myth_fact"], "count": {"min": 2, "max": 3}},
+    "action": {"types": ["comment_cta"], "count": {"min": 1, "max": 1}}
+  },
+  "constraints": {
+    "no_consecutive_same_type": true,
+    "bg_rhythm": "alternating_dark_light",
+    "max_slides": 16,
+    "min_slides": 8,
+    "max_consecutive_dataviz": 2,
+    "require_narrative_after_dataviz": true
+  }
+}

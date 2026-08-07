@@ -1,0 +1,10 @@
+{
+  "title": "...and ship it all",
+  "features": [
+    {"title": "Automations", "description": "Markdown to narrated video, 3,897 tests."},
+    {"title": "SaaS + Full-Stack", "description": "Rust/Axum, trait registries, CLI/REST/MCP."},
+    {"title": "World Simulation", "description": "GPU emergent systems, 489K LOC, 9,509 tests."}
+  ],
+  "variant": "icon-grid",
+  "columns": 3
+}

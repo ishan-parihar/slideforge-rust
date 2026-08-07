@@ -1,0 +1,13 @@
+{
+  "title": "What I build",
+  "features": [
+    {"title": "MCP Servers", "description": "14 servers, 700+ tools — igs-rust alone exposes 64 tools over 411 sources."},
+    {"title": "AI Harnesses", "description": "Local-first coding harness, 1.17M LOC, LSP dispatch, permission enforcement."},
+    {"title": "Agent Memory", "description": "TDG — teleological self-model with HRR algebra and hybrid vector search."},
+    {"title": "Automations", "description": "AI-directed pipelines — markdown to narrated video, 3,897 tests."},
+    {"title": "SaaS + Full-Stack", "description": "Rust/Axum backends, trait-based provider registries, triple CLI/REST/MCP."},
+    {"title": "World Simulation", "description": "GPU-accelerated emergent systems, 489K LOC, 9,509 tests."}
+  ],
+  "variant": "icon-grid",
+  "columns": 2
+}

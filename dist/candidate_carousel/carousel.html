@@ -1,0 +1,2426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(data:font/woff2;base64,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) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+
+
+</style>
+<style>
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --slide-width: 420px;
+  --slide-height: 525px;
+  --composition-width: 420px;
+  --composition-height: 525px;
+  --chrome-x: 24px;
+}
+
+:root {
+  --primary: #5B5BD6;
+  --primary-light: #9CA4FF;
+  --primary-dark: #372AA3;
+  --surface-light: #EEF3FF;
+  --surface-dark: #020017;
+  --text-primary: #0A0B0F;
+  --text-secondary: #40424A;
+  --text-on-dark: #EDEEF5;
+  --text-on-dark-secondary: #CBCDD8;
+  --border-light: #C5C7D1;
+  --border-dark: #2A2C3D;
+  --accent: #8C6B00;
+  --secondary: #666B92;
+  --tertiary: #955683;
+  --gradient: linear-gradient(165deg, #020017 0%, #372AA3 60%, #020017 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #5B5BD640;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #EEF3FF 0%, #5B5BD608 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #5B5BD638 0px, transparent 50%), radial-gradient(at 80% 0%, #8C6B0028 0px, transparent 50%), radial-gradient(at 0% 50%, #9CA4FF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #9CA4FF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #8C6B0030 0px, transparent 50%), radial-gradient(at 50% 90%, #5B5BD628 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #020017 0%, #372AA330 50%, #020017 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #EEF3FFCC;
+  --glass-light-border: 1px solid #C5C7D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #020017CC;
+  --glass-dark-border: 1px solid #2A2C3D40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #EEF3FFE6;
+  --glass-frosted-border: 1px solid #C5C7D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px;
+}
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; background: #f0f0f0;
+  overflow-x: hidden;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.carousel-viewport { width: var(--slide-width); height: var(--slide-height); overflow: hidden; position: relative; }
+.carousel-track { display: flex; height: 100%; transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); will-change: transform; }
+
+.slide {
+  min-width: var(--slide-width); height: var(--slide-height); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slide--full-bleed { overflow: hidden; }
+/* The stretched full-bleed background layer must escape the .slide-body clip:
+   .slide-body keeps overflow:hidden for normal slides (so slide content is
+   hard-clipped to the body), but the full-bleed layer is explicitly positioned
+   and sized to the WHOLE slide (left=(comp-w−slide-w)/2, width=slide-w,
+   top=−header-h, height=slide-h). With the body still clipping, the layer was
+   truncated at the composition bounds — leaving the side bands on 1:1 canvases
+   (and the header/footer bands on 3:4 / 9:16) showing the slide-level mesh
+   background instead of the slide's own surface → a visible seam / "blur box".
+   Slide content cannot leak: .slide-content is itself absolutely positioned and
+   sized to the body region (see below), and the layer's own overflow:hidden
+   clips its decorative children to the layer bounds. */
+/* The body-clip lift is gated on an explicit marker class (`sf-body-lift`,
+   emitted by render_carousel_html when the slide's root wrapper carries the
+   `sf-bleed-layer` marker). blitz/stylo servo-mode silently drops the `:has`
+   relative selector — any such rule here would be dead CSS in the export
+   renderer, breaking the bleed behind the chrome bands
+   (see docs/rendering-engine-audit.md §3). */
+.slide--full-bleed .slide-body.sf-body-lift {
+  overflow: visible !important;
+}
+/* Banded chrome: header (36px) + body (flex) + footer (40px). Slide types
+   render ONLY inside .slide-body; the corner text lives in the bands so slide
+   content can never collide with it. The body is the only place slide-type
+   components are rendered. */
+.slide-composition {
+  width: var(--composition-width); height: var(--composition-height);
+  position: relative; overflow: hidden; flex-shrink: 0;
+  display: flex; flex-direction: column;
+}
+.slide-header {
+  flex: 0 0 var(--chrome-header-h, 36px); min-height: var(--chrome-header-h, 36px);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 var(--chrome-x, 24px); z-index: 45;
+  background: transparent;
+}
+.slide-body {
+  flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden;
+  z-index: 10;
+}
+.slide-footer {
+  flex: 0 0 var(--chrome-footer-h, 40px); min-height: var(--chrome-footer-h, 40px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0; z-index: 45;
+  background: transparent;
+}
+.slide-footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 0 var(--chrome-x, 24px); flex: 1 1 auto; min-height: 0;
+  background: transparent;
+}
+/* Dedicated full-width progress strip: its own vertical height (8px), pinned
+   to the bottom edge of the footer band, spanning the full composition width.
+   The strip is separate from the footer text row so the bar never competes
+   with url/hashtags for space. */
+.slide-progress {
+  flex: 0 0 8px; height: 8px; width: 100%;
+  display: flex; align-items: center;
+  padding: 0 var(--chrome-x, 24px); box-sizing: border-box;
+  background: transparent;
+}
+/* Full-bleed: allow composition background to bleed beyond 420×525 bounds.
+   The inner div (gradient + noise + shapes) inside .slide-body is stretched
+   to fill the slide, while content stays at designed 420×525 composition
+   dimensions. The .slide element's overflow:hidden clips at the final slide
+   boundary. */
+.slide--full-bleed .slide-composition {
+  overflow: visible;
+}
+.slide--full-bleed .slide-body > div:first-of-type {
+  position: absolute !important;
+  /* The background layer (mesh/gradient/image) must reach the TOP of the
+     composition so it bleeds behind the transparent header band. The body
+     starts after the header, so the layer is pulled up by exactly the header
+     height; its height is the full slide (canvas) so it also covers the
+     footer band and any aspect-ratio bleed below the composition. */
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
+  left: calc((var(--composition-width) - var(--slide-width)) / 2) !important;
+  width: var(--slide-width) !important;
+  height: var(--slide-height) !important;
+  overflow: hidden !important;
+}
+/* Content constrainer: reposition the content wrapper to the BODY region
+   (between header and footer bands), not the full composition. The body is
+   comp-height − header(36) − footer(40) = 449px. The background layer is
+   anchored at composition-top, so content is offset by exactly the header
+   height and sized to the body — content can never spill into the footer band
+   and vertical centering happens within the visible body (fixes the "content
+   pushed down into the footer" bug on 3:4 / 1:1 / 9:16 canvases). */
+.slide--full-bleed .slide-content {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: var(--chrome-header-h, 36px) !important;
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  width: var(--composition-width) !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
+  /* Body clip is lifted (see .slide--full-bleed .slide-body above); clip the
+     content itself so slide types can never paint outside the body region. */
+  overflow: hidden !important;
+}
+/* Image/glass (slide_base_bleed) on full-bleed canvases: the bleed wrapper
+   fills the stretched layer, so its IMAGE bleeds edge-to-edge (desired) — but
+   its text overlay (the last positioned child) currently spans the full slide
+   too, pushing text past the composition into the side bands on 1:1 (or top/
+   bottom bands on 3:4 / 9:16). Constrain the overlay to the composition box:
+   backgrounds bleed, content stays on the 420×525 grid. For 4:5 this rule
+   never applies (not full-bleed), so behavior is unchanged there. */
+.slide--full-bleed .slide-content--bleed > div > div:last-child {
+  left: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  right: calc((var(--slide-width) - var(--composition-width)) / 2) !important;
+  top: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+  bottom: calc((var(--slide-height) - var(--composition-height)) / 2) !important;
+}
+/* Full-bleed light/mesh: .slide--light already carries the mesh gradient
+   (defined above), so no extra rule is needed — kept as a defensive alias. */
+.slide--full-bleed.slide--light,
+.slide--full-bleed.slide--mesh {
+  background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC);
+}
+/* Background continuity (universal): the slide-base background layer (the
+   first child of .slide-body — the mesh/gradient/surface div, and any injected
+   full-slide photo inside it) is stretched to cover the FULL composition so the
+   chrome bands (transparent 36px header + 40px footer) show the EXACT same
+   background as the body. Without this, the body's layer is 420×449 while the
+   bands show the slide-level background anchored to a different-size element,
+   producing a visible seam — and injected photos / image-primary slides
+   (image_headline, image_quote via slide_base_bleed) stopped at the body edge
+   instead of bleeding behind the corner text. Content stays anchored to the
+   body region (re-anchor rule) so it can never collide with the chrome.
+   Two content-wrapper classes are covered: `.slide-content` (slide_base) is
+   RE-anchored to the body region; `.slide-content--bleed` (slide_base_bleed,
+   image/glass slides) is left in flow so its height:100% fills the stretched
+   layer — the image/glass covers the full composition including the bands.
+   Gated on those wrappers so non-conforming slide roots keep the old hard
+   clip instead of leaking into the chrome bands. */
+.slide:not(.slide--full-bleed) .slide-body.sf-body-lift {
+  overflow: visible !important;
+}
+.slide:not(.slide--full-bleed) .slide-body > div.sf-bleed-layer:first-child {
+  position: absolute !important;
+  top: calc(-1 * var(--chrome-header-h, 36px)) !important;
+  left: 0 !important;
+  width: 100% !important;
+  /* height must INCLUDE the header offset so the layer reaches the
+     composition bottom (top −36 + height 561 = 525): a bare
+     composition-height (525) with top −36 would stop at 489, leaving the
+     footer band (485–525) on the plain surface — the exact seam the bleed
+     exists to remove. */
+  height: calc(var(--composition-height) + var(--chrome-header-h, 36px)) !important;
+  overflow: hidden !important;
+}
+.slide:not(.slide--full-bleed) .slide-body > div:first-of-type > .slide-content {
+  position: absolute !important;
+  top: var(--chrome-header-h, 36px) !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(var(--composition-height) - var(--chrome-header-h, 36px) - var(--chrome-footer-h, 40px)) !important;
+  overflow: hidden;
+}
+
+/* Chrome (header/footer) is transparent, so the FULL slide background — mesh,
+   gradient, hero, or surface — must live on .slide itself. Light/mesh carry the
+   mesh gradient so the chrome band never shows a flat white seam against the
+   body's meshed surface. Dark carries a hue-tinted mesh so dark slides read as
+   dark-but-colored rather than pure black. */
+.slide--light { background: var(--gradient-mesh, none), var(--surface-light, #F3F5FC); color: var(--text-primary, #0A0B0F); }
+.slide--mesh { background: var(--gradient-mesh, radial-gradient(at 40% 20%, #6366F128 0px, transparent 50%)); color: var(--text-primary, #0A0B0F); }
+.slide--dark { background: var(--gradient-mesh-dark, none), var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--gradient { background: var(--gradient, linear-gradient(165deg, #3F34BD, #6366F1, #8D97FF)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+.slide--hero { background: var(--gradient-hero, linear-gradient(135deg, #010105 0%, #6366F130 50%, #010105 100%)); background-color: var(--surface-dark, #010105); color: var(--text-on-dark, #ECEEF5); }
+
+.slide--dark, .slide--gradient, .slide--hero {
+  --text-primary: var(--text-on-dark, #ECEEF5) !important;
+  --text-secondary: var(--text-on-dark-secondary, #B9BDC9) !important;
+  --border-light: var(--border-dark, #2A2D3D) !important;
+  --surface-light: var(--surface-dark, #010105) !important;
+  color: var(--text-on-dark, #ECEEF5) !important;
+}
+
+.slide-layout {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  height: 100%; padding: var(--space-10) var(--space-6) var(--space-12); width: 100%;
+}
+.slide-layout--center { justify-content: center; }
+
+.grid-2 { display: flex; gap: var(--space-3); width: 100%; }
+.grid-2 > * { flex: 1; min-width: 0; }
+
+.serif { font-family: var(--font-heading, serif); }
+.sans { font-family: var(--font-body, sans-serif); }
+.mono { font-family: var(--font-heading, monospace); }
+
+.display-text {
+  font-size: var(--text-2xl-size, 32px); font-weight: var(--text-2xl-weight, 700); 
+  line-height: var(--text-2xl-lh, 1.1); letter-spacing: var(--text-2xl-ls, -0.02em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.heading-text {
+  font-size: var(--text-xl-size, 24px); font-weight: var(--text-xl-weight, 600); 
+  line-height: var(--text-xl-lh, 1.2); letter-spacing: var(--text-xl-ls, -0.01em);
+  margin-bottom: var(--space-2, 16px); text-wrap: balance;
+}
+.body-text {
+  font-size: var(--text-base-size, 14px); font-weight: var(--text-base-weight, 400); 
+  line-height: var(--text-base-lh, 1.5);
+  text-wrap: pretty; overflow-wrap: break-word; word-break: break-word;
+}
+.caption-text {
+  font-size: var(--text-sm-size, 11px); font-weight: var(--text-sm-weight, 500); 
+  line-height: var(--text-sm-lh, 1.4); letter-spacing: var(--text-sm-ls, 0.02em);
+  text-wrap: pretty; overflow-wrap: break-word;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.slide--dark .text-gradient, .slide--gradient .text-gradient, .slide--hero .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.card {
+  padding: var(--space-2, 20px); border-radius: var(--radius-lg, 12px);
+  background: var(--surface-light, #F3F5FC);
+  border: 1px solid var(--border-light, #C4C7D1);
+  box-shadow: var(--shadow-sm);
+  overflow-wrap: break-word; word-break: break-word;
+}
+.slide--dark .card, .slide--gradient .card, .slide--hero .card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dark, #2A2D3D);
+  box-shadow: var(--shadow-md);
+}
+
+.badge {
+  display: inline-block; padding: var(--space-1, 6px) var(--space-2, 16px); font-size: var(--text-sm-size, 13px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: var(--space-3, 24px);
+}
+.slide--light .badge, .slide--mesh .badge {
+  background: var(--primary)15; color: var(--primary);
+  border: 1px solid var(--primary)30;
+}
+.slide--dark .badge, .slide--gradient .badge, .slide--hero .badge {
+  background: var(--text-on-dark)15; color: var(--text-on-dark);
+  border: 1px solid var(--text-on-dark)30;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-2, 12px) var(--space-4, 28px); font-size: var(--text-base-size, 14px); font-weight: 600;
+  border-radius: var(--radius-pill, 9999px); text-decoration: none;
+  box-shadow: var(--shadow-md); transition: transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.slide--light .btn, .slide--mesh .btn {
+  background: var(--primary); color: #FFFFFF;
+}
+.slide--dark .btn, .slide--gradient .btn, .slide--hero .btn {
+  background: var(--surface-light); color: var(--primary-dark);
+}
+
+.icon-box {
+  width: var(--space-7, 56px); height: var(--space-7, 56px); border-radius: var(--radius-md, 8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xl-size, 28px); margin-bottom: var(--space-3, 24px);
+}
+.slide--light .icon-box, .slide--mesh .icon-box { background: var(--primary)12; }
+.slide--dark .icon-box, .slide--gradient .icon-box, .slide--hero .icon-box { background: rgba(255,255,255,0.12); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-2, 16px); }
+.timeline-item { display: flex; gap: var(--space-2, 16px); align-items: flex-start; }
+.timeline-number {
+  font-size: var(--text-xl-size, 26px); font-weight: 300; color: var(--primary);
+  min-width: var(--space-4, 36px); line-height: 1;
+}
+.timeline-content { flex: 1; }
+
+.callout {
+  display: flex; gap: var(--space-2, 16px); align-items: flex-start; padding: var(--space-2, 16px);
+  border-radius: var(--radius-md, 8px); border: 1px solid transparent;
+}
+.callout--warning {
+  background: rgba(255, 165, 0, 0.1); border-color: var(--status-warning, #FFA500);
+}
+.callout--info {
+  background: rgba(0, 120, 255, 0.1); border-color: var(--status-info, #0078FF);
+}
+
+/* Progress bar variants, placed INSIDE the dedicated .slide-progress strip at
+   the bottom of the footer band. Default "chips": segmented breadcrumb chips.
+   "line": a single thin progress line. "dots": round Instagram-style dots.
+   "none": no progress element rendered. The strip is full-width with its own
+   8px vertical height, so the bar spans the footer and never competes with the
+   footer text row. The validator relies on the fixed band geometry. */
+.breadcrumb-progress {
+  display: flex; align-items: center; gap: 6px;
+  flex: 1 1 auto; width: 100%; min-width: 0;
+  z-index: 50;
+}
+.breadcrumb-chip {
+  height: 3px; flex: 1; border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 6px;
+}
+.slide--light .breadcrumb-chip, .slide--mesh .breadcrumb-chip { background: rgba(0,0,0,0.12); }
+.slide--dark .breadcrumb-chip, .slide--gradient .breadcrumb-chip, .slide--hero .breadcrumb-chip { background: rgba(255,255,255,0.2); }
+.slide--light .breadcrumb-chip.completed, .slide--mesh .breadcrumb-chip.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .breadcrumb-chip.completed, .slide--gradient .breadcrumb-chip.completed, .slide--hero .breadcrumb-chip.completed { background: rgba(255,255,255,0.65); }
+.breadcrumb-chip.active {
+  height: 5px; flex: 2.2;
+}
+.slide--light .breadcrumb-chip.active, .slide--mesh .breadcrumb-chip.active { background: var(--primary, #7C3AED); opacity: 1; }
+.slide--dark .breadcrumb-chip.active, .slide--gradient .breadcrumb-chip.active, .slide--hero .breadcrumb-chip.active { background: #ffffff; opacity: 1; }
+
+.progress-line {
+  flex: 1 1 auto; width: 100%; height: 4px; border-radius: 999px; overflow: hidden;
+  background: rgba(0,0,0,0.12);
+}
+.slide--dark .progress-line, .slide--gradient .progress-line, .slide--hero .progress-line {
+  background: rgba(255,255,255,0.2);
+}
+.progress-line-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--primary, #7C3AED);
+}
+.slide--dark .progress-line-fill, .slide--gradient .progress-line-fill, .slide--hero .progress-line-fill {
+  background: #ffffff;
+}
+
+/* "dots" progress variant: round dots (Instagram-style). Capped at 10 dots
+   so large decks never overflow the footer band. Dots are left-aligned inside
+   the full-width strip. */
+.progress-dots {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  flex: 1 1 auto; width: 100%; min-width: 0; flex-wrap: nowrap;
+  z-index: 50;
+}
+.progress-dot {
+  width: 6px; height: 6px; border-radius: 999px; flex-shrink: 1; flex-basis: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide--light .progress-dot, .slide--mesh .progress-dot { background: rgba(0,0,0,0.15); }
+.slide--dark .progress-dot, .slide--gradient .progress-dot, .slide--hero .progress-dot { background: rgba(255,255,255,0.3); }
+.slide--light .progress-dot.completed, .slide--mesh .progress-dot.completed { background: var(--primary, #7C3AED); opacity: 0.55; }
+.slide--dark .progress-dot.completed, .slide--gradient .progress-dot.completed, .slide--hero .progress-dot.completed { background: rgba(255,255,255,0.65); }
+.progress-dot.active {
+  width: 16px; background: var(--primary, #7C3AED); opacity: 1;
+}
+.slide--dark .progress-dot.active, .slide--gradient .progress-dot.active, .slide--hero .progress-dot.active {
+  background: #ffffff; opacity: 1;
+}
+
+.swipe-arrow {
+  position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-6, 48px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  z-index: 50;
+}
+.slide--light .swipe-arrow, .slide--mesh .swipe-arrow { background: linear-gradient(to right, transparent, rgba(0,0,0,0.06)); }
+.slide--dark .swipe-arrow, .slide--gradient .swipe-arrow, .slide--hero .swipe-arrow { background: linear-gradient(to right, transparent, rgba(255,255,255,0.08)); }
+.swipe-arrow svg { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide--light .swipe-arrow svg, .slide--mesh .swipe-arrow svg { stroke: var(--text-primary, #0B0A0F); opacity: 0.4; }
+.slide--dark .swipe-arrow svg, .slide--gradient .swipe-arrow svg, .slide--hero .swipe-arrow svg { stroke: var(--text-on-dark, #EEEDF5); opacity: 0.4; }
+
+/* Corner text inside the header/footer bands. These are the ONLY chrome
+   elements; slide types never render here (they live in .slide-body). */
+.overlay__brand { font-family: var(--heading); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.slide--light .overlay__brand, .slide--mesh .overlay__brand { opacity: 0.85; }
+.slide--dark .overlay__brand, .slide--gradient .overlay__brand, .slide--hero .overlay__brand { color: var(--text-on-dark, #EEEDF5); opacity: 0.85; }
+.overlay__topic { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; white-space: nowrap; }
+.slide--light .overlay__topic, .slide--mesh .overlay__topic { opacity: 0.8; }
+.slide--dark .overlay__topic, .slide--gradient .overlay__topic, .slide--hero .overlay__topic { color: var(--text-on-dark, #EEEDF5); opacity: 0.8; }
+.overlay__url { font-family: var(--body); font-size: 11.5px; letter-spacing: 0.01em; font-weight: 600; white-space: nowrap; }
+.slide--light .overlay__url, .slide--mesh .overlay__url { opacity: 0.75; }
+.slide--dark .overlay__url, .slide--gradient .overlay__url, .slide--hero .overlay__url { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+.overlay__hashtags { font-family: var(--body); font-size: 11.5px; font-weight: 600; text-align: right; line-height: 1.3; white-space: nowrap; }
+.slide--light .overlay__hashtags, .slide--mesh .overlay__hashtags { opacity: 0.75; }
+.slide--dark .overlay__hashtags, .slide--gradient .overlay__hashtags, .slide--hero .overlay__hashtags { color: var(--text-on-dark, #EEEDF5); opacity: 0.75; }
+/* Corner chrome on photo slides (has-bg-image): the header/footer bands sit
+   on top of the full-bleed photo, where thin dark text disappears. The export
+   renderer (blitz) drops text-shadow entirely, so contrast is guaranteed with
+   a translucent scrim pill behind each corner element — white 700 text on a
+   dark pill reads on ANY photo brightness, deterministically in every engine.
+   Higher specificity than the theme overrides' single-class rules, so the
+   pill always wins on photo slides. */
+.slide.has-bg-image .overlay__brand,
+.slide.has-bg-image .overlay__topic,
+.slide.has-bg-image .overlay__url,
+.slide.has-bg-image .overlay__hashtags {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  background: rgba(0,0,0,0.42);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+            :root {
+                --radius-lg: 8px;
+                --radius-md: 6px;
+            }
+            .slide--light, .slide--mesh { --surface-light: #F8F6F3; }
+            .slide--dark, .slide--hero { --surface-dark: #0A0A0F; }
+            .overlay__brand {
+                font-family: var(--font-heading), Georgia, serif !important;
+                font-style: normal !important;
+                text-transform: none !important;
+                font-size: 12.5px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.02em !important;
+                opacity: 0.9 !important;
+            }
+            .overlay__topic, .overlay__url, .overlay__hashtags {
+                font-family: var(--font-body), sans-serif !important;
+                font-style: normal !important;
+                text-transform: uppercase !important;
+                font-size: 11.5px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12em !important;
+                opacity: 0.75 !important;
+            }
+        
+.ig-frame {
+  width: var(--slide-width); background: #fff; border-radius: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10); overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.ig-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #efefef; }
+.ig-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--primary, #0B0A0F);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+.ig-handle { font-size: 13px; font-weight: 600; color: #262626; }
+.ig-subtitle { font-size: 11px; color: #8e8e8e; }
+.ig-dots { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
+.ig-dot { width: 6px; height: 6px; border-radius: 50%; background: #d8d8d8; transition: background 0.2s; }
+.ig-dot.active { background: #262626; }
+.ig-actions { display: flex; gap: 14px; padding: 8px 14px; }
+.ig-actions svg { width: 22px; height: 22px; stroke: #262626; fill: none; stroke-width: 1.8; cursor: pointer; }
+.ig-actions svg:hover { opacity: 0.6; }
+.ig-actions svg.bookmark { margin-left: auto; }
+.ig-caption { padding: 0 14px 12px; font-size: 12px; line-height: 1.45; color: #262626; }
+.ig-caption strong { font-weight: 600; }
+.ig-caption .timestamp { color: #8e8e8e; font-size: 11px; margin-top: 4px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div id="sf-canvas" style="width:1080px;height:1800px;overflow:visible;position:relative;margin:0 auto;flex-shrink:0;">
+  <div style="transform:scale(2.571429);transform-origin:top left;width:420px;height:700px;">
+    <div class="ig-frame">
+  <div class="ig-header">
+    <div class="ig-avatar">I</div>
+    <div>
+      <div class="ig-handle">@ishanparihar</div>
+      <div class="ig-subtitle">Carousel</div>
+    </div>
+  </div>
+<div class="carousel-viewport">
+<div class="carousel-track" id="carouselTrack">
+<div id="slide-0" class="slide slide--hero has-bg-image"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">Ishan Parihar</span>
+    <span class="overlay__topic" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; background: var(--texture-grain)"></div>
+            <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;"><div style="background: #6E54D1; pointer-events: none; top: -80px; width: 320px; opacity: 0.07; left: -80px; border-radius: 50%; height: 320px; position: absolute"></div><div style="pointer-events: none; background: #7B7300; left: auto; transform: rotate(60deg); opacity: 0.05; width: 120px; height: 120px; border-radius: 4px; right: -40px; position: absolute; top: 60%"></div></div>
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:var(--space-3);overflow:hidden;align-items:center;"><div style="min-width:0;overflow:hidden;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:700;color:#C7B4FF;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">OPEN TO WORK</div><h1 style="font-family:Space Grotesk;font-size:22px;font-weight:900;color:#EEEDF5;line-height:1.08;margin:0 0 8px;overflow-wrap:break-word;">I build infrastructure for AI agents to operate at production scale.</h1><p style="font-family:Space Grotesk;font-size:15px;color:#CDCCD7;line-height:1.5;margin:0;max-width:320px;">Ishan Parihar · Independent AI Infrastructure Builder — Rust, MCP, multi-agent systems. 700+ MCP tools shipped in the open.</p></div><div style="min-width:0;overflow:hidden;"><div style="position:relative;width:100%;height:var(--space-28);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-lg);background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80');background-size:cover;background-position:center;opacity:0.4;"></div><div style="position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:10;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary, #888);opacity:0.6;animation:arrow-pulse 2s ease-in-out infinite;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><style>@keyframes arrow-pulse { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(6px); opacity: 0.8; } }</style></div></div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">ishanparihar.com</span>
+      <span class="overlay__hashtags" style="text-shadow: 0 1px 3px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.3);">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:8%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-0 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-1" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); position: absolute; opacity: 0.04; pointer-events: none; z-index: 1; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;padding:0 40px;position:relative;overflow:hidden;">
+            <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+                <div style="font-family:Space Grotesk;font-size:72px;font-weight:900;color:#9680FF;line-height:1.0;letter-spacing:-0.04em;text-align:center;">700+</div><div style="font-family:Space Grotesk;font-size:11px;font-weight:700;color:#CDCCD7;text-transform:uppercase;letter-spacing:0.12em;margin-top:8px;text-align:center;">MCP tools across 14 servers</div>
+                <div style="width:60px;height:2px;background:#EEEDF5;opacity:0.4;margin:18px auto;"></div>
+                <div style="font-family:Space Grotesk;font-size:14px;line-height:1.5;color:#CDCCD7;text-align:center;max-width:280px;margin:8px auto 0;">Built solo. Shipped in the open.</div>
+                <div style="text-align:center;z-index:2;margin-top:24px;">
+                <span style="display:inline-block;font-family:Space Grotesk;font-size:11px;font-weight:800;color:#EEEDF5;text-transform:uppercase;letter-spacing:0.12em;background:rgba(255,255,255,0.12);padding:12px 28px;border-radius:100px;">View the work</span>
+            </div>
+            </div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:15%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-1 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-2" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; position: absolute; pointer-events: none; background: var(--texture-grain); inset: 0; opacity: 0.04"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #EEEDF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The numbers behind the builder</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;"><div style="background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#CDCCD7;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">MCP tools built</span>
+                    <span style="font-size:10px;font-weight:900;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">across 14 servers</span>
+                </div>
+                <div style="font-family:Space Grotesk;font-size:30px;font-weight:900;color:#8D77F7;line-height:1;">700+</div>
+                <div style="width:100%;height:3px;background:#8D77F720;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:100%;height:100%;background:#8D77F7;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#CDCCD7;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">public repositories</span>
+                    <span style="font-size:10px;font-weight:900;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">all Rust, all in t…</span>
+                </div>
+                <div style="font-family:Space Grotesk;font-size:30px;font-weight:900;color:#8D77F7;line-height:1;">42</div>
+                <div style="width:100%;height:3px;background:#8D77F720;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:100%;height:100%;background:#8D77F7;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#CDCCD7;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">tests in TDG</span>
+                    <span style="font-size:10px;font-weight:900;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">holosim: 9,509 · o…</span>
+                </div>
+                <div style="font-family:Space Grotesk;font-size:30px;font-weight:900;color:#8D77F7;line-height:1;">12,665</div>
+                <div style="width:100%;height:3px;background:#8D77F720;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:96%;height:100%;background:#8D77F7;border-radius:999px;"></div>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:0;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;">
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;">
+                    <span style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#CDCCD7;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">lines of Rust in icode</span>
+                    <span style="font-size:10px;font-weight:900;color:#EF4444;background:#EF444418;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">LSP dispatch · per…</span>
+                </div>
+                <div style="font-family:Space Grotesk;font-size:30px;font-weight:900;color:#8D77F7;line-height:1;">1.17M</div>
+                <div style="width:100%;height:3px;background:#8D77F720;border-radius:999px;margin-top:2px;overflow:hidden;">
+                    <div style="width:88%;height:100%;background:#8D77F7;border-radius:999px;"></div>
+                </div>
+            </div></div>
+            <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.5;margin-top:8px;min-height:33px;opacity:0.9;overflow:hidden;">Every number below is shipped in the open — public repos, public tools, tested at scale.</div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:23%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-2 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-3" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-mesh);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="pointer-events: none; background: var(--texture-grain); opacity: 0.04; z-index: 1; position: absolute; inset: 0"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;"><h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: var(--text-primary, #0B0A0F); margin: 0 0 10px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Skill assessment</h2><div style="position:relative;width:100%;max-width:320px;height:210px;margin:4px auto 0;"><svg width="100%" height="210px" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="160.0,84.0 173.9,92.0 173.9,108.0 160.0,116.0 146.1,108.0 146.1,92.0" fill="none" stroke="#2D2C3C33" stroke-width="1" /><polygon points="160.0,68.0 187.7,84.0 187.7,116.0 160.0,132.0 132.3,116.0 132.3,84.0" fill="none" stroke="#2D2C3C33" stroke-width="1" /><polygon points="160.0,52.0 201.6,76.0 201.6,124.0 160.0,148.0 118.4,124.0 118.4,76.0" fill="none" stroke="#2D2C3C33" stroke-width="1" /><polygon points="160.0,36.0 215.4,68.0 215.4,132.0 160.0,164.0 104.6,132.0 104.6,68.0" fill="none" stroke="#2D2C3C33" stroke-width="1" /><polygon points="160.0,20.0 229.3,60.0 229.3,140.0 160.0,180.0 90.7,140.0 90.7,60.0" fill="none" stroke="#2D2C3C33" stroke-width="1" />
+            <line x1="160" y1="100" x2="160.0" y2="20.0" stroke="#2D2C3C33" stroke-width="1" /><line x1="160" y1="100" x2="229.3" y2="60.0" stroke="#2D2C3C33" stroke-width="1" /><line x1="160" y1="100" x2="229.3" y2="140.0" stroke="#2D2C3C33" stroke-width="1" /><line x1="160" y1="100" x2="160.0" y2="180.0" stroke="#2D2C3C33" stroke-width="1" /><line x1="160" y1="100" x2="90.7" y2="140.0" stroke="#2D2C3C33" stroke-width="1" /><line x1="160" y1="100" x2="90.7" y2="60.0" stroke="#2D2C3C33" stroke-width="1" />
+            <polygon points="160.0,20.0 228.6,60.4 227.1,138.7 160.0,174.1 98.0,135.8 94.4,62.1" fill="#9680FF" fill-opacity="0.25" stroke="#9680FF" stroke-width="2" />
+            <circle cx="160.0" cy="20.0" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="228.6" cy="60.4" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="227.1" cy="138.7" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="160.0" cy="174.1" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="98.0" cy="135.8" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" /><circle cx="94.4" cy="62.1" r="4" fill="#9680FF" stroke="#ffffff" stroke-width="1.5" />
+        </svg><span style="position:absolute;left:160.0px;top:10.0px;transform:translate(-50%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">Rust (95)</span><span style="position:absolute;left:246.4px;top:55.0px;transform:translate(0%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">MCP / Agent Infra (94)</span><span style="position:absolute;left:246.4px;top:145.0px;transform:translate(0%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">Multi-agent Systems (92)</span><span style="position:absolute;left:160.0px;top:190.0px;transform:translate(-50%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">Systems Design (88)</span><span style="position:absolute;left:73.6px;top:145.0px;transform:translate(-100%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">Full-Stack Web (85)</span><span style="position:absolute;left:73.6px;top:55.0px;transform:translate(-100%, -50%);font-family:Space Grotesk;font-size:10px;font-weight:700;color:#EEEDF5;white-space:nowrap;line-height:1.2;">Automation (90)</span></div><p style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;margin:8px 0 0;line-height:1.4;text-align:center;max-width:320px;opacity:0.85;">Self-assessed proficiency across the stack I ship with every day.</p></div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:31%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-3 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-4" class="slide slide--gradient"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #EEEDF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">How I build</h2>
+            <div style="display:flex;flex-direction:column;gap:4px;width:100%;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">01</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin-bottom:2px;">First principles</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.4;overflow-wrap:break-word;">Reduce goal to its essence.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">02</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin-bottom:2px;">Bridge</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.4;overflow-wrap:break-word;">Bridge to existing infra.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">03</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin-bottom:2px;">Orchestrate</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.4;overflow-wrap:break-word;">Wire multi-agent workflows.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:8px 10px 6px;box-sizing:border-box;display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:10px;font-weight:900;flex-shrink:0;">04</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin-bottom:2px;">Ship</div>
+                    <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.4;overflow-wrap:break-word;">Test, ship, iterate openly.</div>
+                </div>
+            </div></div>
+            <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.5;margin-top:6px;min-height:30px;opacity:0.9;overflow:hidden;">A repeatable loop: first principles → bridge → orchestrate → ship, in the open.</div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:38%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-4 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-5" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="background: var(--texture-grain); opacity: 0.04; inset: 0; z-index: 1; pointer-events: none; position: absolute"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="What I build" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div></div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:8px;">
+                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #EEEDF5; margin: 0 0 6px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">What I build</h2>
+                    <div style="display:flex;flex-direction:column;gap:6px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">MCP Servers</h3>
+                    <p style="font-family:Space Grotesk;font-size:12px;color:#CDCCD7;margin:0;line-height:1.45;">14 servers, 700+ tools — igs-rust alone exposes 64 tools over 411 sources.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">AI Harnesses</h3>
+                    <p style="font-family:Space Grotesk;font-size:12px;color:#CDCCD7;margin:0;line-height:1.45;">Local-first coding harness, 1.17M LOC, LSP dispatch, permission enforcement.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:6px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:12px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Agent Memory</h3>
+                    <p style="font-family:Space Grotesk;font-size:12px;color:#CDCCD7;margin:0;line-height:1.45;">TDG — teleological self-model with HRR algebra and hybrid vector search.</p>
+                </div>
+            </div></div>
+                </div>
+            </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:46%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-5 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-6" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; inset: 0; position: absolute; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 36px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;height:100%;align-items:stretch;overflow:hidden;">
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;align-items:stretch;"><div style="position:relative;width:100%;height:100%;border-radius: 0;overflow:hidden;background:transparent;box-sizing:border-box;">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" alt="...and ship it all" style="display:block;width:100%;height:100%;object-fit: cover; object-position: center;filter: contrast(1.06) brightness(1.06);" />
+                
+            </div></div>
+                <div style="min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                    <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #EEEDF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">...and ship it all</h2>
+                    <div style="display:flex;flex-direction:column;gap:10px;overflow:hidden;"><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">Automations</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CDCCD7;margin:0;line-height:1.45;">Markdown to narrated video, 3,897 tests.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">SaaS + Full-Stack</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CDCCD7;margin:0;line-height:1.45;">Rust/Axum, trait registries, CLI/REST/MCP.</p>
+                </div>
+            </div><div style="background:rgba(255,255,255,0.06);border:1px solid #2D2C3C;border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,0.05);padding:8px;display:flex;gap:0px;align-items:flex-start;margin:0;box-sizing:border-box;min-width:0;">
+                <div style="min-width:0;">
+                    <h3 style="font-family:Space Grotesk;font-size:13px;font-weight:800;color:#EEEDF5;margin:0 0 5px;line-height:1.2;overflow-wrap:break-word;word-break:break-word;">World Simulation</h3>
+                    <p style="font-family:Space Grotesk;font-size:13px;color:#CDCCD7;margin:0;line-height:1.45;">GPU emergent systems, 489K LOC, 9,509 tests.</p>
+                </div>
+            </div></div>
+                </div>
+            </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:54%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-6 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-7" class="slide slide--gradient"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; position: absolute; opacity: 0.04; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-family:Space Grotesk;font-size:28px;font-weight:900;color:#EEEDF5;margin:0;line-height:1.08;">igs-rust — intelligence at scale, zero API keys</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div style="border-radius:16px;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2D2C3C;border-left:3px solid #C7B4FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#EEEDF5;margin-bottom:8px;">PROBLEM</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CDCCD7;line-height:1.45;margin:0;">Aggregate deep intelligence across 20 domains without a single paid API key.</p></div>
+                <div style="border-radius:16px;padding:18px;background:rgba(255,255,255,0.10);border:1px solid #2D2C3C;border-left:3px solid #C7B4FF;"><div style="font-family:Space Grotesk;font-size:11px;font-weight:800;color:#EEEDF5;margin-bottom:8px;">SOLUTION</div><p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CDCCD7;line-height:1.45;margin:0;">Built a Rust MCP server wiring 411 sources into 64 tools with TOON output and an embedded Obscura browser.</p></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.10);border:1px solid #2D2C3C;border-radius:16px;padding:12px 16px;width:100%;box-sizing:border-box;">
+                <div style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#C7B4FF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:Space Grotesk;font-size:11px;color:#CDCCD7;line-height:1.45;">MCP tools &nbsp;•&nbsp; sources &nbsp;•&nbsp; intelligence domains &nbsp;•&nbsp; API keys</div>
+            </div>
+            <p style="font-family:Space Grotesk;font-size:var(--text-sm);color:#CDCCD7;line-height:1.45;margin:0;">One server, one protocol, zero lock-in — every source replaceable in the open.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:62%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-7 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-8" class="slide slide--gradient"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; background: var(--texture-grain); z-index: 1; opacity: 0.04; position: absolute; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px var(--space-6) 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;display:flex;flex-direction:column;gap:4px;">
+            <h2 style="font-family: Space Grotesk; font-size: 21px; font-weight: 600; line-height: 1.12; color: #EEEDF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.015em; overflow-wrap: break-word">The journey</h2>
+            <div style="display:flex;flex-direction:column;gap:4px;width:100%;border-left:3px solid #C7B4FF;padding-left:14px;box-sizing:border-box;"><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:10px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:12.5px;font-weight:900;flex-shrink:0;">01</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#EEEDF5;line-height:1.2;">B.Arch exploration</div>
+                    <div style="font-family:Space Grotesk;font-size:9.5px;color:#CDCCD7;line-height:1.4;margin-top:2px;overflow-wrap:break-word;">Architecture school — learning systems thinking the hard way.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:10px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:12.5px;font-weight:900;flex-shrink:0;">02</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#EEEDF5;line-height:1.2;">The pivot</div>
+                    <div style="font-family:Space Grotesk;font-size:9.5px;color:#CDCCD7;line-height:1.4;margin-top:2px;overflow-wrap:break-word;">Psychology — understanding what differentiates humans from AI.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:10px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:12.5px;font-weight:900;flex-shrink:0;">03</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#EEEDF5;line-height:1.2;">AI Infrastructure Builder</div>
+                    <div style="font-family:Space Grotesk;font-size:9.5px;color:#CDCCD7;line-height:1.4;margin-top:2px;overflow-wrap:break-word;">Solo deep-work practice: Rust, MCP, multi-agent systems at scale.</div>
+                </div>
+            </div><div style="min-width:0;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:16px;padding:10px 12px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:#C7B4FF;color:#0C0100;display:flex;align-items:center;justify-content:center;font-family:Space Grotesk;font-size:12.5px;font-weight:900;flex-shrink:0;">04</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-family:Space Grotesk;font-size:12.5px;font-weight:800;color:#EEEDF5;line-height:1.2;">Now</div>
+                    <div style="font-family:Space Grotesk;font-size:9.5px;color:#CDCCD7;line-height:1.4;margin-top:2px;overflow-wrap:break-word;">Seeking output-driven teams that value builders over appearances.</div>
+                </div>
+            </div></div>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:69%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-8 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-9" class="slide slide--dark"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--surface-dark);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; z-index: 1; pointer-events: none; position: absolute; opacity: 0.04; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="border: 1px solid #2D2C3C40; background: #0C0100CC; border-radius: 16px;padding:var(--space-4);box-shadow:0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);"><div style="font-family:Georgia,serif;font-size:64px;line-height:1;color:#8D77F7;text-align:center;margin-bottom:-8px;user-select:none;" aria-hidden="true">❝</div><blockquote style="font-size:26px;font-weight:600;line-height:1.25;color:#EEEDF5;margin:0;text-align:center;text-wrap:balance;font-family:'Space Grotesk', serif;transform:skewX(-10deg);">First-principles thinking, bridged to existing infrastructure — orchestrated agents that actually ship.</blockquote><div style="margin-top:12px;text-align:center;"><div style="width:40px;height:2px;background:#6E54D1;margin:20px auto 16px;border-radius:1px;"></div><div style="margin:0;display:flex;align-items:center;gap:12px;justify-content:center;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #EEEDF520; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #EEEDF5; flex-shrink: 0;">I</div>
+            <div>
+                <div style="font-family:Space Grotesk;font-size:14px;font-weight:600;color:#EEEDF5;">Ishan Parihar</div>
+                <div style="font-family:Space Grotesk;font-size:12px;color:#42414A;"> · Independent AI Infrastructure Builder</div>
+            </div>
+        </div></div></div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:77%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-9 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-10" class="slide slide--gradient"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="z-index: 1; background: var(--texture-grain); opacity: 0.04; inset: 0; position: absolute; pointer-events: none"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:16px 44px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;background:rgba(255,255,255,0.05);border:1px solid #2D2C3C;border-radius:0;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:Space Grotesk;font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:#C7B4FF;background:#C7B4FF18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>
+            <h2 style="font-family:Space Grotesk;font-size:30px;font-weight:900;color:#EEEDF5;margin:0 0 4px;line-height:1.1;">MCP</h2>
+            <div style="font-family:Space Grotesk;font-size:13px;;color:#CDCCD7;margin-bottom:12px;opacity:0.92;">/em-see-pee/</div>
+            <div style="border-left:3px solid #C7B4FF;padding-left:14px;margin:12px 0 14px;">
+            <p style="font-family:Space Grotesk;font-size:15px;font-weight:600;color:#EEEDF5;margin:0;line-height:1.55;">Model Context Protocol — the open standard that lets AI agents connect to the tools they operate.</p>
+        </div>
+            <p style="font-family:Space Grotesk;font-size:13px;font-weight:500;color:#CDCCD7;margin:0;line-height:1.5;opacity:0.95;">The layer I&#x27;ve spent three years building on.</p>
+        </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:85%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-10 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-11" class="slide slide--gradient"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="inset: 0; opacity: 0.04; position: absolute; pointer-events: none; background: var(--texture-grain); z-index: 1"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:20px 44px 20px;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
+                    <h2 style="font-family: Space Grotesk; font-size: 18px; font-weight: 600; line-height: 1.18; color: #EEEDF5; margin: 0 0 12px; text-align: left; letter-spacing: -0.01em; overflow-wrap: break-word">Myth vs Fact</h2>
+                    <div style="display:flex;gap:14px;width:100%;min-height:0;flex:0 1 auto;align-items:center;overflow:hidden;"><div style="flex:1;min-width:0;flex-shrink:1;">
+                    <div style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#CDCCD7;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">MYTH</div>
+                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);box-sizing:border-box;">
+                        <div style="font-family:Space Grotesk;font-size:16px;font-weight:500;color:#CDCCD7;line-height:1.4;text-decoration:line-through;text-decoration-color:#C7B4FF;text-decoration-thickness:1.5px;opacity:0.6;overflow-wrap:break-word;">A solo builder can&#x27;t ship production-grade infrastructure.</div>
+                    </div>
+                </div><div style="flex:1;min-width:0;flex-shrink:1;">
+                    <div style="font-family:Space Grotesk;font-size:10px;font-weight:800;color:#C7B4FF;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">FACT</div>
+                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-left-width:4px;border-left-color:#C7B4FF;border-radius:16px;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,0.05);box-sizing:border-box;">
+                        <div style="font-family:Space Grotesk;font-size:16px;font-weight:600;color:#EEEDF5;line-height:1.4;overflow-wrap:break-word;">42 public repos, 700+ MCP tools, 34,000+ tests — all built solo and shipped in the open.</div>
+                    </div>
+                </div></div>
+                    <div style="font-family:Space Grotesk;font-size:14px;color:#CDCCD7;margin-top:14px;line-height:1.45;text-align:center;">Deep work and productive outcomes beat staged appearances. The code is public — judge it directly.</div>
+                </div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:92%"></div></div></div>
+  </div>
+</div>
+  <div class="swipe-arrow">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M9 6L15 12L9 18"/>
+    </svg>
+  </div></div><style>#slide-11 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+<div id="slide-12" class="slide slide--hero"><div class="slide-composition">
+  <div class="slide-header">
+    <span class="overlay__brand">Ishan Parihar</span>
+    <span class="overlay__topic">AI Agent Infrastructure</span>
+  </div>
+  <div class="slide-body sf-body-lift">
+<div class="sf-bleed-layer" style="position:relative;width:100%;height:100%;background:var(--gradient-hero);background-color:var(--surface-dark);overflow:hidden;">
+            <div style="opacity: 0.04; pointer-events: none; z-index: 1; position: absolute; inset: 0; background: var(--texture-grain)"></div>
+            
+            <div class="slide-content" style="position:relative;z-index:10;padding:0;display:flex;flex-direction:column;justify-content:center;height:100%;width:100%;box-sizing:border-box;">
+                <div style="width:100%;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:44px 44px 36px;position:relative;overflow:hidden;">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:left;display:flex;flex-direction:column;align-items:flex-start;">
+                <div style="font-size:38px;font-weight:900;color:#EEEDF5;line-height:1.05;letter-spacing:-0.03em;text-align:left;font-family:'Space Grotesk', serif;transform:skewX(-10deg);">Hiring someone who builds the infrastructure agents run on?</div><div style="font-family:Space Grotesk;font-size:16px;line-height:1.5;color:#CDCCD7;text-align:left;margin-top:16px;">Available immediately for remote-first, output-driven teams. Rust · MCP · Agent Infrastructure.</div><div style="font-family:Space Grotesk;font-size:18px;font-weight:700;color:#EEEDF5;text-align:left;margin-top:24px;line-height:1.5;">Comment <span style="color:#C7B4FF;font-weight:900;text-decoration:underline;text-underline-offset:3px;">BUILD</span> and I&#x27;ll DM you my portfolio + resume.</div>
+            </div>
+        </div></div>
+            </div>
+        </div>
+  </div>
+  <div class="slide-footer">
+    <div class="slide-footer-row">
+      <span class="overlay__url">ishanparihar.com</span>
+      <span class="overlay__hashtags">#AI #MCP</span>
+    </div>
+    <div class="slide-progress progress--line"><div class="progress-line"><div class="progress-line-fill" style="width:100%"></div></div></div>
+  </div>
+</div>
+</div><style>#slide-12 {   --primary: #6E54D1;
+  --primary-light: #B19DFF;
+  --primary-dark: #47229F;
+  --surface-light: #FFF3D8;
+  --surface-dark: #0C0100;
+  --text-primary: #0B0B0F;
+  --text-secondary: #42414A;
+  --text-on-dark: #EEEDF5;
+  --text-on-dark-secondary: #CDCCD7;
+  --border-light: #C6C6D1;
+  --border-dark: #2D2C3C;
+  --accent: #7B7300;
+  --secondary: #886934;
+  --tertiary: #4C6FA4;
+  --gradient: linear-gradient(165deg, #0C0100 0%, #47229F 60%, #0C0100 100%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --shadow-inner: inset 0 2px 2px 4px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px #6E54D140;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --gradient-subtle: linear-gradient(135deg, #FFF3D8 0%, #6E54D108 100%);
+  --gradient-mesh: radial-gradient(at 40% 20%, #6E54D138 0px, transparent 50%), radial-gradient(at 80% 0%, #7B730028 0px, transparent 50%), radial-gradient(at 0% 50%, #B19DFF30 0px, transparent 50%);
+  --gradient-mesh-dark: radial-gradient(at 30% 15%, #B19DFF3A 0px, transparent 55%), radial-gradient(at 85% 25%, #7B730030 0px, transparent 50%), radial-gradient(at 50% 90%, #6E54D128 0px, transparent 55%);
+  --gradient-hero: linear-gradient(135deg, #0C0100 0%, #47229F30 50%, #0C0100 100%);
+  --gradient-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  --texture-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  --glass-light-blur: 12px;
+  --glass-light-bg: #FFF3D8CC;
+  --glass-light-border: 1px solid #C6C6D140;
+  --glass-dark-blur: 12px;
+  --glass-dark-bg: #0C0100CC;
+  --glass-dark-border: 1px solid #2D2C3C40;
+  --glass-frosted-blur: 20px;
+  --glass-frosted-bg: #FFF3D8E6;
+  --glass-frosted-border: 1px solid #C6C6D130;
+  --font-heading: 'Space Grotesk', serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --text-display-size: 24px;
+  --text-display-lh: 1.08;
+  --text-display-ls: -0.02em;
+  --text-display-weight: 600;
+  --text-headline-size: 21px;
+  --text-headline-lh: 1.12;
+  --text-headline-ls: -0.015em;
+  --text-headline-weight: 600;
+  --text-title-size: 18px;
+  --text-title-lh: 1.18;
+  --text-title-ls: -0.01em;
+  --text-title-weight: 600;
+  --text-body-size: 16px;
+  --text-body-lh: 1.55;
+  --text-body-ls: 0em;
+  --text-body-weight: 400;
+  --text-caption-size: 14px;
+  --text-caption-lh: 1.4;
+  --text-caption-ls: 0.02em;
+  --text-caption-weight: 600;
+  --text-micro-size: 12px;
+  --text-micro-lh: 1.35;
+  --text-micro-ls: 0.04em;
+  --text-micro-weight: 500;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --space-0: 0px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-14: 112px;
+  --space-16: 128px;
+  --space-18: 144px;
+  --space-20: 160px;
+  --space-24: 192px;
+  --space-28: 224px;
+  --space-32: 256px; }</style>
+
+</div>
+</div>
+  <div class="ig-dots" id="igDots"><div class="ig-dot active"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div><div class="ig-dot"></div></div>
+  <div class="ig-actions">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="ig-caption">
+    <strong>@ishanparihar</strong> Swipe through for the full breakdown
+    <span class="timestamp">2 hours ago</span>
+  </div>
+</div>
+  </div>
+</div>
+
+<script>
+// Viewport-fit: scale the fixed export canvas DOWN to fit the browser window
+// (or an embedding iframe) when the viewport is narrower than the canvas.
+// Exports are unaffected: headless export opens the document at the exact
+// canvas size, so the computed scale stays >= 0.985 and no transform applies.
+(function() {
+  var c = document.getElementById('sf-canvas');
+  if (!c) return;
+  var W = 1080, H = 1800;
+  function fit() {
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var s = vw / W;
+    if (s >= 0.985) {
+      c.style.transform = '';
+      c.style.zoom = '';
+      document.body.style.minHeight = '100vh';
+      document.body.style.overflowY = 'auto';
+      return;
+    }
+    // Use CSS zoom (Chrome) for the fit so layout collapses with the visual
+    // scale — no flex-shrink interplay, no overflowing 1080px layout box.
+    c.style.zoom = s.toFixed(4);
+    document.body.style.minHeight = Math.ceil(H * s) + 'px';
+    // The scaled canvas fits the viewport exactly, so vertical scrollbars are
+    // unnecessary; when unscaled (wide screens), keep the page scrollable so
+    // tall canvases are never clipped.
+    document.body.style.overflowY = 'hidden';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+})();
+</script>
+
+<script>
+(function() {
+  const track = document.getElementById('carouselTrack');
+  const dots = document.querySelectorAll('.ig-dot');
+  let current = 0;
+  let startX = 0;
+  let isDragging = false;
+  const total = 13;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    track.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    track.style.transform = `translateX(${-current * 420}px)`;
+    if (dots.length) dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  track.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; track.style.transition = 'none'; });
+  track.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; track.style.transition = 'none'; }, { passive: true });
+
+  function endDrag(x) {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - x;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+    else goTo(current);
+  }
+
+  track.addEventListener('mouseup', (e) => endDrag(e.clientX));
+  track.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientX));
+  track.addEventListener('mouseleave', (e) => { if (isDragging) endDrag(e.clientX); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

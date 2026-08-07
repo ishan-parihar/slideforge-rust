@@ -1,0 +1,10 @@
+{
+  "title": "The numbers behind the builder",
+  "description": "Every number below is shipped in the open — public repos, public tools, tested at scale.",
+  "metrics": [
+    {"value": "700+", "label": "MCP tools built", "trend": "across 14 servers", "current": 700, "total": 700},
+    {"value": "42", "label": "public repositories", "trend": "all Rust, all in the open", "current": 42, "total": 42},
+    {"value": "12,665", "label": "tests in TDG", "trend": "holosim: 9,509 · operant: 7,434", "progress": 96},
+    {"value": "1.17M", "label": "lines of Rust in icode", "trend": "LSP dispatch · permission enforcement", "progress": 88}
+  ]
+}

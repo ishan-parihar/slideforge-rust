@@ -1,0 +1,14 @@
+{
+  "client": "igs-rust — intelligence at scale, zero API keys",
+  "title": "64 tools. 411 sources. 20 domains. 47 countries.",
+  "challenge": "Aggregate deep intelligence across 20 domains without a single paid API key.",
+  "solution": "Built a Rust MCP server wiring 411 sources into 64 tools with TOON output and an embedded Obscura browser.",
+  "description": "One server, one protocol, zero lock-in — every source replaceable in the open.",
+  "results": [
+    {"value": "64", "label": "MCP tools"},
+    {"value": "411", "label": "sources"},
+    {"value": "20", "label": "intelligence domains"},
+    {"value": "0", "label": "API keys"}
+  ],
+  "variant": "results-grid"
+}

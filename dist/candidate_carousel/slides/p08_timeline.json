@@ -1,0 +1,11 @@
+{
+  "title": "The journey",
+  "steps": [
+    {"label": "B.Arch exploration", "description": "Architecture school — learning systems thinking the hard way.", "date": "2016"},
+    {"label": "The pivot", "description": "Psychology — understanding what differentiates humans from AI.", "date": "2025"},
+    {"label": "AI Infrastructure Builder", "description": "Solo deep-work practice: Rust, MCP, multi-agent systems at scale.", "date": "2023"},
+    {"label": "Now", "description": "Seeking output-driven teams that value builders over appearances.", "date": "2026"}
+  ],
+  "variant": "vertical",
+  "show_dates": true
+}

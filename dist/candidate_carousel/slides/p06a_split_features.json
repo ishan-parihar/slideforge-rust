@@ -1,0 +1,10 @@
+{
+  "title": "What I build",
+  "features": [
+    {"title": "MCP Servers", "description": "14 servers, 700+ tools — igs-rust alone exposes 64 tools over 411 sources."},
+    {"title": "AI Harnesses", "description": "Local-first coding harness, 1.17M LOC, LSP dispatch, permission enforcement."},
+    {"title": "Agent Memory", "description": "TDG — teleological self-model with HRR algebra and hybrid vector search."}
+  ],
+  "variant": "icon-grid",
+  "columns": 3
+}

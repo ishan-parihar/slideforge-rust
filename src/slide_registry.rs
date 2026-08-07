@@ -247,7 +247,7 @@ pub fn get_registry() -> Value {
         "process_map": {
             "description": "Process map or workflow with sequential steps",
             "required_params": ["title", "steps"],
-            "optional_params": ["variant"],
+            "optional_params": ["variant", "description"],
             "variants": ["numbered", "map"],
             "default_variant": "numbered",
             "layout_family": "process",
@@ -438,7 +438,7 @@ pub fn get_registry() -> Value {
         "metric_grid": {
             "description": "2x2 grid of key metrics with values, labels, trends, and data-driven progress bars",
             "required_params": ["title", "metrics"],
-            "optional_params": ["variant", "background_image", "image_opacity", "padding"],
+            "optional_params": ["variant", "description", "background_image", "image_opacity", "padding"],
             // Each metric item drives its tile's progress bar ONLY through
             // explicit per-tile config: `progress` (0..1 or 0..100) or
             // `current` + `total`. No abstract fallback — a tile without

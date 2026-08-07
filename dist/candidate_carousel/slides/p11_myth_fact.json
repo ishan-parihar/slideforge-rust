@@ -1,0 +1,5 @@
+{
+  "myth": "A solo builder can't ship production-grade infrastructure.",
+  "fact": "42 public repos, 700+ MCP tools, 34,000+ tests — all built solo and shipped in the open.",
+  "explanation": "Deep work and productive outcomes beat staged appearances. The code is public — judge it directly."
+}
