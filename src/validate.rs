@@ -311,6 +311,37 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         }
     }
 
+    // metric_grid tile text limits: the trend badge renders on its own line with
+    // a calibrated cap (MAX_METRIC_TREND_CHARS) and the label shares the tile
+    // with it (MAX_METRIC_LABEL_CHARS). Exceeding either is a HARD error so the
+    // agent shortens the text instead of the renderer silently truncating with
+    // "…" (mirrors the corner-chrome gate in slides.rs). stat_row routes through
+    // metric_grid, so it needs the same gate.
+    if matches!(slide_type, "metric_grid" | "stat_row") {
+        if let Some(metrics) = params.get("metrics").and_then(|v| v.as_array()) {
+            for (i, m) in metrics.iter().enumerate() {
+                if let Some(trend) = m.get("trend").and_then(|v| v.as_str()) {
+                    let n = trend.chars().count();
+                    if n > crate::components::MAX_METRIC_TREND_CHARS {
+                        result.add_error(format!(
+                            "metric_grid metrics[{}].trend '{}' is {} chars — max {} for the badge line. Shorten it (the renderer would otherwise truncate with '…').",
+                            i, trend, n, crate::components::MAX_METRIC_TREND_CHARS
+                        ));
+                    }
+                }
+                if let Some(label) = m.get("label").and_then(|v| v.as_str()) {
+                    let n = label.chars().count();
+                    if n > crate::components::MAX_METRIC_LABEL_CHARS {
+                        result.add_error(format!(
+                            "metric_grid metrics[{}].label '{}' is {} chars — max {} for the tile label line. Shorten it (the renderer would otherwise truncate with '…').",
+                            i, label, n, crate::components::MAX_METRIC_LABEL_CHARS
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
     // split_features tile ceiling: the banded layout's right column / card stack
     // can carry at most THREE feature cards inside the 449px body (the renderer
     // caps rendered tiles at 3 — a 4th tile overflows the body into the bands).

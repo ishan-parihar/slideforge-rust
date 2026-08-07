@@ -2590,6 +2590,20 @@ fn comparison_bars_slide(
     json!({"html": html, "background": bg_style, "variant": "horizontal", "theme": theme})
 }
 
+// ── metric_grid character limits ───────────────────────────────────────────
+// Absolute max lengths for metric tile text, enforced as HARD errors in
+// validate_slide_spec (mirroring the corner-chrome gate in slides.rs) so a
+// slide with over-limit text fails to render instead of silently truncating
+// with "…". Calibrated to measured glyph widths in the 420px composition:
+//
+//  • Tile inner width = (content 324px − 12px gap) / 2 − 28px padding = 128px.
+//  • Trend badge (own line, 10px weight-900, ~5.33px/char): 20 chars ≈ 118px
+//    chip (incl. 16px padding) — fits 128px with 10px margin.
+//  • Label (own line, 10px uppercase letter-spaced, ~6.1px/char): 20 chars ≈
+//    122px — fits 128px with 6px margin.
+pub const MAX_METRIC_TREND_CHARS: usize = 20;
+pub const MAX_METRIC_LABEL_CHARS: usize = 20;
+
 fn metric_grid_slide(
     tokens: &DesignTokens,
     metrics: Vec<Value>,
@@ -2660,40 +2674,37 @@ fn metric_grid_slide(
             None => String::new(),
         };
 
-        // Trend badge: hard cap + ellipsis so the chip can never push past the
-        // half-width card edge. `max-width` + `white-space:nowrap` + ellipsis is
-        // belt-and-suspenders: the char cap limits the source text, the CSS stops
-        // any future caller (or raw HTML injection) from overflowing regardless.
+        // Trend badge: rendered on its OWN dedicated line below the value (never
+        // competing with the label for the ~128px tile row — that split forced the
+        // chip down to ~50px and stacked two truncations: the char cap AND CSS
+        // flex-shrink). On its own line the chip has the full tile width, so the
+        // calibrated cap is the ONLY truncation, and the validator rejects over-cap
+        // configs (see validate_slide_spec) so no "…" ever renders for valid input.
+        // Caps calibrated to measured glyph widths at 10px weight-900 (~5.33px/char)
+        // in a 128px line: 20 chars ≈ 118px chip ≤ 128px.
         let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
         let trend_badge = if !trend.is_empty() {
-            let capped: String = trend.chars().take(18).collect();
-            let disp = if trend.chars().count() > 18 {
-                format!("{}…", capped)
-            } else {
-                trend.to_string()
-            };
             format!(
-                r#"<span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 6px;border-radius:4px;margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;min-width:0;">{}</span>"#,
-                trend_color, trend_color, escape_html(&disp)
+                r#"<div style="display:flex;align-items:center;min-width:0;overflow:hidden;"><span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 8px;border-radius:4px;max-width:100%;white-space:nowrap;">{}</span></div>"#,
+                trend_color, trend_color, escape_html(trend)
             )
         } else {
             String::new()
         };
 
         format!(
-            r#"<div style="background:{};border:{};border-radius:{};padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;position:relative;min-width:0;overflow:hidden;">
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px;min-width:0;">
-                    <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
-                    {}
+            r#"<div style="background:{};border:{};border-radius:{};padding:12px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:5px;position:relative;min-width:0;overflow:hidden;">
+                <div style="width:100%;min-width:0;">
+                    <span style="font-family:{};font-size:10px;font-weight:800;color:{};text-transform:uppercase;letter-spacing:0.06em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{}</span>
                 </div>
                 <div style="font-family:{};font-size:30px;font-weight:900;color:{};line-height:1;min-width:0;overflow:hidden;">{}</div>
+                {}
                 {}
             </div>"#,
             card_bg, card_border, radius,
             tokens.body_font, colors.text_secondary, escape_html(lbl),
-            trend_badge,
             tokens.heading_font, colors.primary, escape_html(val),
-            bar_html
+            trend_badge, bar_html
         )
     }).collect();
 
@@ -7117,18 +7128,22 @@ mod tests {
     }
 
     #[test]
-    fn test_metric_grid_trend_badge_capped_and_ellipsized() {
-        // Regression: long trend strings overflowed the half-width card (the
-        // badge pushed past the right edge). The badge must be char-capped with
-        // an ellipsis and carry nowrap + overflow + ellipsis CSS so it can never
-        // overflow regardless of source text length.
+    fn test_metric_grid_trend_badge_on_own_line_no_ellipsis() {
+        // Regression (two-part):
+        // 1. Long trend strings previously fought the label for the ~128px tile
+        //    row, got CSS-squeezed to ~50px, and rendered with a code-side "…"
+        //    truncation. The badge must now render on its OWN dedicated line
+        //    (full tile width available) and the renderer must NOT truncate with
+        //    "…" — over-cap text is a validator hard error instead.
+        // 2. The 2-col grid must use minmax(0,1fr) tracks and every tile must be
+        //    a shrinkable grid item (min-width:0 + overflow:hidden).
         let tokens = derive_palette(
             "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
         )
         .unwrap();
-        let long_trend = "holosim: 9,509 tests · operant: 7,434 more";
+        let trend = "holosim: 9,509 · operant"; // 25 chars > cap 20 → validator errors
         let metrics = json!([
-            {"value": "700+", "label": "MCP tools", "trend": long_trend, "progress": 80}
+            {"value": "700+", "label": "MCP tools", "trend": trend, "progress": 80}
         ]);
         let res = metric_grid_slide(
             &tokens,
@@ -7141,32 +7156,23 @@ mod tests {
             0.4,
         );
         let html = res["html"].as_str().unwrap();
-        // Char cap: "holosim: 9,509 tests" is 20 chars → only the first 18
-        // survive, followed by an ellipsis ("…"), and the tail is dropped.
-        assert!(html.contains("holosim: 9,509 tes…"), "trend must be char-capped");
+        // The badge renders on its own line — no ellipsis ever added by the
+        // renderer (full text passed through; the validator gates the cap).
         assert!(
-            !html.contains("operant: 7,434"),
-            "trend beyond the 18-char cap must be dropped"
+            html.contains("holosim: 9,509 · operant"),
+            "trend must render in full (renderer never truncates)"
         );
-        // Belt-and-suspenders CSS: nowrap + overflow + ellipsis + max-width.
-        assert!(html.contains("white-space:nowrap"), "badge must not wrap");
-        assert!(html.contains("text-overflow:ellipsis"), "badge must ellipsize");
-        assert!(html.contains("max-width:120px"), "badge must have a max-width");
-        // Structural segregation (regression): the 2-col grid must use
-        // minmax(0,1fr) tracks and every tile must be a shrinkable grid item
-        // (min-width:0 + overflow:hidden). blitz/stylo keeps `min-width:auto`
-        // on grid items, so a nowrap badge inflates the tile to its min-content
-        // width and blows the track past the slide edge (measured x=407/420).
+        assert!(!html.contains('…'), "renderer must not emit ellipsis truncation");
+        assert!(
+            html.contains("max-width:100%;white-space:nowrap;"),
+            "badge chip must stay on one line with full tile width available"
+        );
         assert!(
             html.contains("grid-template-columns:minmax(0,1fr) minmax(0,1fr)"),
             "metric_grid columns must be minmax(0,1fr) so tracks can never exceed their share"
         );
         let tile_count = html.matches("position:relative;min-width:0;overflow:hidden;").count();
         assert_eq!(tile_count, 1, "each metric tile must be a shrinkable grid item");
-        assert!(
-            html.contains("line-height:1;min-width:0;overflow:hidden;"),
-            "metric value must be shrinkable"
-        );
         // The description param renders in the dedicated slot (no telemetry placeholder).
         assert!(
             html.contains("A two-line description slot below the metrics."),
@@ -7176,6 +7182,35 @@ mod tests {
             !html.contains("Real-time performance telemetry"),
             "hardcoded telemetry placeholder must be gone"
         );
+    }
+
+    #[test]
+    fn test_metric_grid_over_cap_trend_is_validator_error() {
+        // The renderer never truncates; the cap is a HARD validator error so a
+        // config with a 25-char trend fails validation instead of shipping an
+        // "…"-truncated chip.
+        let params = json!({
+            "title": "By the numbers",
+            "metrics": [
+                {"value": "700+", "label": "MCP tools", "trend": "holosim: 9,509 · operant"}
+            ]
+        });
+        let r = crate::validate::validate_slide_spec("metric_grid", &params);
+        assert!(!r.valid, "over-cap trend must fail validation");
+        assert!(
+            r.errors.iter().any(|e| e.contains("trend") && e.contains("max 20")),
+            "error must name the trend field and the 20-char cap"
+        );
+
+        // Within-cap config passes.
+        let ok = json!({
+            "title": "By the numbers",
+            "metrics": [
+                {"value": "700+", "label": "MCP tools", "trend": "9,509 tests"}
+            ]
+        });
+        let r2 = crate::validate::validate_slide_spec("metric_grid", &ok);
+        assert!(r2.valid, "within-cap trend must validate");
     }
 
     #[test]
