@@ -114,14 +114,17 @@ def slides():
                 {"icon": "🎯", "title": "Deception Rating", "description": "0–4.0 score with B/D/A timeframe. 4.0 = extremely deceptive; 1.0 = not likely."},
             ],
         }},
-        # 5 — Metric grid: the Phillips case deception tally
+        # 5 — Metric grid: the Phillips case deception tally.
+        # Trend badges add NEW signal (timing/qualifier) — they must NOT echo
+        # the metric value (validator hard error). Description is mandatory.
         {"type": "metric_grid", "params": {
             "title": "One Response, Five Signals",
+            "description": "Four signals scored extreme deception; the palm exposure read as deception-not-likely.",
             "metrics": [
-                {"value": "4.0", "label": "Résumé statement", "trend": "+4.0 D (during)", "progress": 80},
-                {"value": "4.0", "label": "Non-contraction", "trend": "+4.0 (did not)", "progress": 80},
-                {"value": "4.0", "label": "Single shrug", "trend": "+4.0 (one side)", "progress": 80},
-                {"value": "1.0", "label": "Palm exposure", "trend": "+1.0 DNL", "progress": 20},
+                {"value": "4.0", "label": "Résumé statement", "trend": "DURING RESPONSE", "progress": 80},
+                {"value": "4.0", "label": "Non-contraction", "trend": "DID NOT CONTRACT", "progress": 80},
+                {"value": "4.0", "label": "Single shrug", "trend": "ONE-SIDED ONLY", "progress": 80},
+                {"value": "1.0", "label": "Palm exposure", "trend": "DNL — NOT LIKELY", "progress": 20, "trend_direction": "positive"},
             ],
         }},
         # 6 — Process map: behavior-analysis process

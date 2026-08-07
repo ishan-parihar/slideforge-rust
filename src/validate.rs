@@ -290,14 +290,19 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
     }
 
     // Narrative slides MUST carry a non-empty `description`: it renders below
-    // the cards (problem/solution pair, before/after grid, or results strip). A
-    // missing description silently renders an empty gap at the bottom of the
-    // composition. This is a hard runtime error so the agent fixes the config
-    // instead of shipping a slide with a hollow tail. case_study_result renders
-    // through problem_solution_slide, so it needs the same gate.
+    // the cards (problem/solution pair, before/after grid, results strip, or
+    // metric grid). A missing description silently renders an empty gap at the
+    // bottom of the composition. This is a hard runtime error so the agent
+    // fixes the config instead of shipping a slide with a hollow tail.
+    // case_study_result renders through problem_solution_slide, so it needs the
+    // same gate. metric_grid has a dedicated description slot under the tiles.
     if matches!(
         slide_type,
-        "problem_solution" | "before_after_story" | "case_study_result"
+        "problem_solution"
+            | "before_after_story"
+            | "case_study_result"
+            | "metric_grid"
+            | "stat_row"
     ) {
         let has_description = params
             .get("description")
@@ -327,6 +332,26 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
                             "metric_grid metrics[{}].trend '{}' is {} chars — max {} for the badge line. Shorten it (the renderer would otherwise truncate with '…').",
                             i, trend, n, crate::components::MAX_METRIC_TREND_CHARS
                         ));
+                    }
+                    // Anti-redundancy: the trend badge must ADD information on
+                    // top of the headline value (direction, timing, qualifier)
+                    // — never echo the number itself (e.g. value "4.0" with
+                    // trend "+4.0 D"). The value already renders at 30px bold;
+                    // a trend that repeats it is visual noise and dilutes the
+                    // contrast story the badge exists to tell. Compare the
+                    // leading numeric token of both so legit deltas like value
+                    // "84" / trend "+12%" stay valid.
+                    if let Some(val) = m.get("value").and_then(|v| v.as_str()) {
+                        let vn = leading_number(val);
+                        let tn = leading_number(trend);
+                        if let (Some(vn), Some(tn)) = (vn, tn) {
+                            if (vn - tn).abs() < 0.001 {
+                                result.add_error(format!(
+                                    "metric_grid metrics[{}].trend '{}' echoes the metric value '{}'. The trend badge must add NEW information (direction, timing, or a qualifier like \"DURING RESPONSE\" / \"DNL\") — repeating the number is redundant. Provide a different signal or remove the trend.",
+                                    i, trend, val
+                                ));
+                            }
+                        }
                     }
                 }
                 if let Some(label) = m.get("label").and_then(|v| v.as_str()) {
@@ -520,6 +545,46 @@ pub struct CompositionConstraints {
     pub max_consecutive_dataviz: usize,
     #[serde(default = "default_true")]
     pub require_narrative_after_dataviz: bool,
+}
+
+/// Leading numeric token of a string (e.g. "+4.0 D (during)" → 4.0, "84" →
+/// 84, "+12%" → 12, "DNL" → None). Used by the metric_grid anti-redundancy
+/// gate to detect trends that merely echo the headline value.
+fn leading_number(s: &str) -> Option<f64> {
+    let trimmed = s.trim_start();
+    // Allow a leading sign, then digits with at most one decimal point.
+    // Commas inside the number (e.g. "9,509 tests") are treated as thousands
+    // separators so "9,509" and "9509" compare equal — the value-echo gate
+    // would otherwise miss grouped numerals.
+    let mut start = 0;
+    if let Some(first) = trimmed.chars().next() {
+        if matches!(first, '+' | '-') {
+            start = 1;
+        }
+    }
+    let mut end = start;
+    let mut seen_dot = false;
+    let mut seen_digit = false;
+    for (i, c) in trimmed[start..].char_indices() {
+        if c.is_ascii_digit() {
+            seen_digit = true;
+            end = start + i + 1;
+        } else if c == ',' && seen_digit {
+            end = start + i + 1; // thousands separator — keep scanning
+        } else if c == '.' && !seen_dot && seen_digit {
+            seen_dot = true;
+            end = start + i + 1;
+        } else {
+            break;
+        }
+    }
+    if !seen_digit {
+        return None;
+    }
+    trimmed[..end]
+        .replace(',', "")
+        .parse::<f64>()
+        .ok()
 }
 
 fn default_true() -> bool { true }
@@ -812,6 +877,59 @@ mod tests {
                 r2.errors
             );
         }
+    }
+
+    #[test]
+    fn test_metric_grid_requires_description() {
+        let params = json!({
+            "title": "T",
+            "metrics": [{"value": "4.0", "label": "L", "trend": "UP"}]
+        });
+        let r = validate_slide_spec("metric_grid", &params);
+        assert!(!r.valid, "metric_grid without description must be invalid");
+        assert!(
+            r.errors.iter().any(|e| e.contains("description")),
+            "metric_grid errors must mention description: {:?}",
+            r.errors
+        );
+
+        let mut with_desc = params.clone();
+        with_desc["description"] = json!("Interpretation line under the tiles.");
+        let r2 = validate_slide_spec("metric_grid", &with_desc);
+        assert!(r2.valid, "metric_grid with description must be valid: {:?}", r2.errors);
+    }
+
+    #[test]
+    fn test_metric_grid_trend_must_not_echo_value() {
+        // Trend badge must ADD signal — echoing the metric value is a hard error.
+        let redundant = json!({
+            "title": "T",
+            "description": "D",
+            "metrics": [
+                {"value": "4.0", "label": "L", "trend": "+4.0 D (during)"},
+                {"value": "1.0", "label": "L2", "trend": "+1.0 DNL"},
+            ]
+        });
+        let r = validate_slide_spec("metric_grid", &redundant);
+        assert!(!r.valid, "echoing trends must be invalid");
+        assert!(
+            r.errors.iter().any(|e| e.contains("echoes") && e.contains("4.0")),
+            "must flag the value-echo trend: {:?}",
+            r.errors
+        );
+
+        // A legit delta (different leading number) and a qualifier-only trend pass.
+        let ok = json!({
+            "title": "T",
+            "description": "D",
+            "metrics": [
+                {"value": "84", "label": "L", "trend": "+12%"},
+                {"value": "4.0", "label": "L2", "trend": "DURING RESPONSE"},
+                {"value": "1.0", "label": "L3", "trend": "DNL"},
+            ]
+        });
+        let r2 = validate_slide_spec("metric_grid", &ok);
+        assert!(r2.valid, "legit trends must be valid: {:?}", r2.errors);
     }
 
     #[test]

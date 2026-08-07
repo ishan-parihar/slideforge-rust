@@ -50,12 +50,13 @@ Formats tabular columns and rows cleanly.
 Renders a 2x2 grid of prominent metrics. Tiles never overflow: grid tracks use `minmax(0,1fr)` and every tile is a shrinkable grid item.
 - **Required Parameters:**
   - `title` (string) — Slide title.
+  - `description` (string) — **Mandatory.** A takeaway line rendered in a dedicated slot below the tiles. Missing it is a hard error (like the narrative slides) — the grid needs a sentence that interprets the numbers, not a bare grid.
   - `metrics` (array) — 2-4 metric objects:
     - `value` (string, required) — The headline number/string.
     - `label` (string, required) — Metric label. **Max 20 chars** — hard error above.
-    - `trend` (string, optional) — Trend badge text (e.g. `"+12%"`). **Max 20 chars** — hard error above. Renders on its **own dedicated line** under the value, never competing with the label.
+    - `trend` (string, optional) — Trend badge text (e.g. `"+12%"`, `"DURING RESPONSE"`). **Max 20 chars** — hard error above. Renders on its **own dedicated line** under the value, never competing with the label. **Anti-redundancy:** the badge must ADD new information (direction, timing, qualifier) — it must NOT echo the metric value. The validator emits a hard error when a trend repeats the value's number (e.g. value `4.0` with trend `+4.0 D` is rejected; write `DURING RESPONSE` instead).
     - `progress` (number, optional) — 0–100. Mirrors the actual metric the tile demonstrates (e.g. 42 for a 42% metric). If omitted, the progress bar hides; the bar exists to show what the metric *means*, not as an abstract filler.
-- **Hard Caps:** the validator emits a **hard error** (not a warning, not `…` truncation) when any `trend` or `label` exceeds 20 characters. The renderer never writes ellipsis into metrics — fix the copy instead of relying on clipping.
+- **Hard Caps:** the validator emits a **hard error** (not a warning, not `…` truncation) when any `trend` or `label` exceeds 20 characters, when a `trend` duplicates its metric's `value`, or when `description` is missing. The renderer never writes ellipsis into metrics — fix the copy instead of relying on clipping.
 
 ### 6. `funnel_chart` (Sales Funnel)
 Visualises sequential conversion steps.

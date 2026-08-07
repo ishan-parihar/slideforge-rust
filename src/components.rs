@@ -2682,7 +2682,26 @@ fn metric_grid_slide(
         // configs (see validate_slide_spec) so no "…" ever renders for valid input.
         // Caps calibrated to measured glyph widths at 10px weight-900 (~5.33px/char)
         // in a 128px line: 20 chars ≈ 118px chip ≤ 128px.
-        let trend_color = if trend.contains('+') || trend.to_lowercase().contains("up") { "#10B981" } else { "#EF4444" };
+        // Color is SEMANTIC, driven by per-tile `trend_direction`
+        // ("positive" | "negative") so qualifier-only badges like "DNL — NOT
+        // LIKELY" or "DURING RESPONSE" are not all forced red by the old
+        // +/- heuristic. Fallback (no direction): green on "+"/"up"-style
+        // trends, red otherwise (backwards compatible with existing configs).
+        let trend_color = match item.get("trend_direction").and_then(|v| v.as_str()) {
+            Some("positive") => "#10B981",
+            Some("negative") => "#EF4444",
+            _ => {
+                if trend.contains('+')
+                    || trend.to_lowercase().contains("up")
+                    || trend.to_lowercase().contains("improve")
+                    || trend.to_lowercase().contains("growth")
+                {
+                    "#10B981"
+                } else {
+                    "#EF4444"
+                }
+            }
+        };
         let trend_badge = if !trend.is_empty() {
             format!(
                 r#"<div style="display:flex;align-items:center;min-width:0;overflow:hidden;"><span style="font-size:10px;font-weight:900;color:{};background:{}18;padding:2px 8px;border-radius:4px;max-width:100%;white-space:nowrap;">{}</span></div>"#,
@@ -3059,76 +3078,201 @@ pub fn problem_solution_slide(
         tokens.text_primary.clone()
     };
 
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The problem/solution two-column grid + proof card + description stack can
+    // exceed the 449px body when any of the text blocks is long (the Phillips
+    // case-study configs overflowed into the header/footer bands). Estimate the
+    // required height from the actual character mass and scale fonts/padding
+    // down on three tiers, exactly like pricing_plan_slide / split_features.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    // slide_base padding "16px 44px": top/bottom 16 each.
+    let available_height = SAFE_CONTENT_HEIGHT - 32.0;
+    let column_width: f32 = 420.0 - 2.0 * 44.0; // 332
+    let card_width: f32 = (column_width - 14.0) / 2.0; // two cols + 14px gap ≈ 159
+    let text_fs = tokens
+        .type_scale
+        .get("caption")
+        .map(|t| t.font_size as f32)
+        .unwrap_or(11.0);
+
+    // Build proof items BEFORE sizing so the estimate uses the exact text.
+    // NOTE: the height estimate must use PLAIN text — HTML markup (<strong>,
+    // &nbsp;•&nbsp;) would inflate the character count and wrongly trigger the
+    // aggressive density tier (which pushed body text to 9px, below the
+    // legibility floor, and drew tiny_text validator warnings).
+    let items_text: Vec<String> = proof_points
+        .iter()
+        .take(4)
+        .map(|item| {
+            if item.is_string() {
+                return escape_html(&item.as_str().unwrap_or(""));
+            }
+            let t = simple_text(item, &["title", "label"]);
+            let d = simple_text(item, &["description", "body"]);
+            if !d.is_empty() {
+                format!("<strong>{}</strong>: {}", escape_html(&t), escape_html(&d))
+            } else {
+                escape_html(&t)
+            }
+        })
+        .collect();
+    let combined_desc = items_text.join(" &nbsp;•&nbsp; ");
+    // Plain-text twin for the height estimate only.
+    let combined_plain: Vec<String> = proof_points
+        .iter()
+        .take(4)
+        .map(|item| {
+            if item.is_string() {
+                return item.as_str().unwrap_or("").to_string();
+            }
+            let t = simple_text(item, &["title", "label"]);
+            let d = simple_text(item, &["description", "body"]);
+            if !d.is_empty() {
+                format!("{}: {}", t, d)
+            } else {
+                t
+            }
+        })
+        .collect();
+    let combined_plain = combined_plain.join(" • ");
+
+    // Greedy tier fitting: try the LEAST compressed tier whose estimated height
+    // fits `available_height`; only descend when needed. The fixed 28px/18px
+    // layout overflowed the 417px body for dense case-study configs (Phillips
+    // measured to y=437 vs body bottom 449), while a pure space_usage ratio
+    // over-shrank (it counted 14px caption glyphs → jumped to the 9px floor).
+    // Estimating per-tier with the tier's own sizes keeps the right balance.
+    // 10px is the FLOOR for any body text — the validator's tiny_text gate
+    // flags sub-10px text, so the aggressive tier compresses padding/gaps
+    // harder instead of shrinking glyphs further.
+    // (title_fs, card_pad, label_fs, gap_px, proof_pad, desc_fs, card_pad_px,
+    //  proof_hpad_px) — proof text width is derived from the tier's OWN
+    // horizontal padding so the estimate matches the render at every tier.
+    type Tier = (i32, &'static str, i32, i32, &'static str, i32, f32, f32);
+    let fits = |tier: &Tier| -> bool {
+        let (title_fs, _card_pad, label_fs, gap_px, _proof_pad, desc_fs, pad_px, proof_hpad) = *tier;
+        let title_h = crate::overflow_model::estimate_text_height(
+            title,
+            title_fs as f32,
+            1.08,
+            column_width,
+        );
+        let problem_h = pad_px * 2.0
+            + label_fs as f32 + 8.0
+            + crate::overflow_model::estimate_text_height(
+                problem,
+                desc_fs as f32,
+                1.45,
+                card_width,
+            );
+        let solution_h = pad_px * 2.0
+            + label_fs as f32 + 8.0
+            + crate::overflow_model::estimate_text_height(
+                solution,
+                desc_fs as f32,
+                1.45,
+                card_width,
+            );
+        let grid_h = problem_h.max(solution_h);
+        let proof_h = if combined_plain.is_empty() {
+            0.0
+        } else {
+            pad_px * 2.0 + (label_fs - 1).max(10) as f32 + 4.0
+                + crate::overflow_model::estimate_text_height(
+                    &combined_plain,
+                    (label_fs - 1).max(10) as f32,
+                    1.45,
+                    column_width - proof_hpad,
+                )
+        };
+        let desc_h = if description.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(
+                description,
+                desc_fs as f32,
+                1.45,
+                column_width,
+            )
+        };
+        let blocks = 1.0
+            + if combined_plain.is_empty() { 0.0 } else { 1.0 }
+            + if description.is_empty() { 0.0 } else { 1.0 };
+        let gaps = gap_px as f32 * blocks;
+        let estimated = title_h + grid_h + proof_h + desc_h + gaps;
+        estimated <= available_height
+    };
+
+    let tiers: [Tier; 3] = [
+        // (title_fs, card_pad, label_fs, gap_px, proof_pad, desc_fs, card_pad_px, proof_hpad_px)
+        (28, "18px", 11, 18, "12px 16px", text_fs as i32, 18.0, 32.0),
+        (24, "13px", 10, 12, "10px 14px", 10, 13.0, 28.0),
+        (22, "10px", 10, 10, "8px 12px", 10, 10.0, 24.0),
+    ];
+    let (title_fs, card_pad, label_fs, gap_px, proof_pad, desc_fs, _, _) = tiers
+        .iter()
+        .find(|tier| fits(tier))
+        .copied()
+        .unwrap_or(tiers[2]);
+
     let proof_grid_html = if proof_points.is_empty() {
         String::new()
     } else {
-        let items_text: Vec<String> = proof_points
-            .iter()
-            .take(4)
-            .map(|item| {
-                // ponytail: plain-string items (no object keys) render as-is
-                if item.is_string() {
-                    return escape_html(&item.as_str().unwrap_or(""));
-                }
-                let t = simple_text(item, &["title", "label"]);
-                let d = simple_text(item, &["description", "body"]);
-                if !d.is_empty() {
-                    format!("<strong>{}</strong>: {}", escape_html(&t), escape_html(&d))
-                } else {
-                    escape_html(&t)
-                }
-            })
-            .collect();
-
-        let combined_desc = items_text.join(" &nbsp;•&nbsp; ");
-
         format!(
-            r#"<div style="background:{};border:1px solid {};border-radius:{};padding:12px 16px;width:100%;box-sizing:border-box;">
-                <div style="font-family:{};font-size:10px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
-                <div style="font-family:{};font-size:11px;color:{};line-height:1.45;">{}</div>
+            r#"<div style="background:{};border:1px solid {};border-radius:{};padding:{};width:100%;box-sizing:border-box;">
+                <div style="font-family:{};font-size:{}px;font-weight:800;color:{};letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">KEY IMPACT & PROOF</div>
+                <div style="font-family:{};font-size:{}px;color:{};line-height:1.45;">{}</div>
             </div>"#,
-            card_bg, colors.border, radius,
-            tokens.body_font, colors.primary,
-            tokens.body_font, card_body_color, combined_desc
+            card_bg, colors.border, radius, proof_pad,
+            tokens.body_font, (label_fs - 1).max(10), colors.primary,
+            tokens.body_font, (label_fs - 1).max(10), card_body_color, combined_desc
         )
     };
     let desc_html = if !description.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>"#,
-            tokens.body_font, card_body_color, escape_html(description)
+            r#"<p style="font-family:{};font-size:{}px;color:{};line-height:1.45;margin:0;">{}</p>"#,
+            tokens.body_font, desc_fs, card_body_color, escape_html(description)
         )
     } else {
         String::new()
     };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:{}px;">
+            <h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
-                <div style="border-radius:{};padding:18px;background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:11px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:{};background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:8px;">PROBLEM</div><p style="font-family:{};font-size:{}px;color:{};line-height:1.45;margin:0;">{}</p></div>
+                <div style="border-radius:{};padding:{};background:{};border:1px solid {};border-left:3px solid {};"><div style="font-family:{};font-size:{}px;font-weight:800;color:{};margin-bottom:8px;">SOLUTION</div><p style="font-family:{};font-size:{}px;color:{};line-height:1.45;margin:0;">{}</p></div>
             </div>
             {}
             {}
         </div>"#,
+        gap_px,
         tokens.heading_font,
+        title_fs,
         card_title_color,
         escape_html(title),
         radius,
+        card_pad,
         card_bg,
         colors.border,
         colors.primary,
         tokens.body_font,
+        label_fs,
         card_label_color,
         tokens.body_font,
+        desc_fs,
         card_body_color,
         escape_html(problem),
         radius,
+        card_pad,
         card_bg,
         colors.border,
         colors.primary,
         tokens.body_font,
+        label_fs,
         card_label_color,
         tokens.body_font,
+        desc_fs,
         card_body_color,
         escape_html(solution),
         proof_grid_html,
@@ -7191,6 +7335,7 @@ mod tests {
         // "…"-truncated chip.
         let params = json!({
             "title": "By the numbers",
+            "description": "Interpretation line under the tiles.",
             "metrics": [
                 {"value": "700+", "label": "MCP tools", "trend": "holosim: 9,509 · operant"}
             ]
@@ -7205,6 +7350,7 @@ mod tests {
         // Within-cap config passes.
         let ok = json!({
             "title": "By the numbers",
+            "description": "Interpretation line under the tiles.",
             "metrics": [
                 {"value": "700+", "label": "MCP tools", "trend": "9,509 tests"}
             ]
