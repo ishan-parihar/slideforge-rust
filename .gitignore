@@ -1,4 +1,5 @@
 /target
+/target-musl
 .contexty/
 
 # Tool state files (never commit)

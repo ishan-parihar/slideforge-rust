@@ -43,11 +43,12 @@ Details client outcomes.
 Compares pricing plans side by side.
 - **Required Parameters:**
   - `title` (string) — Title of pricing slide.
-  - `plans` (array) — Array of up to 3 plan objects:
+  - `plans` (array) — Array of **2–4** plan objects:
     - `name` (string, required) — Plan tier name (e.g., "Starter").
     - `price` (string, required) — Price tag (e.g., "$49/mo").
     - `description` (string, required) — Short description of the tier.
     - `icon` (string, optional) — E.g., "S", "∞".
+- **Composition Rule:** 2 and 4 plans fill the row evenly; **3 plans render with the third tile centered horizontally** (no dangling asymmetry). Choose 2/3/4 deliberately based on the number of tiers you actually offer — 3 reads as "balanced trio", 2 as "this vs that", 4 as "full ladder".
 
 ### 5. `before_after_story` (Transformation)
 Shows a clear transformation with a supporting metric.
@@ -64,7 +65,7 @@ Shows a clear transformation with a supporting metric.
 
 - [ ] **Clean Contrast:** For `myth_fact`, ensure the myth reads as negative (grayer or crossed out, automatically styled) and the fact pops clearly.
 - [ ] **Proof Point Limits:** In `problem_solution`, limit proof points to 2. Adding more will cause vertical wrapping issues.
-- [ ] **Plan Count Limit:** Do not specify more than 3 plans in `pricing_plan`. Exceeding 3 plans results in horizontal grid breaking.
+- [ ] **Plan Count Limit:** `pricing_plan` accepts 2–4 plans. Below 2 or above 4 is a validator error. With 3 plans the third tile centers automatically.
 
 ---
 

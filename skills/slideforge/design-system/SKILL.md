@@ -54,6 +54,26 @@ Controls how secondary, accent, and background colors are mapped from the primar
 - `expressive` — High contrast, unexpected complementary colors.
 - `fidelity` — Keeps secondary and accent colors as close to the original input color as possible.
 
+### 5. Select a Typology Bundle (optional but recommended)
+The typology system is a curated styling layer that simultaneously controls **font pairing, type-scale tier, and color-scheme family** for a whole carousel. Use `--typology` (CLI) or `typology` (MCP) on `generate-slide` / `render-carousel`. Ten curated bundles exist:
+
+| Bundle | Character | Default Font Pairing |
+|---|---|---|
+| `editorial` | Classic magazine, sharp, structured | Editorial serif + grotesk |
+| `startup` | Bold, energetic, growth | Startup grotesk |
+| `technical` | Monospace accents, precise | Technical mono display + clean sans |
+| `brutalist` | Raw, heavy, oversized | Brutalist condensed |
+| `luxury` | Refined, high-contrast, elegant | Luxury serif |
+| `playful` | Rounded, friendly | Playful rounded sans |
+| `vintage` | Warm, retro | Vintage slab/serif |
+| `data` | Analytical, dense but clean | Data grotesk |
+| `nature` | Organic, calm, earthy | Nature sans + serif |
+| `nightlife` | Neon, dark, high-energy | Nightlife display |
+
+**Variant operators** further tune a bundle's energy/polarity/material: `--variant-op <op>:<value>` (e.g. `energy:high`, `polarity:invert`, `material:glass`). **Color-scheme families** (`--color-scheme`): `neutral`, `analogous`, `complementary`, `triadic`, `split_complement`, `monochrome`, `duotone`. **Type tiers** (`--type-tier`): compact / standard / display — scale base and ratio change with the tier.
+
+Rule: when a `--tokens-file` is combined with `--typology`, the typology overrides the styling axes (font family, color-scheme family, type-scale tier); a fresh palette is re-derived from the tokens file's primary color so the typology actually reaches the rendered slide. Each slide carries its own resolved `css_vars` block, so one carousel can mix typologies per slide.
+
 ---
 
 ## Actionable Guidelines & Checklists

@@ -35,6 +35,16 @@ slideforge-rust validate-design ./carousel.html
 
 ---
 
+## Hard-Cap Validation (Errors, Not Truncation)
+
+Several components enforce **calibrated character caps as hard errors** — the renderer never silently writes `…` into content; over-cap input fails generation so a clipped slide can never ship:
+
+- **`metric_grid` `trend` / `label`:** hard 20-char cap each (measured at the actual glyph weight — an 18-char badge at 10px weight-900 is ~96px, safe inside the 128px tile line). Over-cap → validator **error**, exit gate blocks the slide.
+- **Corner-chrome meta text** (brand handle, topic, page numbers): strict cap, error when exceeded.
+- **General text overflow:** the layout validator estimates text height per container and flags `text_overflow` as an error — the CLI/MCP gate refuses to emit slides that fail.
+
+**Validator Gate Semantics:** `generate-slide` (CLI/MCP) checks the validated design before returning; errors block the result (the command exits non-zero / returns an error payload), warnings do not. Treat every warning as a near-miss that becomes an error with slightly more content.
+
 ## Common Validation Failures & Fixes
 
 When the validator flags an issue, apply these specific repairs:
@@ -58,3 +68,4 @@ When the validator flags an issue, apply these specific repairs:
 - [ ] **No Warnings:** Never ignore validation output. Treat warnings as errors.
 - [ ] **Check HTML Locally:** View the compiled HTML inside a browser before exporting.
 - [ ] **Fix and Re-Validate:** Run validation again after making any content adjustments.
+- [ ] **Hard Caps First:** Before generating `metric_grid` or CTA slides, count `trend`/`label` characters (≤20) and corner-chrome text — over-cap input is a hard error, so pre-trim copy to avoid a failed run.

@@ -1,8 +1,8 @@
-# SlideForge 36 Slide Types Manifest
+# SlideForge 46 Slide Types Manifest
 
-Use this reference to find the exact slide type matching your content requirements. Each slide type belongs to a specific layout family and child composition skill.
+Use this reference to find the exact slide type matching your content requirements. Each slide type belongs to a specific layout family and child composition skill. (The active registry holds 46 types; some entries below are deprecated redirects kept for backward compatibility.)
 
-> **Note (2026-07-30 purge):** The following slide types have been retired from the registry because they were visually redundant with stronger alternatives in the same family. Use the replacement column when composing.
+> **Note (2026-07-30 purge + 2026-08 cleanup):** The following slide types have been retired from the registry because they were visually redundant with stronger alternatives in the same family. Use the replacement column when composing.
 >
 > | Retired | Use Instead |
 > |---|---|
@@ -12,10 +12,11 @@ Use this reference to find the exact slide type matching your content requiremen
 > | `grid_cards` | `split_features` (2 col) or `case_study_result` (results grid) |
 > | `text_columns` | `split_features` (2 col) |
 > | `checklist_action_plan` | `timeline` (ordered steps) |
+> | `section_divider` | `hero` with the chapter variant (same rendering) |
 > | `cta` | `qr_destination` (the canonical closing CTA slide) |
-> | `stat_row` | `metric_grid` |
+> | `stat_row` | `metric_grid` (deprecated redirect) |
 > | `column_chart` | `chart` with `chart_type="bar"` + `variant="vertical"` |
-> | `comparison` | `before_after_story` (A vs B) |
+> | `comparison` | `before_after_story` (A vs B, deprecated redirect) |
 
 ---
 ## 1. Text & Layouts (`text-layouts/SKILL.md`)
@@ -24,13 +25,12 @@ These slides focus on structuring copywriting, headings, bullets, quotes, and la
 
 | Slide Type | Required Parameters | Optional Parameters | Best For |
 |---|---|---|---|
-| `hero` | `headline` | `subheadline`, `background_color`, `text_color`, `badge`, `cta_text` | Opening hooks, section dividers |
+| `hero` | `headline` | `subheadline`, `background_color`, `text_color`, `badge`, `cta_text`, `variant` (chapter) | Opening hooks, section dividers |
 | `quote` | `quote` | `author`, `role`, `company`, `avatar_url`, `rating`, `logo_url` | Customer testimonials, bold pull-quotes |
-| `split_features` | `title`, `features` | `variant`, `background_color` | Two column feature listings, icon grids |
-| `definition` | `term`, `definition` | `context`, `variant` | Educational terms or glossary entries |
+| `split_features` | `title`, `features` | `variant`, `background_color` | Two column feature listings, icon grids (max 3 tiles) |
+| `definition` | `term`, `definition` | `context`, `variant`, `phonetic` | Educational terms or glossary entries |
 | `text_block` | `title`, `body` | `variant` | Simple paragraph content |
-| `section_divider` | `title` | `kicker`, `subtitle`, `variant` | Slide deck chapter openers |
-| `timeline` | `title`, `steps` | `variant` | Paced step-by-step processes |
+| `timeline` | `title`, `steps` | `variant` | Paced step-by-step processes (phase-differentiated titles) |
 
 ---
 ## 2. Data Visualizations (`data-viz/SKILL.md`)
@@ -45,7 +45,7 @@ These slides render charts, gauges, tables, and metric indicators:
 | `radar_chart` | `title`, `data` | `variant` | Multidimensional comparisons (skills, tests) |
 | `table` | `title`, `headers`, `rows` | `variant` | Tabular data matrices |
 | `funnel_chart` | `title`, `steps` | `variant` | Sales conversions |
-| `metric_grid` | `title`, `metrics` | `variant` | 2x2 grid of key performance metrics |
+| `metric_grid` | `title`, `metrics` (`value`, `label`, optional `trend` ≤20 chars, optional `progress` 0–100) | `variant` | 2×2 grid of key performance metrics |
 | `comparison_bars` | `title`, `comparison` | `description`, `variant` | Direct comparison between two values |
 | `progress_rings` | `title`, `items` | `description`, `variant` | concentric circular progress loops |
 
@@ -62,7 +62,7 @@ These slides guide narrative storytelling, objections, and planning:
 | `testimonial_avatar` | `quote`, `author` | `role`, `avatar_url`, `variant` | Detailed customer reviews |
 | `before_after_story` | `before`, `after` | `title`, `metric`, `variant` | Transformation showcases |
 | `logo_cloud` | `title`, `logos` | `variant` | Social proof, trust boards |
-| `pricing_plan` | `title`, `plans` | `variant` | Offer details and cost choices |
+| `pricing_plan` | `title`, `plans` (2–4; 3 centers the third tile) | `variant` | Offer details and cost choices |
 | `timeline` | `title`, `steps` | `variant` | Process step checklist |
 | `faq` | `title`, `questions` | `variant` | Handing objections |
 | `process_map` | `title`, `steps` | `variant` | Operating flows |

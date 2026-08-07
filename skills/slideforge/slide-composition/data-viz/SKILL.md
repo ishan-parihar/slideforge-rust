@@ -47,13 +47,15 @@ Formats tabular columns and rows cleanly.
 - **Limits:** Max 4 columns and 5 rows to prevent layout overflow.
 
 ### 5. `metric_grid` (2×2 Key Metrics Grid)
-Renders a 2x2 grid of prominent metrics.
+Renders a 2x2 grid of prominent metrics. Tiles never overflow: grid tracks use `minmax(0,1fr)` and every tile is a shrinkable grid item.
 - **Required Parameters:**
   - `title` (string) — Slide title.
   - `metrics` (array) — 2-4 metric objects:
     - `value` (string, required) — The headline number/string.
-    - `label` (string, required) — Metric label.
-    - `trend` (string, optional) — Optional trend delta (e.g. `"+12%"`).
+    - `label` (string, required) — Metric label. **Max 20 chars** — hard error above.
+    - `trend` (string, optional) — Trend badge text (e.g. `"+12%"`). **Max 20 chars** — hard error above. Renders on its **own dedicated line** under the value, never competing with the label.
+    - `progress` (number, optional) — 0–100. Mirrors the actual metric the tile demonstrates (e.g. 42 for a 42% metric). If omitted, the progress bar hides; the bar exists to show what the metric *means*, not as an abstract filler.
+- **Hard Caps:** the validator emits a **hard error** (not a warning, not `…` truncation) when any `trend` or `label` exceeds 20 characters. The renderer never writes ellipsis into metrics — fix the copy instead of relying on clipping.
 
 ### 6. `funnel_chart` (Sales Funnel)
 Visualises sequential conversion steps.
@@ -95,9 +97,10 @@ Shows two values side-by-side as a paired bar comparison.
 ## Actionable Constraints & Design Rules
 
 - [ ] **Data Array Boundaries:** Do not flood charts with large datasets. Limit line/bar datasets to 5 elements. Oversized datasets will overlap axis labels.
-- [ ] **Valid Percentages:** Ensure gauge and progress ring values are strictly between `0` and `100`.
+- [ ] **Valid Percentages:** Ensure gauge, progress ring, and `metric_grid` `progress` values are strictly between `0` and `100`.
 - [ ] **Metric Value Contrast:** Keep values bold and labels light.
 - [ ] **Data Consistency:** In comparison bars, ensure both the left and right values use the same units for logical readability.
+- [ ] **Metric Caps:** Never exceed 20 chars for `metric_grid` `trend` or `label` — the validator will fail generation with a hard error.
 
 ---
 

@@ -60,11 +60,27 @@ Choose the correct platform preset for exporting. Height and width are strictly 
 
 ---
 
+## Deterministic Font Loading (Critical)
+
+SlideForge vendors Google Fonts so exported text is **pixel-identical on every run**, with or without network access:
+
+- On the first export, the renderer fetches each Google Fonts CSS2 stylesheet (Chrome user-agent), rewrites every `@font-face` remote `url()` to an inline **`data:font/woff2;base64,…`** URL, and stores the processed stylesheet in the on-disk cache (`$SLIDEFORGE_FONT_CACHE`, default `~/.cache/slideforge/fonts`).
+- Cache entries are keyed by the stylesheet URL **plus a cache-version prefix**; bumping the version (e.g. after the latin-subset collapse / weight-range merge fixes) invalidates stale files so old glyph-race payloads are never served verbatim.
+- Glyph determinism: only the `latin` subset `@font-face` (covering U+0000–00FF, which includes ASCII digits) is kept per (family, weight, style); latin-ext/cyrillic subsets that silently lack ASCII digits are collapsed away so numbers and letters always shape from the intended face.
+- **Offline behavior:** cached faces are reused from disk with no network; an uncached family falls back to a local system face rather than failing the export. `SLIDEFORGE_FONT_CACHE` can point anywhere writable (CI caches, tmpfs).
+
+## Renderer Capability Caveats (Blitz / stylo)
+
+- No Chromium: PNG export runs in-process (stylo layout + vello-cpu raster). The `setup` command is a no-op. There is no headless-chrome subprocess to install or download.
+- **No `:has()` selector** — stylo does not implement it. Author custom HTML/CSS with explicit marker classes, never `:has()`. (SlideForge's own bleed/overlay CSS uses marker classes for this reason.)
+- CSS grid items keep `min-width:auto` semantics: any unbreakable nowrap child (badges, tags) can inflate a `1fr` column. Use `minmax(0,1fr)` tracks plus `min-width:0; overflow:hidden` on grid items in custom layouts.
+
 ## Actionable Constraints & Design Rules
 
 - [ ] **Renderer:** PNG export uses the embedded Blitz renderer — no Chromium install or download is required (the `setup` command is a no-op).
 - [ ] **Overlay Matching:** Ensure the `--brand-name` and `--brand-handle` parameters passed to `render-carousel` match the configurations in your design tokens.
 - [ ] **Slide Count Count:** Always pass the exact number of slides using the `--slides` parameter during export. Specifying an incorrect slide count will cause rendering errors or blank output pages.
+- [ ] **Fonts:** Do not hand-edit font links in carousel HTML. Run `export` once to warm the font cache; reuse `SLIDEFORGE_FONT_CACHE` across CI runs for deterministic output.
 
 ---
 

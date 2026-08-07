@@ -11,7 +11,7 @@ Operations that the meta-skill must teach agents to perform:
 - **C2: Set Archetype & Visual Theme:** Customize carousel appearance using brand archetypes (educator, thought_leader, etc.) and themes (editorial, bold, etc.).
 - **C3: Recommend Alternate Color Schemes:** Explore and recommend color schemes for slides.
 - **C4: Context-Aware Slide Type Selection:** Choose slide types that match the content structure and message intent.
-- **C5: Query Slide Schema & Parameters:** Discover required and optional parameters for any of the 47 slide types.
+- **C5: Query Slide Schema & Parameters:** Discover required and optional parameters for any of the 46 slide types.
 - **C6: Generate Slide Content (Text & Metrics):** Structure text parameters, headings, lists, badges, quotes, and callouts correctly.
 - **C7: Generate Data Visualizations:** Render charts, gauges, tables, sparklines, progress rings, and comparison bars with valid data shapes.
 - **C8: Structure Story & Educational Flows:** Layout problem-solution, myth-fact, process map, before-after, and case study slides.
@@ -20,7 +20,7 @@ Operations that the meta-skill must teach agents to perform:
 - **C11: Run Layout and Pre-flight Audits:** Run pre-rendering validation (`validate-layout`) to ensure required parameters are present.
 - **C12: Run Design and Overflow Audits:** Run post-rendering design audits (`validate-design`) to catch text clipping, contrast errors, and layout squishing.
 - **C13: Export Carousel to High-Res PNGs:** Screenshot the carousel HTML into exact resolution slides (Instagram, LinkedIn, TikTok).
-- **C14: Manage Chromium Setup:** Install/setup the Chromium subprocess for CI/CD or offline environments.
+- **C14: Deterministic Font Loading:** Vendor Google Fonts as data-URI woff2 (first export fetches + caches under `SLIDEFORGE_FONT_CACHE` / `~/.cache/slideforge/fonts`; later exports are fully offline & glyph-deterministic). No Chromium subprocess exists — the blitz/stylo renderer draws text natively.
 
 ---
 

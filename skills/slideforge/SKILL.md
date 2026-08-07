@@ -5,9 +5,9 @@ description: Use when generating professional social media carousels or presenta
 
 # SlideForge Designer — Meta-Skill Suite
 
-SlideForge is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed).
+SlideForge is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed). Google Fonts are vendored deterministically (data-URI woff2 + on-disk cache) so exports are identical regardless of network state.
 
-This root router navigates you to the specialized sub-skills for using SlideForge in the most effective manner.
+This root router navigates you to the specialized sub-skills for using SlideForge in the most effective manner. SlideForge exposes **46 active slide types** across 5 layout families.
 
 ---
 
@@ -20,16 +20,26 @@ Only this root router is always in context. To use this skill without bloat:
 
 ### Skill Map Directory
 
-Descend into the child skill matching your current step:
+Descend into the child skill matching your current step (relative to this suite's root):
 
-1. **[Design System Settings](file:///home/ishanp/.agents/skills/slideforge/design-system/SKILL.md)**
-   - *Use when:* Starting a session, setting brand colors, selecting visual themes, archetypes, and color presets.
-2. **[Slide Content Composition Router](file:///home/ishanp/.agents/skills/slideforge/slide-composition/SKILL.md)**
+1. **[Design System Settings](design-system/SKILL.md)**
+   - *Use when:* Starting a session, setting brand colors, selecting visual themes, archetypes, color presets, or typology bundles.
+2. **[Slide Content Composition Router](slide-composition/SKILL.md)**
    - *Use when:* Choosing slide types and formatting parameters (text layouts, data visualizations, story flows, image slides).
-3. **[Rendering & Export Pipeline](file:///home/ishanp/.agents/skills/slideforge/rendering-export/SKILL.md)**
+3. **[Rendering & Export Pipeline](rendering-export/SKILL.md)**
    - *Use when:* Assembling individual slide components into an HTML carousel document and rendering to high-res PNGs.
-4. **[Validation & Layout Fixing](file:///home/ishanp/.agents/skills/slideforge/validation-fixing/SKILL.md)**
-   - *Use when:* Auditing slide parameters and visual layouts for overflows, line-clipping, and contrast.
+4. **[Validation & Layout Fixing](validation-fixing/SKILL.md)**
+   - *Use when:* Auditing slide parameters and visual layouts for overflows, line-clipping, hard-cap violations, and contrast.
+
+---
+
+## Infrastructure Notes (Blitz Renderer Era)
+
+- **No Chromium:** PNG export runs fully in-process (stylo layout + vello-cpu). The `setup` command is a no-op. No browser download or headless-chrome dependency exists.
+- **Deterministic fonts:** Google Fonts stylesheets are fetched once, rewritten to inline `data:font/woff2` URLs, and cached under `$SLIDEFORGE_FONT_CACHE` (default `~/.cache/slideforge/fonts`). Text never falls back per-glyph due to network races. On a fully offline machine, cached faces are reused; uncached styles degrade to local fallbacks rather than failing the export.
+- **Selector caveat:** the stylo engine does **not** support the `:has()` CSS selector. Author custom HTML/CSS with explicit marker classes instead of relying on `:has()`.
+- **AXI-compliant CLI:** errors print to stdout with stable exit codes (usage=2, validation=1); `slideforge skill-guide --check` is the CI gate that keeps the committed SKILL.md in sync with the live command surface.
+- **Session hook:** a `SessionStart` hook (merged via `slideforge session-hook --merge`) prints a compact dashboard (recent decks, validator health) so agents get ambient context.
 
 ---
 
@@ -38,3 +48,4 @@ Descend into the child skill matching your current step:
 - [ ] **First Action:** Always configure the design system tokens at the beginning of a slide generation session.
 - [ ] **Sequence:** Follow the sequence: Configure Design → Compose Slides → Assemble & Render → Validate Layout & Design → Export PNGs.
 - [ ] **Aesthetics Rule:** Never mix visual themes in a single carousel. Keep brand continuity.
+- [ ] **Hard Caps:** Prefer validator-enforced hard caps over silent truncation — the renderer never writes `…` into metrics; over-cap inputs are hard errors.
