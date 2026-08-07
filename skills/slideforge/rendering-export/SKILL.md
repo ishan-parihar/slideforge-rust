@@ -60,6 +60,12 @@ Choose the correct platform preset for exporting. Height and width are strictly 
 
 ---
 
+## Image Sources (Remote vs Embedded)
+
+- Remote `http(s)` image URLs (e.g. Pexels CDN `https://images.pexels.com/...`) are fetched natively by blitz-net during export — they render without any pre-processing.
+- For **offline-deterministic** decks, inline images as `data:image/...;base64,...` URIs first (`stock-image --embed` for stock, `embed-image` for local files). Embedded decks render identically with the network disabled.
+- Attribution data returned by `stock-image` (photographer, page URL) should be credited on the closing slide.
+
 ## Deterministic Font Loading (Critical)
 
 SlideForge vendors Google Fonts so exported text is **pixel-identical on every run**, with or without network access:

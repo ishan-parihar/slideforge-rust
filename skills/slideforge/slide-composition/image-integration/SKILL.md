@@ -21,6 +21,33 @@ slideforge-rust embed-image ./photo.png
 
 ---
 
+## Stock Photography via Pexels (Recommended Default)
+
+For decks without a provided image set, use the `stock-image` command (CLI) or `stock_image` tool (MCP) to source photography automatically — **this is the default image strategy for image slides** unless the brief provides art direction.
+
+### CLI
+```bash
+# Search — returns results as JSON with src variants + attribution
+slideforge-rust stock-image "dark portrait" --orientation portrait --count 3
+
+# Embed — inlines the TOP result as a data: URI (count is ignored with --embed)
+slideforge-rust stock-image "dark portrait" --orientation portrait --embed
+```
+
+- **Key:** read from `PEXELS_API_KEY` env (free at pexels.com/api, ~200 req/hr). Missing key → clean error pointing to the signup page; no half-failure.
+- **`--embed`:** downloads the top result and inlines it as a base64 `data:` URI — fully offline-deterministic decks (no network needed at render/export). `--embed` always returns exactly one image; call it once per image slot.
+- **Without `--embed`:** prints Pexels CDN `https://images.pexels.com/...` URLs — blitz fetches `http(s)` image sub-resources natively, so remote URLs render in exports too.
+- **Orientation:** `portrait` (default, 4:5/instagram), `landscape` (16:9/linkedin), `square` (1:1). `best_url()` maps orientation → correct src crop.
+- **Attribution:** the returned `photographer` and `page_url` should be credited on the closing slide per Pexels license.
+
+### MCP
+`stock_image` accepts `query`, `orientation`, `count`, `embed` — identical semantics. Response mirrors the CLI JSON: `photo {id, alt, photographer, page_url, portrait, landscape, large2x, original}`, plus `url` (or `data_uri` when embedded).
+
+### Golden Rule
+Never hardcode a bare Pexels API key into slide params, scripts, or the deck JSON. Always resolve through `PEXELS_API_KEY` at call time. Keep attribution data (photographer/page_url) available for the closing slide.
+
+---
+
 ## Supported Slide Types & Schemas
 
 ### 1. `image_caption` (Image with Context)

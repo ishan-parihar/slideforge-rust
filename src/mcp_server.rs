@@ -409,6 +409,21 @@ pub struct EmbedLocalImageRequest {
 }
 
 #[derive(Serialize, Deserialize, JsonSchema)]
+pub struct StockImageRequest {
+    /// Search query, e.g. "dark portrait business" or "foggy forest".
+    pub query: String,
+    /// Orientation filter: "portrait" (default), "landscape", "square".
+    pub orientation: Option<String>,
+    /// Number of results to list (1-10, default 3). Ignored when embed=true.
+    pub count: Option<usize>,
+    /// Pexels API key. Falls back to the PEXELS_API_KEY env var.
+    pub api_key: Option<String>,
+    /// When true, downloads the top result and returns it as a base64 data URI
+    /// (offline-deterministic deck — no network needed at export time).
+    pub embed: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema)]
 pub struct PreviewSlideRequest {
     /// The slide HTML (from generate_slide's response `html` field).
     pub html: String,
@@ -1754,6 +1769,120 @@ impl Server {
             "size_kb": size_kb,
             "warning": warning,
             "usage": "Pass this data_uri string as image_url or background_image in generate_slide."
+        }))))
+    }
+
+    // ── stock_image ──────────────────────────────────────────────────────────
+
+    /// Search Pexels for stock photos to use as image_url / background_image in
+    /// generate_slide. Returns up to `count` results with src URLs sized for
+    /// slide orientations (portrait 800×1200, landscape 1200×627, large2x).
+    /// Set `embed=true` to download the top result and inline it as a base64
+    /// data URI — this makes the deck fully offline-deterministic (no network
+    /// needed at export time, mirroring the font-vendoring guarantee). The
+    /// Pexels key is free (pexels.com/api); pass it as api_key or set
+    /// PEXELS_API_KEY. Attribution: keep the returned photographer + page_url
+    /// visible or in captions to honor Pexels terms.
+    #[tool(
+        name = "stock_image",
+        description = "Search Pexels for stock photos to use as image_url or background_image in generate_slide. Returns src URLs per orientation (portrait/landscape/square) plus photographer attribution. Set embed=true to inline the top hit as a base64 data URI for offline-deterministic decks."
+    )]
+    pub async fn stock_image(
+        &self,
+        Parameters(req): Parameters<StockImageRequest>,
+    ) -> Result<Json<RawJson>, ErrorData> {
+        let orientation = req.orientation.as_deref().unwrap_or("portrait").to_string();
+        let count = req.count.unwrap_or(3).clamp(1, 10);
+        let key = req
+            .api_key
+            .clone()
+            .filter(|k| !k.is_empty())
+            .or_else(|| std::env::var("PEXELS_API_KEY").ok())
+            .ok_or_else(|| {
+                ErrorData::invalid_request(
+                    "A Pexels API key is required: pass api_key or set PEXELS_API_KEY. Get a free key at https://www.pexels.com/api/",
+                    None,
+                )
+            })?;
+
+        // Pexels calls use a blocking reqwest client — run them on the blocking
+        // pool (never on a tokio worker). Owned values cross the closure.
+        if req.embed.unwrap_or(false) {
+            let query = req.query.clone();
+            let orient = orientation.clone();
+            let key_for_embed = key.clone();
+            let (photo, uri, mime, size) = tokio::task::spawn_blocking(move || {
+                crate::stock::search_and_embed(&query, &orient, &key_for_embed)
+            })
+            .await
+            .map_err(|e| {
+                ErrorData::internal_error(format!("Stock embed task failed: {}", e), None)
+            })?
+            .map_err(|e| ErrorData::internal_error(e, None))?;
+            let size_kb = size / 1024;
+            let warning = if size_kb > 500 {
+                Some(format!(
+                    "Embedded image is {}KB — consider a smaller src variant or resizing to <500KB for optimal export performance.",
+                    size_kb
+                ))
+            } else {
+                None
+            };
+            return Ok(Json(RawJson(serde_json::json!({
+                "status": "embedded",
+                "query": req.query,
+                "orientation": orientation,
+                "photo": {
+                    "id": photo.id,
+                    "alt": photo.alt,
+                    "photographer": photo.photographer,
+                    "attribution_url": photo.page_url,
+                },
+                "data_uri": uri,
+                "mime_type": mime,
+                "size_bytes": size,
+                "size_kb": size_kb,
+                "warning": warning,
+                "usage": "Pass this data_uri as image_url or background_image in generate_slide for a fully offline-deterministic deck.",
+            }))));
+        }
+
+        let query = req.query.clone();
+        let orient = orientation.clone();
+        let key_for_search = key.clone();
+        let photos = tokio::task::spawn_blocking(move || {
+            crate::stock::search(&query, &orient, count, &key_for_search)
+        })
+        .await
+        .map_err(|e| {
+            ErrorData::internal_error(format!("Stock search task failed: {}", e), None)
+        })?
+        .map_err(|e| ErrorData::internal_error(e, None))?;
+        let list: Vec<serde_json::Value> = photos
+            .iter()
+            .map(|p| {
+                serde_json::json!({
+                    "id": p.id,
+                    "alt": p.alt,
+                    "photographer": p.photographer,
+                    "attribution_url": p.page_url,
+                    "url": p.best_url(&orientation),
+                    "src": {
+                        "portrait": p.portrait,
+                        "landscape": p.landscape,
+                        "large2x": p.large2x,
+                        "original": p.original,
+                    },
+                })
+            })
+            .collect();
+        Ok(Json(RawJson(serde_json::json!({
+            "count": list.len(),
+            "query": req.query,
+            "orientation": orientation,
+            "photos": list,
+            "usage": "Pass a returned url (or data_uri via embed=true) as image_url or background_image in generate_slide.",
+            "attribution": "Pexels requires keeping photographer credit visible where practical (e.g. caption or footer).",
         }))))
     }
 

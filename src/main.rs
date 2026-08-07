@@ -27,6 +27,7 @@ mod overflow_model;
 mod platforms;
 mod slide_registry;
 mod slides;
+mod stock;
 mod styling;
 mod validate;
 
@@ -601,6 +602,24 @@ enum Commands {
     },
     /// Convert a local image file to a base64 data URI
     EmbedImage { file_path: String },
+    /// Search Pexels for stock photos to use as image_url / background_image
+    StockImage {
+        /// Search query (e.g. "dark portrait business")
+        query: String,
+        /// Orientation filter: portrait (default), landscape, square
+        #[arg(long, default_value = "portrait")]
+        orientation: String,
+        /// Number of results to list (1-10, default 3)
+        #[arg(long, default_value_t = 3)]
+        count: usize,
+        /// Pexels API key (falls back to PEXELS_API_KEY env var)
+        #[arg(long)]
+        api_key: Option<String>,
+        /// Download the top result and inline it as a base64 data URI
+        /// (offline-deterministic; no network needed at export time)
+        #[arg(long)]
+        embed: bool,
+    },
     /// Render a single slide HTML to a PNG preview
     PreviewSlide {
         /// Path to HTML file (or - for stdin)
@@ -1064,6 +1083,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Some(Commands::EmbedImage { file_path }) => {
             cli_embed_image(file_path)?;
+        }
+        Some(Commands::StockImage {
+            query,
+            orientation,
+            count,
+            api_key,
+            embed,
+        }) => {
+            cli_stock_image(query, orientation, *count, api_key, *embed)?;
         }
         Some(Commands::PreviewSlide { html_file, output }) => {
             let html = if html_file == "-" {
@@ -1765,6 +1793,78 @@ fn cli_embed_image(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         "warning": warning,
     });
     output_toon(&response);
+    Ok(())
+}
+
+/// Search Pexels for stock photos — CLI equivalent of MCP stock_image.
+/// Resolves the API key from --api-key or PEXELS_API_KEY; `--embed` downloads
+/// the top hit and inlines it as a data URI for offline-deterministic decks.
+fn cli_stock_image(
+    query: &str,
+    orientation: &str,
+    count: usize,
+    api_key: &Option<String>,
+    embed: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let key = api_key
+        .as_deref()
+        .filter(|k| !k.is_empty())
+        .map(|k| k.to_string())
+        .or_else(|| std::env::var("PEXELS_API_KEY").ok())
+        .ok_or_else(|| {
+            "A Pexels API key is required: pass --api-key or set PEXELS_API_KEY. Get a free key at https://www.pexels.com/api/"
+        })?;
+
+    if embed {
+        let (photo, uri, mime, size) = stock::search_and_embed(query, orientation, &key)?;
+        let size_kb = size / 1024;
+        let warning = if size_kb > 500 {
+            Some(format!(
+                "Embedded image is {}KB — consider a smaller src variant or resizing to <500KB for optimal export performance.",
+                size_kb
+            ))
+        } else {
+            None
+        };
+        output_toon(&serde_json::json!({
+            "status": "embedded",
+            "query": query,
+            "orientation": orientation,
+            "photo": {
+                "id": photo.id,
+                "alt": photo.alt,
+                "photographer": photo.photographer,
+                "attribution_url": photo.page_url,
+            },
+            "data_uri": uri,
+            "mime_type": mime,
+            "size_bytes": size,
+            "size_kb": size_kb,
+            "warning": warning,
+            "usage": "Pass this data_uri as image_url or background_image in generate-slide for a fully offline-deterministic deck.",
+        }));
+        return Ok(());
+    }
+
+    let photos = stock::search(query, orientation, count, &key)?;
+    if photos.is_empty() {
+        println!("photos: 0 results for query '{}' (orientation: {})", query, orientation);
+        println!("help[1]: Try a broader query or a different orientation (portrait, landscape, square).");
+        return Ok(());
+    }
+    println!("count: {} photos for query '{}' (orientation: {})", photos.len(), query, orientation);
+    println!("photos[{}]{{id,alt,photographer,attribution_url,url}}:", photos.len());
+    for p in &photos {
+        println!(
+            "  {},{},{},{},{}",
+            p.id,
+            p.alt,
+            p.photographer,
+            p.page_url,
+            p.best_url(orientation)
+        );
+    }
+    println!("help[1]: Pass a returned URL as --params '{{\"image_url\":\"<url>\"}}' or add --embed to inline the top hit.");
     Ok(())
 }
 

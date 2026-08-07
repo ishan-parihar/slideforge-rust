@@ -54,6 +54,7 @@ slideforge validate-design carousel.html
 | `slideforge skill-guide` | Load the design guide and skill documentation |
 | `slideforge slide-info` | Get detailed info for a specific slide type |
 | `slideforge slide-types-for-context` | Get slide types recommended for a specific context |
+| `slideforge stock-image` | Search Pexels for stock photos to use as image_url / background_image |
 | `slideforge test-full-scope` | Run an exhaustive full-scope test generating 24 carousels covering all archetypes, themes, and slide types |
 | `slideforge validate-composition` | Validate a carousel composition against arc structure and constraints |
 | `slideforge validate-design` | Validate carousel HTML for design issues |
