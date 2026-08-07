@@ -21,7 +21,7 @@ Clearly contrasts a pain point with a solution.
     - `description` (string, optional) — Point context.
 
 ### 2. `myth_fact` (Myth Debunker)
-Challenges standard assumptions to educate the user.
+Challenges standard assumptions to educate the user. **Auto-scales both ways:** sparse text (<40 chars) scales UP (+4px, roomier padding) while long text steps down through density tiers against a full stack estimate (split and debunk variants) — the old crude `>120 chars → −2px` heuristic is gone.
 - **Required Parameters:**
   - `myth` (string) — The common misconception. Max 100 chars.
   - `fact` (string) — The actual truth. Max 100 chars.

@@ -28,8 +28,7 @@ Displays progress toward a single percentage goal.
   - `label` (string) — Target label (e.g., "CPU", "Goal Met").
 - **Optional Parameters:**
   - `title` (string) — Slide title.
-
-### 3. `progress_rings` (Multi-Rings)
+  - `caption` (string) — Data-driven caption below the gauge. Empty omits the line.
 Renders concentric progress circles for multiple metrics.
 - **Required Parameters:**
   - `title` (string) — Slide title.
@@ -39,12 +38,13 @@ Renders concentric progress circles for multiple metrics.
     - `color` (string, optional) — Custom hex color.
 
 ### 4. `table` (Data Table)
-Formats tabular columns and rows cleanly.
+Formats tabular columns and rows cleanly. **Auto-scales:** cell font/padding step down with row count (11→9px, 8→5px padding) and the visible row ceiling is **8** — a 9th row triggers a hard validator error, and over-ceiling configs get a `+N more` caption note.
 - **Required Parameters:**
-  - `title` (string) — Title.
+  - `title` (string) — Title. Max 60 chars.
   - `headers` (array of strings) — List of column headers.
   - `rows` (array of arrays of strings) — List of row values.
-- **Limits:** Max 4 columns and 5 rows to prevent layout overflow.
+- **Optional Parameters:**
+  - `caption` (string) — Data-driven caption. Empty captions omit the line (no generic fallback text).
 
 ### 5. `metric_grid` (2×2 Key Metrics Grid)
 Renders a 2x2 grid of prominent metrics. Tiles never overflow: grid tracks use `minmax(0,1fr)` and every tile is a shrinkable grid item.
@@ -76,8 +76,7 @@ Plots X/Y correlations.
     - `label` (string, optional)
 - **Optional Parameters:**
   - `x_label`, `y_label` (string) — Axis labels.
-
-### 8. `radar_chart` (Multidimensional Comparison)
+  - `caption` (string) — Data-driven caption below the chart. Empty omits the line. (Multidimensional Comparison)
 Renders a radar/spider chart across multiple axes.
 - **Required Parameters:**
   - `title` (string) — Slide title.

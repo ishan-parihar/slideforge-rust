@@ -1,0 +1,1 @@
+{"title": "Lead size vs. correction latency", "x_label": "Lead deviation", "y_label": "Correction (ms)", "data": [{"x": 2, "y": 180}, {"x": 4, "y": 210}, {"x": 6, "y": 240}, {"x": 8, "y": 290}, {"x": 10, "y": 350}, {"x": 12, "y": 420}, {"x": 3, "y": 195}, {"x": 5, "y": 230}, {"x": 7, "y": 265}], "caption": "Corrections slow as lead size grows; the knee sits between 6 and 8."}

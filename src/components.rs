@@ -1581,10 +1581,78 @@ pub fn text_block_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_dark = colors.is_dark;
-    let body_fs = 14i32;
+
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The fixed 28px title + 14px body is a wall: a multi-paragraph body
+    // overflows the 449px body by 100px+. Estimate the real stack (eyebrow +
+    // title + accent + every paragraph at the tier's own sizes) and pick the
+    // least-compressed tier that fits, exactly like problem_solution_slide.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let padding_top = 16.0;
+    let padding_bottom = 20.0;
+    let available_height = SAFE_CONTENT_HEIGHT - padding_top - padding_bottom;
+    let effective_variant = if variant.is_empty() { "left" } else { variant };
+    let max_width_px: f32 = match effective_variant {
+        "narrow" => 280.0,
+        "wide" => 380.0,
+        _ => 340.0,
+    };
+    let paragraphs: Vec<&str> = body
+        .split('\n')
+        .map(|p| p.trim())
+        .filter(|p| !p.is_empty())
+        .collect();
+    let body_plain = paragraphs.join(" ");
+
+    // Tier = (title_fs, body_fs, eyebrow_fs, drop_cap_fs, paragraph_margin, gap).
+    type Tier = (i32, i32, i32, i32, f32, f32);
+    let fits = |tier: &Tier, title: &str, paragraphs: &[&str]| -> bool {
+        let (title_fs, body_fs, eyebrow_fs, _cap_fs, para_margin, title_margin) = *tier;
+        let eyebrow_h = if title.is_empty() && paragraphs.is_empty() {
+            0.0
+        } else {
+            eyebrow_fs as f32 * 1.0 + 10.0
+        };
+        let title_h = if title.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(title, title_fs as f32, 1.15, max_width_px)
+                + title_margin
+        };
+        let accent_h = if title.is_empty() && paragraphs.is_empty() {
+            0.0
+        } else {
+            2.0 + 12.0 + 16.0
+        };
+        let mut body_h = 0.0;
+        for (i, para) in paragraphs.iter().enumerate() {
+            // First paragraph carries the drop cap: the 36px-cap line is
+            // ~1.6× the cap font — estimate it as the cap line height.
+            let line_h = if i == 0 && title.is_empty() == false && !paragraphs.is_empty() && false {
+                0.0
+            } else {
+                crate::overflow_model::estimate_text_height(para, body_fs as f32, 1.6, max_width_px)
+            };
+            body_h += line_h + if i == paragraphs.len() - 1 { 0.0 } else { para_margin };
+        }
+        let estimated = eyebrow_h + title_h + accent_h + body_h;
+        estimated <= available_height
+    };
+
+    // Body font tiers: 14px standard, 13px moderate, 12px aggressive (floor
+    // 12px keeps multi-paragraph bodies legible; title drops to 24px worst case).
+    let tiers: [Tier; 3] = [
+        (28, 14, 9, 36, 14.0, 6.0),
+        (26, 13, 9, 32, 12.0, 5.0),
+        (24, 12, 8, 28, 10.0, 4.0),
+    ];
+    let (title_fs, body_fs, eyebrow_fs, drop_cap_fs, para_margin, title_margin) = tiers
+        .iter()
+        .find(|tier| fits(tier, title, &paragraphs))
+        .copied()
+        .unwrap_or(tiers[2]);
 
     // Variant-driven alignment and width
-    let effective_variant = if variant.is_empty() { "left" } else { variant };
     let align = if text_align.is_empty() {
         match effective_variant {
             "centered" => "center",
@@ -1616,8 +1684,9 @@ pub fn text_block_slide(
     };
     let eyebrow_html = if !eyebrow_text.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:9px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">{}</div>"#,
+            r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">{}</div>"#,
             tokens.body_font,
+            eyebrow_fs,
             colors.primary,
             escape_html(eyebrow_text)
         )
@@ -1625,12 +1694,14 @@ pub fn text_block_slide(
         String::new()
     };
 
-    // Title: weight-900, 28px — the dominant visual element
+    // Title: weight-900, tier-scaled — the dominant visual element
     let title_html = if !title.is_empty() {
         format!(
-            r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 6px;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
+            r#"<h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0 0 {}px;line-height:1.15;letter-spacing:-0.02em;">{}</h2>"#,
             tokens.heading_font,
+            title_fs,
             colors.text_primary,
+            title_margin as i32,
             escape_html(title)
         )
     } else {
@@ -1660,24 +1731,24 @@ pub fn text_block_slide(
                     let first_char = chars[0];
                     let rest: String = chars[1..].iter().collect();
                     body_html.push_str(&format!(
-                        r#"<p style="display:flex;gap:10px;align-items:flex-start;font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:left;"><span style="font-family:{};font-size:36px;font-weight:900;color:{};line-height:0.78;flex-shrink:0;margin-top:2px;">{}</span><span style="flex:1;">{}</span></p>"#,
-                        tokens.body_font, body_fs, colors.text_secondary,
-                        tokens.heading_font, colors.primary,
+                        r#"<p style="display:flex;gap:10px;align-items:flex-start;font-family:{};font-size:{}px;color:{};margin:0 0 {}px;line-height:1.6;text-align:left;"><span style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:0.78;flex-shrink:0;margin-top:2px;">{}</span><span style="flex:1;">{}</span></p>"#,
+                        tokens.body_font, body_fs, colors.text_secondary, para_margin as i32,
+                        tokens.heading_font, drop_cap_fs, colors.primary,
                         escape_html(&first_char.to_string()),
                         escape_html(&rest)
                     ));
                 } else {
                     body_html.push_str(&format!(
-                        r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};">{}</p>"#,
-                        tokens.body_font, body_fs, colors.text_secondary, align,
+                        r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 {}px;line-height:1.6;text-align:{};">{}</p>"#,
+                        tokens.body_font, body_fs, colors.text_secondary, para_margin as i32, align,
                         escape_html(p)
                     ));
                 }
                 first_done = true;
             } else {
                 body_html.push_str(&format!(
-                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 14px;line-height:1.6;text-align:{};">{}</p>"#,
-                    tokens.body_font, body_fs, colors.text_secondary, align,
+                    r#"<p style="font-family:{};font-size:{}px;color:{};margin:0 0 {}px;line-height:1.6;text-align:{};">{}</p>"#,
+                    tokens.body_font, body_fs, colors.text_secondary, para_margin as i32, align,
                     escape_html(p)
                 ));
             }
@@ -2277,6 +2348,7 @@ fn scatter_plot_slide(
     title: &str,
     x_label: &str,
     y_label: &str,
+    caption: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -2295,13 +2367,23 @@ fn scatter_plot_slide(
         "rgba(255,255,255,0.92)"
     };
     let chart_border = format!("1px solid {}", colors.border);
+    // Data-driven caption (same contract as gauge/table/radar). No hardcoded
+    // fallback text — empty captions omit the line entirely.
+    let caption_html = if !caption.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(caption)
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
             <div style="width:100%;height:205px;border-radius:{};overflow:hidden;background:{};border:{};padding:8px 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><div style="position:relative;width:320px;height:185px;margin:0 auto;">{}{}</div></div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">Scatter distribution illustrating the linear relationship between character mass and compile latency under concurrency tests.</p>
+            {}
         </div>"#,
-        title_html, radius, chart_bg, chart_border, svg, overlay, tokens.body_font, colors.text_secondary
+        title_html, radius, chart_bg, chart_border, svg, overlay, caption_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -2313,6 +2395,7 @@ fn gauge_slide(
     value: f64,
     label: &str,
     title: &str,
+    caption: &str,
     bg_style: &str,
     theme: &str,
     bg_img: &str,
@@ -2327,6 +2410,17 @@ fn gauge_slide(
     let radius = current_component_radius(tokens, "card");
     let card_bg = if colors.is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let subtext = if !label.is_empty() { label.to_string() } else { "Optimal Range".to_string() };
+    // Caption is data-driven; the generic fallback is dropped so decks that
+    // pass a real description always show their own words (radar/table already
+    // follow this contract). Empty captions simply omit the line.
+    let caption_html = if !caption.is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(caption)
+        )
+    } else {
+        String::new()
+    };
 
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -2335,7 +2429,7 @@ fn gauge_slide(
                 <div style="position:relative;width:200px;height:115px;margin:0 auto;">{}{}</div>
                 <div style="font-family:{};font-size:10px;font-weight:900;color:#10B981;background:#10B98118;padding:3px 10px;border-radius:999px;letter-spacing:0.06em;">✓ STATUS: {}</div>
             </div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:4px 0 0;text-align:center;line-height:1.4;opacity:0.85;">Overall system health and efficiency score calculated across 100+ stress-test assertions.</p>
+            {}
         </div>"#,
         title_html,
         card_bg,
@@ -2345,8 +2439,7 @@ fn gauge_slide(
         overlay,
         tokens.heading_font,
         escape_html(&subtext.to_uppercase()),
-        tokens.body_font,
-        colors.text_secondary
+        caption_html
     );
     let html = slide_base(&content, tokens, bg_style, false, "16px 44px", "center");
     let html = inject_background_image(html, bg_img, img_opacity, colors.is_dark);
@@ -2884,12 +2977,67 @@ fn table_slide(
         "rgba(0,0,0,0.035)"
     };
 
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // Tables are the #1 silent overflow: the fixed 11px cell / 8px padding is
+    // a wall beyond ~8 rows, and a 14-row table ran 395/417px into the footer.
+    // Cap the visible rows hard (a table past 8 rows reads as noise anyway),
+    // then step cell font/padding down across tiers based on the REAL row
+    // count so 5-8 rows still fit the body comfortably.
+    const MAX_TABLE_ROWS: usize = 8;
+    let visible_rows: Vec<Value> = rows.iter().take(MAX_TABLE_ROWS).cloned().collect();
+    let truncated = rows.len() > MAX_TABLE_ROWS;
+    type TableTier = (i32, i32, i32); // (cell_fs, cell_pad_y, header_pad_y)
+    // ── Wrap-aware density selection ────────────────────────────────────────
+    // Row-count tiers alone are not enough: long cell text wraps to 2 lines in
+    // a ~70px column at 9px and renders the row 1.5-2x taller than a fixed
+    // per-row estimate assumes. Estimate the FULL table (title + header + rows
+    // at their real wrapped height + caption) for each tier and pick the
+    // least-compressed tier whose stack fits the 449px body, mirroring the
+    // validator's table-aware estimate so both sides agree.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let table_available = SAFE_CONTENT_HEIGHT - 32.0; // hero_layout 16 top / 16 bottom
+    let col_count = headers.len().max(1) as f32;
+    let table_w: f32 = 420.0 - 2.0 * 48.0; // hero_layout --space-6 side padding
+    let col_w = (table_w / col_count).max(40.0);
+    let table_tiers: [TableTier; 3] = [(11, 8, 9), (10, 6, 7), (9, 5, 6)];
+    let fits_table = |tier: &TableTier, vrows: &[Value]| -> bool {
+        let (cell_fs, cell_pad, header_pad) = *tier;
+        let title_h = if title.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(title, 28.0, 1.1, table_w) + 12.0
+        };
+        let header_h = 10.5 * 1.4 + 2.0 * header_pad as f32;
+        let mut rows_h = 0.0;
+        for row in vrows {
+            let cells: Vec<&str> = row
+                .as_array()
+                .map(|a| a.iter().map(|c| c.as_str().unwrap_or("")).collect())
+                .unwrap_or_default();
+            // Tallest cell decides the row height (cells wrap in their column).
+            let mut row_h: f32 = 0.0;
+            for (ci, text) in cells.iter().enumerate() {
+                let w = if ci == 0 { col_w * 1.3 } else { col_w };
+                let h = crate::overflow_model::estimate_text_height(text, cell_fs as f32, 1.4, w);
+                row_h = row_h.max(h);
+            }
+            rows_h += row_h + 2.0 * cell_pad as f32;
+        }
+        let caption_h = if _caption.is_empty() { 0.0 } else { 10.5 * 1.4 + 12.0 };
+        title_h + header_h + rows_h + caption_h <= table_available
+    };
+    let (cell_fs, cell_pad, header_pad) = table_tiers
+        .iter()
+        .find(|t| fits_table(t, &visible_rows))
+        .copied()
+        .unwrap_or(table_tiers[2]);
+
     let header_cells: Vec<String> = headers.iter().map(|h| {
         let text = h.as_str().unwrap_or("");
-        format!("<th style=\"padding:9px 12px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "12", escape_html(text))
+        format!("<th style=\"padding:{}px 12px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", header_pad, tokens.heading_font, colors.text_primary, colors.primary.clone() + "12", escape_html(text))
     }).collect();
 
-    let body_rows: String = rows.iter().enumerate().map(|(idx, row)| {
+    let body_rows: String = visible_rows.iter().enumerate().map(|(idx, row)| {
         let cells: Vec<String> = row.as_array().map(|arr| {
             arr.iter().enumerate().map(|(c_idx, cell)| {
                 let text = cell.as_str().unwrap_or("");
@@ -2905,14 +3053,37 @@ fn table_slide(
                     format!(r#"<span style="font-family:{};color:{};">{}</span>"#, tokens.body_font, colors.text_secondary, escape_html(text))
                 };
                 let bg = if idx % 2 == 0 { "transparent" } else { zebra_bg };
-                format!("<td style=\"padding:8px 12px;font-size:11px;background:{};\">{}</td>", bg, cell_html)
+                format!("<td style=\"padding:{}px 12px;font-size:{}px;background:{};\">{}</td>", cell_pad, cell_fs, bg, cell_html)
             }).collect()
         }).unwrap_or_default();
         format!("<tr>{}</tr>", cells.join(""))
     }).collect();
 
-    let caption = if !_caption.is_empty() { _caption.to_string() } else { "Benchmark metrics evaluated under 1,000 carousel thread iterations.".to_string() };
+    // Truncation note appended to the caption so hard-capped rows are visible
+    // in the output instead of silently vanishing. Data-driven only: no generic
+    // fallback text (same contract as gauge/scatter/radar captions) — an empty
+    // caption omits the line entirely.
+    let more_rows = if truncated {
+        format!(" +{} more", rows.len() - MAX_TABLE_ROWS)
+    } else {
+        String::new()
+    };
+    let caption = if !_caption.is_empty() {
+        format!("{}{}", _caption, more_rows)
+    } else {
+        more_rows
+    };
 
+    // Caption paragraph omitted entirely when empty (same contract as
+    // gauge/scatter captions) — an empty <p> would reserve the gap line.
+    let caption_html = if !caption.trim().is_empty() {
+        format!(
+            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
+            tokens.body_font, colors.text_secondary, escape_html(&caption)
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
@@ -2924,9 +3095,9 @@ fn table_slide(
                     <tbody>{}</tbody>
                 </table>
             </div>
-            <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>
+            {}
         </div>"#,
-        heading,        card_bg, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
+        heading,        card_bg, radius, header_cells.join(""), body_rows, caption_html
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
@@ -3363,28 +3534,55 @@ pub fn timeline_slide(
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
 
-    // Density scaling (shared overflow model): 4-5 items at fixed sizes stack
-    // ~203px too tall under the new 41px-body type tiers. Scale item fonts,
-    // padding, and gaps by step count so the stack fits the 405px safe height.
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // Count-based tiers are not enough: two 4-step timelines can differ by
+    // 150 chars of description text. Estimate each item's wrapped title + desc
+    // height at every tier and pick the least-compressed tier whose FULL stack
+    // (heading + items + gaps) fits the body. hero_layout pads 16 top / 20
+    // bottom, leaving SAFE_CONTENT_HEIGHT − 36 for the stack.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let available_height = SAFE_CONTENT_HEIGHT - 36.0;
+    // hero_layout content width: 420 − 2×space-6(≈28) = 364; item text width
+    // subtracts card padding (12px×2) and the 32px badge + 12px gap.
+    let item_text_w: f32 = 364.0 - 24.0 - 44.0;
     let step_count = steps.len();
-    // item_phase_size now sizes the number inside the 32px circular badge — it
-    // needs to be legible there (12-13px), unlike the old 8.5px text chip.
-    let (item_title_size, item_desc_size, item_pad, item_gap, item_phase_size) = match step_count {
-        5 => (12.0, 10.0, 8, 3, 12.0),
-        4 => (12.5, 10.5, 10, 4, 12.5),
-        _ => (13.0, 11.0, 12, 6, 13.0),
+    // Tier = (title_fs, desc_fs, pad, gap, phase_fs). Greedy: first tier whose
+    // estimated stack fits wins; last tier is the legibility floor.
+    type TimelineTier = (f32, f32, i32, i32, f32);
+    let fits_timeline = |tier: &TimelineTier, steps: &[Value]| -> bool {
+        let (title_fs, desc_fs, pad, gap, _phase_fs) = *tier;
+        let heading_h = if title.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(title, 28.0, 1.1, 364.0) + 12.0
+        };
+        let mut items_h = 0.0;
+        for s in steps {
+            let st = simple_text(s, &["label", "title", "number"]);
+            let sd = simple_text(s, &["description", "caption"]);
+            let title_h = crate::overflow_model::estimate_text_height(
+                &st, title_fs, 1.2, item_text_w,
+            );
+            let desc_h = crate::overflow_model::estimate_text_height(
+                &sd, desc_fs, 1.4, item_text_w,
+            ) + 2.0;
+            let badge_h = 32.0f32.max(title_h + desc_h);
+            items_h += badge_h + 2.0 * pad as f32;
+        }
+        let gaps_h = (steps.len().max(1) as f32) * gap as f32;
+        heading_h + items_h + gaps_h <= available_height
     };
-    let step_desc_text: usize = steps
+    let timeline_tiers: [TimelineTier; 4] = [
+        (13.0, 11.0, 12, 6, 13.0),
+        (12.5, 10.5, 10, 4, 12.5),
+        (12.0, 10.0, 8, 3, 12.0),
+        (11.0, 9.0, 7, 2, 11.0),
+    ];
+    let (item_title_size, item_desc_size, item_pad, item_gap, item_phase_size) = timeline_tiers
         .iter()
-        .map(|s| {
-            s.get("description")
-                .and_then(|v| v.as_str())
-                .map(|d| d.len())
-                .unwrap_or(0)
-        })
-        .sum::<usize>();
-    // Long descriptions push the item body into extra lines: trim desc font further.
-    let item_desc_size = if step_desc_text > 180 { item_desc_size - 1.0 } else { item_desc_size };
+        .find(|t| fits_timeline(t, &steps))
+        .copied()
+        .unwrap_or(timeline_tiers[3]);
 
     let items_html: String = steps.iter().enumerate().map(|(idx, step)| {
         // Data keys mirror process_map: label/title/number for the step name and
@@ -3443,6 +3641,62 @@ pub fn definition_slide(
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
 
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The fixed 30px term + 15px definition is a wall: a 4-line definition
+    // overflows the 449px body by ~90px. Fit the term to ≤2 lines and step the
+    // definition/context down across tiers while estimating the full card stack
+    // (category + term + phonetic + definition + context), exactly like
+    // text_block_slide / problem_solution_slide. 12px def floor keeps the
+    // definition legible; never below the validator tiny_text gate.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    // slide_base "16px 44px" (16 top/bottom) + card padding 22px 20px.
+    let inner_w: f32 = 420.0 - 2.0 * 44.0 - 40.0; // card content ≈ 292
+    let available_height = SAFE_CONTENT_HEIGHT - 32.0 - 44.0;
+    let term_fs = crate::overflow_model::fit_font_size_to_lines(
+        term,
+        inner_w,
+        2,
+        1.1,
+        22.0,
+        30.0,
+    ) as i32;
+    // Definition/context tiers: (def_fs, ctx_fs). Greedy — first tier whose
+    // estimated stack fits wins; last tier is the 12px floor.
+    type DefTier = (i32, i32);
+    let fits_def = |tier: &DefTier, def: &str, ctx: &str| -> bool {
+        let (def_fs, ctx_fs) = *tier;
+        let category_h = 9.5 * 1.0 + 2.0 + 8.0; // label + pad + margin-bottom
+        let term_h = crate::overflow_model::estimate_text_height(
+            term,
+            term_fs as f32,
+            1.1,
+            inner_w,
+        ) + 4.0; // + margin-bottom 4px
+        let phonetic_h = if phonetic.is_empty() {
+            0.0
+        } else {
+            13.0 * 1.4 + 12.0
+        };
+        let def_h = crate::overflow_model::estimate_text_height(
+            def,
+            def_fs as f32,
+            1.55,
+            inner_w - 17.0, // border 3 + padding-left 14
+        ) + 26.0; // margins 12 + 14
+        let ctx_h = if ctx.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(ctx, ctx_fs as f32, 1.5, inner_w)
+        };
+        category_h + term_h + phonetic_h + def_h + ctx_h <= available_height
+    };
+    let def_tiers: [DefTier; 3] = [(15, 13), (14, 12), (12, 11)];
+    let (def_fs, ctx_fs) = def_tiers
+        .iter()
+        .find(|t| fits_def(t, definition, context))
+        .copied()
+        .unwrap_or(def_tiers[2]);
+
     let category_html = format!(
         r#"<span style="font-family:{};font-size:9.5px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:{};background:{}18;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;">CORE DEFINITION</span>"#,
         tokens.heading_font,
@@ -3451,8 +3705,9 @@ pub fn definition_slide(
     );
 
     let term_html = format!(
-        r#"<h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
+        r#"<h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
         tokens.heading_font,
+        term_fs,
         colors.text_primary,
         escape_html(term)
     );
@@ -3469,18 +3724,20 @@ pub fn definition_slide(
 
     let def_html = format!(
         r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:{};font-size:15px;font-weight:600;color:{};margin:0;line-height:1.55;">{}</p>
+            <p style="font-family:{};font-size:{}px;font-weight:600;color:{};margin:0;line-height:1.55;">{}</p>
         </div>"#,
         colors.primary,
         tokens.body_font,
+        def_fs,
         colors.text_primary,
         escape_html(definition)
     );
 
     let ctx_html = if !context.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;opacity:0.95;">{}</p>"#,
+            r#"<p style="font-family:{};font-size:{}px;font-weight:500;color:{};margin:0;line-height:1.5;opacity:0.95;">{}</p>"#,
             tokens.body_font,
+            ctx_fs,
             colors.text_secondary,
             escape_html(context)
         )
@@ -3538,23 +3795,58 @@ pub fn myth_fact_slide(
 
     let effective_variant = variant;
 
-    let myth_len = myth.len();
-    let fact_len = fact.len();
-    let dynamic_fs = if myth_len < 40 && fact_len < 40 {
-        body_fs + 4
-    } else if myth_len > 120 || fact_len > 120 {
-        body_fs - 2
-    } else {
-        body_fs
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The old heuristic (sparse → +4px, >120 chars → −2px) is too coarse: a
+    // 150-char fact in the narrow split column wraps to 8 lines and overflows
+    // the body. Estimate the FULL stack (heading + myth/fact cards at their
+    // real wrapped heights + explanation) across tiers and pick the least-
+    // compressed that fits. Sparse text still scales UP (per the R&D spec),
+    // but only when the estimated stack has room for it.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    // slide_base "20px 44px 20px" → 40px vertical padding total.
+    let available_height = SAFE_CONTENT_HEIGHT - 40.0;
+    let content_w: f32 = 420.0 - 2.0 * 44.0; // 332
+    let heading_h = 30.0 + 12.0;
+    // Tier = (fs, pad_h). Pad_x differs by variant but the horizontal padding
+    // only widens the wrap column — the estimate uses the exact card width.
+    type MfTier = (i32, i32);
+    let fits_mf = |tier: &MfTier, myth: &str, fact: &str, expl: &str| -> bool {
+        let (fs, pad) = *tier;
+        let (card_w, stack_extra): (f32, f32) = if effective_variant == "debunk" {
+            (content_w - 2.0 * pad as f32, 12.0 + 12.0) // stacked cards + myth margin
+        } else {
+            ((content_w - 14.0 - 2.0 * pad as f32) / 2.0, 0.0) // side-by-side
+        };
+        let myth_h = crate::overflow_model::estimate_text_height(myth, fs as f32, 1.35, card_w)
+            + 2.0 * pad as f32;
+        let fact_h = crate::overflow_model::estimate_text_height(fact, fs as f32, 1.35, card_w)
+            + 2.0 * pad as f32;
+        let expl_h = if expl.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(expl, caption_fs as f32, 1.45, content_w) + 14.0
+        };
+        heading_h + myth_h + fact_h + expl_h + stack_extra <= available_height
     };
+    // Tiers step from the sparse up-scale down to a 10px floor (myth_fact is a
+    // two-card narrative, so its floor is one below the 12px text_block floor).
+    // The floor NEVER goes below 10px — the tiny_text validator gate warns
+    // under 10.5px, so a sub-10px tier would pass generation but draw a
+    // warning on every export. Content that long must be split, not shrunk.
+    let mf_floor = (body_fs - 4).max(10);
+    let mf_tiers: [MfTier; 4] = [
+        (body_fs + 4, 16),
+        (body_fs, 14),
+        (body_fs - 2, 12),
+        (mf_floor, 10),
+    ];
+    let (dynamic_fs, pad_y) = mf_tiers
+        .iter()
+        .find(|t| fits_mf(t, myth, fact, explanation))
+        .copied()
+        .unwrap_or(mf_tiers[3]);
 
-    let dynamic_padding = if myth_len < 40 && fact_len < 40 {
-        "16px 20px"
-    } else if myth_len > 120 || fact_len > 120 {
-        "12px 14px"
-    } else {
-        "14px 18px"
-    };
+    let dynamic_padding = format!("{}px 18px", pad_y);
 
     let heading = heading_block(
         "Myth vs Fact",
@@ -4094,10 +4386,40 @@ pub fn testimonial_avatar_slide(
             }
         )
     };
+    // ── Automatic type fit (shared overflow model) ──────────────────────────
+    // The fixed 28px quote is a wall: a 200-char testimonial wraps to 7+ lines
+    // and collides with the footer. Fit the quote to ≤5 wrapped lines in the
+    // 332px column (18px floor keeps the quote readable), mirroring hero/quote
+    // fitting used elsewhere in the system.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let column_width: f32 = 420.0 - 2.0 * 44.0; // 332
+    let quote_fs = crate::overflow_model::fit_font_size_to_lines(
+        quote,
+        column_width,
+        5,
+        1.2,
+        18.0,
+        28.0,
+    ) as i32;
+    // Whole-stack gate: quote + avatar + author block must fit the body.
+    let quote_h = crate::overflow_model::estimate_text_height(
+        quote,
+        quote_fs as f32,
+        1.2,
+        column_width,
+    );
+    let author_h = 15.0 * 1.2 + 12.0 * 1.2;
+    let stack_h = 72.0 + 8.0 + quote_h + 8.0 + author_h;
+    let quote_fs = if stack_h <= SAFE_CONTENT_HEIGHT - 32.0 {
+        quote_fs
+    } else {
+        ((quote_fs as f32) * 0.9) as i32
+    };
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);">{}<p style="font-family:{};font-size:28px;font-weight:800;color:{};line-height:1.2;margin:0;">“{}”</p><div><div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div><div style="font-family:{};font-size:12px;color:{};">{}</div></div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-2);">{}<p style="font-family:{};font-size:{}px;font-weight:800;color:{};line-height:1.2;margin:0;">“{}”</p><div><div style="font-family:{};font-size:15px;font-weight:900;color:{};">{}</div><div style="font-family:{};font-size:12px;color:{};">{}</div></div></div>"#,
         avatar,
         tokens.heading_font,
+        quote_fs,
         colors.text_primary,
         escape_html(quote),
         tokens.body_font,
@@ -4128,6 +4450,45 @@ pub fn logo_cloud_slide(
     } else {
         "rgba(255,255,255,0.92)"
     };
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The fixed 58px tile + 8-count cap is a wall: 8 logos × 2 rows + 28px
+    // title already lands ~480px in a 449px body, and long labels wrap to 2
+    // lines inside the fixed-height tile and clip. Compress tile height /
+    // label font with the real count and cap long labels with ellipsis.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let available_height = SAFE_CONTENT_HEIGHT - 32.0 - 24.0; // slide_base + gap
+    let tile_h: i32 = match logos.len() {
+        0..=4 => 58,
+        5..=6 => 52,
+        _ => 46,
+    };
+    let label_fs: i32 = match logos.len() {
+        0..=4 => 14,
+        5..=6 => 13,
+        _ => 12,
+    };
+    let rows = (logos.len().min(8) as f32 / 2.0).ceil() as f32;
+    let label_clip = if logos.len() >= 7 {
+        "white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+    } else {
+        ""
+    };
+    let title_fs = crate::overflow_model::fit_font_size_to_lines(
+        title,
+        380.0,
+        2,
+        1.1,
+        22.0,
+        28.0,
+    ) as i32;
+    // Whole-stack gate: never let the estimated grid + title exceed the body.
+    let title_h = crate::overflow_model::estimate_text_height(title, title_fs as f32, 1.1, 380.0);
+    let grid_h = rows * (tile_h as f32) + (rows - 1.0) * 8.0;
+    let tile_h = if title_h + grid_h <= available_height {
+        tile_h
+    } else {
+        (tile_h - 8).max(38)
+    };
     let cells = logos
         .iter()
         .take(8)
@@ -4143,12 +4504,15 @@ pub fn logo_cloud_slide(
                 visual_badge_html(tokens, &colors, &shim, &label, 30)
             };
             format!(
-                r#"<div style="height:58px;border-radius:{};border:1px solid {};background:{};display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:{};font-size:var(--text-sm);font-weight:800;color:{};box-sizing:border-box;">{}{}</div>"#,
+                r#"<div style="height:{}px;border-radius:{};border:1px solid {};background:{};display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;font-family:{};font-size:{}px;font-weight:800;color:{};box-sizing:border-box;{}{}{}</div>"#,
+                tile_h,
                 radius,
                 colors.border,
                 card_bg,
                 tokens.body_font,
+                label_fs,
                 colors.text_secondary,
+                label_clip,
                 visual,
                 escape_html(&label)
             )
@@ -4156,8 +4520,9 @@ pub fn logo_cloud_slide(
         .collect::<Vec<_>>()
         .join("");
     let content = format!(
-        r#"<div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;text-align:center;">{}</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);">{}</div></div>"#,
+        r#"<div style="width:100%;display:flex;flex-direction:column;gap:24px;"><h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;text-align:center;">{}</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-1);">{}</div></div>"#,
         tokens.heading_font,
+        title_fs,
         colors.text_primary,
         escape_html(title),
         cells
@@ -4183,15 +4548,51 @@ pub fn faq_slide(
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
     let border = format!("1px solid {}", colors.border);
 
-    // Hardcode MAX_FAQ_ITEMS = 4 to guarantee zero vertical overflow
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // Count-based tiers are not enough: two 4-item FAQs can differ by 200 chars
+    // of answer text. Estimate each card's wrapped question + answer height at
+    // every tier and pick the least-compressed tier whose FULL stack (heading +
+    // cards + gaps) fits the body. hero_layout pads 16 top / 20 bottom.
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let available_height = SAFE_CONTENT_HEIGHT - 36.0;
+    let card_text_w: f32 = 364.0 - 24.0; // content width − card padding 12px×2
     let capped_items: Vec<&Value> = questions.iter().take(4).collect();
     let count = capped_items.len();
-
-    let (padding_css, q_size_px, a_size_px, gap_px) = match count {
-        4 => ("8px 12px", 11.5, 10.5, 6),
-        3 => ("10px 14px", 12.5, 11.0, 8),
-        _ => ("12px 14px", 13.0, 11.5, 10),
+    // Tier = (pad_y, q_fs, a_fs, gap). Greedy; last tier is the legibility floor.
+    type FaqTier = (i32, f32, f32, i32);
+    let fits_faq = |tier: &FaqTier, items: &[&Value]| -> bool {
+        let (pad, q_fs, a_fs, gap) = *tier;
+        let heading_h = if title.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(title, 28.0, 1.1, 364.0) + 10.0
+        };
+        let mut cards_h = 0.0;
+        for q in items {
+            let qt = simple_text(q, &["question", "q", "title"]);
+            let at = simple_text(q, &["answer", "a", "description"]);
+            // Question row shares width with the 34px Q chip + 6px gap.
+            let q_h = crate::overflow_model::estimate_text_height(
+                &qt, q_fs, 1.2, card_text_w - 40.0,
+            );
+            let a_h = crate::overflow_model::estimate_text_height(&at, a_fs, 1.4, card_text_w);
+            cards_h += 3.0 + q_h + a_h + 2.0 * pad as f32;
+        }
+        let gaps_h = (items.len().max(1) as f32) * gap as f32;
+        heading_h + cards_h + gaps_h <= available_height
     };
+    let faq_tiers: [FaqTier; 4] = [
+        (12, 13.0, 11.5, 10),
+        (10, 12.5, 11.0, 8),
+        (8, 11.5, 10.5, 6),
+        (6, 11.0, 10.0, 5),
+    ];
+    let (pad_y, q_size_px, a_size_px, gap_px) = faq_tiers
+        .iter()
+        .find(|t| fits_faq(t, &capped_items))
+        .copied()
+        .unwrap_or(faq_tiers[3]);
+    let padding_css = format!("{}px 12px", pad_y);
 
     let cards_html: String = capped_items.iter().enumerate().map(|(idx, q)| {
         let question_text = simple_text(q, &["question", "q", "title"]);
@@ -4440,42 +4841,99 @@ pub fn before_after_story_slide(
     } else {
         tokens.text_secondary.clone()
     };
+    // ── Density auto-scaling (shared overflow model) ────────────────────────
+    // The fixed 28px title + 16px cards is a wall: long before/after paragraphs
+    // push the metric + description into the footer band. Fit the title to ≤2
+    // lines and step the card padding/body font down across tiers while
+    // estimating the full stack (title + tallest card + metric + description).
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let available_height = SAFE_CONTENT_HEIGHT - 32.0; // slide_base "16px 44px"
+    let column_width: f32 = 420.0 - 2.0 * 44.0; // 332
+    let title_fs = crate::overflow_model::fit_font_size_to_lines(
+        title,
+        column_width,
+        2,
+        1.08,
+        22.0,
+        28.0,
+    ) as i32;
+    // Tier = (body_fs, card_pad, gap). Greedy; last tier is the 12px floor.
+    type BaTier = (i32, i32, f32);
+    let fits_ba = |tier: &BaTier, before: &str, after: &str, desc: &str| -> bool {
+        let (body_fs, card_pad, gap) = *tier;
+        let title_h = crate::overflow_model::estimate_text_height(
+            title,
+            title_fs as f32,
+            1.08,
+            column_width,
+        );
+        let card_w = (column_width - 12.0) / 2.0; // arrow col ≈ 12px
+        let card_text_w = card_w - 2.0 * card_pad as f32;
+        let before_h = crate::overflow_model::estimate_text_height(before, body_fs as f32, 1.45, card_text_w)
+            + 11.0 * 1.4 + 8.0 + 2.0 * card_pad as f32;
+        let after_h = crate::overflow_model::estimate_text_height(after, body_fs as f32, 1.45, card_text_w)
+            + 11.0 * 1.4 + 8.0 + 2.0 * card_pad as f32;
+        let card_h = before_h.max(after_h);
+        let metric_h = if metric.is_empty() {
+            0.0
+        } else {
+            14.0 + 11.0 * 1.4 + 18.0 * 1.2 + 16.0 // margin + label + value + padding
+        };
+        let desc_h = if desc.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(desc, 14.0, 1.45, column_width)
+        };
+        title_h + card_h + metric_h + desc_h + 3.0 * gap <= available_height
+    };
+    let ba_tiers: [BaTier; 3] = [(14, 16, 18.0), (13, 13, 14.0), (12, 11, 12.0)];
+    let (body_fs, card_pad, _gap) = ba_tiers
+        .iter()
+        .find(|t| fits_ba(t, before, after, description))
+        .copied()
+        .unwrap_or(ba_tiers[2]);
+
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:18px;">
-            <h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
+            <h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;line-height:1.08;">{}</h2>
             <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-1);align-items:stretch;">
-                <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
+                <div style="border-radius:{};padding:{}px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">BEFORE</div>
-                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>
+                    <p style="font-family:{};font-size:{}px;color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:center;color:{};font-family:{};font-size:22px;font-weight:900;">→</div>
-                <div style="border-radius:{};padding:16px;background:{};border:1px solid {};box-sizing:border-box;">
+                <div style="border-radius:{};padding:{}px;background:{};border:1px solid {};box-sizing:border-box;">
                     <div style="font-family:{};font-size:11px;font-weight:900;color:{};margin-bottom:8px;letter-spacing:0.06em;">AFTER</div>
-                    <p style="font-family:{};font-size:var(--text-sm);color:{};line-height:1.45;margin:0;">{}</p>
+                    <p style="font-family:{};font-size:{}px;color:{};line-height:1.45;margin:0;">{}</p>
                 </div>
             </div>
             {}
             {}
         </div>"#,
         tokens.heading_font,
+        title_fs,
         card_label_color,
         escape_html(title),
         radius,
+        card_pad,
         card_bg,
         colors.border,
         tokens.body_font,
         colors.primary,
         tokens.body_font,
+        body_fs,
         card_body_color,
         escape_html(before),
         colors.primary,
         tokens.heading_font,
         radius,
+        card_pad,
         card_bg,
         colors.border,
         tokens.body_font,
         colors.primary,
         tokens.body_font,
+        body_fs,
         card_body_color,
         escape_html(after),
         metric_html,
@@ -4702,12 +5160,50 @@ pub fn big_statement_slide(
     let colors = get_slide_colors(tokens, bg_style, theme);
     let is_stat = !stat_value.is_empty();
 
+    // ── Automatic type fit (shared overflow model) ──────────────────────────
+    // The fixed 52px heading / 72px stat is a wall: a 40-char heading wraps to
+    // ~3 lines and overflows the body by ~100px, and a long stat number wraps
+    // mid-digit. Fit both against the body column so a big statement stays a
+    // big statement WITHOUT becoming an overflow (mirrors hero/quote fitting).
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let column_width: f32 = 420.0 - 2.0 * 40.0; // content padding 0 40px
+    // Heading: max 3 wrapped lines in the column, 24px floor (a big statement
+    // below ~28px stops reading as a statement).
+    let heading_fs = crate::overflow_model::fit_font_size_to_lines(
+        heading,
+        column_width,
+        3,
+        1.0,
+        24.0,
+        52.0,
+    ) as i32;
+    // Stat: keep the number on ONE line — long numbers shrink whole; a word
+    // like "12,847" must never split mid-digit.
+    let stat_fs = if is_stat {
+        crate::overflow_model::fit_font_size_to_words(stat_value, column_width, 30.0, 72.0, 2.0)
+            as i32
+    } else {
+        72
+    };
+    // Body/stat-supporting text: 2 lines max, 12px floor.
+    let body_text = if is_stat { heading } else { body };
+    let support_fs = crate::overflow_model::fit_font_size_to_lines(
+        body_text,
+        360.0,
+        2,
+        1.5,
+        12.0,
+        15.0,
+    ) as i32;
+    // Watermark scales with the heading so it never dominates the slide.
+    let watermark_fs = (220.0 * (heading_fs as f32 / 52.0)).max(110.0) as i32;
+
     // Hero element: stat mode (giant number) or text mode (massive heading)
     let hero_html = if is_stat {
         // Stat mode — giant number + label
         let stat_num = format!(
-            r#"<div style="font-family:{};font-size:72px;font-weight:900;color:{};line-height:1.0;letter-spacing:-0.04em;text-align:center;">{}</div>"#,
-            tokens.heading_font, colors.primary, escape_html(stat_value)
+            r#"<div style="font-family:{};font-size:{}px;font-weight:900;color:{};line-height:1.0;letter-spacing:-0.04em;text-align:center;">{}</div>"#,
+            tokens.heading_font, stat_fs, colors.primary, escape_html(stat_value)
         );
         let label = if !stat_label.is_empty() {
             format!(
@@ -4721,14 +5217,14 @@ pub fn big_statement_slide(
         let watermark = if !heading.is_empty() {
             let ch = heading.chars().next().unwrap_or('A');
             format!(
-                r#"<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:{};font-size:220px;font-weight:900;color:{};opacity:0.04;pointer-events:none;user-select:none;line-height:1;">{}</div>"#,
-                tokens.heading_font, colors.text_primary, escape_html(&ch.to_string())
+                r#"<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:{};font-size:{}px;font-weight:900;color:{};opacity:0.04;pointer-events:none;user-select:none;line-height:1;">{}</div>"#,
+                tokens.heading_font, watermark_fs, colors.text_primary, escape_html(&ch.to_string())
             )
         } else { String::new() };
         let h = if !heading.is_empty() {
             format!(
-                r#"<h2 style="font-family:{};font-size:52px;font-weight:900;color:{};margin:0;line-height:1.0;letter-spacing:-0.04em;text-align:center;z-index:2;">{}</h2>"#,
-                tokens.heading_font, colors.text_primary, escape_html(heading)
+                r#"<h2 style="font-family:{};font-size:{}px;font-weight:900;color:{};margin:0;line-height:1.0;letter-spacing:-0.04em;text-align:center;z-index:2;">{}</h2>"#,
+                tokens.heading_font, heading_fs, colors.text_primary, escape_html(heading)
             )
         } else { String::new() };
         format!("{}{}", watermark, h)
@@ -4750,14 +5246,14 @@ pub fn big_statement_slide(
     // Body text — only in text mode; in stat mode, heading serves as supporting text
     let body_html = if is_stat && !heading.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:14px;line-height:1.5;color:{};text-align:center;max-width:280px;margin:8px auto 0;">{}</div>"#,
-            tokens.body_font, colors.text_secondary, escape_html(heading)
+            r#"<div style="font-family:{};font-size:{}px;line-height:1.5;color:{};text-align:center;max-width:280px;margin:8px auto 0;">{}</div>"#,
+            tokens.body_font, support_fs, colors.text_secondary, escape_html(heading)
         )
     } else if !is_stat && !body.is_empty() {
         let body_italic = crate::design_system::italic_style_for(&tokens.body_font);
         format!(
-            r#"<p style="font-family:{};font-size:15px;{};line-height:1.6;color:{};margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">{}</p>"#,
-            tokens.body_font, body_italic, colors.text_secondary, escape_html(body)
+            r#"<p style="font-family:{};font-size:{}px;{};line-height:1.6;color:{};margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">{}</p>"#,
+            tokens.body_font, support_fs, body_italic, colors.text_secondary, escape_html(body)
         )
     } else { String::new() };
 
@@ -4810,6 +5306,57 @@ fn comment_cta_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
 
+    // ── Automatic type fit (shared overflow model) ──────────────────────────
+    // The fixed 38px headline is a wall: a 60-char CTA headline wraps to 3+
+    // lines and pushes the sub/cta into the footer band. Fit the headline to
+    // ≤3 wrapped lines in the 332px column (24px floor keeps the CTA punch),
+    // and compress the supporting text stack when the estimate still exceeds
+    // the body (mirrors big_statement fitting).
+    const SAFE_CONTENT_HEIGHT: f32 = crate::overflow_model::SAFE_CONTENT_HEIGHT;
+    let column_width: f32 = 420.0 - 2.0 * 44.0; // 332
+    let headline_fs = crate::overflow_model::fit_font_size_to_lines(
+        heading,
+        column_width,
+        3,
+        1.05,
+        24.0,
+        38.0,
+    ) as i32;
+    // Supporting text tiers: (sub_fs, cta_fs). Greedy — first tier whose
+    // estimated stack fits the padded body; last tier is the legibility floor.
+    type CtaTier = (i32, i32);
+    let available_height = SAFE_CONTENT_HEIGHT - 44.0 - 36.0; // padding 44 top, 36 bottom
+    let fits_cta = |tier: &CtaTier, sub: &str, cta: &str| -> bool {
+        let (sub_fs, cta_fs) = *tier;
+        let headline_h = if heading.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(
+                heading,
+                headline_fs as f32,
+                1.05,
+                column_width,
+            )
+        };
+        let sub_h = if sub.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(sub, sub_fs as f32, 1.5, column_width) + 16.0
+        };
+        let cta_h = if cta.is_empty() {
+            0.0
+        } else {
+            crate::overflow_model::estimate_text_height(cta, cta_fs as f32, 1.5, column_width) + 24.0
+        };
+        headline_h + sub_h + cta_h <= available_height
+    };
+    let cta_tiers: [CtaTier; 3] = [(16, 18), (15, 17), (14, 16)];
+    let (sub_fs, cta_fs) = cta_tiers
+        .iter()
+        .find(|t| fits_cta(t, sub_heading, cta_text))
+        .copied()
+        .unwrap_or(cta_tiers[2]);
+
     // Headline — always TRUE italic. Heading font when it ships an ital axis;
     // otherwise the already-loaded body font when IT has italics (e.g. Syne →
     // DM Sans italic); geometric skew only as a last resort. Synthetic oblique
@@ -4818,8 +5365,8 @@ fn comment_cta_slide(
         crate::design_system::italic_text_css(&tokens.heading_font, &tokens.body_font);
     let headline_html = if !heading.is_empty() {
         format!(
-            r#"<div style="font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;{}">{}</div>"#,
-            colors.text_primary, headline_style, escape_html(heading)
+            r#"<div style="font-size:{}px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;{}">{}</div>"#,
+            headline_fs, colors.text_primary, headline_style, escape_html(heading)
         )
     } else { String::new() };
 
@@ -4827,8 +5374,8 @@ fn comment_cta_slide(
     let sub_italic = crate::design_system::italic_style_for(&tokens.body_font);
     let sub_html = if !sub_heading.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:16px;{}line-height:1.5;color:{};text-align:left;margin-top:16px;">{}</div>"#,
-            tokens.body_font, sub_italic, colors.text_secondary, escape_html(sub_heading)
+            r#"<div style="font-family:{};font-size:{}px;{}line-height:1.5;color:{};text-align:left;margin-top:16px;">{}</div>"#,
+            tokens.body_font, sub_fs, sub_italic, colors.text_secondary, escape_html(sub_heading)
         )
     } else { String::new() };
 
@@ -4845,8 +5392,8 @@ fn comment_cta_slide(
             escape_html(cta_text)
         };
         format!(
-            r#"<div style="font-family:{};font-size:18px;font-weight:700;color:{};text-align:left;margin-top:24px;line-height:1.5;">{}</div>"#,
-            tokens.body_font, colors.text_primary, rendered
+            r#"<div style="font-family:{};font-size:{}px;font-weight:700;color:{};text-align:left;margin-top:24px;line-height:1.5;">{}</div>"#,
+            tokens.body_font, cta_fs, colors.text_primary, rendered
         )
     } else { String::new() };
 
@@ -5149,6 +5696,7 @@ pub fn dispatch_slide(
                 &s("title"),
                 &s("x_label"),
                 &s("y_label"),
+                &s("caption").if_empty(&s("description")),
                 bg_style,
                 theme,
                 &bg_img,
@@ -5166,6 +5714,7 @@ pub fn dispatch_slide(
                 gauge_val,
                 &s("label"),
                 &s("title"),
+                &s("caption").if_empty(&s("description")),
                 bg_style,
                 theme,
                 &bg_img,
@@ -5924,11 +6473,24 @@ pub fn image_headline_slide(
         _ => "60px 28px calc(96px + var(--chrome-footer-h, 40px))",
     };
 
+    // Automatic type fit (shared overflow model): the fixed 32px headline is a
+    // wall — a 70-char bottom-anchored headline wraps to 3+ lines and pushes
+    // the subheadline into the footer band. Fit to ≤3 lines in the 364px scrim
+    // column (22px floor keeps the hero punch; image slides are short-form).
+    let headline_fs = crate::overflow_model::fit_font_size_to_lines(
+        headline,
+        364.0,
+        3,
+        1.15,
+        22.0,
+        32.0,
+    ) as i32;
+
     // Layered text-shadow stack: crisp 1px edge hold + mid offset + soft halo
     // keeps glyphs readable even where the scrim is deliberately light.
     let headline_style = format!(
-        "font-family:{};font-size:32px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 6px rgba(0,0,0,0.55),0 4px 18px rgba(0,0,0,0.45);",
-        tokens.heading_font
+        "font-family:{};font-size:{}px;font-weight:800;color:white;margin:0;line-height:1.15;letter-spacing:-0.02em;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 6px rgba(0,0,0,0.55),0 4px 18px rgba(0,0,0,0.45);",
+        tokens.heading_font, headline_fs
     );
     let sub_style = format!(
         "font-family:{};font-size:13.5px;color:rgba(255,255,255,0.95);margin:10px 0 0;line-height:1.45;text-shadow:0 1px 2px rgba(0,0,0,0.8),0 2px 8px rgba(0,0,0,0.5);",
@@ -6005,17 +6567,30 @@ pub fn image_quote_slide(
     // TRUE italic glyphs: heading font, else the body font's real italic face.
     let quote_italic =
         crate::design_system::italic_text_css(&tokens.heading_font, &tokens.body_font);
+    // Automatic type fit (shared overflow model): a 160-char quote at fixed
+    // 22px wraps to 6+ lines and collides with the footer band under the
+    // full-bleed photo. Fit to ≤5 lines in the 364px scrim column (16px floor
+    // keeps the quote readable over the image).
+    let quote_fs = crate::overflow_model::fit_font_size_to_lines(
+        quote,
+        364.0,
+        5,
+        1.4,
+        16.0,
+        22.0,
+    ) as i32;
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
                 <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.95;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
-                <p style="font-size:22px;{};font-weight:700;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
+                <p style="font-size:{}px;{};font-weight:700;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
                 {}
                 {}
             </div>
         </div>"#,
         img_html,
+        quote_fs,
         quote_italic,
         escape_html(quote),
         if !author.is_empty() {
@@ -6071,10 +6646,21 @@ pub fn image_callout_slide(
     // ponytail: callout markers removed for clean image display; add back if numbered annotation is needed
     let markers = String::new();
 
+    // Automatic type fit (shared overflow model): the fixed 18px description is
+    // a wall — the image block takes 230px of the 449px body, leaving ~180px
+    // for desc + callouts. Fit to ≤2 lines in the 340px column (13px floor).
+    let desc_fs = crate::overflow_model::fit_font_size_to_lines(
+        description,
+        340.0,
+        2,
+        1.2,
+        13.0,
+        18.0,
+    ) as i32;
     let desc_html = if !description.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:18px;font-weight:800;color:{};line-height:1.2;letter-spacing:-0.01em;margin:16px 0 0;">{}</div>"#,
-            tokens.heading_font, colors.text_primary, escape_html(description)
+            r#"<div style="font-family:{};font-size:{}px;font-weight:800;color:{};line-height:1.2;letter-spacing:-0.01em;margin:16px 0 0;">{}</div>"#,
+            tokens.heading_font, desc_fs, colors.text_primary, escape_html(description)
         )
     } else {
         String::new()

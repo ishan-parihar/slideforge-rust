@@ -384,6 +384,93 @@ pub fn validate_slide_spec(slide_type: &str, params: &Value) -> ValidationResult
         }
     }
 
+    // ── Item ceilings for auto-scaled multi-item slides ─────────────────────
+    // The renderer now auto-scales these layouts (density tiers + wrap-aware
+    // estimates), but every auto-scaler has a hard ceiling where even its most
+    // aggressive tier overflows the 449px body. These are HARD errors so the
+    // agent splits the content instead of the renderer silently capping rows.
+    let item_ceiling: Option<(usize, &str, &str)> = match slide_type {
+        "timeline" => params
+            .get("steps")
+            .and_then(|v| v.as_array())
+            .map(|a| (a.len(), "steps", "6 steps")),
+        "faq" => params
+            .get("questions")
+            .and_then(|v| v.as_array())
+            .map(|a| (a.len(), "questions", "4 questions")),
+        "table" => params
+            .get("rows")
+            .and_then(|v| v.as_array())
+            .map(|a| (a.len(), "rows", "8 rows")),
+        "logo_cloud" => params
+            .get("logos")
+            .and_then(|v| v.as_array())
+            .map(|a| (a.len(), "logos", "8 logos")),
+        _ => None,
+    };
+    if let Some((count, item_name, cap_msg)) = item_ceiling {
+        let cap: usize = match item_name {
+            "steps" => 6,
+            "questions" => 4,
+            "rows" => 8,
+            _ => 8,
+        };
+        if count > cap {
+            result.add_error(format!(
+                "{slide_type} accepts a maximum of {cap_msg} (got {count} {item_name}). The auto-scaler compresses down to its legibility floor beyond which the layout overflows the body — split the content across multiple {slide_type} slides."
+            ));
+        }
+    }
+
+    // ── Per-field char caps for auto-fitted text slides ─────────────────────
+    // The auto-fit (big_statement/definition/comment_cta/before_after_story /
+    // testimonial_avatar/image_headline/image_quote) shrinks fonts to a floor,
+    // but below that floor a wall of text still overflows — the fix must be the
+    // CONTENT, not the font. Hard caps tuned to each renderer floor so configs
+    // that exceed even the most compressed tier fail fast at the source.
+    // Each entry: (field, cap, floor_note).
+    // Caps are calibrated to the renderer's ACTUAL floor estimates using the
+    // shared AVG_CHAR_WIDTH_FACTOR (0.55) — chars/line = width/(fs×0.55) — so a
+    // config at the cap is exactly at the fitted line budget, not beyond it:
+    //  - big_statement: 340px/(24×0.55)=25.8 chars × 3 lines ≈ 77 → 80
+    //  - definition: 292px/(22×0.55)=24.1 × 2 ≈ 48 → 50
+    //  - comment_cta: 332px/(24×0.55)=25.2 × 3 ≈ 75 → 80
+    //  - before_after_story: card 160px/(12×0.55)=24.2; 6-7 lines ≈ 145 → 240
+    //    kept generous because the whole-stack gate estimates the cards
+    //  - testimonial_avatar: 332px/(18×0.55)=33.5 × 5 ≈ 167 → 220 (whole-stack
+    //    gate further compresses the quote before overflow)
+    //  - image_headline: 364px/(22×0.55)=30 × 3 = 90 (exact)
+    //  - image_quote: 364px/(16×0.55)=41.4 × 5 ≈ 207 → 230 (whole-stack gate)
+    let char_caps: &[(&str, usize, &str)] = match slide_type {
+        "big_statement" => &[
+            ("heading", 80, "heading (24px floor, 3 lines)"),
+            ("body", 110, "body (12px floor, 2 lines)"),
+        ],
+        "definition" => &[
+            ("term", 50, "term (22px floor, 2 lines)"),
+            ("definition", 260, "definition (12px floor)"),
+        ],
+        "comment_cta" => &[("heading", 80, "heading (24px floor, 3 lines)")],
+        "before_after_story" => &[
+            ("before", 240, "before card (12px floor)"),
+            ("after", 240, "after card (12px floor)"),
+        ],
+        "testimonial_avatar" => &[("quote", 220, "quote (18px floor, 5 lines)")],
+        "image_headline" => &[("headline", 90, "headline (22px floor, 3 lines)")],
+        "image_quote" => &[("quote", 230, "quote (16px floor, 5 lines)")],
+        "table" => &[("title", 60, "table title (headline, 2 lines)")],
+        _ => &[],
+    };
+    for (field, cap, floor_note) in char_caps {
+        let value = params.get(*field).and_then(|v| v.as_str()).unwrap_or("");
+        let n = value.chars().count();
+        if n > *cap {
+            result.add_error(format!(
+                "{slide_type}.{field} is {n} chars — max {cap} for the {floor_note}. The auto-scaler compresses to its legibility floor; a longer {field} would overflow the body. Shorten the text or split it across two slides."
+            ));
+        }
+    }
+
     result
 }
 
@@ -930,6 +1017,95 @@ mod tests {
         });
         let r2 = validate_slide_spec("metric_grid", &ok);
         assert!(r2.valid, "legit trends must be valid: {:?}", r2.errors);
+    }
+
+    #[test]
+    fn test_multi_item_ceilings_are_hard_errors() {
+        // The auto-scaler compresses to a legibility floor; beyond that the
+        // layout overflows the body. Each ceiling is a hard error so the agent
+        // splits content instead of the renderer silently capping rows.
+        let cases: &[(&str, &str, usize, &str)] = &[
+            ("timeline", "steps", 7, "6 steps"),
+            ("faq", "questions", 5, "4 questions"),
+            ("table", "rows", 9, "8 rows"),
+            ("logo_cloud", "logos", 9, "8 logos"),
+        ];
+        for (slide_type, key, count, cap_msg) in cases {
+            let mut params = json!({ "title": "T" });
+            let items: Vec<Value> = (0..*count).map(|i| json!(i)).collect();
+            params[*key] = Value::Array(items);
+            let r = validate_slide_spec(slide_type, &params);
+            assert!(
+                !r.valid,
+                "{slide_type} with {count} {key} must exceed the {cap_msg} ceiling"
+            );
+            assert!(
+                r.errors
+                    .iter()
+                    .any(|e| e.contains("maximum of") && e.contains(cap_msg)),
+                "{slide_type} ceiling error must name the cap: {:?}",
+                r.errors
+            );
+        }
+
+        // Within-ceiling configs pass (no ceiling error, no generic errors).
+        let ok = json!({
+            "title": "T",
+            "description": "D",
+            "steps": [
+                {"label": "A", "description": "x"},
+                {"label": "B", "description": "y"},
+            ]
+        });
+        let r2 = validate_slide_spec("timeline", &ok);
+        assert!(r2.valid, "2-step timeline must be valid: {:?}", r2.errors);
+    }
+
+    #[test]
+    fn test_auto_fit_text_slides_have_char_caps() {
+        // Auto-fit shrinks fonts to a floor; walls of text below the floor
+        // overflow. The caps are hard errors tuned to each renderer floor.
+        let mut params = json!({
+            "heading": "x".repeat(140),
+            "body": "y",
+            "stat_value": "",
+            "stat_label": "",
+            "cta_text": "",
+            "url": "",
+        });
+        let r = validate_slide_spec("big_statement", &params);
+        assert!(!r.valid, "140-char big_statement heading must fail the 80-char cap");
+        assert!(
+            r.errors.iter().any(|e| e.contains("heading") && e.contains("80")),
+            "big_statement error must name heading + cap: {:?}",
+            r.errors
+        );
+
+        let mut def = json!({
+            "term": "Neuro-Linguistic Programming",
+            "definition": "x".repeat(280),
+            "phonetic": "",
+            "context": "",
+        });
+        let r2 = validate_slide_spec("definition", &def);
+        assert!(!r2.valid, "280-char definition must fail the 260-char cap");
+        assert!(
+            r2.errors.iter().any(|e| e.contains("definition") && e.contains("260")),
+            "definition error must name the field + cap: {:?}",
+            r2.errors
+        );
+
+        // Short configs pass.
+        let ok = json!({
+            "heading": "A short statement.",
+            "body": "",
+            "stat_value": "",
+            "stat_label": "",
+            "cta_text": "",
+            "url": "",
+        });
+        let r3 = validate_slide_spec("big_statement", &ok);
+        assert!(r3.valid, "short big_statement must be valid: {:?}", r3.errors);
     }
 
     #[test]
@@ -2178,6 +2354,40 @@ fn estimate_slide_text_height(slide_html: &str, css_vars: &HashMap<String, f32>)
         r#"(?s)<(p|h[1-6]|blockquote|span|li)\s+[^>]*style="([^"]*)"[^>]*>([^<]{2,})</"#,
     )
     .unwrap();
+    // Tables are a bounded grid, not a text stack: the renderer caps rows (8)
+    // and steps cell font/padding down with row count, so the generic scan
+    // below would otherwise count every cell <span> as a full-column block
+    // with an 8px margin each — an 8×4 table estimated at ~672px and false-
+    // errored the legit density tier. Estimate the table as a single bounded
+    // block (header + rows × row-height at the rendered cell font) and scan
+    // the rest of the slide as text.
+    let table_re = Regex::new(r"(?s)<table.*?</table>").unwrap();
+    // Compute the table match ONCE and reuse it for both the bounded estimate
+    // and the scan-region replacement.
+    let table_match = table_re.find(slide_html);
+    let table_est: f32 = if let Some(tbl) = table_match {
+        let table = tbl.as_str();
+        let row_count = table.matches("<tr>").count().max(1) as f32;
+        let cell_fs_re = Regex::new(r"font-size:(\d+(?:\.\d+)?)px").unwrap();
+        let cell_fs: f32 = cell_fs_re
+            .captures_iter(table)
+            .next()
+            .and_then(|c| c.get(1))
+            .and_then(|m| m.as_str().parse().ok())
+            .unwrap_or(11.0);
+        // header 10.5px + 2×7px pad; body rows at cell fs + 2×cell pad;
+        // + caption line. Empirical per-row height ≈ fs×1.4 + 2×pad.
+        10.5 * 1.4 + 14.0 + row_count * (cell_fs * 1.4 + 12.0) + 16.0
+    } else {
+        0.0
+    };
+    let scan_html = if let Some(tbl) = table_match {
+        let mut s = slide_html.to_string();
+        s.replace_range(tbl.start()..tbl.end(), "");
+        s
+    } else {
+        slide_html.to_string()
+    };
     // Blockquote slides (quote_slide) wrap their text in a glass card with a
     // decorative quote mark, divider, and attribution — QUOTE_CHROME_HEIGHT of
     // fixed chrome the text-sum alone never sees. The renderer's fit budgets
@@ -2187,7 +2397,7 @@ fn estimate_slide_text_height(slide_html: &str, css_vars: &HashMap<String, f32>)
     let mut blockquote_chrome = 0.0;
     let mut seen_blockquote = false;
     let absolute_re = Regex::new(r"position\s*:\s*absolute").unwrap();
-    for cap in text_re.captures_iter(slide_html) {
+    for cap in text_re.captures_iter(&scan_html) {
         let style = cap.get(2).map(|m| m.as_str()).unwrap_or("");
         let absolute = absolute_re.is_match(style);
         let tag = cap.get(1).map(|m| m.as_str()).unwrap_or("");
@@ -2222,7 +2432,7 @@ fn estimate_slide_text_height(slide_html: &str, css_vars: &HashMap<String, f32>)
             blockquote_chrome = crate::overflow_model::QUOTE_CHROME_HEIGHT;
         }
     }
-    total + blockquote_chrome
+    total + blockquote_chrome + table_est
 }
 
 fn has_overflow_hidden(style: &str) -> bool {

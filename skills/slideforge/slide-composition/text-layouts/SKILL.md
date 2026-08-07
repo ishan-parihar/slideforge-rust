@@ -37,25 +37,25 @@ Emphasizes a key insight or client quote.
   - `role` (string) — Title or company of the speaker.
 
 ### 4. `timeline` (Chronological Process)
-Step-by-step sequential horizontal or vertical flow.
+Step-by-step sequential horizontal or vertical flow. **Auto-scales:** item fonts, padding, and gaps are fit to the actual wrapped text mass (not just step count) against the 449px body — long descriptions compress automatically.
 - **Required Parameters:**
   - `title` (string) — Title of the timeline.
   - `steps` (array) — List of step objects:
     - `title` (string, required) — Step name.
     - `description` (string, required) — Step detail.
-- **Limits:** Max 6 steps.
+- **Limits:** Max **6** steps (hard ceiling — beyond that even the aggressive tier overflows).
 
 ### 5. `definition` (Term Glossary)
-Educational terms or glossary entries.
+Educational terms or glossary entries. **Auto-scales:** the term fits to ≤2 lines and the definition/context step down across density tiers against the card stack estimate.
 - **Required Parameters:**
-  - `term` (string) — Term being defined.
-  - `definition` (string) — Definition body.
+  - `term` (string) — Term being defined. Max 60 chars (22px floor, 2 lines).
+  - `definition` (string) — Definition body. Max 240 chars (12px floor).
 - **Optional Parameters:**
   - `context` (string) — Example or contextual note.
   - `phonetic` (string) — Pronunciation guide.
 
 ### 6. `text_block` (Paragraph Content)
-Simple paragraph content.
+Simple paragraph content. **Auto-scales:** title + every paragraph are estimated at each density tier (14→12px body, 28→24px title) and the least-compressed tier that fits wins — a long body compresses instead of overflowing.
 - **Required Parameters:**
   - `title` (string) — Title of the block.
   - `body` (string) — Body text.
@@ -75,6 +75,8 @@ Slide deck chapter openers.
 ## Actionable Constraints & Design Rules
 
 - [ ] **No Content Bloat:** Do not exceed character limits. The validator surfaces overflow as a compile-time error rather than silently clipping text.
+- [ ] **Auto-Scaling is a Safety Net, Not a License for Walls of Text:** `text_block`, `definition`, `timeline`, and `before_after_story` now auto-scale to a legibility floor, but the validator still hard-errors past it (e.g. definition >240 chars, timeline >6 steps). Split long content across two slides instead of relying on compression.
+- [ ] **Big Statements Still Need Restraint:** `big_statement` headings auto-fit to 3 lines (24px floor) — keep them ≤110 chars; a 30-word slogan defeats the purpose of a statement slide.
 - [ ] **Paragraph Line Breaks:** For headings, use `\n` to manually break lines if a word wraps awkwardly.
 - [ ] **Icon Presence:** For `split_features` slides, choose short emojis or simple Lucide icon names (e.g., "rocket", "shield", "check").
 
