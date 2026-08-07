@@ -546,6 +546,55 @@ pub fn get_font_pairing(style: &str) -> FontPairing {
     }
 }
 
+/// Whether a Google Fonts family ships a TRUE italic face (a real `ital` axis).
+///
+/// Families listed here are verified on Google Fonts to have NO italic axis:
+/// Syne, Space Grotesk, DM Serif Display, Bricolage Grotesque, Roboto Slab,
+/// Outfit. When a slide forces `font-style:italic` on one of these, fontique
+/// cannot find an italic face and blitz/stylo's faux-italic synthesis skews
+/// BACKWARDS (measured: top centroid left of bottom). Slide components use
+/// this to omit the italic declaration entirely, so text renders upright
+/// instead of with a backwards slant.
+pub fn font_has_true_italic(family: &str) -> bool {
+    !matches!(
+        family.trim().to_lowercase().as_str(),
+        "syne"
+            | "space grotesk"
+            | "dm serif display"
+            | "bricolage grotesque"
+            | "roboto slab"
+            | "outfit"
+    )
+}
+
+/// CSS `font-style` declaration appropriate for a family: `font-style:italic;`
+/// when the family has a true italic face, otherwise empty (upright) — never
+/// a backwards faux-italic.
+pub fn italic_style_for(family: &str) -> &'static str {
+    if font_has_true_italic(family) {
+        "font-style:italic;"
+    } else {
+        ""
+    }
+}
+
+/// CSS for an italic-accent text element that ALWAYS leans forward.
+///
+/// True-italic families get `font-style:italic`. No-italic families (Syne,
+/// Space Grotesk, …) get a geometric `transform:skewX(-7deg)` instead — blitz
+/// cannot synthesize a forward oblique (its faux-italic leans backwards,
+/// measured: top centroid left of bottom), while a skew transform renders the
+/// same forward lean in both blitz and Chrome (verified: −4.5px in both).
+pub fn forward_italic_css(family: &str) -> String {
+    if font_has_true_italic(family) {
+        "font-style:italic;".to_string()
+    } else {
+        // Negative skewX leans the top edge right (true-italic direction);
+        // +7deg would lean backwards in screen coordinates.
+        "font-style:italic;transform:skewX(-7deg);".to_string()
+    }
+}
+
 pub fn rotate_hue_piecewise(hue: f32, breakpoints: &[f32], rotations: &[f32]) -> f32 {
     for i in 0..breakpoints.len() - 1 {
         if breakpoints[i] <= hue && hue < breakpoints[i + 1] {
@@ -1269,5 +1318,88 @@ mod tests {
                 "pairing {style} missing ital axis: {url}"
             );
         }
+    }
+
+    /// Pairing-coverage guard for `font_has_true_italic`: every family the
+    /// pairing table uses must be classified consistently with the known
+    /// no-italic set on Google Fonts. If a NEW family is added to
+    /// `get_font_pairing` and it happens to lack a true italic axis, this test
+    /// fails — forcing the author to either add it to the no-italic list or
+    /// prove the family ships real italics.
+    #[test]
+    fn test_font_italic_capability_covers_all_pairings() {
+        // Families verified on Google Fonts to have NO italic axis.
+        let no_italic = [
+            "syne",
+            "space grotesk",
+            "dm serif display",
+            "bricolage grotesque",
+            "roboto slab",
+            "outfit",
+        ];
+        let mut seen_families: std::collections::BTreeSet<String> = Default::default();
+
+        for style in [
+            "editorial",
+            "warm",
+            "technical",
+            "bold",
+            "classic",
+            "rounded",
+            "luxury",
+            "vintage",
+            "data",
+            "nightlife",
+            "geometric",
+            "humanist",
+            "slab",
+            "display",
+            "modern",
+        ] {
+            let p = get_font_pairing(style);
+            for family in [p.heading_font.as_str(), p.body_font.as_str()] {
+                let lower = family.trim().to_lowercase();
+                seen_families.insert(lower.clone());
+                assert_eq!(
+                    font_has_true_italic(family),
+                    !no_italic.contains(&lower.as_str()),
+                    "family '{family}' misclassified by font_has_true_italic (keep the no-italic list in sync with Google Fonts)"
+                );
+            }
+        }
+
+        // And every no-italic family must actually be exercised by a pairing,
+        // otherwise the list grows stale dead weight.
+        for n in no_italic {
+            assert!(
+                seen_families.contains(n),
+                "no-italic family '{n}' is not used by any pairing"
+            );
+        }
+
+        // Spot-check: italic families still produce a forward italic
+        // declaration, no-italic ones produce none.
+        assert_eq!(italic_style_for("Playfair Display"), "font-style:italic;");
+        assert_eq!(italic_style_for("Syne"), "");
+        assert_eq!(italic_style_for("Space Grotesk"), "");
+        assert_eq!(italic_style_for("DM Serif Display"), "");
+        assert_eq!(italic_style_for("Outfit"), "");
+    }
+
+    /// No-italic families must still lean FORWARD via a geometric skew (blitz
+    /// cannot synthesize a forward oblique); true-italic families keep plain
+    /// `font-style:italic` with no transform.
+    #[test]
+    fn test_forward_italic_css() {
+        assert_eq!(forward_italic_css("Playfair Display"), "font-style:italic;");
+        assert_eq!(forward_italic_css("Lora"), "font-style:italic;");
+        assert_eq!(
+            forward_italic_css("Syne"),
+            "font-style:italic;transform:skewX(-7deg);"
+        );
+        assert_eq!(
+            forward_italic_css("Space Grotesk"),
+            "font-style:italic;transform:skewX(-7deg);"
+        );
     }
 }

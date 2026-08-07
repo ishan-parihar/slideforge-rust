@@ -378,10 +378,13 @@ pub fn render_themed_image(
         "none" => {}
         _ => {
             if is_dark {
+                // Strengthened scrims: blitz drops text-shadow entirely, so the
+                // overlay is the ONLY contrast guarantee for white text over
+                // bright photos. Dark ends now sit ≥0.45 inside the text band.
                 overlay_html = match treatment.overlay_anchor.as_str() {
-                    "top" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.12));z-index:2;"></div>"#.to_string(),
-                    "center" => r#"<div style="position:absolute;inset:0;background:radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.20) 72%, rgba(0,0,0,0.10));z-index:2;"></div>"#.to_string(),
-                    _ => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.30) 55%, rgba(0,0,0,0.72));z-index:2;"></div>"#.to_string(),
+                    "top" => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0.38) 55%, rgba(0,0,0,0.16));z-index:2;"></div>"#.to_string(),
+                    "center" => r#"<div style="position:absolute;inset:0;background:radial-gradient(ellipse 82% 66% at 50% 50%, rgba(0,0,0,0.70), rgba(0,0,0,0.40) 70%, rgba(0,0,0,0.22));z-index:2;"></div>"#.to_string(),
+                    _ => r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0.40) 55%, rgba(0,0,0,0.80));z-index:2;"></div>"#.to_string(),
                 };
             } else {
                 overlay_html = r#"<div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.55));z-index:2;"></div>"#.to_string();
@@ -1113,6 +1116,9 @@ pub fn quote_slide(
     let glass_close = "</div>";
 
     let effective_variant = variant;
+    // Quote text is italic by design; only apply when the heading font ships a
+    // true italic face (blitz faux-italic leans backwards otherwise).
+    let quote_italic = crate::design_system::italic_style_for(&tokens.heading_font);
 
     let html = match effective_variant {
         "left-accent" => {
@@ -1126,12 +1132,13 @@ pub fn quote_slide(
                 quote_mark_color
             );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.2;color:{};margin:0;max-width:100%;border-left:4px solid {};padding-left:24px;text-wrap:balance;{}">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
                 tokens.primary,
+                quote_italic,
                 escape_html(quote)
             );
             let accent_and_attr = if !author.is_empty() {
@@ -1175,11 +1182,12 @@ pub fn quote_slide(
                 quote_mark_color
             );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
+                quote_italic,
                 escape_html(quote)
             );
             let attr = if !author.is_empty() {
@@ -1219,11 +1227,12 @@ pub fn quote_slide(
                 quote_mark_color
             );
             let q = format!(
-                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;font-style:italic;">{}</blockquote>"#,
+                r#"<blockquote style="font-family:{};font-size:{};font-weight:{};line-height:1.25;color:{};margin:0;text-align:center;text-wrap:balance;{}">{}</blockquote>"#,
                 tokens.heading_font,
                 quote_font_size,
                 headline_fw,
                 colors.text_primary,
+                quote_italic,
                 escape_html(quote)
             );
             let accent_and_attr = if !author.is_empty() {
@@ -2792,23 +2801,22 @@ fn table_slide(
     let heading = heading_block(title, tokens, "headline", None, true, None, "left", "0 0 12px", false);
     let radius = current_component_radius(tokens, "card");
     let card_bg = if is_dark { "rgba(255,255,255,0.05)" } else { "rgba(255,255,255,0.92)" };
-    // Hairline frames: the full-strength border token + 18% header band read as
-    // broad/heavy on dark slides. Use subtle hairlines that separate without
-    // drawing a thick rectangle around the whole table.
-    let card_border = if is_dark {
-        "1px solid rgba(255,255,255,0.10)"
+    // BORDER-FREE separation: the export renderer (blitz) composites scaled
+    // low-alpha borders nondeterministically — in the real carousel docs they
+    // bloom into bright grid lines over the dark card (the "broad border"
+    // export bug on table slides) while solid borders vanish entirely. Neither
+    // is safe, so the table separates rows with zebra backgrounds + a tinted
+    // header band instead of drawing any border lines. Deterministic in every
+    // engine.
+    let zebra_bg = if is_dark {
+        "rgba(255,255,255,0.05)"
     } else {
-        "1px solid rgba(0,0,0,0.08)"
-    };
-    let row_sep = if is_dark {
-        "1px solid rgba(255,255,255,0.05)"
-    } else {
-        "1px solid rgba(0,0,0,0.05)"
+        "rgba(0,0,0,0.035)"
     };
 
     let header_cells: Vec<String> = headers.iter().map(|h| {
         let text = h.as_str().unwrap_or("");
-        format!("<th style=\"padding:9px 12px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};border-bottom:{};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "12", card_border, escape_html(text))
+        format!("<th style=\"padding:9px 12px;text-align:left;font-family:{};font-size:10.5px;font-weight:900;color:{};background:{};text-transform:uppercase;letter-spacing:0.06em;\">{}</th>", tokens.heading_font, colors.text_primary, colors.primary.clone() + "12", escape_html(text))
     }).collect();
 
     let body_rows: String = rows.iter().enumerate().map(|(idx, row)| {
@@ -2826,8 +2834,8 @@ fn table_slide(
                 } else {
                     format!(r#"<span style="font-family:{};color:{};">{}</span>"#, tokens.body_font, colors.text_secondary, escape_html(text))
                 };
-                let bg = if idx % 2 == 0 { "transparent" } else { "rgba(255,255,255,0.02)" };
-                format!("<td style=\"padding:8px 12px;font-size:11px;background:{};border-bottom:{};\">{}</td>", bg, row_sep, cell_html)
+                let bg = if idx % 2 == 0 { "transparent" } else { zebra_bg };
+                format!("<td style=\"padding:8px 12px;font-size:11px;background:{};\">{}</td>", bg, cell_html)
             }).collect()
         }).unwrap_or_default();
         format!("<tr>{}</tr>", cells.join(""))
@@ -2838,15 +2846,17 @@ fn table_slide(
     let content = format!(
         r#"<div style="width:100%;display:flex;flex-direction:column;gap:12px;">
             {}
-            <div style="width:100%;background:{};border:{};border-radius:{};overflow:hidden;box-sizing:border-box;">
-                <table style="width:100%;border-collapse:collapse;">
+            <div style="width:100%;background:{};border-radius:{};overflow:hidden;box-sizing:border-box;">
+                <!-- `collapse` mode makes blitz draw spurious cell gridlines;
+                     separate + spacing:0 renders clean full-width columns. -->
+                <table style="width:100%;border-collapse:separate;border-spacing:0;">
                     <thead><tr>{}</tr></thead>
                     <tbody>{}</tbody>
                 </table>
             </div>
             <p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>
         </div>"#,
-        heading, card_bg, card_border, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
+        heading,        card_bg, radius, header_cells.join(""), body_rows, tokens.body_font, colors.text_secondary, escape_html(&caption)
     );
     let html = hero_layout(&content, tokens, bg_style, false, "left");
     let html = inject_background_image(html, bg_img, img_opacity, is_dark);
@@ -3246,18 +3256,17 @@ pub fn definition_slide(
     );
 
     let term_html = format!(
-        r#"<h2 style="font-family:{};font-size:28px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
+        r#"<h2 style="font-family:{};font-size:30px;font-weight:900;color:{};margin:0 0 4px;line-height:1.1;">{}</h2>"#,
         tokens.heading_font,
         colors.text_primary,
         escape_html(term)
     );
 
     let phonetic_html = if !phonetic.is_empty() {
+        let ph_italic = crate::design_system::italic_style_for(&tokens.body_font);
         format!(
-            r#"<div style="font-family:{};font-size:11px;font-style:italic;color:{};margin-bottom:12px;opacity:0.8;">{}</div>"#,
-            tokens.body_font,
-            colors.text_secondary,
-            escape_html(phonetic)
+            r#"<div style="font-family:{};font-size:13px;{};color:{};margin-bottom:12px;opacity:0.92;">{}</div>"#,
+            tokens.body_font, ph_italic, colors.text_secondary, escape_html(phonetic)
         )
     } else {
         String::new()
@@ -3265,7 +3274,7 @@ pub fn definition_slide(
 
     let def_html = format!(
         r#"<div style="border-left:3px solid {};padding-left:14px;margin:12px 0 14px;">
-            <p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;">{}</p>
+            <p style="font-family:{};font-size:15px;font-weight:600;color:{};margin:0;line-height:1.55;">{}</p>
         </div>"#,
         colors.primary,
         tokens.body_font,
@@ -3275,7 +3284,7 @@ pub fn definition_slide(
 
     let ctx_html = if !context.is_empty() {
         format!(
-            r#"<p style="font-family:{};font-size:10.5px;color:{};margin:0;line-height:1.4;opacity:0.85;">{}</p>"#,
+            r#"<p style="font-family:{};font-size:13px;font-weight:500;color:{};margin:0;line-height:1.5;opacity:0.95;">{}</p>"#,
             tokens.body_font,
             colors.text_secondary,
             escape_html(context)
@@ -4517,9 +4526,10 @@ pub fn big_statement_slide(
             tokens.body_font, colors.text_secondary, escape_html(heading)
         )
     } else if !is_stat && !body.is_empty() {
+        let body_italic = crate::design_system::italic_style_for(&tokens.body_font);
         format!(
-            r#"<p style="font-family:{};font-size:15px;font-style:italic;line-height:1.6;color:{};margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">{}</p>"#,
-            tokens.body_font, colors.text_secondary, escape_html(body)
+            r#"<p style="font-family:{};font-size:15px;{};line-height:1.6;color:{};margin:10px auto 0;max-width:360px;text-align:center;z-index:2;">{}</p>"#,
+            tokens.body_font, body_italic, colors.text_secondary, escape_html(body)
         )
     } else { String::new() };
 
@@ -4572,19 +4582,23 @@ fn comment_cta_slide(
 ) -> Value {
     let colors = get_slide_colors(tokens, bg_style, theme);
 
-    // Headline
+    // Headline — always italic-leaning. True-italic families use `font-style`;
+    // no-italic families (Syne/Space Grotesk) get a geometric forward skew
+    // because blitz's faux-italic synthesis leans backwards (forward_italic_css).
+    let headline_italic = crate::design_system::forward_italic_css(&tokens.heading_font);
     let headline_html = if !heading.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;font-style:italic;">{}</div>"#,
-            tokens.heading_font, colors.text_primary, escape_html(heading)
+            r#"<div style="font-family:{};font-size:38px;font-weight:900;color:{};line-height:1.05;letter-spacing:-0.03em;text-align:left;{}">{}</div>"#,
+            tokens.heading_font, colors.text_primary, headline_italic, escape_html(heading)
         )
     } else { String::new() };
 
-    // Sub-headline (italic)
+    // Sub-headline (italic, body font — conditional on body font support)
+    let sub_italic = crate::design_system::italic_style_for(&tokens.body_font);
     let sub_html = if !sub_heading.is_empty() {
         format!(
-            r#"<div style="font-family:{};font-size:16px;font-style:italic;line-height:1.5;color:{};text-align:left;margin-top:16px;">{}</div>"#,
-            tokens.body_font, colors.text_secondary, escape_html(sub_heading)
+            r#"<div style="font-family:{};font-size:16px;{}line-height:1.5;color:{};text-align:left;margin-top:16px;">{}</div>"#,
+            tokens.body_font, sub_italic, colors.text_secondary, escape_html(sub_heading)
         )
     } else { String::new() };
 
@@ -5752,18 +5766,24 @@ pub fn image_quote_slide(
 
     let img_html = render_themed_image(image_url, tokens, &treatment, "100%", "100%", quote, is_dark);
 
+    // Quote text readability: blitz drops text-shadow, so contrast must come
+    // from the scrim + weight, not the shadow. Use 700 (was 600 — thin lines
+    // vanished on bright images) and keep the shadow only as a Chrome bonus.
+    // Forward-lean italics on every family (true italic or geometric skew).
+    let quote_italic = crate::design_system::forward_italic_css(&tokens.heading_font);
     let content = format!(
         r#"<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
             {}
             <div style="position:absolute;inset:0;padding:60px 28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;">
-                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
-                <p style="font-family:{};font-size:22px;font-style:italic;font-weight:600;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
+                <div style="font-size:36px;color:white;line-height:1;margin-bottom:8px;font-weight:bold;opacity:0.95;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 8px rgba(0,0,0,0.6);">“</div>
+                <p style="font-family:{};font-size:22px;{};font-weight:700;color:white;margin:0 0 16px;line-height:1.4;max-width:380px;text-shadow:0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px rgba(0,0,0,0.4);">{}</p>
                 {}
                 {}
             </div>
         </div>"#,
         img_html,
         tokens.heading_font,
+        quote_italic,
         escape_html(quote),
         if !author.is_empty() {
             format!(r#"<p style="font-family:{};font-size:12px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;text-shadow:0 1px 2px rgba(0,0,0,0.85),0 2px 6px rgba(0,0,0,0.5);">{}</p>"#, tokens.body_font, escape_html(author))
@@ -6419,22 +6439,19 @@ pub fn image_collage_slide(
             is_dark,
         );
 
-        // Hairline photo frames: the previous 2px @ 0.82-alpha white border +
-        // 3px padding read as a thick bright outline around every tile. A 1px
-        // low-alpha border + 2px padding keeps the polaroid feel without the
-        // chunky frame.
-        let frame_border = if is_dark {
-            "1px solid rgba(255,255,255,0.32)"
-        } else {
-            "1px solid rgba(0,0,0,0.12)"
-        };
+        // Border-free matte frame: the photo is framed by a 1px padding that
+        // shows the matte bg (white on light, faint white on dark). NO border
+        // line: the export renderer (blitz) blooms low-alpha scaled borders into
+        // bright outlines over dark slides (the "broad border" collage bug),
+        // so the frame is expressed purely as padding — deterministic in every
+        // engine. The drop shadow stays as depth.
         let frame_bg = if is_dark {
-            "rgba(255,255,255,0.05)"
+            "rgba(255,255,255,0.04)"
         } else {
             "#ffffff"
         };
         img_html.push_str(&format!(
-            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;border:{};background:{};padding:2px;box-sizing:border-box;">
+            r#"<div style="position:absolute;left:{}px;top:{}px;width:{}px;height:{}px;transform:rotate({}deg);z-index:{};box-shadow:{};border-radius:{};overflow:hidden;background:{};padding:1px;box-sizing:border-box;">
                 {}
             </div>"#,
             x,
@@ -6445,7 +6462,6 @@ pub fn image_collage_slide(
             z,
             shadow_md,
             radius_md,
-            frame_border,
             frame_bg,
             themed_img
         ));
@@ -7072,9 +7088,9 @@ mod tests {
         .unwrap();
         let url = "https://example.com/photo.jpg";
         for (pos, expect_frag) in [
-            ("top", "linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.12))"),
-            ("center", "radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55), rgba(0,0,0,0.20) 72%, rgba(0,0,0,0.10))"),
-            ("bottom", "linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.30) 55%, rgba(0,0,0,0.72))"),
+            ("top", "linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0.38) 55%, rgba(0,0,0,0.16))"),
+            ("center", "radial-gradient(ellipse 82% 66% at 50% 50%, rgba(0,0,0,0.70), rgba(0,0,0,0.40) 70%, rgba(0,0,0,0.22))"),
+            ("bottom", "linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0.40) 55%, rgba(0,0,0,0.80))"),
         ] {
             let res = image_headline_slide(
                 &tokens, url, "Built for carousels", "Sub line", pos, "dark", "", 0.0,
@@ -7119,12 +7135,16 @@ mod tests {
         );
         let html = res["html"].as_str().unwrap();
         assert!(
-            html.contains("radial-gradient(ellipse 78% 62% at 50% 50%, rgba(0,0,0,0.55)"),
+            html.contains("radial-gradient(ellipse 82% 66% at 50% 50%, rgba(0,0,0,0.70)"),
             "image_quote must use center-weighted radial scrim"
         );
         assert!(
             html.contains("0 1px 2px rgba(0,0,0,0.9),0 2px 6px rgba(0,0,0,0.55),0 4px 16px"),
             "quote text must use layered text-shadow"
+        );
+        assert!(
+            html.contains("font-weight:700"),
+            "image_quote quote must render at weight 700 for bright-image contrast"
         );
     }
 
@@ -7215,6 +7235,43 @@ mod tests {
         assert!(!html.contains("PHASE 0"), "old PHASE text chip removed");
         // Type hierarchy: title (800 weight) is visually distinct from desc.
         assert!(html.contains("font-weight:800"), "tile title carries bold weight");
+    }
+
+    #[test]
+    fn test_table_uses_border_collapse_separate() {
+        // blitz draws spurious full-grid cell borders with `border-collapse:
+        // collapse` (verified by export diff), so table_slide MUST emit
+        // `separate;border-spacing:0` — clean 3-column zebra rows in both
+        // blitz and Chrome. Guard the workaround from regressing.
+        let tokens = derive_palette(
+            "#0066FF", "professional", 16, 1.25, "warm-editorial", "", None, None, None,
+        )
+        .unwrap();
+        let rows = json!([
+            ["Alpha", "42%", "90%"],
+            ["Beta", "3.2x", "8x"]
+        ]);
+        let headers = json!(["Metric", "Now", "Target"]);
+        let res = table_slide(
+            &tokens,
+            headers.as_array().unwrap().clone(),
+            rows.as_array().unwrap().clone(),
+            "Progress",
+            "",
+            "dark",
+            "editorial",
+            "",
+            0.4,
+        );
+        let html = res["html"].as_str().unwrap();
+        assert!(
+            html.contains("border-collapse:separate;border-spacing:0"),
+            "table must use border-collapse:separate (blitz gridline workaround)"
+        );
+        assert!(
+            !html.contains("border-collapse:collapse"),
+            "border-collapse:collapse would draw spurious gridlines in blitz"
+        );
     }
 }
 
