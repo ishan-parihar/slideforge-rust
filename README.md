@@ -1,5 +1,7 @@
 <div align="center">
 
+<!-- T2I HERO SPEC — Subject: a slide forge — HTML slide components (typography blocks, charts, image cards, quote panels, OKLCH color swatches) being stamped into a carousel of PNG slides, fanning into Instagram/LinkedIn/TikTok phone frames; a WCAG-AA accessibility ring around the stack. Composition: left-to-right stamping line, phone frames on the right. Palette: forge ember #f97316 → deep slate #0f172a → brand gradient accents → WCAG green #34d399. Style: dark industrial flat vector, glowing stamps, no text. 16:9. -->
+
 # SlideForge Rust
 
 **High-performance slide carousel generator** — CLI + MCP server for creating professional Instagram/LinkedIn/TikTok carousels as HTML → PNG.
@@ -8,6 +10,7 @@
 [![CI](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-1.8.0-purple.svg)](https://modelcontextprotocol.io)
+[![Tests](https://img.shields.io/badge/tests-185%20passing-brightgreen.svg)](https://github.com/ishan-parihar/slideforge-rust)
 [![Release](https://img.shields.io/github/v/release/ishan-parihar/slideforge-rust)](https://github.com/ishan-parihar/slideforge-rust/releases)
 
 </div>
@@ -23,6 +26,22 @@
 - **Export pipeline** — HTML → PNG via the embedded Blitz renderer (stylo + vello-cpu, no browser needed; 1080×1350, 1080×1080, 1080×1920, 1200×628, etc.)
 - **Validation** — pre-flight param checks, layout overflow detection, contrast auditing
 - **Session persistence** — `configure_design` tokens survive MCP restarts (`~/.slideforge/session_state.json`)
+
+---
+
+## How it compares
+
+| Capability | **SlideForge Rust** | Canva / Figma | Python-pptx / PPTX libs | Headless Chrome screenshot scripts |
+|---|---|---|---|---|
+| **Agent-native generation** | ✅ MCP server + CLI, AI-driven | ❌ GUI | ⚠️ scripted | ⚠️ |
+| **Render without a browser** | ✅ embedded Blitz (stylo + vello-cpu) | n/a | n/a | ❌ needs Chrome |
+| **Validation** | ✅ overflow detection + contrast (WCAG-AA) auditing | ⚠️ manual | ❌ | ❌ |
+| **Slide-type library** | ✅ 46 types / 6 categories, design tokens + themes | ✅ templates | ⚠️ | ⚠️ |
+| **Deterministic output** | ✅ same HTML → same PNG | ⚠️ | ✅ | ⚠️ |
+| **Session design memory** | ✅ tokens persist across restarts | ✅ | ❌ | ❌ |
+| **Self-hosted binary** | ✅ single Rust binary, 185 tests | ❌ SaaS | ✅ | ✅ |
+
+Canva is a design *studio for humans*; SlideForge is a **deterministic slide factory for agents** — the same tokens, themes, and validation every run.
 
 ---
 
