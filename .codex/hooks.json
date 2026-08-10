@@ -1,8 +1,0 @@
-{
-  "SessionStart": [
-    {
-      "type": "command",
-      "command": "'/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/slideforge-rust/dist/slideforge-x86_64-linux-gnu' session-start"
-    }
-  ]
-}

@@ -5,6 +5,7 @@
 **High-performance slide carousel generator** — CLI + MCP server for creating professional Instagram/LinkedIn/TikTok carousels as HTML → PNG.
 
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
+[![CI](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-1.8.0-purple.svg)](https://modelcontextprotocol.io)
 [![Release](https://img.shields.io/github/v/release/ishan-parihar/slideforge-rust)](https://github.com/ishan-parihar/slideforge-rust/releases)
@@ -22,6 +23,27 @@
 - **Export pipeline** — HTML → PNG via the embedded Blitz renderer (stylo + vello-cpu, no browser needed; 1080×1350, 1080×1080, 1080×1920, 1200×628, etc.)
 - **Validation** — pre-flight param checks, layout overflow detection, contrast auditing
 - **Session persistence** — `configure_design` tokens survive MCP restarts (`~/.slideforge/session_state.json`)
+
+---
+
+## 🖼️ Showcase
+
+Every slide below is a **real export** rendered by the embedded Blitz engine (stylo layout + vello-cpu raster) — no browser, no screenshots, no doctored images.
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/previews/preview-hero.png" width="210" alt="Hero slide in dark editorial style with a gradient accent"><br/><b>hero</b> — dark editorial, gradient accent</td>
+    <td align="center"><img src="docs/previews/preview-chart.png" width="210" alt="Donut chart slide on a light card over a dark background"><br/><b>chart</b> — donut with legend</td>
+    <td align="center"><img src="docs/previews/preview-metric-grid.png" width="210" alt="Metric grid slide with a 2x2 grid of KPI cards"><br/><b>metric_grid</b> — KPI cards</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/previews/preview-funnel.png" width="210" alt="Funnel chart slide with a purple-to-cyan gradient"><br/><b>funnel_chart</b> — conversion funnel</td>
+    <td align="center"><img src="docs/previews/preview-image-headline.png" width="210" alt="Image headline slide with a city skyline photo and frosted-glass overlay"><br/><b>image_headline</b> — full-bleed photo</td>
+    <td align="center"><img src="docs/previews/preview-cta.png" width="210" alt="Call-to-action slide inviting comments"><br/><b>comment_cta</b> — conversion close</td>
+  </tr>
+</table>
+
+Browse the full interactive decks: [`all_types_carousel.html`](dist/all_types_carousel.html) · [`typology_viewer.html`](dist/typology_viewer.html) · [`random_styles_viewer.html`](dist/random_styles_viewer.html) · [`stress_test_master.html`](dist/stress_test_master.html)
 
 ---
 

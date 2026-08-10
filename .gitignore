@@ -14,3 +14,6 @@ __pycache__/
 dist/*_test/tmp*.json
 dist/*_test/compiled_*.json.tmp
 *.probe.png
+
+.claude/settings.json
+.codex/hooks.json
