@@ -1,15 +1,17 @@
 name: CI
-
 on:
   push:
-    branches: [master]
-  pull_request:
+    tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   build-and-gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install system deps (fontconfig for yeslogic-fontconfig-sys)
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable

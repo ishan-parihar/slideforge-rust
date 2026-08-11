@@ -1127,7 +1127,7 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
             } else if *check {
                 skill_check()?;
             } else {
-                let content = include_str!("../DESIGN-GUIDE.md");
+                let content = include_str!("../docs/DESIGN-GUIDE.md");
                 println!("{}", content);
             }
         }

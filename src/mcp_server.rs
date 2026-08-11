@@ -564,7 +564,7 @@ impl Server {
     )]
     pub async fn load_carousel_skill(&self) -> Result<Json<SkillGuideResponse>, ErrorData> {
         Ok(Json(SkillGuideResponse {
-            content: include_str!("../DESIGN-GUIDE.md").to_string(),
+            content: include_str!("../docs/DESIGN-GUIDE.md").to_string(),
         }))
     }
 
