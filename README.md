@@ -8,6 +8,7 @@
 
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
 ![LOC](https://img.shields.io/badge/LOC-35.5K-informational?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 [![CI](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-1.8.0-purple.svg)](https://modelcontextprotocol.io)
@@ -18,7 +19,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 - **46 slide types** across 6 categories: Text & Layout, Data Viz, Metrics, Story, Image, Conversion
 - **MCP server** — integrate with Claude, Cursor, or any MCP client for AI-driven slide generation
@@ -46,7 +47,7 @@ Canva is a design *studio for humans*; SlideForge is a **deterministic slide fac
 
 ---
 
-## 🖼️ Showcase
+## Showcase
 
 Every slide below is a **real export** rendered by the embedded Blitz engine (stylo layout + vello-cpu raster) — no browser, no screenshots, no doctored images.
 
@@ -67,7 +68,7 @@ Browse the full interactive decks: [`all_types_carousel.html`](dist/all_types_ca
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Install (pre-built binary)
 
@@ -133,7 +134,7 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.):
 
 ---
 
-## 🎨 Slide Types (46 total)
+## Slide Types (46 total)
 
 | Category | Types |
 |----------|-------|
@@ -147,7 +148,7 @@ Each type exposes `required_params`, `optional_params`, `variants`, and an `exam
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Design Tokens (via `configure_design`)
 
@@ -179,7 +180,7 @@ Unknown keys warn with typo suggestions (`typo` → `Did you mean 'accent'?`).
 
 ---
 
-## 📦 Export Pipeline
+## Export Pipeline
 
 ```
 generate-slide(s) → render-carousel → export
@@ -200,7 +201,7 @@ generate-slide(s) → render-carousel → export
 
 ---
 
-## 🧪 Validation
+## Validation
 
 ```bash
 # Validate slide params before rendering
@@ -214,7 +215,7 @@ Checks: overflow, contrast, descender clipping, squished components, distorted i
 
 ---
 
-## 💾 Memory Profile
+## Memory Profile
 
 The Blitz rendering engine (stylo layout + vello-cpu raster) is embedded in the binary — no Chromium subprocess, no browser download, no persistent browser pool. Measured against the legacy headless-Chrome build on the same 8-slide export workload:
 
@@ -230,7 +231,7 @@ The Blitz rendering engine (stylo layout + vello-cpu raster) is embedded in the 
 
 ---
 
-## 🏗️ Build from Source
+## Build from Source
 
 ```bash
 # Standard (glibc)
@@ -246,7 +247,7 @@ The build uses **rustls-only TLS** — a vendored `blitz-net` ([`[patch.crates-i
 
 ---
 
-## 📄 License
+## License
 
 MIT — see [LICENSE](LICENSE).
 ---
