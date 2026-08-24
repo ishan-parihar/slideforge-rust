@@ -10,9 +10,9 @@ Usage:
 import json, os, subprocess, sys, tempfile
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "text_layout_test")
 CAROUSEL_PATH = os.path.join(WORKSPACE_DIR, "dist", "text_layout_carousel.html")
@@ -91,13 +91,13 @@ SLIDES = [
      ], "icon": "📤", "columns": 1}},
 
     {"slide_type": "quote", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"quote": "The best code is the code never written.", "author": "Senior Dev", "role": "SlideForge Team", "rating": 5}},
+     "params": {"quote": "The best code is the code never written.", "author": "Senior Dev", "role": "Deckmill Team", "rating": 5}},
 
     {"slide_type": "quote", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
      "params": {"quote": "Validation that catches bugs before users see them.", "author": "QA Lead", "role": "Engineering", "rating": 5}},
 
     {"slide_type": "cta", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"headline": "Ready to Build?", "button_text": "Install SlideForge", "subheadline": "One command. Zero config. Production-ready slides.", "secondary_text": "MIT licensed · Rust native · Zero deps"}},
+     "params": {"headline": "Ready to Build?", "button_text": "Install Deckmill", "subheadline": "One command. Zero config. Production-ready slides.", "secondary_text": "MIT licensed · Rust native · Zero deps"}},
 
     {"slide_type": "cta", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"headline": "Join the Community", "button_text": "View on GitHub", "subheadline": "Contribute, report issues, request features.", "secondary_text": "100+ stars · Active development"}},
@@ -158,13 +158,13 @@ SLIDES = [
      ], "cols": 2}},
 
     {"slide_type": "definition", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"term": "Design Tokens", "definition": "Centralized design decisions (colors, spacing, typography, radii) encoded as platform-agnostic values that compile to CSS custom properties.", "phonetic": "deh-ZINE TOH-kens", "context": "SlideForge uses tokens for all 47 slide types.", "variant": "card"}},
+     "params": {"term": "Design Tokens", "definition": "Centralized design decisions (colors, spacing, typography, radii) encoded as platform-agnostic values that compile to CSS custom properties.", "phonetic": "deh-ZINE TOH-kens", "context": "Deckmill uses tokens for all 47 slide types.", "variant": "card"}},
 
     {"slide_type": "definition", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"term": "Pool-Based Presets", "definition": "Presets define allowed slide pools and constraints; AI agents compose carousels by selecting from pools rather than hardcoding sequences.", "phonetic": "pool-BAYST PREH-sets", "context": "Enables flexible, validated carousel generation.", "variant": "card"}},
 
     {"slide_type": "text_block", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"title": "Why Rust?", "body": "SlideForge chose Rust for the compile pipeline because it delivers deterministic sub-10ms rendering, zero runtime dependencies, and memory safety without garbage collection pauses. The binary embeds all templates and design tokens, making it a true single-file deployment artifact.", "variant": "default"}},
+     "params": {"title": "Why Rust?", "body": "Deckmill chose Rust for the compile pipeline because it delivers deterministic sub-10ms rendering, zero runtime dependencies, and memory safety without garbage collection pauses. The binary embeds all templates and design tokens, making it a true single-file deployment artifact.", "variant": "default"}},
 
     {"slide_type": "text_block", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"title": "Validation Philosophy", "body": "Our validator catches layout issues at build time: text overflow, contrast violations, clipped content, and composition errors. It runs on the rendered HTML, not the source — what you validate is what you ship.", "variant": "default"}},
@@ -217,10 +217,10 @@ print(f"Step 3: Rendering carousel with {len(compiled_slides)} slides...")
 cmd_carousel = [
     BIN, "render-carousel", SLIDES_FILE,
     "--tokens-file", TOKENS_FILE,
-    "--brand-name", "SLIDEFORGE",
-    "--brand-handle", "@slideforge",
+    "--brand-name", "DECKMILL",
+    "--brand-handle", "@deckmill",
     "--topic", "TEXT & LAYOUT AUDIT",
-    "--url", "slideforge.dev",
+    "--url", "deckmill.dev",
     "--hashtags", "rust,slides,text,layout",
     "--output", CAROUSEL_PATH
 ]

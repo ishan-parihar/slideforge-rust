@@ -3,9 +3,9 @@ name: validation-fixing
 description: Use when validating slide parameters and rendered HTML layouts for overflows, contrast, and layout issues before final PNG export.
 ---
 
-# SlideForge Validation & Layout Auditing
+# Deckmill Validation & Layout Auditing
 
-This leaf skill guides parameter validation and visual layout auditing. SlideForge includes a built-in validation engine designed to catch design errors before you render or export.
+This leaf skill guides parameter validation and visual layout auditing. Deckmill includes a built-in validation engine designed to catch design errors before you render or export.
 
 ## Pre-flight Parameter Validation
 
@@ -14,7 +14,7 @@ Run `validate-layout` (CLI) or `validate_layout` (MCP) before generating slides 
 
 ```bash
 # Validate slide parameters prior to generation
-slideforge-rust validate-layout hero --params '{"headline":"My Title"}'
+deckmill validate-layout hero --params '{"headline":"My Title"}'
 ```
 
 ---
@@ -30,7 +30,7 @@ After compiling the carousel HTML but before running exports, run `validate-desi
 
 ```bash
 # Audit design output for visual defects
-slideforge-rust validate-design ./carousel.html
+deckmill validate-design ./carousel.html
 ```
 
 ---

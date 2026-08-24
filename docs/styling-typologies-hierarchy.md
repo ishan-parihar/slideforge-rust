@@ -1,4 +1,4 @@
-# SlideForge Styling Hierarchy — Formal Specification
+# Deckmill Styling Hierarchy — Formal Specification
 
 > Status: **PLAN — final review pending. No source edits.**
 > Supersedes the brainstorm section of `docs/styling-architecture-v2.md`.
@@ -155,7 +155,7 @@ concrete CSS/token values in section 2), so CLI and MCP produce identical output
 ## 6. Agent-facing surface (CLI == MCP)
 
 ```
-slideforge configure-design --primary <hex>
+deckmill configure-design --primary <hex>
     --typology <editorial|startup|technical|brutalist|luxury|playful|vintage|data|nature|nightlife>
     --variant <default|polarity|energy>            (repeatable: any operator seq)
     --color-scheme <neutral|analogous|complementary|triadic|split-complement|monochrome|duotone>

@@ -1,8 +1,8 @@
-# SlideForge Rust Port: Audit Report & Refactor Plan
+# Deckmill Rust Port: Audit Report & Refactor Plan
 
 ## Executive Summary
 
-The Rust port (`slideforge-rust`) has **structural parity** with the Python implementation but suffers from **CSS-level divergence** that causes visual bugs. The core issue is that CSS variable ordering, padding values, and theme-aware color determination differ between implementations. This report catalogs all identified parity gaps and provides an actionable refactor plan.
+The Rust port (`deckmill`) has **structural parity** with the Python implementation but suffers from **CSS-level divergence** that causes visual bugs. The core issue is that CSS variable ordering, padding values, and theme-aware color determination differ between implementations. This report catalogs all identified parity gaps and provides an actionable refactor plan.
 
 ---
 

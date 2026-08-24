@@ -2,18 +2,18 @@
 
 <!-- T2I HERO SPEC — Subject: a slide forge — HTML slide components (typography blocks, charts, image cards, quote panels, OKLCH color swatches) being stamped into a carousel of PNG slides, fanning into Instagram/LinkedIn/TikTok phone frames; a WCAG-AA accessibility ring around the stack. Composition: left-to-right stamping line, phone frames on the right. Palette: forge ember #f97316 → deep slate #0f172a → brand gradient accents → WCAG green #34d399. Style: dark industrial flat vector, glowing stamps, no text. 16:9. -->
 
-# SlideForge Rust
+# Deckmill Rust
 
 **High-performance slide carousel generator** — CLI + MCP server for creating professional Instagram/LinkedIn/TikTok carousels as HTML → PNG.
 
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
 ![LOC](https://img.shields.io/badge/LOC-35.5K-informational?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-[![CI](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-parihar/slideforge-rust/actions/workflows/ci.yml)
+[![CI](https://github.com/ishan-parihar/deckmill/actions/workflows/ci.yml/badge.svg)](https://github.com/ishan-parihar/deckmill/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-1.8.0-purple.svg)](https://modelcontextprotocol.io)
-[![Tests](https://img.shields.io/badge/tests-185%20passing-brightgreen.svg)](https://github.com/ishan-parihar/slideforge-rust)
-[![Release](https://img.shields.io/github/v/release/ishan-parihar/slideforge-rust)](https://github.com/ishan-parihar/slideforge-rust/releases)
+[![Tests](https://img.shields.io/badge/tests-185%20passing-brightgreen.svg)](https://github.com/ishan-parihar/deckmill)
+[![Release](https://img.shields.io/github/v/release/ishan-parihar/deckmill)](https://github.com/ishan-parihar/deckmill/releases)
 
 </div>
 
@@ -27,13 +27,13 @@
 - **Design system** — tokens, themes, archetypes, Google Fonts, CSS variables
 - **Export pipeline** — HTML → PNG via the embedded Blitz renderer (stylo + vello-cpu, no browser needed; 1080×1350, 1080×1080, 1080×1920, 1200×628, etc.)
 - **Validation** — pre-flight param checks, layout overflow detection, contrast auditing
-- **Session persistence** — `configure_design` tokens survive MCP restarts (`~/.slideforge/session_state.json`)
+- **Session persistence** — `configure_design` tokens survive MCP restarts (`~/.deckmill/session_state.json`)
 
 ---
 
 ## How it compares
 
-| Capability | **SlideForge Rust** | Canva / Figma | Python-pptx / PPTX libs | Headless Chrome screenshot scripts |
+| Capability | **Deckmill Rust** | Canva / Figma | Python-pptx / PPTX libs | Headless Chrome screenshot scripts |
 |---|---|---|---|---|
 | **Agent-native generation** | ✅ MCP server + CLI, AI-driven | ❌ GUI | ⚠️ scripted | ⚠️ |
 | **Render without a browser** | ✅ embedded Blitz (stylo + vello-cpu) | n/a | n/a | ❌ needs Chrome |
@@ -43,7 +43,7 @@
 | **Session design memory** | ✅ tokens persist across restarts | ✅ | ❌ | ❌ |
 | **Self-hosted binary** | ✅ single Rust binary, 185 tests | ❌ SaaS | ✅ | ✅ |
 
-Canva is a design *studio for humans*; SlideForge is a **deterministic slide factory for agents** — the same tokens, themes, and validation every run.
+Canva is a design *studio for humans*; Deckmill is a **deterministic slide factory for agents** — the same tokens, themes, and validation every run.
 
 ---
 
@@ -74,40 +74,40 @@ Browse the full interactive decks: [`all_types_carousel.html`](dist/all_types_ca
 
 ```bash
 # Static musl binary (runs on any Linux, no dependencies) — grab from Releases:
-curl -fsSL https://github.com/ishan-parihar/slideforge-rust/releases/download/v0.4.0/slideforge-x86_64-unknown-linux-musl \
-  -o ~/.local/bin/slideforge-rust && chmod +x ~/.local/bin/slideforge-rust
+curl -fsSL https://github.com/ishan-parihar/deckmill/releases/download/v0.4.0/deckmill-x86_64-unknown-linux-musl \
+  -o ~/.local/bin/deckmill && chmod +x ~/.local/bin/deckmill
 
 # Or build from source:
-cargo install --git https://github.com/ishan-parihar/slideforge-rust
+cargo install --git https://github.com/ishan-parihar/deckmill
 ```
 
 ### CLI Usage
 
 ```bash
 # Generate a single slide
-slideforge-rust generate-slide hero \
+deckmill generate-slide hero \
   --primary-color '#4F46E5' \
   --params '{"headline":"Ship slides in minutes","subheadline":"AI-powered carousels"}' \
   --override accent='#00FF88'
 
 # Export carousel to PNGs
-slideforge-rust export ./carousel.html \
+deckmill export ./carousel.html \
   --output-dir ./exports \
   --slides 4 \
   --preset instagram_portrait
 
 # List all slide types
-slideforge-rust list-slides
+deckmill list-slides
 
 # Get schema for a slide type
-slideforge-rust slide-info hero
+deckmill slide-info hero
 ```
 
 ### MCP Server
 
 ```bash
 # Start MCP server (stdio transport)
-slideforge-rust mcp
+deckmill mcp
 ```
 
 Configure in your MCP client (Claude Desktop, Cursor, etc.):
@@ -115,8 +115,8 @@ Configure in your MCP client (Claude Desktop, Cursor, etc.):
 ```json
 {
   "mcpServers": {
-    "slideforge": {
-      "command": "slideforge-rust",
+    "deckmill": {
+      "command": "deckmill",
       "args": ["mcp"]
     }
   }
@@ -164,12 +164,12 @@ Each type exposes `required_params`, `optional_params`, `variants`, and an `exam
 }
 ```
 
-Tokens persist to `~/.slideforge/session_state.json` and survive MCP restarts.
+Tokens persist to `~/.deckmill/session_state.json` and survive MCP restarts.
 
 ### Token Override (CLI only)
 
 ```bash
-slideforge-rust generate-slide hero \
+deckmill generate-slide hero \
   --primary-color '#FF5500' \
   --params '{"headline":"Override test"}' \
   --override accent='#00FF88' \
@@ -205,10 +205,10 @@ generate-slide(s) → render-carousel → export
 
 ```bash
 # Validate slide params before rendering
-slideforge-rust validate-layout --slide-type hero --params '{"headline":"Test"}'
+deckmill validate-layout --slide-type hero --params '{"headline":"Test"}'
 
 # Audit rendered HTML for design issues
-slideforge-rust validate-design ./carousel.html
+deckmill validate-design ./carousel.html
 ```
 
 Checks: overflow, contrast, descender clipping, squished components, distorted images, progress ring thickness, text column width.
@@ -254,17 +254,17 @@ MIT — see [LICENSE](LICENSE).
 
 ## Agent Integration (AXI §7)
 
-SlideForge ships an installable AI agent skill that provides ambient context at session start — showing slide types, design tokens, and contextual help hints.
+Deckmill ships an installable AI agent skill that provides ambient context at session start — showing slide types, design tokens, and contextual help hints.
 
 ### Install the Skill
 
 ```bash
 # Via npx (recommended)
-npx skills add ishan-parihar/slideforge-rust --skill slideforge
+npx skills add ishan-parihar/deckmill --skill deckmill
 
 # Or download manually
-curl -fsSL https://raw.githubusercontent.com/ishan-parihar/slideforge-rust/master/SKILL.md \
-  -o ~/.agents/skills/slideforge/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/ishan-parihar/deckmill/master/SKILL.md \
+  -o ~/.agents/skills/deckmill/SKILL.md
 ```
 
 ### Session Hook (Claude Code)
@@ -280,7 +280,7 @@ Add to `~/.claude/settings.json` or project `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "slideforge"
+            "command": "deckmill"
           }
         ]
       }
@@ -289,10 +289,10 @@ Add to `~/.claude/settings.json` or project `.claude/settings.json`:
 }
 ```
 
-At session start, SlideForge prints a compact dashboard:
+At session start, Deckmill prints a compact dashboard:
 
 ```
-bin: ~/.local/bin/slideforge
+bin: ~/.local/bin/deckmill
 description: Instagram/LinkedIn/TikTok carousel generator — 46 slide types, 8 platform presets
 
 slides[46]{type,description}:
@@ -305,10 +305,10 @@ design_tokens:
   archetype: startup_pitch
 
 help[4]:
-  Run `slideforge list-slides` to see all 46 slide types
-  Run `slideforge generate-slide hero --params '{...}'` to create a slide
-  Run `slideforge render-carousel slides.json --tokens-file tokens.json` to render
-  Run `slideforge export carousel.html --output-dir ./exports` to export PNGs
+  Run `deckmill list-slides` to see all 46 slide types
+  Run `deckmill generate-slide hero --params '{...}'` to create a slide
+  Run `deckmill render-carousel slides.json --tokens-file tokens.json` to render
+  Run `deckmill export carousel.html --output-dir ./exports` to export PNGs
 ```
 
 ### Session Hook (Codex)
@@ -317,20 +317,20 @@ Add to `~/.codex/hooks.json` or project `.codex/hooks.json`:
 
 ```json
 {
-  "SessionStart": "slideforge"
+  "SessionStart": "deckmill"
 }
 ```
 
 ### Session Hook (OpenCode)
 
-Create `~/.config/opencode/plugins/slideforge.ts`:
+Create `~/.config/opencode/plugins/deckmill.ts`:
 
 ```typescript
 export default {
-  name: "slideforge",
+  name: "deckmill",
   onSessionStart: async () => {
     const { execSync } = require("child_process");
-    return execSync("slideforge").toString();
+    return execSync("deckmill").toString();
   },
 };
 ```

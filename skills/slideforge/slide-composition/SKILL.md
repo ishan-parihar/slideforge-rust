@@ -3,9 +3,9 @@ name: slide-composition
 description: Use when choosing, parameters-filling, or structuring any of the 46 slide types. Directs you to text layouts, data visualizations, story flows, or image layouts.
 ---
 
-# SlideForge Slide Composition Router
+# Deckmill Slide Composition Router
 
-This router assists you in selecting and structuring slide content. SlideForge supports **46 active slide types** (a few legacy names are deprecated redirects to their replacements). Descend into the correct sub-skill based on your content requirements.
+This router assists you in selecting and structuring slide content. Deckmill supports **46 active slide types** (a few legacy names are deprecated redirects to their replacements). Descend into the correct sub-skill based on your content requirements.
 
 ## Routing Directory
 

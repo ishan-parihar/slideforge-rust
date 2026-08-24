@@ -32,8 +32,8 @@ mod styling;
 mod validate;
 
 #[derive(Parser)]
-#[command(name = "slideforge", version = "0.1.0")]
-#[command(about = "SlideForge CLI & MCP Server", long_about = None)]
+#[command(name = "deckmill", version = "0.1.0")]
+#[command(about = "Deckmill CLI & MCP Server", long_about = None)]
 // AXI §6: usage errors are redirected to stdout — force plain text so ANSI
 // codes captured for stderr never leak into agent-readable piped output.
 #[command(color = clap::ColorChoice::Never)]
@@ -82,14 +82,14 @@ fn shell_quote(s: &str) -> String {
 }
 
 /// Resolve the command string for a session hook: the PATH-verified binary name
-/// when `slideforge` on PATH resolves to the current executable (portable
+/// when `deckmill` on PATH resolves to the current executable (portable
 /// across renames), otherwise the full absolute path.
 fn hook_command() -> String {
     let exe = std::env::current_exe().ok();
     let bin_name = exe
         .as_ref()
         .and_then(|p| p.file_name().map(|s| s.to_string_lossy().to_string()))
-        .unwrap_or_else(|| "slideforge".to_string());
+        .unwrap_or_else(|| "deckmill".to_string());
     let resolved = exe.as_ref().and_then(|p| p.canonicalize().ok());
     let portable = which_binary_on_path(&bin_name)
         .and_then(|p| p.canonicalize().ok())
@@ -116,7 +116,7 @@ fn which_binary_on_path(name: &str) -> Option<std::path::PathBuf> {
 }
 
 /// Merge the SessionStart hook into an existing settings/hooks JSON document.
-/// Idempotent (same command → unchanged) and path-repairing (a stale slideforge
+/// Idempotent (same command → unchanged) and path-repairing (a stale deckmill
 /// path in an existing hook is replaced). Returns the merged document and
 /// whether it actually changed.
 fn merge_session_hook(
@@ -149,7 +149,7 @@ fn merge_session_hook(
     };
     let items = arr.as_array_mut().expect("SessionStart is an array");
 
-    let mut found = false; // any existing slideforge session-start entry
+    let mut found = false; // any existing deckmill session-start entry
     let mut exact = false; // existing entry already matches target_cmd
     if is_codex {
         for item in items.iter_mut() {
@@ -323,7 +323,7 @@ fn session_start_dashboard() -> Result<(), Box<dyn std::error::Error>> {
                 s
             }
         })
-        .unwrap_or_else(|_| "slideforge".to_string());
+        .unwrap_or_else(|_| "deckmill".to_string());
     println!("bin: {}", bin_path);
     println!("description: Generate social media carousel slides with AI-grade design systems");
     println!();
@@ -362,10 +362,10 @@ fn session_start_dashboard() -> Result<(), Box<dyn std::error::Error>> {
     }
     println!();
     println!("help[4]:");
-    println!("  Run `slideforge list-slides` to see all slide types");
-    println!("  Run `slideforge slide-types-for-context \"<context>\"` to pick types for a brief");
-    println!("  Run `slideforge generate-slide <type> --primary-color <hex>` to create a slide");
-    println!("  Run `slideforge mcp` to start the MCP server");
+    println!("  Run `deckmill list-slides` to see all slide types");
+    println!("  Run `deckmill slide-types-for-context \"<context>\"` to pick types for a brief");
+    println!("  Run `deckmill generate-slide <type> --primary-color <hex>` to create a slide");
+    println!("  Run `deckmill mcp` to start the MCP server");
     Ok(())
 }
 
@@ -625,10 +625,10 @@ enum Commands {
         /// Path to HTML file (or - for stdin)
         html_file: String,
         /// Output PNG path
-        #[arg(long, default_value = "/tmp/slideforge-preview.png")]
+        #[arg(long, default_value = "/tmp/deckmill-preview.png")]
         output: String,
     },
-    /// Install the SessionStart hook so agents get a SlideForge dashboard at session start (AXI §7)
+    /// Install the SessionStart hook so agents get a Deckmill dashboard at session start (AXI §7)
     SessionSetup {
         /// Agent harness: claude-code (default) or codex
         #[arg(long, default_value = "claude-code")]
@@ -687,7 +687,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         s
                     }
                 })
-                .unwrap_or_else(|_| "slideforge".to_string());
+                .unwrap_or_else(|_| "deckmill".to_string());
             println!("bin: {}", bin_path);
             println!("description: Generate social media carousel slides with AI-grade design systems");
             println!();
@@ -701,17 +701,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             println!();
             println!("help[4]:");
-            println!("  Run `slideforge list-slides` to see all slide types");
-            println!("  Run `slideforge list-platforms` to see export presets");
-            println!("  Run `slideforge generate-slide --slide-type <type> --primary-color <hex>` to create");
-            println!("  Run `slideforge mcp` to start the MCP server");
+            println!("  Run `deckmill list-slides` to see all slide types");
+            println!("  Run `deckmill list-platforms` to see export presets");
+            println!("  Run `deckmill generate-slide --slide-type <type> --primary-color <hex>` to create");
+            println!("  Run `deckmill mcp` to start the MCP server");
         }
         Some(Commands::Setup) => {
-            println!("No browser setup needed — SlideForge uses the embedded blitz renderer.");
+            println!("No browser setup needed — Deckmill uses the embedded blitz renderer.");
             let response = serde_json::json!({
                 "status": "no-op",
                 "message": "The blitz renderer is embedded in the binary; no Chromium download is required.",
-                "hint": "Run `slideforge export` or `slideforge preview-slide` directly."
+                "hint": "Run `deckmill export` or `deckmill preview-slide` directly."
             });
             output_toon(&response);
         }
@@ -856,7 +856,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
             }
-            println!("help[1]: Run `slideforge slide-info <type>` for details");
+            println!("help[1]: Run `deckmill slide-info <type>` for details");
         }
         Some(Commands::ListPlatforms) => {
             let all = platforms::all_platforms();
@@ -873,7 +873,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                 }
             }
-            println!("help[1]: Run `slideforge export --help` to see export options");
+            println!("help[1]: Run `deckmill export --help` to see export options");
         }
         Some(Commands::ListArchetypes) => {
             let all = archetypes::all_archetypes();
@@ -926,7 +926,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         "slide_types: 0 slide types match context '{}' (known contexts: opening, data, process, conversion, social-proof, comparison, ...)",
                         context
                     );
-                    println!("help[1]: Run `slideforge list-slides` to see every slide type");
+                    println!("help[1]: Run `deckmill list-slides` to see every slide type");
                 } else {
                     // AXI §4: the TOON array header `[N]:` already carries the
                     // total count — no separate count line needed here.
@@ -1102,7 +1102,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 fs::read_to_string(html_file)?
             };
-            let temp_html = "/tmp/slideforge-preview.html";
+            let temp_html = "/tmp/deckmill-preview.html";
             let full_html = format!(
                 r#"<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
 body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:center; align-items:center; min-height:100vh; }}
@@ -1123,7 +1123,7 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
             if *write {
                 let rendered = render_skill_md();
                 fs::write("SKILL.md", &rendered)?;
-                println!("skill: written ({} bytes) — regenerate with `slideforge skill-guide --write`", rendered.len());
+                println!("skill: written ({} bytes) — regenerate with `deckmill skill-guide --write`", rendered.len());
             } else if *check {
                 skill_check()?;
             } else {
@@ -1135,7 +1135,7 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
             run_full_scope_test(output_dir)?;
         }
         Some(Commands::Mcp) => {
-            eprintln!("Starting SlideForge MCP server (stdio)...");
+            eprintln!("Starting Deckmill MCP server (stdio)...");
             mcp_server::run_server().await?;
         }
     }
@@ -1493,7 +1493,7 @@ fn cli_generate_slide(
                 "errors": validation.errors,
                 "warnings": validation.warnings,
             },
-            "hint": format!("Run 'slideforge slide-info {}' to see required params.", slide_type),
+            "hint": format!("Run 'deckmill slide-info {}' to see required params.", slide_type),
         });
         // AXI §6: structured errors go to stdout (exit 1) so agents see them.
         println!("{}", serde_json::to_string_pretty(&response)?);
@@ -2020,7 +2020,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                     "bg_style": rand_bg
                 }),
                 "quote" => json!({
-                    "quote": "SlideForge has fundamentally changed our design turnaround. Parity is absolute.",
+                    "quote": "Deckmill has fundamentally changed our design turnaround. Parity is absolute.",
                     "author": "Marcus Aurelius",
                     "role": "Lead Architect",
                     "bg_style": rand_bg
@@ -2028,7 +2028,7 @@ fn run_full_scope_test(output_dir_str: &str) -> Result<(), Box<dyn std::error::E
                 "before_after_story" => json!({
                     "title": "Traditional vs Modern Workflows",
                     "before": "Legacy Approach: Manual assets stitching, broken layouts, no theme consistency",
-                    "after": "SlideForge Engine: Atomic layout validation, stunning responsive templates",
+                    "after": "Deckmill Engine: Atomic layout validation, stunning responsive templates",
                     "metric": "10x",
                     "metric_label": "Faster turnaround",
                     "bg_style": rand_bg
@@ -2341,48 +2341,48 @@ mod tests {
     #[test]
     fn test_merge_session_hook_claude_code() {
         // Fresh install: adds the SessionStart hook under `hooks`.
-        let (merged, changed) = merge_session_hook(serde_json::json!({}), "slideforge", "claude-code");
+        let (merged, changed) = merge_session_hook(serde_json::json!({}), "deckmill", "claude-code");
         assert!(changed, "fresh install must report a change");
         let cmd = merged["hooks"]["SessionStart"][0]["hooks"][0]["command"]
             .as_str()
             .unwrap();
-        assert_eq!(cmd, "'slideforge' session-start");
+        assert_eq!(cmd, "'deckmill' session-start");
         // Idempotent: identical command is a silent no-op.
-        let (merged2, changed2) = merge_session_hook(merged, "slideforge", "claude-code");
+        let (merged2, changed2) = merge_session_hook(merged, "deckmill", "claude-code");
         assert!(!changed2, "same command must be a no-op");
         assert_eq!(
             merged2["hooks"]["SessionStart"][0]["hooks"][0]["command"].as_str().unwrap(),
-            "'slideforge' session-start"
+            "'deckmill' session-start"
         );
         // Path repair: a stale absolute path is replaced with the current cmd.
         let stale = serde_json::json!({
             "hooks": {
                 "SessionStart": [
-                    { "hooks": [{ "type": "command", "command": "/old/path/slideforge session-start" }] }
+                    { "hooks": [{ "type": "command", "command": "/old/path/deckmill session-start" }] }
                 ]
             }
         });
-        let (merged3, changed3) = merge_session_hook(stale, "slideforge", "claude-code");
+        let (merged3, changed3) = merge_session_hook(stale, "deckmill", "claude-code");
         assert!(changed3, "stale path must be repaired");
         assert_eq!(
             merged3["hooks"]["SessionStart"][0]["hooks"][0]["command"].as_str().unwrap(),
-            "'slideforge' session-start"
+            "'deckmill' session-start"
         );
         // Existing unrelated settings are preserved.
         let with_extra = serde_json::json!({"permissions": {"allow": ["Bash"]}});
-        let (merged4, _) = merge_session_hook(with_extra, "slideforge", "claude-code");
+        let (merged4, _) = merge_session_hook(with_extra, "deckmill", "claude-code");
         assert_eq!(merged4["permissions"]["allow"][0].as_str().unwrap(), "Bash");
     }
 
     #[test]
     fn test_merge_session_hook_codex() {
-        let (merged, changed) = merge_session_hook(serde_json::json!({}), "slideforge", "codex");
+        let (merged, changed) = merge_session_hook(serde_json::json!({}), "deckmill", "codex");
         assert!(changed);
         assert_eq!(
             merged["SessionStart"][0]["command"].as_str().unwrap(),
-            "'slideforge' session-start"
+            "'deckmill' session-start"
         );
-        let (_, changed2) = merge_session_hook(merged, "slideforge", "codex");
+        let (_, changed2) = merge_session_hook(merged, "deckmill", "codex");
         assert!(!changed2, "codex idempotency");
     }
 
@@ -2404,7 +2404,7 @@ mod tests {
         for sub in cli_cmd.get_subcommands() {
             let name = sub.get_name();
             assert!(
-                md.contains(&format!("slideforge {}", name)),
+                md.contains(&format!("deckmill {}", name)),
                 "SKILL.md must document the `{}" ,
                 name
             );
@@ -2449,36 +2449,36 @@ fn render_skill_md() -> String {
     let mut out = String::new();
     out.push_str(
         r#"---
-name: slideforge
+name: deckmill
 description: >
   Generate professional social media carousels or presentation slides using the
-  SlideForge CLI/MCP tool. Routes to design settings, content composition,
+  Deckmill CLI/MCP tool. Routes to design settings, content composition,
   rendering/export pipelines, and validation guides.
 ---
 
-# SlideForge Skill
+# Deckmill Skill
 
 Generate Instagram/LinkedIn/TikTok carousels as HTML → PNG with AI-grade design systems.
 
-<!-- Auto-generated by `slideforge skill-guide --write` — do not edit by hand. -->
-<!-- Install: npx skills add <owner/slideforge-rust> --skill slideforge -->
-<!-- CI gate: `slideforge skill-guide --check` fails when this file is stale -->
+<!-- Auto-generated by `deckmill skill-guide --write` — do not edit by hand. -->
+<!-- Install: npx skills add <owner/deckmill> --skill deckmill -->
+<!-- CI gate: `deckmill skill-guide --check` fails when this file is stale -->
 
 ## Quick Start
 
 ```bash
 # Generate a single slide
-slideforge generate-slide hero --primary-color '#4F46E5' \
+deckmill generate-slide hero --primary-color '#4F46E5' \
   --params '{"headline":"Hello","subheadline":"World"}'
 
 # Render a full carousel
-slideforge render-carousel slides.json --tokens-file tokens.json --output carousel.html
+deckmill render-carousel slides.json --tokens-file tokens.json --output carousel.html
 
 # Export to PNGs
-slideforge export carousel.html --output-dir ./exports --slides 4 --preset instagram_portrait
+deckmill export carousel.html --output-dir ./exports --slides 4 --preset instagram_portrait
 
 # Validate a carousel before shipping
-slideforge validate-design carousel.html
+deckmill validate-design carousel.html
 ```
 
 ## Commands
@@ -2502,7 +2502,7 @@ slideforge validate-design carousel.html
         .collect();
     subs.sort_by(|a, b| a.0.cmp(&b.0));
     for (name, about) in &subs {
-        out.push_str(&format!("| `slideforge {}` | {} |\n", name, about));
+        out.push_str(&format!("| `deckmill {}` | {} |\n", name, about));
     }
 
     let active_types: Vec<String> = slide_registry::list_slide_types()
@@ -2519,7 +2519,7 @@ slideforge validate-design carousel.html
         })
         .collect();
     out.push_str(&format!(
-        "\n## Slide Types\n\n{}\n\nRun `slideforge list-slides` for per-type required params and variants.\n",
+        "\n## Slide Types\n\n{}\n\nRun `deckmill list-slides` for per-type required params and variants.\n",
         active_types.join(", ")
     ));
 
@@ -2531,10 +2531,10 @@ slideforge validate-design carousel.html
 
     out.push_str(
         "\n## Design System\n\n\
-1. Run `slideforge configure-design '#4F46E5'` to generate tokens\n\
+1. Run `deckmill configure-design '#4F46E5'` to generate tokens\n\
 2. Pass `--tokens-file tokens.json` to `generate-slide` for consistent branding\n\
 3. Use `--typology` presets (e.g. `--typology startup --variant energy`) for curated style bundles\n\
-4. Gate every carousel with `slideforge validate-design <carousel.html>` before shipping\n",
+4. Gate every carousel with `deckmill validate-design <carousel.html>` before shipping\n",
     );
     out
 }
@@ -2564,7 +2564,7 @@ fn skill_check() -> Result<(), Box<dyn std::error::Error>> {
                 output_toon(&json!({
                     "skill": "STALE",
                     "detail": detail,
-                    "help": "Run `slideforge skill-guide --write` to regenerate SKILL.md"
+                    "help": "Run `deckmill skill-guide --write` to regenerate SKILL.md"
                 }));
                 std::process::exit(1);
             }
@@ -2573,7 +2573,7 @@ fn skill_check() -> Result<(), Box<dyn std::error::Error>> {
             output_toon(&json!({
                 "skill": "MISSING",
                 "detail": "SKILL.md not found in the current directory",
-                "help": "Run `slideforge skill-guide --write` to create it"
+                "help": "Run `deckmill skill-guide --write` to create it"
             }));
             std::process::exit(1);
         }

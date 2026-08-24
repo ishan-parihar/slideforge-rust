@@ -10,9 +10,9 @@ Usage:
 import json, os, subprocess, sys, tempfile
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "dataviz_test")
 CAROUSEL_PATH = os.path.join(WORKSPACE_DIR, "dist", "dataviz_carousel.html")
@@ -152,9 +152,9 @@ SLIDES = [
     {"slide_type": "chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "variant": "donut",
      "params": {"title": "Market Share Distribution", "chart_type": "donut",
-                "caption": "SlideForge commands 34% of the AI-powered presentation tool market.",
+                "caption": "Deckmill commands 34% of the AI-powered presentation tool market.",
                 "data": [
-         {"label": "SlideForge", "value": 34},
+         {"label": "Deckmill", "value": 34},
          {"label": "Competitor A", "value": 22},
          {"label": "Competitor B", "value": 18},
          {"label": "Others", "value": 26}]}},
@@ -217,7 +217,7 @@ SLIDES = [
          {"axis": "Testing", "value": 88}]}},
 
     {"slide_type": "radar_chart", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"title": "Product Competitiveness", "description": "SlideForge vs industry benchmarks across key dimensions.",
+     "params": {"title": "Product Competitiveness", "description": "Deckmill vs industry benchmarks across key dimensions.",
                 "data": [
          {"axis": "Speed", "value": 95},
          {"axis": "UX", "value": 82},
@@ -317,10 +317,10 @@ print(f"Step 3: Rendering carousel with {len(compiled_slides)} slides...")
 cmd_carousel = [
     BIN, "render-carousel", SLIDES_FILE,
     "--tokens-file", TOKENS_FILE,
-    "--brand-name", "SLIDEFORGE",
-    "--brand-handle", "@slideforge",
+    "--brand-name", "DECKMILL",
+    "--brand-handle", "@deckmill",
     "--topic", "DATAVIZ AUDIT",
-    "--url", "slideforge.dev",
+    "--url", "deckmill.dev",
     "--hashtags", "rust,slides,dataviz",
     "--output", CAROUSEL_PATH
 ]

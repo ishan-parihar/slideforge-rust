@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": "5.0.0",
-    "description": "SlideForge Campaign Presets v5 — emotion-archetype catalog. Presets are named by their emotional objective, not their topic domain. A preset named 'evidence_argument' works for political policy, business strategy, or academic thesis — the emotional engine is identical. v5 merges 3 redundant presets and adds 6 missing emotional archetypes for full mass-communication coverage.",
+    "description": "Deckmill Campaign Presets v5 — emotion-archetype catalog. Presets are named by their emotional objective, not their topic domain. A preset named 'evidence_argument' works for political policy, business strategy, or academic thesis — the emotional engine is identical. v5 merges 3 redundant presets and adds 6 missing emotional archetypes for full mass-communication coverage.",
     "categories": [
       "hook_and_introduction",
       "credibility_and_proof",

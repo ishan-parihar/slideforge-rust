@@ -1,9 +1,9 @@
 ---
 name: design-system
-description: Use when configuring visual styling, themes, brand archetypes, color palettes, and presets for SlideForge slides.
+description: Use when configuring visual styling, themes, brand archetypes, color palettes, and presets for Deckmill slides.
 ---
 
-# SlideForge Design System Configuration
+# Deckmill Design System Configuration
 
 Configure design tokens and session brand settings before generating any slides. This ensures consistent color palettes, typography, spacing, and styling across the entire carousel.
 
@@ -16,7 +16,7 @@ Configure design tokens and session brand settings before generating any slides.
 
 ## Configuration Workflow
 
-Whether using the CLI (`slideforge-rust configure-design`) or the MCP tool (`configure_design`), you must define the design system tokens at the start of a session.
+Whether using the CLI (`deckmill configure-design`) or the MCP tool (`configure_design`), you must define the design system tokens at the start of a session.
 
 ### 1. Primary Brand Color
 - Must be a valid 6-digit hex code starting with `#` (e.g., `#6366F1`).
@@ -123,10 +123,10 @@ Always match the slide's content domain with its visual archetype:
 ### CLI
 ```bash
 # Recommend color combinations
-slideforge-rust recommend-colors "#4F46E5" --style modern --num-schemes 3
+deckmill recommend-colors "#4F46E5" --style modern --num-schemes 3
 
 # Configure the session tokens
-slideforge-rust configure-design "#4F46E5" --style modern --preset tonal_spot --output tokens.json
+deckmill configure-design "#4F46E5" --style modern --preset tonal_spot --output tokens.json
 ```
 
 ### MCP Payload

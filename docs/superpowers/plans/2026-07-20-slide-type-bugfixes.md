@@ -296,7 +296,7 @@ cargo test
 - [ ] **Step 2: Rebuild release binary and copy to dist**
 
 ```bash
-cargo build --release && cp target/release/slideforge-rust dist/slideforge-x86_64-linux-gnu
+cargo build --release && cp target/release/deckmill dist/deckmill-x86_64-linux-gnu
 ```
 
 - [ ] **Step 3: Regenerate test carousel**

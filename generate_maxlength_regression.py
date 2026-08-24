@@ -22,9 +22,9 @@ Usage:
 import json, os, subprocess, sys
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "maxlength_test")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -204,7 +204,7 @@ def main():
     run_cmd([
         BIN, "render-carousel", carousel_json, "--output", carousel_path,
         "--brand-name", "Regression", "--topic", "Auto-scaling",
-        "--url", "https://slideforge.dev", "--hashtags", "#test",
+        "--url", "https://deckmill.dev", "--hashtags", "#test",
     ], "render-carousel")
 
     run_cmd([

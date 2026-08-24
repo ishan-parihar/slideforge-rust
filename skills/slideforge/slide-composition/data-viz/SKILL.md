@@ -3,9 +3,9 @@ name: data-viz
 description: Use when constructing data visualization slides such as charts, tables, gauges, metric grids, and progress rings.
 ---
 
-# SlideForge Data Visualizations & Metrics
+# Deckmill Data Visualizations & Metrics
 
-This leaf skill guides the composition of charts, tables, and metric indicators. Data visualizations are rendered dynamically inside the SlideForge engine. Ensuring correct data structures is crucial to avoid rendering crashes.
+This leaf skill guides the composition of charts, tables, and metric indicators. Data visualizations are rendered dynamically inside the Deckmill engine. Ensuring correct data structures is crucial to avoid rendering crashes.
 
 ## Supported Slide Types & Schemas
 

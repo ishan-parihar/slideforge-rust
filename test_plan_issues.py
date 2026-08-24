@@ -18,7 +18,7 @@ import subprocess
 import sys
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-SLIDEFORGE_BIN = os.path.join(WORKSPACE_DIR, "target/release/slideforge-rust")
+DECKMILL_BIN = os.path.join(WORKSPACE_DIR, "target/release/deckmill")
 TOKENS_FILE = os.path.join(WORKSPACE_DIR, "test_plan_tokens.json")
 SLIDES_JSON_FILE = os.path.join(WORKSPACE_DIR, "test_plan_slides.json")
 OUTPUT_HTML_FILE = os.path.join(WORKSPACE_DIR, "dist/test_plan_carousel.html")
@@ -42,7 +42,7 @@ def run_cmd(args):
 def generate_slide(slide_type, params, theme="dark", bg_style="dark", archetype="educator"):
     """Generate a single slide and return the JSON spec."""
     cmd = [
-        SLIDEFORGE_BIN, "generate-slide", slide_type,
+        DECKMILL_BIN, "generate-slide", slide_type,
         "--tokens-file", TOKENS_FILE,
         "--theme", theme,
         "--bg-style", bg_style,
@@ -65,7 +65,7 @@ def main():
     # Step 0: Configure design tokens
     print("\n=== Step 0: Configure Design Tokens ===")
     run_cmd([
-        SLIDEFORGE_BIN, "configure-design", "#6366F1",
+        DECKMILL_BIN, "configure-design", "#6366F1",
         "--style", "editorial",
         "--preset", "expressive",
         "--output", TOKENS_FILE,
@@ -80,7 +80,7 @@ def main():
     slides.append(generate_slide("hero", {
         "headline": "Plan Issue Test Carousel",
         "subheadline": "Visual verification for layout fixes & data viz upgrades (Tasks 1-7)",
-        "badge": "SLIDEFORGE QA",
+        "badge": "DECKMILL QA",
         "variant": "gradient",
     }))
 
@@ -485,13 +485,13 @@ def main():
     # ============================================================
     print("\n=== Rendering Carousel ===")
     run_cmd([
-        SLIDEFORGE_BIN, "render-carousel", SLIDES_JSON_FILE,
+        DECKMILL_BIN, "render-carousel", SLIDES_JSON_FILE,
         "--tokens-file", TOKENS_FILE,
-        "--brand-name", "SlideForge QA",
-        "--brand-handle", "@slideforge",
+        "--brand-name", "Deckmill QA",
+        "--brand-handle", "@deckmill",
         "--topic", "Plan Issue Verification",
         "--url", "example.com",
-        "--hashtags", "slideforge,qa,testing",
+        "--hashtags", "deckmill,qa,testing",
         "--platform", "instagram_portrait",
         "--aspect-ratio", "4:5",
         "--output", OUTPUT_HTML_FILE,
@@ -503,7 +503,7 @@ def main():
     # ============================================================
     print("\n=== Running validate-design ===")
     result = subprocess.run(
-        [SLIDEFORGE_BIN, "validate-design", OUTPUT_HTML_FILE],
+        [DECKMILL_BIN, "validate-design", OUTPUT_HTML_FILE],
         capture_output=True, text=True,
     )
     print(f"Validation output:\n{result.stdout}")
@@ -515,7 +515,7 @@ def main():
     # ============================================================
     print("\n=== Exporting to PNGs ===")
     run_cmd([
-        SLIDEFORGE_BIN, "export", OUTPUT_HTML_FILE,
+        DECKMILL_BIN, "export", OUTPUT_HTML_FILE,
         "--slides", str(len(slides)),
         "--output-dir", EXPORT_DIR,
         "--preset", "instagram_portrait",

@@ -1,8 +1,8 @@
-# SlideForge Agent Notes
+# Deckmill Agent Notes
 
 ## Project Direction
 
-SlideForge is a 4:5-first slide composition system. The existing layouts are mostly functional and should be preserved. Do not redesign the renderer around full-canvas, per-aspect-ratio layout recomposition unless the user explicitly asks for that larger redesign.
+Deckmill is a 4:5-first slide composition system. The existing layouts are mostly functional and should be preserved. Do not redesign the renderer around full-canvas, per-aspect-ratio layout recomposition unless the user explicitly asks for that larger redesign.
 
 The working model is:
 

@@ -313,7 +313,7 @@ git push origin master
 - [ ] **Step 5: Commit & Push Task 3**
 
 ```bash
-git add generate_full_scope_test.py dist/slideforge-x86_64-linux-gnu
+git add generate_full_scope_test.py dist/deckmill-x86_64-linux-gnu
 git commit -m "feat(test): upgrade full-scope harness to test all 47 slide types with complex multi-series charts"
 git push origin master
 ```

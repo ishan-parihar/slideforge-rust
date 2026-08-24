@@ -1,4 +1,4 @@
-# SlideForge Styling Architecture v2 — Audit + Thematic Expansion Plan
+# Deckmill Styling Architecture v2 — Audit + Thematic Expansion Plan
 
 > Status: **PLAN — pending approval per directive #1651**. No source edits have been made.
 > Compiled from verified source reads: `src/design_system.rs`, `src/layouts.rs`, `src/effects.rs`, `src/blocks.rs`, `src/archetypes.rs`, `src/mcp_server.rs`, `src/main.rs`.

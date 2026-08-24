@@ -152,7 +152,7 @@
 - Extend `generate_ellipsis_deck.py` (or a new `generate_overflow_test.py`) with deliberately **max-length** configs for each upgraded type; assert `errors=0` after regeneration and pixel-probe the lowest content row ≥ 40px above the footer band for every slide.
 
 ### 4.4 Skill-leaf sync
-- Update `skills/slideforge/slide-composition/text-layouts/SKILL.md`, `data-viz/SKILL.md`, and `story-flows/SKILL.md` with the new caps so agents never author over-cap configs.
+- Update `skills/deckmill/slide-composition/text-layouts/SKILL.md`, `data-viz/SKILL.md`, and `story-flows/SKILL.md` with the new caps so agents never author over-cap configs.
 
 ---
 
@@ -161,7 +161,7 @@
 - `cargo build --release` → copy to `dist/` + `~/.cargo/bin`.
 - Regenerate the overflow deck with max-length configs; assert 0 errors.
 - Pixel-probe every PNG: content must end ≥40px above the footer band (the `problem_solution` slide 13 baseline: 194px margin).
-- `skill-guide --check` + `skills/slideforge` registry `--check` after skill-leaf updates.
+- `skill-guide --check` + `skills/deckmill` registry `--check` after skill-leaf updates.
 
 ## Risks / Notes
 - Do NOT introduce a global scaling rewrite — every change is scoped to its slide type (AGENTS.md direction).

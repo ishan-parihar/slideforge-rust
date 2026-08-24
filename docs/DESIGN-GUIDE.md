@@ -1,6 +1,6 @@
-# SlideForge Design Guide
+# Deckmill Design Guide
 
-SlideForge is a Rust-native carousel generation engine and MCP server that produces pixel-perfect social media carousels using the embedded Blitz rendering engine (stylo layout + vello raster — no browser dependency) and a full design system derived from perceptual color science (OKLCH).
+Deckmill is a Rust-native carousel generation engine and MCP server that produces pixel-perfect social media carousels using the embedded Blitz rendering engine (stylo layout + vello raster — no browser dependency) and a full design system derived from perceptual color science (OKLCH).
 
 ---
 

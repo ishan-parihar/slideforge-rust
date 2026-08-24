@@ -1,4 +1,4 @@
-# SlideForge — Improvement Plans
+# Deckmill — Improvement Plans
 
 Written against commit `7d58014` (worktree also carries the uncommitted per-slide
 typology-variance feature from the previous session — see `git status`).

@@ -4,8 +4,8 @@ import os
 import subprocess
 import sys
 
-WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/slideforge-rust"
-SLIDEFORGE_BIN = os.path.join(WORKSPACE_DIR, "target/release/slideforge-rust")
+WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/deckmill"
+DECKMILL_BIN = os.path.join(WORKSPACE_DIR, "target/release/deckmill")
 TOKENS_FILE = os.path.join(WORKSPACE_DIR, "gender_studies_tokens.json")
 SLIDES_JSON_FILE = os.path.join(WORKSPACE_DIR, "gender_studies_slides.json")
 OUTPUT_HTML_FILE = os.path.join(WORKSPACE_DIR, "dist/gender_studies_carousel.html")
@@ -28,7 +28,7 @@ def main():
     # Step 1: Configure Design System (Color Palette & Archetype)
     # Using a Slate-Purple themed minimal style to reflect academic sociology
     run_cmd([
-        SLIDEFORGE_BIN, "configure-design", "#6366F1", 
+        DECKMILL_BIN, "configure-design", "#6366F1", 
         "--style", "editorial", 
         "--preset", "expressive", 
         "--output", TOKENS_FILE
@@ -364,7 +364,7 @@ def main():
         p = dict(s["params"])
 
         cmd = [
-            SLIDEFORGE_BIN, "generate-slide", s["slide_type"],
+            DECKMILL_BIN, "generate-slide", s["slide_type"],
             "--tokens-file", TOKENS_FILE,
             "--theme", s["theme"],
             "--bg-style", s["bg_style"],
@@ -384,7 +384,7 @@ def main():
 
     # Render Carousel
     run_cmd([
-        SLIDEFORGE_BIN, "render-carousel", SLIDES_JSON_FILE,
+        DECKMILL_BIN, "render-carousel", SLIDES_JSON_FILE,
         "--tokens-file", TOKENS_FILE,
         "--brand-name", "KosmOS Sociology",
         "--brand-handle", "@integral_kosmos",
@@ -399,7 +399,7 @@ def main():
 
     # Export to PNGs
     run_cmd([
-        SLIDEFORGE_BIN, "export", OUTPUT_HTML_FILE,
+        DECKMILL_BIN, "export", OUTPUT_HTML_FILE,
         "--slides", "20",
         "--output-dir", EXPORT_DIR,
         "--preset", "instagram_portrait"

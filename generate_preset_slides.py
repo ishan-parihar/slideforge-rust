@@ -17,9 +17,9 @@ Flags:
 import json, os, subprocess, sys, random
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 PRESETS_FILE = os.path.join(WORKSPACE_DIR, "docs", "presets", "campaign-presets.json")
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "presets")
@@ -115,10 +115,10 @@ def render_carousel(slides, tokens_file, output_path, preset_id, aspect_ratio="4
     cmd = [
         BIN, "render-carousel", slides_file,
         "--tokens-file", tokens_file,
-        "--brand-name", "SLIDEFORGE",
-        "--brand-handle", "@slideforge",
+        "--brand-name", "DECKMILL",
+        "--brand-handle", "@deckmill",
         "--topic", preset_id.upper().replace("_", " "),
-        "--url", "slideforge.dev",
+        "--url", "deckmill.dev",
         "--hashtags", "slides,campaign",
         "--aspect-ratio", aspect_ratio,
         "--output", output_path,
@@ -180,7 +180,7 @@ def preset_content(preset_id):
                 {"value": "0", "label": "Design skills needed"},
             ]},
             # cta
-            {"headline": "Stop Designing Slides. Start Shipping Campaigns.", "button_text": "Try Nexus Free", "button_url": "https://slideforge.dev", "subtext": "No credit card. No onboarding call. Just ship."},
+            {"headline": "Stop Designing Slides. Start Shipping Campaigns.", "button_text": "Try Nexus Free", "button_url": "https://deckmill.dev", "subtext": "No credit card. No onboarding call. Just ship."},
         ]
 
     # ── 2. AUTHORITY INTRODUCTION (political candidate intro) ───────────
@@ -217,7 +217,7 @@ def preset_content(preset_id):
     elif preset_id == "origin_story":
         return [
             # image_headline
-            {"headline": "How a Garage Server Became a Slide Engine", "image_url": I[1], "subheadline": "SlideForge started as a weekend hack in 2023. Here's the real story."},
+            {"headline": "How a Garage Server Became a Slide Engine", "image_url": I[1], "subheadline": "Deckmill started as a weekend hack in 2023. Here's the real story."},
             # image_quote
             {"quote": "I was building a pitch deck at 2am and thought: why am I still dragging boxes around in Figma? The computer knows what I want. Let it compose.", "author": "Ishan Parihar", "image_url": A[1]},
             # timeline
@@ -229,7 +229,7 @@ def preset_content(preset_id):
             ]},
             # grid_cards
             {"title": "Core Beliefs", "cards": [
-                {"icon": "🔧", "title": "Tools, Not Templates", "description": "SlideForge doesn't pick your content. It gives you a composition engine and gets out of the way."},
+                {"icon": "🔧", "title": "Tools, Not Templates", "description": "Deckmill doesn't pick your content. It gives you a composition engine and gets out of the way."},
                 {"icon": "📐", "title": "Composition Over Decoration", "description": "Every slide type exists to solve a communication problem, not to look pretty."},
                 {"icon": "🚀", "title": "Ship in Seconds", "description": "If generation takes more than 60 seconds, something is wrong. Speed is a feature."},
                 {"icon": "🔓", "title": "Open Pipeline", "description": "CLI for humans, MCP for agents. Same engine, same output. No walled gardens."},
@@ -237,7 +237,7 @@ def preset_content(preset_id):
             # callout
             {"title": "By the Numbers", "text": "85 unit tests passing. 47 slide types. 28 campaign presets. 1 binary. That's the whole system."},
             # cta
-            {"headline": "Built by Builders, for Builders", "button_text": "Star on GitHub", "button_url": "https://github.com/ishan-parihar/slideforge-rust", "subtext": "Open source. MIT licensed. Contributions welcome."},
+            {"headline": "Built by Builders, for Builders", "button_text": "Star on GitHub", "button_url": "https://github.com/ishan-parihar/deckmill", "subtext": "Open source. MIT licensed. Contributions welcome."},
         ]
 
     # ── 4. ASPIRATION LADDER ────────────────────────────────────────────
@@ -271,7 +271,7 @@ def preset_content(preset_id):
                 {"label": "Consistency", "value": 98, "max": 100, "color": "#a78bfa"},
             ]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev", "cta_text": "Start Now", "heading": "Close the Gap Today", "caption": "Scan to start your free trial", "short_url": "slideforge.dev"},
+            {"destination_url": "https://deckmill.dev", "cta_text": "Start Now", "heading": "Close the Gap Today", "caption": "Scan to start your free trial", "short_url": "deckmill.dev"},
         ]
 
     # ── 5. CREDIBILITY CASCADE (testimonial wall) ──────────────────────
@@ -300,7 +300,7 @@ def preset_content(preset_id):
             # testimonial_avatar
             {"quote": "The MCP integration means our content agent generates carousels autonomously. We just review and publish.", "author": "Lin Zhao", "role": "CTO, Pitchflow", "avatar_url": A[1]},
             # cta
-            {"headline": "Join the Teams That Already Switched", "button_text": "Start Free Trial", "button_url": "https://slideforge.dev", "subtext": "No credit card required. Ship your first carousel in under a minute."},
+            {"headline": "Join the Teams That Already Switched", "button_text": "Start Free Trial", "button_url": "https://deckmill.dev", "subtext": "No credit card required. Ship your first carousel in under a minute."},
         ]
 
     # ── 6. PROOF STACKING (case study) ─────────────────────────────────
@@ -334,7 +334,7 @@ def preset_content(preset_id):
                 {"label": "Team Satisfaction", "value": 92, "max": 100, "color": "#f59e0b"},
             ]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev/case-studies", "cta_text": "Read Full Case Study", "heading": "See the Complete Relay.so Story", "caption": "Scan for detailed metrics and implementation guide", "short_url": "slideforge.dev/cases"},
+            {"destination_url": "https://deckmill.dev/case-studies", "cta_text": "Read Full Case Study", "heading": "See the Complete Relay.so Story", "caption": "Scan for detailed metrics and implementation guide", "short_url": "deckmill.dev/cases"},
         ]
 
     # ── 7. PROCESS TRANSPARENCY (behind the scenes) ────────────────────
@@ -356,7 +356,7 @@ def preset_content(preset_id):
             # callout
             {"title": "Zero Black Boxes", "text": "Every slide JSON is inspectable. Every token is deterministic. Every rendering step is debuggable. If something looks wrong, you can trace exactly where the decision was made."},
             # cta
-            {"headline": "Transparent by Design", "button_text": "Read the Docs", "button_url": "https://slideforge.dev/docs", "subtext": "Full architecture documentation, API reference, and extension guides."},
+            {"headline": "Transparent by Design", "button_text": "Read the Docs", "button_url": "https://deckmill.dev/docs", "subtext": "Full architecture documentation, API reference, and extension guides."},
         ]
 
     # ── 8. PRODUCT SHOWCASE (e-commerce) ───────────────────────────────
@@ -389,7 +389,7 @@ def preset_content(preset_id):
                 {"name": "Team", "price": "$49/mo", "features": ["Multi-seat MCP", "Brand kit storage", "API rate limits", "SLA guarantee"]},
              ]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev", "cta_text": "Start Free", "heading": "Try Nexus Today", "caption": "Scan to get started in 60 seconds", "short_url": "slideforge.dev"},
+            {"destination_url": "https://deckmill.dev", "cta_text": "Start Free", "heading": "Try Nexus Today", "caption": "Scan to get started in 60 seconds", "short_url": "deckmill.dev"},
         ]
 
     # ── 9. EVIDENCE ARGUMENT (data story) ──────────────────────────────
@@ -432,7 +432,7 @@ def preset_content(preset_id):
                 ["Mixed (arc + data)", "91%", "15.4%", "9.2"],
             ]},
             # cta
-            {"headline": "Want the Full Dataset?", "button_text": "Download Report", "button_url": "https://slideforge.dev/research", "subtext": "Complete methodology, raw data, and interactive dashboard."},
+            {"headline": "Want the Full Dataset?", "button_text": "Download Report", "button_url": "https://deckmill.dev/research", "subtext": "Complete methodology, raw data, and interactive dashboard."},
         ]
 
     # ── 10. CONTRAST DEMONSTRATION (comparison) ────────────────────────
@@ -474,7 +474,7 @@ def preset_content(preset_id):
             # testimonial_avatar
             {"quote": "I timed it. Nexus generated a better carousel in 47 seconds than my designer produced in 6 hours. We now use both — Nexus for speed, designers for polish.", "author": "Mike Torres", "role": "Head of Marketing, StartupXYZ", "avatar_url": A[1]},
             # cta
-            {"headline": "Stop Trading Hours for Slides", "button_text": "Try Nexus Free", "button_url": "https://slideforge.dev", "subtext": "See how fast your team can really ship."},
+            {"headline": "Stop Trading Hours for Slides", "button_text": "Try Nexus Free", "button_url": "https://deckmill.dev", "subtext": "See how fast your team can really ship."},
         ]
 
     # ── 11. EXPOSURE REVEAL ─────────────────────────────────────────────
@@ -525,7 +525,7 @@ def preset_content(preset_id):
                 {"value": "3.1x", "label": "share rate"},
             ]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev/manifesto", "cta_text": "Read the Manifesto", "heading": "Break Free from Templates", "caption": "Scan for the full investigation", "short_url": "slideforge.dev/manifesto"},
+            {"destination_url": "https://deckmill.dev/manifesto", "cta_text": "Read the Manifesto", "heading": "Break Free from Templates", "caption": "Scan for the full investigation", "short_url": "deckmill.dev/manifesto"},
         ]
 
     # ── 12. SKILL TRANSFER (educational how-to) ────────────────────────
@@ -571,7 +571,7 @@ def preset_content(preset_id):
                 {"step": "Measure completion rate", "description": "Track how many viewers reach the final slide"},
             ]},
             # cta
-            {"headline": "You Now Know More Than 99% of Content Creators", "button_text": "Start Creating", "button_url": "https://slideforge.dev", "subtext": "Use the CLI or MCP server to compose your first emotionally-architected carousel."},
+            {"headline": "You Now Know More Than 99% of Content Creators", "button_text": "Start Creating", "button_url": "https://deckmill.dev", "subtext": "Use the CLI or MCP server to compose your first emotionally-architected carousel."},
         ]
 
     # ── 13. DEEP DIVE (feature deepdive) ───────────────────────────────
@@ -601,7 +601,7 @@ def preset_content(preset_id):
             # before_after_story
             {"title": "Template vs Composition", "before": {"label": "Template Output", "description": "Fixed 5-slide structure. Same grid on every slide. Text crammed into boxes designed for shorter content."}, "after": {"label": "Composed Output", "description": "8-15 slides adapted to content density. Each slide type chosen for its communication function. Typography scales to fit."}, "metric": "3.1x", "metric_label": "Engagement Improvement"},
             # qr_destination
-            {"destination_url": "https://slideforge.dev/docs/composition", "cta_text": "Read the Docs", "heading": "Full Composition Documentation", "caption": "Scan for API reference and extension guides", "short_url": "slideforge.dev/docs"},
+            {"destination_url": "https://deckmill.dev/docs/composition", "cta_text": "Read the Docs", "heading": "Full Composition Documentation", "caption": "Scan for API reference and extension guides", "short_url": "deckmill.dev/docs"},
         ]
 
     # ── 14. PRINCIPLE EDUCATION (psychological framework) ──────────────
@@ -643,7 +643,7 @@ def preset_content(preset_id):
                 {"question": "How do I measure which principles work?", "answer": "Track completion rate per slide type. Testimonial slides with social proof should outperform generic claims. Measure the delta."},
             ]},
             # cta
-            {"headline": "Engineer Your Next Campaign", "button_text": "Start with a Preset", "button_url": "https://slideforge.dev/presets", "subtext": "28 presets, each built on proven persuasion architecture."},
+            {"headline": "Engineer Your Next Campaign", "button_text": "Start with a Preset", "button_url": "https://deckmill.dev/presets", "subtext": "28 presets, each built on proven persuasion architecture."},
         ]
 
     # ── 15. TECHNIQUE MASTERY (psychological persuasion) ───────────────
@@ -674,7 +674,7 @@ def preset_content(preset_id):
             # callout
             {"title": "The Responsibility Frame", "text": "These techniques work. That's exactly why they demand ethical use. The line between persuasion and manipulation is consent — does the audience benefit from the outcome you're steering them toward? If yes, these are tools. If no, they're weapons."},
             # cta
-            {"headline": "Use These Powers Wisely", "button_text": "Study the Framework", "button_url": "https://slideforge.dev/ethics", "subtext": "Our ethical guidelines for persuasive content design."},
+            {"headline": "Use These Powers Wisely", "button_text": "Study the Framework", "button_url": "https://deckmill.dev/ethics", "subtext": "Our ethical guidelines for persuasive content design."},
         ]
 
     # ── 16. WISDOM TRANSMISSION (spiritual teaching) ───────────────────
@@ -710,7 +710,7 @@ def preset_content(preset_id):
                 {"heading": "Lived", "body": "The deepest teaching is embodied. When the teacher lives what they teach, every interaction becomes a transmission."},
             ]},
             # cta
-            {"headline": "Continue the Practice", "button_text": "Explore More Teachings", "button_url": "https://slideforge.dev/wisdom", "subtext": "A growing library of wisdom transmission presets and examples."},
+            {"headline": "Continue the Practice", "button_text": "Explore More Teachings", "button_url": "https://deckmill.dev/wisdom", "subtext": "A growing library of wisdom transmission presets and examples."},
         ]
 
     # ── 17. GUIDED EXPERIENCE (spiritual practice) ─────────────────────
@@ -734,7 +734,7 @@ def preset_content(preset_id):
             # image_caption
             {"image_url": I[3], "caption": "Rest in the gap", "description": "After the exhale, there's a moment of emptiness. Don't rush to fill it. That gap is where peace lives."},
             # cta
-            {"headline": "Practice Again Tomorrow", "button_text": "Save This Carousel", "button_url": "https://slideforge.dev", "subtext": "Return to this practice whenever you need to find stillness."},
+            {"headline": "Practice Again Tomorrow", "button_text": "Save This Carousel", "button_url": "https://deckmill.dev", "subtext": "Return to this practice whenever you need to find stillness."},
         ]
 
     # ── 18. STORY JOURNEY (narrative arc) ──────────────────────────────
@@ -759,7 +759,7 @@ def preset_content(preset_id):
             # before_after_story
             {"title": "The Whole Arc", "before": {"label": "Day 1", "description": "Zero code. Zero users. Zero evidence this would work. Just a conviction that slides shouldn't take all day."}, "after": {"label": "Today", "description": "85 tests passing. 28 presets. 47 slide types. A tool that generates production carousels in 60 seconds."}, "metric": "547", "metric_label": "Days of Building"},
             # cta
-            {"headline": "What's Your Builder's Journey?", "button_text": "Start Building", "button_url": "https://github.com/ishan-parihar/slideforge-rust", "subtext": "Open source. MIT licensed. Fork it. Ship it. Make it yours."},
+            {"headline": "What's Your Builder's Journey?", "button_text": "Start Building", "button_url": "https://github.com/ishan-parihar/deckmill", "subtext": "Open source. MIT licensed. Fork it. Ship it. Make it yours."},
         ]
 
     # ── 19. EMOTIONAL ENGINEERING (emotional funnel) ───────────────────
@@ -801,7 +801,7 @@ def preset_content(preset_id):
             # testimonial_avatar
             {"quote": "We were the team that 'didn't need AI tools.' Six months later, our competitor had 3x our output and half our headcount. We adopted Nexus the next day.", "author": "Anonymous", "role": "Marketing Director, Fortune 500", "avatar_url": A[3]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev", "cta_text": "Start Now — It's Free", "heading": "The Time to Act Is Now", "caption": "Scan. Install. Ship. 60 seconds.", "short_url": "slideforge.dev"},
+            {"destination_url": "https://deckmill.dev", "cta_text": "Start Now — It's Free", "heading": "The Time to Act Is Now", "caption": "Scan. Install. Ship. 60 seconds.", "short_url": "deckmill.dev"},
         ]
 
     # ── 20. EVENT MOBILIZATION ──────────────────────────────────────────
@@ -809,7 +809,7 @@ def preset_content(preset_id):
     elif preset_id == "event_mobilization":
         return [
             # hero
-            {"headline": "SlideForge Summit 2026", "subheadline": "The first conference dedicated to AI-native content composition. One day. 500 seats. Virtual + In-Person.", "badge": "SEPT 15, 2026", "kicker": "SAVE THE DATE"},
+            {"headline": "Deckmill Summit 2026", "subheadline": "The first conference dedicated to AI-native content composition. One day. 500 seats. Virtual + In-Person.", "badge": "SEPT 15, 2026", "kicker": "SAVE THE DATE"},
             # list
             {"title": "What's Happening", "items": [
                 "Keynote: The Death of the Design Sprint (Ishan Parihar)",
@@ -824,13 +824,13 @@ def preset_content(preset_id):
             {"images": [I[0], I[1], I[2], I[5]], "layout": "grid", "caption": "Summit highlights from previous events"},
             # grid_cards
             {"title": "Why Attend", "cards": [
-                {"icon": "🎓", "title": "Learn", "description": "Hands-on workshops with the SlideForge team. Build real carousels, not toy demos."},
+                {"icon": "🎓", "title": "Learn", "description": "Hands-on workshops with the Deckmill team. Build real carousels, not toy demos."},
                 {"icon": "🤝", "title": "Connect", "description": "Meet 500 content creators, developers, and marketers building with AI-native tools."},
                 {"icon": "🚀", "title": "Ship", "description": "Leave with a complete campaign ready to publish. Not a notebook of ideas — a working pipeline."},
                 {"icon": "🎁", "title": "Exclusive Access", "description": "Attendees get early access to Nexus 4.0 and the preset marketplace."},
              ]},
             # qr_destination
-            {"destination_url": "https://slideforge.dev/summit", "cta_text": "Reserve Your Seat", "heading": "September 15, 2026", "caption": "Scan to register — early bird pricing ends Aug 1", "short_url": "slideforge.dev/summit"},
+            {"destination_url": "https://deckmill.dev/summit", "cta_text": "Reserve Your Seat", "heading": "September 15, 2026", "caption": "Scan to register — early bird pricing ends Aug 1", "short_url": "deckmill.dev/summit"},
         ]
 
     # ── 21. URGENCY MOBILIZATION (political mobilize) ──────────────────
@@ -979,7 +979,7 @@ def preset_content(preset_id):
                 {"x": 91, "y": 94, "label": "Architecture-led"},
             ]},
             # cta
-            {"headline": "Lead the Paradigm Shift", "button_text": "Adopt Architecture-First", "button_url": "https://slideforge.dev/paradigm", "subtext": "Start with the framework that puts structure before decoration."},
+            {"headline": "Lead the Paradigm Shift", "button_text": "Adopt Architecture-First", "button_url": "https://deckmill.dev/paradigm", "subtext": "Start with the framework that puts structure before decoration."},
         ]
 
     # ── 25. TRANSFORMATION ARC (psychological self-improve) ────────────
@@ -1013,7 +1013,7 @@ def preset_content(preset_id):
             # image_headline
             {"headline": "What If Your Workflow Was the Problem?", "image_url": I[2], "subheadline": "You don't need more motivation. You need a system that makes action the path of least resistance."},
             # cta
-            {"headline": "Your Transformation Starts Today", "button_text": "Start Week 1", "button_url": "https://slideforge.dev/transform", "subtext": "Free 5-week program with templates, presets, and community support."},
+            {"headline": "Your Transformation Starts Today", "button_text": "Start Week 1", "button_url": "https://deckmill.dev/transform", "subtext": "Free 5-week program with templates, presets, and community support."},
         ]
 
     # ── 26. LEGACY PRESERVATION ─────────────────────────────────────────
@@ -1036,7 +1036,7 @@ def preset_content(preset_id):
                 {"title": "1981-1984", "description": "106 channeling sessions. Ra delivers the complete cosmological framework."},
                 {"title": "2018", "description": "LL Research publishes all sessions freely online. The archive opens to the world."},
                 {"title": "2024", "description": "AI agents begin organizing and cross-referencing the material. New synthesis tools emerge."},
-                {"title": "2026", "description": "SlideForge presets enable visual transmission of Ra's teachings for the social media age."},
+                {"title": "2026", "description": "Deckmill presets enable visual transmission of Ra's teachings for the social media age."},
             ]},
             # callout
             {"title": "The Transmission Continues", "text": "These teachings were given freely. They should remain freely accessible. Every carousel, every summary, every visual transmission should preserve the integrity of the original sessions while making the material accessible to new seekers."},
@@ -1068,7 +1068,7 @@ def preset_content(preset_id):
             # quote
             {"quote": "The things you own end up owning you. It's only after you lose everything that you're free to do anything.", "author": "Chuck Palahniuk, Fight Club"},
             # cta
-            {"headline": "Create Something Real", "button_text": "Start Building", "button_url": "https://slideforge.dev", "subtext": "Tools for people who care about what they make."},
+            {"headline": "Create Something Real", "button_text": "Start Building", "button_url": "https://deckmill.dev", "subtext": "Tools for people who care about what they make."},
         ]
 
     # ── 28. UNDERDOG COMEBACK ──────────────────────────────────────────
@@ -1091,13 +1091,13 @@ def preset_content(preset_id):
             ]},
             {"title": "The Proof", "body": "The first real benchmark: 47 slides rendered in 0.8 seconds. The Python reference implementation took 12 seconds. The skeptics weren't wrong about difficulty — they were wrong about feasibility."},
             # definition
-            {"term": "Dogfooding", "phonetic": "/ˈdɔːɡˌfuːdɪŋ/", "definition": "Using your own product to build the thing it's meant to build. SlideForge's campaign presets are built with SlideForge. The tool eats its own output.", "context": "If your tool can't build the thing it's meant to build, it's not ready. SlideForge generates its own marketing carousels. That's the ultimate quality signal."},
+            {"term": "Dogfooding", "phonetic": "/ˈdɔːɡˌfuːdɪŋ/", "definition": "Using your own product to build the thing it's meant to build. Deckmill's campaign presets are built with Deckmill. The tool eats its own output.", "context": "If your tool can't build the thing it's meant to build, it's not ready. Deckmill generates its own marketing carousels. That's the ultimate quality signal."},
             # before_after_story
             {"title": "The Full Arc", "before": {"label": "Day 1", "description": "Zero stars. Zero users. Zero credibility. A conviction that Rust could build something beautiful."}, "after": {"label": "Day 547", "description": "85 tests. 47 slide types. 28 presets. A tool that generates production carousels in under a second."}, "metric": "547 days", "metric_label": "From Zero to Shipped"},
             # testimonial_avatar
             {"quote": "I dismissed this as a toy. Then I tried it. Then I couldn't go back to my old workflow. The speed difference isn't incremental — it's a different category.", "author": "Anonymous Skeptic", "role": "Now a Regular User", "avatar_url": A[4]},
             # cta
-            {"headline": "The Underdog Ships Today", "button_text": "Try It Yourself", "button_url": "https://github.com/ishan-parihar/slideforge-rust", "subtext": "Open source. Free forever. Built by someone who was told it couldn't be done."},
+            {"headline": "The Underdog Ships Today", "button_text": "Try It Yourself", "button_url": "https://github.com/ishan-parihar/deckmill", "subtext": "Open source. Free forever. Built by someone who was told it couldn't be done."},
         ]
 
     # ── Fallback for any unpreseted preset ──────────────────────────────
@@ -1274,7 +1274,7 @@ def expand_slide_types(slides_entries):
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="SlideForge Campaign Preset Generator v5.0.0")
+    parser = argparse.ArgumentParser(description="Deckmill Campaign Preset Generator v5.0.0")
     parser.add_argument("--validate", action="store_true", help="Run composition validation on each preset")
     parser.add_argument("--only", type=str, default=None, help="Generate only specified preset IDs (comma-separated)")
     parser.add_argument("--list", action="store_true", help="List all preset IDs and exit")
@@ -1287,7 +1287,7 @@ def main():
                         help="Test type diversity across generated carousels (checks for excessive repetition)")
     args = parser.parse_args()
 
-    print("SlideForge Campaign Preset Generator v5.0.0 — Composition Mode")
+    print("Deckmill Campaign Preset Generator v5.0.0 — Composition Mode")
     print(f"Binary: {BIN}")
     print(f"Output: {OUTPUT_DIR}")
     print(f"Presets: {PRESETS_FILE}\n")

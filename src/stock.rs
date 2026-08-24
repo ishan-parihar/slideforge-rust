@@ -1,6 +1,6 @@
 //! Pexels stock-image integration — `stock-image` CLI / `stock_image` MCP.
 //!
-//! SlideForge's image slides (`image_headline`, `image_quote`, `image_caption`,
+//! Deckmill's image slides (`image_headline`, `image_quote`, `image_caption`,
 //! …) accept either a remote `http(s)` URL or a base64 `data:` URI. The blitz
 //! renderer fetches `http(s)` sub-resources natively, so a Pexels CDN URL
 //! works as-is in exports; `--embed` additionally downloads the top result and
@@ -15,7 +15,7 @@
 use base64::Engine as _;
 use serde::{Deserialize, Serialize};
 
-/// A single Pexels photo with the src variants SlideForge needs.
+/// A single Pexels photo with the src variants Deckmill needs.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StockPhoto {
     pub id: u64,

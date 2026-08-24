@@ -599,9 +599,9 @@ mod tests {
         let slide_element = super::extract_slide_element(&html, 0).expect("slide 0");
 
         // SAFETY: single-threaded test; env mutation is scoped to this test.
-        unsafe { std::env::set_var("SLIDEFORGE_FONT_CACHE", &cache) };
+        unsafe { std::env::set_var("DECKMILL_FONT_CACHE", &cache) };
         let doc = build_standalone_slide_doc(&html, 0, &slide_element, 420, 525);
-        unsafe { std::env::remove_var("SLIDEFORGE_FONT_CACHE") };
+        unsafe { std::env::remove_var("DECKMILL_FONT_CACHE") };
         let _ = std::fs::remove_dir_all(&cache);
 
         assert!(doc.contains("data:font/woff2;base64,AAAA"), "vendored font CSS present");

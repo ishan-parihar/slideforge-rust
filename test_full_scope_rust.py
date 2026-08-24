@@ -289,7 +289,7 @@ class RustMcpClient:
         self.process.terminate()
 
 def run_test():
-    binary_path = "./target/release/slideforge-rust"
+    binary_path = "./target/release/deckmill"
     if not os.path.exists(binary_path):
         print("Please build the project first with: cargo build")
         sys.exit(1)

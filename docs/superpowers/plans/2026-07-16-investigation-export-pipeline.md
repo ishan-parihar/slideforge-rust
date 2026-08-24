@@ -74,7 +74,7 @@ The Chrome dependency is **load-bearing**, not legacy. We did not pick Chromium 
 
 If you want weight savings, the better harvest is elsewhere:
 - **`resvg`/`tiny-skia` for QR code rasterization** (already in tree, already used by `render_qr_svg_data_uri`). This part is OFF-Chrome. No change needed.
-- **Bake the carousel HTML render itself** into a one-shot CLI binary that doesn't load `rmcp`. (`slideforge-rust render` already exists; weight is dominated by Chrome, not the Rust binary. ~6MB tested release binary.)
+- **Bake the carousel HTML render itself** into a one-shot CLI binary that doesn't load `rmcp`. (`deckmill render` already exists; weight is dominated by Chrome, not the Rust binary. ~6MB tested release binary.)
 
 If the weight concern is operational (deployment foot-print), the answer is **don't hold the Chrome subprocess alive** between exports — current code already spawns one per export and tears it down. ✓ done.
 
@@ -94,7 +94,7 @@ Out-of-scope for the UX-report bugfix plan. Document and shelve unless user expl
 
 Reproducer command:
 ```bash
-./target/release/slideforge-rust export \
+./target/release/deckmill export \
     ./test-drafts/full-scope-test-output-rust/carousel_13_educator.html \
     --output-dir /tmp/sf-png-bug --slides 4 --preset instagram_portrait
 ```

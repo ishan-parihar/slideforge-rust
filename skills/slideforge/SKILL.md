@@ -1,13 +1,13 @@
 ---
-name: slideforge
-description: Use when generating professional social media carousels or presentation slides using the SlideForge CLI/MCP tool. Routes to design settings, content composition, rendering/export pipelines, and validation guides.
+name: deckmill
+description: Use when generating professional social media carousels or presentation slides using the Deckmill CLI/MCP tool. Routes to design settings, content composition, rendering/export pipelines, and validation guides.
 ---
 
-# SlideForge Designer — Meta-Skill Suite
+# Deckmill Designer — Meta-Skill Suite
 
-SlideForge is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed). Google Fonts are vendored deterministically (data-URI woff2 + on-disk cache) so exports are identical regardless of network state.
+Deckmill is a Rust-native CLI and MCP system that generates pixel-perfect carousel slides. It derives colors and styling from perceptual color science (OKLCH) and outputs HTML compiled and exported to PNGs using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed). Google Fonts are vendored deterministically (data-URI woff2 + on-disk cache) so exports are identical regardless of network state.
 
-This root router navigates you to the specialized sub-skills for using SlideForge in the most effective manner. SlideForge exposes **46 active slide types** across 5 layout families.
+This root router navigates you to the specialized sub-skills for using Deckmill in the most effective manner. Deckmill exposes **46 active slide types** across 5 layout families.
 
 ---
 
@@ -36,10 +36,10 @@ Descend into the child skill matching your current step (relative to this suite'
 ## Infrastructure Notes (Blitz Renderer Era)
 
 - **No Chromium:** PNG export runs fully in-process (stylo layout + vello-cpu). The `setup` command is a no-op. No browser download or headless-chrome dependency exists.
-- **Deterministic fonts:** Google Fonts stylesheets are fetched once, rewritten to inline `data:font/woff2` URLs, and cached under `$SLIDEFORGE_FONT_CACHE` (default `~/.cache/slideforge/fonts`). Text never falls back per-glyph due to network races. On a fully offline machine, cached faces are reused; uncached styles degrade to local fallbacks rather than failing the export.
+- **Deterministic fonts:** Google Fonts stylesheets are fetched once, rewritten to inline `data:font/woff2` URLs, and cached under `$DECKMILL_FONT_CACHE` (default `~/.cache/deckmill/fonts`). Text never falls back per-glyph due to network races. On a fully offline machine, cached faces are reused; uncached styles degrade to local fallbacks rather than failing the export.
 - **Selector caveat:** the stylo engine does **not** support the `:has()` CSS selector. Author custom HTML/CSS with explicit marker classes instead of relying on `:has()`.
-- **AXI-compliant CLI:** errors print to stdout with stable exit codes (usage=2, validation=1); `slideforge skill-guide --check` is the CI gate that keeps the committed SKILL.md in sync with the live command surface.
-- **Session hook:** a `SessionStart` hook (merged via `slideforge session-hook --merge`) prints a compact dashboard (recent decks, validator health) so agents get ambient context.
+- **AXI-compliant CLI:** errors print to stdout with stable exit codes (usage=2, validation=1); `deckmill skill-guide --check` is the CI gate that keeps the committed SKILL.md in sync with the live command surface.
+- **Session hook:** a `SessionStart` hook (merged via `deckmill session-hook --merge`) prints a compact dashboard (recent decks, validator health) so agents get ambient context.
 
 ---
 

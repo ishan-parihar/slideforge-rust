@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Full-scope SlideForge test: every slide type × complex multi-series charts × overflow stress-testing.
+Full-scope Deckmill test: every slide type × complex multi-series charts × overflow stress-testing.
 
 Generates a single carousel with all slide types in varied light/dark themes,
 including complex multi-column charts, multi-line charts, descriptions on all slides,
@@ -13,9 +13,9 @@ Usage:
 import json, os, subprocess, sys
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "full_scope_test")
 CAROUSEL_PATH = os.path.join(WORKSPACE_DIR, "dist", "full_scope_carousel.html")
@@ -61,7 +61,7 @@ SLIDES = [
     # ═══ SECTION: Hero & Dividers ═══
     {"section": "SECTION 1 — Hero & Dividers"},
     {"slide_type": "section_divider", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"kicker": "COMPREHENSIVE AUDIT", "title": "SlideForge Engine Evaluation", "subtitle": "Full visual layout, typography, and dataviz stress test."}},
+     "params": {"kicker": "COMPREHENSIVE AUDIT", "title": "Deckmill Engine Evaluation", "subtitle": "Full visual layout, typography, and dataviz stress test."}},
 
     # ═══ SECTION: Feature & Grid Cards ═══
     {"section": "SECTION 2 — Feature & Grid Cards"},
@@ -110,7 +110,7 @@ SLIDES = [
                 "fact": "Clinical trials show no statistically significant difference in weight loss between breakfast eaters and skippers.",
                 "explanation": "Meta-analyses demonstrate total daily caloric deficit and macronutrient distribution determine weight outcomes, regardless of breakfast intake timing."}},
     {"slide_type": "problem_solution", "theme": "editorial", "bg_style": "light", "archetype": "startup_pitch",
-     "params": {"title": "Market Disruption", "problem": "Legacy presentation tools require hours of manual layout tweaking.", "solution": "SlideForge turns structured JSON into polished carousels instantly.",
+     "params": {"title": "Market Disruption", "problem": "Legacy presentation tools require hours of manual layout tweaking.", "solution": "Deckmill turns structured JSON into polished carousels instantly.",
                 "proof_points": [{"title": "10x Faster", "description": "Instant generation"}, {"title": "100% Consistent", "description": "Design system governed"}]}},
 
     # ═══ SECTION: Complex Multi-Column & Multi-Series Dataviz ═══
@@ -169,9 +169,9 @@ SLIDES = [
     # ═══ SECTION: Conversion & Call to Action ═══
     {"section": "SECTION 7 — Conversion & CTAs"},
     {"slide_type": "qr_destination", "theme": "bold", "bg_style": "light", "archetype": "startup_pitch",
-     "params": {"title": "Scan to Try SlideForge Live", "heading": "Instant Interactive Demo", "destination_url": "https://slideforge.dev/demo", "short_url": "slideforge.dev/demo", "cta_text": "Scan QR Code for Instant Access", "caption": "Scan with any smartphone camera to open the interactive sandbox immediately."}},
+     "params": {"title": "Scan to Try Deckmill Live", "heading": "Instant Interactive Demo", "destination_url": "https://deckmill.dev/demo", "short_url": "deckmill.dev/demo", "cta_text": "Scan QR Code for Instant Access", "caption": "Scan with any smartphone camera to open the interactive sandbox immediately."}},
     {"slide_type": "cta", "theme": "editorial", "bg_style": "dark", "archetype": "thought_leader",
-     "params": {"headline": "Start Building Presentations in Rust Today", "button_text": "Get Started Free", "button_url": "https://github.com/ishan-parihar/slideforge-rust", "subtext": "Built with high-performance Rust for sub-10ms slide rendering and instant export."}},
+     "params": {"headline": "Start Building Presentations in Rust Today", "button_text": "Get Started Free", "button_url": "https://github.com/ishan-parihar/deckmill", "subtext": "Built with high-performance Rust for sub-10ms slide rendering and instant export."}},
 
     # ═══ SECTION: Hero & Social Proof ═══
     {"section": "SECTION 8 — Hero & Social Proof"},
@@ -210,9 +210,9 @@ SLIDES = [
      "params": {"title": "Critical Architecture Note", "text": "Always validate layout bounds before exporting production PNG assets to guarantee zero visual regressions.", "icon": "💡"}},
     {"slide_type": "faq", "theme": "editorial", "bg_style": "light", "archetype": "educator",
      "params": {"title": "Frequently Asked Questions", "questions": [
-         {"question": "Is SlideForge open source?", "answer": "Yes, SlideForge is built in Rust under the MIT license."},
+         {"question": "Is Deckmill open source?", "answer": "Yes, Deckmill is built in Rust under the MIT license."},
          {"question": "Can I export to PDF & PNG?", "answer": "Yes, PDF and PNG rasterization are supported natively."},
-         {"question": "How fast is slide compilation?", "answer": "SlideForge compiles a 10-slide carousel in under 10ms."},
+         {"question": "How fast is slide compilation?", "answer": "Deckmill compiles a 10-slide carousel in under 10ms."},
          {"question": "Does it support custom themes?", "answer": "Yes, design tokens and color palettes are fully configurable."},
          {"question": "Is there MCP server integration?", "answer": "Yes, built-in MCP server for AI agent workflow automation."},
          {"question": "Does it handle text overflow?", "answer": "Yes, dynamic font scaling prevents body viewport overflows."}
@@ -223,7 +223,7 @@ SLIDES = [
     {"slide_type": "metric_grid", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Key Telemetry Metrics", "metrics": [{"value": "10ms", "label": "Compile Latency"}, {"value": "85+", "label": "Unit Tests"}, {"value": "47", "label": "Slide Types"}, {"value": "100%", "label": "Token Compliance"}]}},
     {"slide_type": "case_study_result", "theme": "bold", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"client": "TechCorp Case Study", "challenge": "Manual deck creation was taking 15+ hours weekly per designer.", "solution": "Deployed SlideForge CLI & MCP server automation across team.", "results": [{"number": "80%", "label": "Time Saved"}, {"number": "5x", "label": "Output Increase"}]}},
+     "params": {"client": "TechCorp Case Study", "challenge": "Manual deck creation was taking 15+ hours weekly per designer.", "solution": "Deployed Deckmill CLI & MCP server automation across team.", "results": [{"number": "80%", "label": "Time Saved"}, {"number": "5x", "label": "Output Increase"}]}},
     {"slide_type": "scatter_plot", "theme": "editorial", "bg_style": "light", "archetype": "data_analyst",
      "params": {"title": "Latency vs Character Density Correlation", "x_label": "Character Mass", "y_label": "Latency (ms)", "data": [{"x": 100, "y": 2.1}, {"x": 250, "y": 3.4}, {"x": 500, "y": 5.2}, {"x": 800, "y": 7.8}]}},
 
@@ -294,10 +294,10 @@ print(f"Step 3: Rendering carousel with {len(compiled_slides)} slides...")
 cmd_carousel = [
     BIN, "render-carousel", SLIDES_FILE,
     "--tokens-file", TOKENS_FILE,
-    "--brand-name", "SLIDEFORGE",
-    "--brand-handle", "@slideforge",
+    "--brand-name", "DECKMILL",
+    "--brand-handle", "@deckmill",
     "--topic", "SYSTEM AUDIT",
-    "--url", "slideforge.dev",
+    "--url", "deckmill.dev",
     "--hashtags", "rust,slides",
     "--output", CAROUSEL_PATH
 ]

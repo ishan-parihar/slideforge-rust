@@ -12,8 +12,8 @@
 //! CSS2 URL at export time, download the woff2 subsets, and inline them as
 //! `data:font/woff2;base64,…` `@font-face` src. A data: URI is available
 //! synchronously when the document is parsed — no fetch, no race, deterministic
-//! output. Results are cached on disk (`~/.cache/slideforge/fonts/`, or
-//! `$SLIDEFORGE_FONT_CACHE`) keyed by the stylesheet URL, so repeat exports are
+//! output. Results are cached on disk (`~/.cache/deckmill/fonts/`, or
+//! `$DECKMILL_FONT_CACHE`) keyed by the stylesheet URL, so repeat exports are
 //! offline after the first fetch.
 //!
 //! Failure is always graceful: if any fetch fails (offline, blocked network,
@@ -32,14 +32,14 @@ use std::path::{Path, PathBuf};
 const GF_UA: &str =
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
 
-/// Cache directory for vendored font stylesheets. `$SLIDEFORGE_FONT_CACHE`
-/// wins; otherwise `~/.cache/slideforge/fonts`. `None` when neither is set
+/// Cache directory for vendored font stylesheets. `$DECKMILL_FONT_CACHE`
+/// wins; otherwise `~/.cache/deckmill/fonts`. `None` when neither is set
 /// (rendering still works, just without the on-disk cache).
 pub fn font_cache_dir() -> Option<PathBuf> {
-    if let Some(dir) = std::env::var_os("SLIDEFORGE_FONT_CACHE") {
+    if let Some(dir) = std::env::var_os("DECKMILL_FONT_CACHE") {
         return Some(PathBuf::from(dir));
     }
-    std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache/slideforge/fonts"))
+    std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".cache/deckmill/fonts"))
 }
 
 /// Small stable hash (FNV-1a) used as the cache key for a font stylesheet URL.

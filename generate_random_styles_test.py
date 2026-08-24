@@ -13,7 +13,7 @@ import sys
 import tempfile
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(REPO, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(REPO, "dist", "deckmill-x86_64-linux-gnu")
 OUT_DIR = os.path.join(REPO, "dist", "random_styles_exports")
 OUT_CAROUSEL = os.path.join(REPO, "dist", "random_styles_carousel.html")
 OUT_SLIDES = os.path.join(REPO, "dist", "random_styles_test", "compiled_slides.json")
@@ -59,7 +59,7 @@ def generate_tokens(primary, style, preset="tonal_spot"):
 
 
 def run_generate(stype, params, variant, tokens_file, theme, bg, arch, idx):
-    """Run slideforge generate-slide with --output tempfile pattern."""
+    """Run deckmill generate-slide with --output tempfile pattern."""
     if variant:
         params = dict(params)
         params["variant"] = variant
@@ -82,22 +82,22 @@ def run_generate(stype, params, variant, tokens_file, theme, bg, arch, idx):
 # ── Slide examples (same content, but style params will be randomized) ──
 EXAMPLES = [
     # ── Openers & Hooks
-    ("hero", "centered", {"headline": "Ship slides in minutes", "subheadline": "47 types, 28 presets, 1 CLI", "badge": "SlideForge", "tagline": "Design system CLI"}, "Openers & Hooks"),
-    ("hero", "split", {"headline": "Beautiful by default", "subheadline": "Editorial themes tuned for carousels", "badge": "SlideForge", "tagline": "Visual proof", "metric_value": "47", "metric_label": "slide types", "background_image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop&auto=format"}, "Openers & Hooks"),
+    ("hero", "centered", {"headline": "Ship slides in minutes", "subheadline": "47 types, 28 presets, 1 CLI", "badge": "Deckmill", "tagline": "Design system CLI"}, "Openers & Hooks"),
+    ("hero", "split", {"headline": "Beautiful by default", "subheadline": "Editorial themes tuned for carousels", "badge": "Deckmill", "tagline": "Visual proof", "metric_value": "47", "metric_label": "slide types", "background_image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop&auto=format"}, "Openers & Hooks"),
     ("hero", "chapter", {"headline": "The Composition Layer", "subheadline": "How slides are authored", "badge": "Chapter 3"}, "Openers & Hooks"),
     # ── Narrative & Story
     ("problem_solution", "default", {"title": "The slide problem", "problem": "Design systems break at scale — tokens drift, components diverge.", "solution": "Compile-time validation catches violations before they ship.", "proof_points": "94 tests. Real-time composition check. Runtime geometry.", "description": "Every deck is a constraint satisfaction problem at fixed geometry."}, "Narrative & Story"),
     ("myth_fact", "default", {"myth": "Slide decks are just static images.", "fact": "They are runtime composition decisions against an aspect-ratio canvas.", "explanation": "Every layout is a constraint satisfaction problem at fixed geometry."}, "Narrative & Story"),
-    ("before_after_story", "default", {"before": "Manual 4-hour deck", "after": "5-minute CLI run", "title": "The shift", "metric": "48x faster", "metric_label": "Speed improvement", "description": "SlideForge cuts deck production time from hours to minutes."}, "Narrative & Story"),
-    ("case_study_result", "default", {"client": "TechCorp", "challenge": "12-deck/month, 3-day lag", "solution": "Adopted SlideForge CLI", "description": "A single automation pipeline replaced an entire team's manual workflow.", "results": [{"metric": "3x", "label": "Content velocity"}, {"metric": "0", "label": "Token violations"}]}, "Narrative & Story"),
+    ("before_after_story", "default", {"before": "Manual 4-hour deck", "after": "5-minute CLI run", "title": "The shift", "metric": "48x faster", "metric_label": "Speed improvement", "description": "Deckmill cuts deck production time from hours to minutes."}, "Narrative & Story"),
+    ("case_study_result", "default", {"client": "TechCorp", "challenge": "12-deck/month, 3-day lag", "solution": "Adopted Deckmill CLI", "description": "A single automation pipeline replaced an entire team's manual workflow.", "results": [{"metric": "3x", "label": "Content velocity"}, {"metric": "0", "label": "Token violations"}]}, "Narrative & Story"),
 
     # ── Social Proof & Trust
-    ("testimonial_avatar", "default", {"quote": "Our marketing team generates 3x more content since adopting SlideForge.", "author": "James Park", "role": "CMO, GrowthCo"}, "Social Proof & Trust"),
+    ("testimonial_avatar", "default", {"quote": "Our marketing team generates 3x more content since adopting Deckmill.", "author": "James Park", "role": "CMO, GrowthCo"}, "Social Proof & Trust"),
     ("logo_cloud", "default", {"title": "Trusted by", "logos": ["TechCorp", "ScaleUp", "GrowthCo", "InnovateLabs", "CloudBase", "DataDrive"]}, "Social Proof & Trust"),
     ("quote", "default", {"quote": "We replaced our entire slide toolchain with a single CLI command.", "author": "Elena Rodriguez", "role": "Head of Design, ScaleUp"}, "Social Proof & Trust"),
 
     # ── Data & Metrics
-    ("chart", "bar", {"title": "Weekly output", "chart_type": "bar", "description": "Content velocity grew 167% over four weeks with SlideForge.", "data": [{"label": "Wk1", "value": 12}, {"label": "Wk2", "value": 18}, {"label": "Wk3", "value": 25}, {"label": "Wk4", "value": 32}]}, "Data & Metrics"),
+    ("chart", "bar", {"title": "Weekly output", "chart_type": "bar", "description": "Content velocity grew 167% over four weeks with Deckmill.", "data": [{"label": "Wk1", "value": 12}, {"label": "Wk2", "value": 18}, {"label": "Wk3", "value": 25}, {"label": "Wk4", "value": 32}]}, "Data & Metrics"),
     ("chart", "pie", {"title": "Slide distribution", "chart_type": "pie", "description": "Image and data slides make up over half of the composition.", "data": [{"label": "Hero", "value": 4}, {"label": "Data", "value": 6}, {"label": "Image", "value": 8}, {"label": "Story", "value": 5}]}, "Data & Metrics"),
     ("chart", "line", {"title": "Engagement over time", "chart_type": "line", "description": "Engagement grew 192% from January through April.", "data": [{"label": "Jan", "value": 12}, {"label": "Feb", "value": 19}, {"label": "Mar", "value": 28}, {"label": "Apr", "value": 35}]}, "Data & Metrics"),
     ("chart", "vertical", {"title": "Quarterly comparison", "chart_type": "bar_vertical", "description": "Q4 output peaked at 67 units, a 60% increase over Q1.", "data": [{"label": "Q1", "value": 42}, {"label": "Q2", "value": 58}, {"label": "Q3", "value": 51}, {"label": "Q4", "value": 67}]}, "Data & Metrics"),
@@ -107,13 +107,13 @@ EXAMPLES = [
     ("table", "default", {"title": "Benchmark results", "headers": ["Engine", "Speed", "Quality"], "rows": [["HTML", "fast", "high"], ["Canvas", "med", "med"], ["SVG", "slow", "high"]]}, "Data & Metrics"),
     ("metric_grid", "default", {"title": "Pipeline metrics", "description": "Compile latency, type coverage, and preset calibration measured on the release pipeline.", "metrics": [{"value": "<10ms", "label": "Compile time", "progress": 0.95}, {"value": "47", "label": "Slide types", "current": 47, "total": 50}, {"value": "28", "label": "Presets", "current": 28, "total": 40}, {"value": "100%", "label": "Validated", "progress": 1.0}]}, "Data & Metrics"),
     ("progress_rings", "default", {"title": "Project coverage", "description": "Build and test are near-complete; deployment is the bottleneck.", "items": [{"label": "Build", "value": 95}, {"label": "Test", "value": 88}, {"label": "Deploy", "value": 72}]}, "Data & Metrics"),
-    ("comparison_bars", "default", {"title": "Speed comparison", "description": "SlideForge cuts production time by a third.", "comparison": {"entity_a": "Manual", "value_a": 60, "entity_b": "SlideForge", "value_b": 40, "metric": "Minutes per deck"}}, "Data & Metrics"),
+    ("comparison_bars", "default", {"title": "Speed comparison", "description": "Deckmill cuts production time by a third.", "comparison": {"entity_a": "Manual", "value_a": 60, "entity_b": "Deckmill", "value_b": 40, "metric": "Minutes per deck"}}, "Data & Metrics"),
     ("funnel_chart", "default", {"title": "Conversion funnel", "description": "6.4% of visitors convert to paid after activation.", "steps": [{"label": "Visitors", "value": 1000}, {"label": "Sign-ups", "value": 420}, {"label": "Activated", "value": 180}, {"label": "Paid", "value": 64}]}, "Data & Metrics"),
 
     # ── Structured Content
     ("split_features", "default", {"title": "Built for production", "features": [{"title": "Deterministic", "description": "Same input, same output."}, {"title": "Validated", "description": "Compile-time overflow check."}, {"title": "Fast", "description": "<10ms per slide."}]}, "Structured Content"),
-    ("definition", "default", {"term": "SlideForge", "definition": "A 4:5-first slide composition system.", "phonetic": "/slaɪd fɔːrdʒ/", "context": "Composition system, not just a renderer."}, "Structured Content"),
-    ("text_block", "default", {"title": "Why 4:5?", "body": "Composition is authored inside a 420×525 base canvas. Final aspect ratios are derived by fitting, not redesigning — backgrounds bleed, content does not recompose.", "eyebrow": "EDITORIAL", "meta": "Read time: 2 min • By SlideForge Team"}, "Structured Content"),
+    ("definition", "default", {"term": "Deckmill", "definition": "A 4:5-first slide composition system.", "phonetic": "/slaɪd fɔːrdʒ/", "context": "Composition system, not just a renderer."}, "Structured Content"),
+    ("text_block", "default", {"title": "Why 4:5?", "body": "Composition is authored inside a 420×525 base canvas. Final aspect ratios are derived by fitting, not redesigning — backgrounds bleed, content does not recompose.", "eyebrow": "EDITORIAL", "meta": "Read time: 2 min • By Deckmill Team"}, "Structured Content"),
     ("process_map", "default", {"title": "Build pipeline", "steps": [{"label": "Tokens", "description": "Configure design system"}, {"label": "Preset", "description": "Pick from 28 or compose"}, {"label": "Fill", "description": "AI fills content"}, {"label": "Validate", "description": "Compile-time check"}, {"label": "Export", "description": "PNG via Chromium"}]}, "Structured Content"),
     ("timeline", "default", {"title": "Release history", "steps": [{"label": "v1", "description": "Initial release"}, {"label": "v2", "description": "Pool composition"}, {"label": "v3", "description": "Validation suite"}, {"label": "v4", "description": "27 presets + audit"}]}, "Structured Content"),
     ("faq", "default", {"title": "Common questions", "questions": [{"q": "Does it work offline?", "a": "Yes. Fully self-contained binary."}, {"q": "Custom fonts?", "a": "Define in design tokens JSON."}, {"q": "Python SDK?", "a": "Subprocess calls work today."}]}, "Structured Content"),
@@ -129,7 +129,7 @@ EXAMPLES = [
     ("image_comparison", "default", {"before_image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=300&fit=crop", "after_image": "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400&h=300&fit=crop", "before_label": "Before", "after_label": "After", "description": "Manual 4-hour deck vs. 5-minute CLI run with compile-time validation."}, "Visual & Images"),
 
     # ── Call to Action
-    ("qr_destination", "default", {"destination_url": "https://crates.io/crates/slideforge", "cta_text": "Install Now", "heading": "Scan to install", "caption": "CLI installation via cargo", "short_url": "sgf.dev/install"}, "Call to Action"),
+    ("qr_destination", "default", {"destination_url": "https://crates.io/crates/deckmill", "cta_text": "Install Now", "heading": "Scan to install", "caption": "CLI installation via cargo", "short_url": "sgf.dev/install"}, "Call to Action"),
     ("big_statement", "default", {"heading": "Ship faster.", "body": "The slide engine for Rust.", "cta_text": "Get started"}, "Call to Action"),
     ("big_statement", "stat", {"heading": "Join the creators already shipping faster", "stat_value": "10,000+", "stat_label": "slides generated", "cta_text": "Get started"}, "Call to Action"),
     ("comment_cta", "default", {"heading": "Why you feel like you're not driving your own life", "sub_heading": "Lost your direction? The whole map is in the episode.", "cta_text": "Comment LISTEN and I'll DM you the link.", "keyword": "LISTEN"}, "Call to Action"),
@@ -208,9 +208,9 @@ print(f"\nStep 3: Rendering carousel with {len(compiled_slides)} slides...")
 subprocess.run([
     BIN, "render-carousel", OUT_SLIDES,
     "--tokens-file", token_cache[list(token_cache.keys())[0]],
-    "--brand-name", "SlideForge",
+    "--brand-name", "Deckmill",
     "--topic", "RANDOMIZED-STYLES-AUDIT",
-    "--url", "slideforge.dev",
+    "--url", "deckmill.dev",
     "--hashtags", "#slides #rust",
     "--progress-style", PROGRESS_STYLES[0],
     "--output", OUT_CAROUSEL
@@ -290,7 +290,7 @@ viewer_html = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>SlideForge — Randomized Styles Audit</title>
+<title>Deckmill — Randomized Styles Audit</title>
 <style>
 :root {{
   --bg: #0a0b10;
@@ -345,7 +345,7 @@ h1 {{ font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom:
 </head>
 <body>
 
-<h1>SlideForge — Randomized Styles Audit</h1>
+<h1>Deckmill — Randomized Styles Audit</h1>
 <p class="subtitle">
   {len(slide_metas)} slides rendered with randomized font pairing × bg_style × visual theme × type_scale × primary color.
   Each slide uses a different combination to stress-test the full style matrix.

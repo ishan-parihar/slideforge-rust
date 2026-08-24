@@ -42,7 +42,7 @@ pub fn truncate_str(s: &str, max: usize) -> String {
 /// AXI §3: Recursively truncate long string fields in a JSON value.
 ///
 /// Fields exceeding `max_chars` are truncated with a total-length indicator.
-/// Used by both slideforge-rust and social-forge at the output boundary.
+/// Used by both deckmill and social-forge at the output boundary.
 pub fn truncate_json_strings(value: &serde_json::Value, max_chars: usize) -> serde_json::Value {
     match value {
         serde_json::Value::Object(map) => {

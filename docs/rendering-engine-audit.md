@@ -1,6 +1,6 @@
 # Rendering Engine Audit — blitz vs Servo vs Chrome
 
-> **Date:** 2026-08-06 · **Scope:** style-level and font-level rendering bugs in SlideForge
+> **Date:** 2026-08-06 · **Scope:** style-level and font-level rendering bugs in Deckmill
 > **Status:** Root causes confirmed empirically. **Phase 1 (marker-class bleed refactor) + Phase 2 (deterministic font loading) + Phase 3 (validator gate) IMPLEMENTED** (2026-08-06). Phase 4 (Servo) optional/later.
 > **Auditor:** Buffy (agent) on behalf of the maintainer.
 >
@@ -9,8 +9,8 @@
   inline `data:font/woff2;base64,…` `@font-face` rules so the blitz renderer
   registers every glyph synchronously — zero async per-glyph fallback race.
   Injectable fetchers for hermetic tests; shared reqwest blocking client (one
-  TLS session per vendor pass); FNV-1a disk cache under `~/.cache/slideforge/fonts`
-  or `$SLIDEFORGE_FONT_CACHE`; graceful fallback to the original `<link>` on any
+  TLS session per vendor pass); FNV-1a disk cache under `~/.cache/deckmill/fonts`
+  or `$DECKMILL_FONT_CACHE`; graceful fallback to the original `<link>` on any
   fetch failure (exports never fail on fonts).
 - `src/export.rs`: `build_standalone_slide_doc` now filters the carousel's font
   links per slide (keeps only the families the slide's `--font-heading` /
@@ -89,7 +89,7 @@ font-fallback correctness *and* accept the memory/rewrite cost.
 
 ## 2. Evidence — blitz CSS support matrix (empirical)
 
-Method: minimal HTML documents rendered through `slideforge preview-slide`
+Method: minimal HTML documents rendered through `deckmill preview-slide`
 (current release binary), pixel-detected whether each rule applied.
 
 | Feature | Result | Notes |

@@ -20,7 +20,7 @@
     "params": {
       "headline": "Building the Future of Slide Design",
       "subheadline": "A comprehensive system for beautiful, data-driven presentations.",
-      "badge": "SlideForge v0.3"
+      "badge": "Deckmill v0.3"
     }
   },
   {
@@ -663,9 +663,9 @@
     "variant": "",
     "params": {
       "headline": "Start Building Beautiful Slides",
-      "subtext": "Try SlideForge free \u2014 no credit card required.",
+      "subtext": "Try Deckmill free \u2014 no credit card required.",
       "button_text": "Get Started",
-      "button_url": "https://slideforge.dev"
+      "button_url": "https://deckmill.dev"
     }
   },
   {
@@ -738,7 +738,7 @@
     "params": {
       "quote": "This is an extremely long quote designed to test whether the quote slide properly handles text overflow. The quote should scale down gracefully and remain readable without clipping or extending beyond the slide boundaries. Good design means content always fits.",
       "author": "Test Author Name",
-      "role": "QA Engineer, SlideForge"
+      "role": "QA Engineer, Deckmill"
     }
   }
 ]

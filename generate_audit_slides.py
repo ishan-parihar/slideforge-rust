@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate audit slides using the proper SlideForge pipeline.
+"""Generate audit slides using the proper Deckmill pipeline.
 
 Pipeline: configure-design → generate-slide (with --tokens-file) → render-carousel → export
 This ensures slides get the correct corner elements, progress breadcrumbs,
@@ -12,7 +12,7 @@ import sys
 import os
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-SLIDEFORGE_BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+DECKMILL_BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 TOKENS_FILE = os.path.join(WORKSPACE_DIR, "audit_tokens.json")
 SLIDES_JSON_FILE = os.path.join(WORKSPACE_DIR, "audit_slides.json")
@@ -37,7 +37,7 @@ def run_cmd(cmd, desc=""):
 
 # ─── Slide definitions ───
 # Each slide uses the proper slide_type, theme, bg_style, archetype, and params
-# that the SlideForge pipeline expects.
+# that the Deckmill pipeline expects.
 
 SLIDES = [
     # ══════════════════════════════════════════════════════════════
@@ -472,8 +472,8 @@ def main():
     os.makedirs(os.path.dirname(OUTPUT_HTML_FILE), exist_ok=True)
     os.makedirs(EXPORT_DIR, exist_ok=True)
 
-    print("🔍 SlideForge Audit — Proper Pipeline")
-    print(f"   Binary: {SLIDEFORGE_BIN}")
+    print("🔍 Deckmill Audit — Proper Pipeline")
+    print(f"   Binary: {DECKMILL_BIN}")
     print(f"   Tokens: {TOKENS_FILE}")
     print(f"   Output: {OUTPUT_HTML_FILE}")
     print()
@@ -481,7 +481,7 @@ def main():
     # Step 1: Configure design tokens
     print("Step 1: Configuring design tokens...")
     run_cmd([
-        SLIDEFORGE_BIN, "configure-design", "#767CFF",
+        DECKMILL_BIN, "configure-design", "#767CFF",
         "--style", "editorial",
         "--preset", "expressive",
         "--output", TOKENS_FILE,
@@ -498,7 +498,7 @@ def main():
 
         params_json = json.dumps(slide["params"])
         cmd = [
-            SLIDEFORGE_BIN, "generate-slide", slide_type,
+            DECKMILL_BIN, "generate-slide", slide_type,
             "--tokens-file", TOKENS_FILE,
             "--theme", slide["theme"],
             "--bg-style", slide["bg_style"],
@@ -527,13 +527,13 @@ def main():
     # Step 3: Render carousel
     print("\nStep 3: Rendering carousel...")
     run_cmd([
-        SLIDEFORGE_BIN, "render-carousel", SLIDES_JSON_FILE,
+        DECKMILL_BIN, "render-carousel", SLIDES_JSON_FILE,
         "--tokens-file", TOKENS_FILE,
-        "--brand-name", "SlideForge Audit",
-        "--brand-handle", "@slideforge",
+        "--brand-name", "Deckmill Audit",
+        "--brand-handle", "@deckmill",
         "--topic", "Layout & Dataviz Upgrade",
-        "--url", "slideforge.dev",
-        "--hashtags", "slideforge,data-viz,column-chart,line-chart",
+        "--url", "deckmill.dev",
+        "--hashtags", "deckmill,data-viz,column-chart,line-chart",
         "--platform", "instagram_portrait",
         "--aspect-ratio", "4:5",
         "--show-progress",
@@ -545,7 +545,7 @@ def main():
     print("\nStep 4: Exporting PNGs...")
     slide_count = str(len(compiled_slides))
     run_cmd([
-        SLIDEFORGE_BIN, "export", OUTPUT_HTML_FILE,
+        DECKMILL_BIN, "export", OUTPUT_HTML_FILE,
         "--slides", slide_count,
         "--output-dir", EXPORT_DIR,
         "--preset", "instagram_portrait",

@@ -1,8 +1,8 @@
-# SlideForge Layout Fixes & Data Visualization Upgrade Plan
+# Deckmill Layout Fixes & Data Visualization Upgrade Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement visual layout corrections (font scaling, raw-string bullet point fallbacks, single-CTA deck validation rules) and upgrade SlideForge to support multi-dimensional/grouped series charts.
+**Goal:** Implement visual layout corrections (font scaling, raw-string bullet point fallbacks, single-CTA deck validation rules) and upgrade Deckmill to support multi-dimensional/grouped series charts.
 
 **Architecture:** Modify `grid_cards_slide` and `myth_fact_slide` to dynamically adjust font sizes and padding based on content mass. Upgrade `list_slide` to support raw string fallbacks, and introduce a deck-level CTA validator. Implement grouped flexbox columns in `column_chart_slide` and multi-path SVG rendering in `render_svg_line_chart`.
 

@@ -21,7 +21,7 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).parent
-BIN = REPO / "dist" / "slideforge-x86_64-linux-gnu"
+BIN = REPO / "dist" / "deckmill-x86_64-linux-gnu"
 OUT_DIR = REPO / "dist" / "typology_samples"
 OUT_CAROUSEL = REPO / "dist" / "typology_carousel.html"
 OUT_SLIDES = REPO / "dist" / "typology_test" / "compiled_slides.json"
@@ -40,7 +40,7 @@ FAMILIES = [
 PRIMARIES = ["#1E3A8A", "#C62828", "#1B5E20", "#0F172A", "#7C3AED", "#B45309"]
 
 SLIDE_POOL = [
-    ("hero", "centered", {"headline": "A bolder brief, built for the feed", "subheadline": "Typology-tuned in one flag.", "badge": "SlideForge"}),
+    ("hero", "centered", {"headline": "A bolder brief, built for the feed", "subheadline": "Typology-tuned in one flag.", "badge": "Deckmill"}),
     ("quote", "default", {"quote": "Design is the silent language of trust.", "author": "Studio Notes"}),
     ("big_statement", "stat", {"heading": "One engine, ten moods", "cta_text": "Explore", "stat": "12×"}),
     ("funnel_chart", "default", {
@@ -77,7 +77,7 @@ LIGHT_BG_TYPOLOGIES = {"editorial", "startup", "playful", "data"}
 
 
 def run_generate(slide_type, params, variant, tokens_file, typology, family, primary, idx, bg_hint=None):
-    """Run slideforge generate-slide with typology flags + --output tempfile pattern."""
+    """Run deckmill generate-slide with typology flags + --output tempfile pattern."""
     params = dict(params)
     params["variant"] = variant
     tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
@@ -134,9 +134,9 @@ def render_carousel(slides, tokens_file):
     subprocess.run([
         str(BIN), "render-carousel", str(OUT_SLIDES),
         "--tokens-file", tokens_file,
-        "--brand-name", "SlideForge",
+        "--brand-name", "Deckmill",
         "--topic", "TYPOLOGY-SAMPLE-SPACE",
-        "--url", "slideforge.dev",
+        "--url", "deckmill.dev",
         "--hashtags", "#slides #typology",
         "--output", str(OUT_CAROUSEL),
     ], check=True, capture_output=True)
@@ -190,7 +190,7 @@ def build_viewer(metas):
         for m in metas
     )
     viewer = """<!doctype html><html><head><meta charset="utf-8">
-<title>SlideForge Typology Sample Space</title>
+<title>Deckmill Typology Sample Space</title>
 <style>
  body { font:14px/1.5 system-ui; background:#0e1116; color:#e6e6e6; padding:24px; }
  h1 { font-size:20px; } .filter { margin:12px 0; display:flex; gap:8px; flex-wrap:wrap; }
@@ -203,7 +203,7 @@ def build_viewer(metas):
  .sub { color:#6b7c8d; font-size:11px; }
  .count { color:#8b94a5; }
 </style></head><body>
-<h1>SlideForge · Typology Sample Space <span class="count">(__N__ samples)</span></h1>
+<h1>Deckmill · Typology Sample Space <span class="count">(__N__ samples)</span></h1>
 <div class="filter">
   <button class="on" data-f="all">All</button>
 __BUTTONS__

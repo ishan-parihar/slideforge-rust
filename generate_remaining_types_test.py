@@ -17,9 +17,9 @@ Usage:
 import json, os, subprocess, sys, tempfile
 
 WORKSPACE_DIR = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(WORKSPACE_DIR, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(WORKSPACE_DIR, "dist", "deckmill-x86_64-linux-gnu")
 if not os.path.exists(BIN):
-    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "slideforge-rust")
+    BIN = os.path.join(WORKSPACE_DIR, "target", "release", "deckmill")
 
 OUTPUT_DIR = os.path.join(WORKSPACE_DIR, "dist", "remaining_types_test")
 CAROUSEL_PATH = os.path.join(WORKSPACE_DIR, "dist", "remaining_types_carousel.html")
@@ -86,17 +86,17 @@ SLIDES = [
      "params": {"title": "Code Review Process", "before": "3-day average review cycle, 40% of comments unresolved, tribal knowledge lost in Slack threads.", "after": "Same-day reviews with automated linting, structured feedback templates, and persistent decision logs.", "metric": "3x", "metric_label": "Faster reviews"}},
 
     {"slide_type": "case_study_result", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"client": "TechCorp Inc.", "challenge": "Engineering team spending 12 hours/week on manual report generation instead of building features.", "solution": "Implemented SlideForge CLI pipeline integrated with their CI/CD to auto-generate stakeholder decks.", "results": "Report generation dropped to 15 minutes/week. Engineering velocity increased 23%. Stakeholder satisfaction score went from 3.2 to 4.7."}},
+     "params": {"client": "TechCorp Inc.", "challenge": "Engineering team spending 12 hours/week on manual report generation instead of building features.", "solution": "Implemented Deckmill CLI pipeline integrated with their CI/CD to auto-generate stakeholder decks.", "results": "Report generation dropped to 15 minutes/week. Engineering velocity increased 23%. Stakeholder satisfaction score went from 3.2 to 4.7."}},
 
     {"slide_type": "case_study_result", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
      "variant": "results-grid",
      "params": {"challenge": "Marketing team unable to produce on-brand social content at the pace of product launches.", "solution": "Deployed 28 campaign presets with pool-based composition for rapid carousel generation.", "results": "Content production speed: 5x faster. Brand consistency score: 94%. Monthly output: 12 decks → 60 decks.", "title": "Content Velocity Case Study"}},
 
     {"slide_type": "myth_fact", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"myth": "AI-generated slides always look generic and templated.", "fact": "With proper design tokens, archetypes, and composition constraints, AI-generated slides match or exceed hand-crafted quality.", "explanation": "The key is systematic design systems, not prompt engineering alone. SlideForge's 47-type registry ensures visual coherence across any composition."}},
+     "params": {"myth": "AI-generated slides always look generic and templated.", "fact": "With proper design tokens, archetypes, and composition constraints, AI-generated slides match or exceed hand-crafted quality.", "explanation": "The key is systematic design systems, not prompt engineering alone. Deckmill's 47-type registry ensures visual coherence across any composition."}},
 
     {"slide_type": "myth_fact", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
-     "params": {"myth": "You need a design tool to create professional presentations.", "fact": "Code-first slide pipelines produce consistent, version-controllable, API-automatable output that scales beyond what manual tools allow.", "explanation": "SlideForge generates HTML+CSS slides from JSON specs, rendered to PNG via headless Chromium."}},
+     "params": {"myth": "You need a design tool to create professional presentations.", "fact": "Code-first slide pipelines produce consistent, version-controllable, API-automatable output that scales beyond what manual tools allow.", "explanation": "Deckmill generates HTML+CSS slides from JSON specs, rendered to PNG via headless Chromium."}},
 
     {"slide_type": "problem_solution", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"problem": "Teams waste 6+ hours per week creating presentations manually, with inconsistent branding and frequent layout errors.", "solution": "CLI-driven slide generation with 47 validated types, design token enforcement, and automated overflow detection.", "proof_points": "Compile time under 10ms per slide. Zero manual layout fixes needed. 100% brand consistency across all generated output.", "title": "The Presentation Problem"}},
@@ -131,8 +131,8 @@ SLIDES = [
 
     {"slide_type": "faq", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Common Questions", "questions": [
-         {"q": "Does SlideForge work offline?", "a": "Yes. The binary is fully self-contained — no API calls, no internet required after install."},
-         {"q": "Can I use custom fonts?", "a": "Define fonts in your design tokens JSON. SlideForge renders any font available in the headless Chromium environment."},
+         {"q": "Does Deckmill work offline?", "a": "Yes. The binary is fully self-contained — no API calls, no internet required after install."},
+         {"q": "Can I use custom fonts?", "a": "Define fonts in your design tokens JSON. Deckmill renders any font available in the headless Chromium environment."},
          {"q": "What about accessibility?", "a": "All slides follow WCAG contrast ratios. The validator checks color contrast at build time."},
          {"q": "Is there a Python SDK?", "a": "Not yet. The CLI and MCP server are the primary interfaces. Python integration works via subprocess calls."}
      ]}},
@@ -163,7 +163,7 @@ SLIDES = [
      "params": {"image_url": IMG_OFFICE, "caption": "Modern slide creation is a systems problem, not a design problem. Solve it with code.", "description": "Office Environment"}},
 
     {"slide_type": "image_quote", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"image_url": IMG_NATURE, "quote": "The best slide is the one you never had to manually create.", "author": "SlideForge Team", "role": "Design Philosophy"}},
+     "params": {"image_url": IMG_NATURE, "quote": "The best slide is the one you never had to manually create.", "author": "Deckmill Team", "role": "Design Philosophy"}},
 
     {"slide_type": "image_callout", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"image_url": IMG_CODE, "callouts": [
@@ -173,7 +173,7 @@ SLIDES = [
      ], "description": "Architecture Overview"}},
 
     {"slide_type": "image_comparison", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"before_image": IMG_LAPTOP, "after_image": IMG_CITY, "before_label": "Before SlideForge", "after_label": "After SlideForge", "description": "From manual chaos to automated precision."}},
+     "params": {"before_image": IMG_LAPTOP, "after_image": IMG_CITY, "before_label": "Before Deckmill", "after_label": "After Deckmill", "description": "From manual chaos to automated precision."}},
 
     {"slide_type": "image_comparison", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
      "variant": "arrow",
@@ -193,7 +193,7 @@ SLIDES = [
          {"url": IMG_NATURE, "caption": "Scale"},
          {"url": IMG_CITY, "caption": "Precision"},
          {"url": IMG_TEAM, "caption": "Quality"}
-     ], "title": "SlideForge Capabilities", "variant": "scattered"}},
+     ], "title": "Deckmill Capabilities", "variant": "scattered"}},
 
     {"slide_type": "image_gallery", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"images": [
@@ -219,7 +219,7 @@ SLIDES = [
 
     {"slide_type": "testimonial_avatar", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
      "variant": "profile",
-     "params": {"quote": "Our marketing team generates 3x more content since adopting SlideForge. The quality hasn't dropped once.", "author": "James Park", "role": "CMO, GrowthCo"}},
+     "params": {"quote": "Our marketing team generates 3x more content since adopting Deckmill. The quality hasn't dropped once.", "author": "James Park", "role": "CMO, GrowthCo"}},
 
     {"slide_type": "logo_cloud", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Trusted By", "logos": [
@@ -245,11 +245,11 @@ SLIDES = [
     {"section": "SECTION 6 — Conversion"},
 
     {"slide_type": "qr_destination", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
-     "params": {"destination_url": "https://crates.io/crates/slideforge", "cta_text": "Install Now", "heading": "Scan to Install", "caption": "CLI installation via cargo", "short_url": "sgf.dev/install", "variant": "full-conversion"}},
+     "params": {"destination_url": "https://crates.io/crates/deckmill", "cta_text": "Install Now", "heading": "Scan to Install", "caption": "CLI installation via cargo", "short_url": "sgf.dev/install", "variant": "full-conversion"}},
 
     {"slide_type": "qr_destination", "theme": "bold", "bg_style": "light", "archetype": "data_analyst",
      "variant": "split-card",
-     "params": {"destination_url": "https://docs.slideforge.dev", "cta_text": "Open Docs", "heading": "Read the Docs", "caption": "Full API reference and guides", "short_url": "docs.sgfd.dev", "brand_name": "SlideForge"}},
+     "params": {"destination_url": "https://docs.deckmill.dev", "cta_text": "Open Docs", "heading": "Read the Docs", "caption": "Full API reference and guides", "short_url": "docs.sgfd.dev", "brand_name": "Deckmill"}},
 
     {"slide_type": "pricing_plan", "theme": "editorial", "bg_style": "dark", "archetype": "data_analyst",
      "params": {"title": "Choose Your Plan", "plans": [

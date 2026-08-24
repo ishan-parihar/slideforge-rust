@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SlideForge Ellipsis Manual Deck — 20-slide stress deck.
+"""Deckmill Ellipsis Manual Deck — 20-slide stress deck.
 
 Builds a 20-slide, content-dense carousel from "The Ellipsis Manual"
 (Chase Hughes) to stress-test overflow protection, hard caps, and the two
@@ -17,7 +17,7 @@ import sys
 import glob
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(REPO, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(REPO, "dist", "deckmill-x86_64-linux-gnu")
 OUT = os.path.join(REPO, "dist", "ellipsis_deck")
 os.makedirs(OUT, exist_ok=True)
 
@@ -61,7 +61,7 @@ def run_ok(cmd):
 
 def embed_local():
     """Exercise the local-filesystem image path: download a Pexels image to
-    /tmp, then run `slideforge embed-image` -> data URI."""
+    /tmp, then run `deckmill embed-image` -> data URI."""
     import urllib.request
     local = os.path.join("/tmp", "ellipsis_local_photo.jpg")
     if not os.path.exists(local):

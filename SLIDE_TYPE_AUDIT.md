@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-30
 **Source:** `dist/remaining_types_carousel.html` (regenerated from latest binary)
-**Authoritative references:** `src/components.rs`, `src/slide_registry.rs`, `docs/presets/campaign-presets.json`, `skills/slideforge/references/slide-types-manifest.md`
+**Authoritative references:** `src/components.rs`, `src/slide_registry.rs`, `docs/presets/campaign-presets.json`, `skills/deckmill/references/slide-types-manifest.md`
 
 ---
 
@@ -60,7 +60,7 @@ if item_count >= 6 { space_usage = 0.9; }  // synthetic bump into aggressive tie
 
 ---
 
-### A3. "SlideForge vs Manual" (slide 14, `comparison` cards variant)
+### A3. "Deckmill vs Manual" (slide 14, `comparison` cards variant)
 
 **Status:** Renders, but with `padding:80px 48px` — scaling branch NOT triggered (falls into "normal fit"). Does it actually overflow? Need to inspect.
 
@@ -183,7 +183,7 @@ Same calibration problem as A1. Real rendered card height with `padding:12px 16p
 4. **A4** — Decide on `comparison` `table` variant: remove (Option A) or keep with scaling (Option C).
 
 After each fix:
-- `cargo test` → `cargo build --release` → copy binary to `dist/slideforge-x86_64-linux-gnu`
+- `cargo test` → `cargo build --release` → copy binary to `dist/deckmill-x86_64-linux-gnu`
 - `python3 generate_remaining_types_test.py`
 - Inspect `dist/remaining_types_exports/slide_9.png, slide_12.png, slide_13.png, slide_14.png` for visible fit
 
@@ -195,7 +195,7 @@ For each INVESTIGATE item: read source for both slide types, produce a one-parag
 
 ### Phase 3 — Regen + verify
 
-`python3 generate_preset_slides.py`, `python3 generate_remaining_types_test.py`, `dist/slideforge-x86_64-linux-gnu validate-design` across all carousels.
+`python3 generate_preset_slides.py`, `python3 generate_remaining_types_test.py`, `dist/deckmill-x86_64-linux-gnu validate-design` across all carousels.
 
 ---
 

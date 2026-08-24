@@ -97,7 +97,7 @@ fn session_state_path() -> Option<std::path::PathBuf> {
     let home = std::env::var_os("HOME")?;
     Some(
         std::path::PathBuf::from(home)
-            .join(".slideforge")
+            .join(".deckmill")
             .join("session_state.json"),
     )
 }
@@ -427,7 +427,7 @@ pub struct StockImageRequest {
 pub struct PreviewSlideRequest {
     /// The slide HTML (from generate_slide's response `html` field).
     pub html: String,
-    /// Where to save the preview PNG. Defaults to /tmp/slideforge-preview.png.
+    /// Where to save the preview PNG. Defaults to /tmp/deckmill-preview.png.
     pub output_path: Option<String>,
 }
 
@@ -555,12 +555,12 @@ impl Server {
 
 #[tool_router(router = tool_router)]
 impl Server {
-    /// Load the SlideForge design guide and skill documentation. Returns the
+    /// Load the Deckmill design guide and skill documentation. Returns the
     /// full DESIGN-GUIDE.md content which includes slide type catalogs, design
     /// principles, example workflows, and best practices for AI agents.
     #[tool(
         name = "load_carousel_skill",
-        description = "Load the SlideForge design guide and skill documentation. Returns the full DESIGN-GUIDE.md content which includes slide type catalogs, design principles, example workflows, and best practices for AI agents creating carousels."
+        description = "Load the Deckmill design guide and skill documentation. Returns the full DESIGN-GUIDE.md content which includes slide type catalogs, design principles, example workflows, and best practices for AI agents creating carousels."
     )]
     pub async fn load_carousel_skill(&self) -> Result<Json<SkillGuideResponse>, ErrorData> {
         Ok(Json(SkillGuideResponse {
@@ -1909,7 +1909,7 @@ impl Server {
 
         let output_path = match &req.output_path {
             Some(p) if !p.is_empty() => p.clone(),
-            _ => "/tmp/slideforge-preview.png".to_string(),
+            _ => "/tmp/deckmill-preview.png".to_string(),
         };
 
         // Wrap the slide HTML in a minimal full HTML document for the blitz renderer
@@ -1921,7 +1921,7 @@ body {{ margin:0; padding:0; background:#f0f0f0; display:flex; justify-content:c
         );
 
         // Write to a temp file
-        let temp_html = "/tmp/slideforge-preview.html";
+        let temp_html = "/tmp/deckmill-preview.html";
         if let Err(e) = fs::write(temp_html, &full_html) {
             return Err(ErrorData::internal_error(
                 format!("Failed to write temp HTML: {}", e),

@@ -20,7 +20,7 @@ Add pool-based composition mode to the preset system. Presets gain `arc_structur
 ### 2. Expose `validate_composition` as MCP tool
 - Depends on: 1
 - Files: `src/mcp_server.rs`
-- What: Add `ValidateCompositionRequest` struct, `#[tool]` method on `SlideForgeServer`
+- What: Add `ValidateCompositionRequest` struct, `#[tool]` method on `DeckmillServer`
 - Must NOT: change existing tool signatures
 - Verify: MCP server compiles, tool appears in tool list
 
@@ -29,7 +29,7 @@ Add pool-based composition mode to the preset system. Presets gain `arc_structur
 - Files: `src/main.rs`
 - What: Add `ValidateComposition` variant to `Commands` enum, wire to `validate::validate_composition`
 - Must NOT: change existing CLI subcommand behavior
-- Verify: `cargo build --release` succeeds, `slideforge validate-composition --help` works
+- Verify: `cargo build --release` succeeds, `deckmill validate-composition --help` works
 
 ### 4. Add `arc_structure` + `constraints` to preset catalog
 - Depends on: none (parallel with 1-3)

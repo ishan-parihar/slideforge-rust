@@ -3,7 +3,7 @@ name: rendering-export
 description: Use when assembling individual slide JSON components into a rendered HTML carousel document and exporting them to PNG images.
 ---
 
-# SlideForge Rendering & Export Pipeline
+# Deckmill Rendering & Export Pipeline
 
 This leaf skill guides the final stage of carousel creation: combining slides into a single HTML document and rendering them as PNG images using the embedded Blitz renderer (stylo layout + vello-cpu raster, no browser needed).
 
@@ -24,7 +24,7 @@ echo "[$(cat s1.json),$(cat s2.json),$(cat s3.json)]" > slides.json
 Compile the slides array into the final HTML presentation document using `render-carousel` (CLI) or `render_carousel` (MCP). Pass in the session tokens to ensure all styles apply.
 
 ```bash
-slideforge-rust render-carousel slides.json \
+deckmill render-carousel slides.json \
   --tokens-file tokens.json \
   --brand-name "Acme Corp" \
   --brand-handle "@acmecorp" \
@@ -39,7 +39,7 @@ slideforge-rust render-carousel slides.json \
 To convert the compiled HTML document into individual image files for posting, run the `export` command (CLI) or `export_carousel_slides` (MCP).
 
 ```bash
-slideforge-rust export carousel.html \
+deckmill export carousel.html \
   --output-dir ./exports \
   --slides 3 \
   --preset instagram_portrait
@@ -68,17 +68,17 @@ Choose the correct platform preset for exporting. Height and width are strictly 
 
 ## Deterministic Font Loading (Critical)
 
-SlideForge vendors Google Fonts so exported text is **pixel-identical on every run**, with or without network access:
+Deckmill vendors Google Fonts so exported text is **pixel-identical on every run**, with or without network access:
 
-- On the first export, the renderer fetches each Google Fonts CSS2 stylesheet (Chrome user-agent), rewrites every `@font-face` remote `url()` to an inline **`data:font/woff2;base64,…`** URL, and stores the processed stylesheet in the on-disk cache (`$SLIDEFORGE_FONT_CACHE`, default `~/.cache/slideforge/fonts`).
+- On the first export, the renderer fetches each Google Fonts CSS2 stylesheet (Chrome user-agent), rewrites every `@font-face` remote `url()` to an inline **`data:font/woff2;base64,…`** URL, and stores the processed stylesheet in the on-disk cache (`$DECKMILL_FONT_CACHE`, default `~/.cache/deckmill/fonts`).
 - Cache entries are keyed by the stylesheet URL **plus a cache-version prefix**; bumping the version (e.g. after the latin-subset collapse / weight-range merge fixes) invalidates stale files so old glyph-race payloads are never served verbatim.
 - Glyph determinism: only the `latin` subset `@font-face` (covering U+0000–00FF, which includes ASCII digits) is kept per (family, weight, style); latin-ext/cyrillic subsets that silently lack ASCII digits are collapsed away so numbers and letters always shape from the intended face.
-- **Offline behavior:** cached faces are reused from disk with no network; an uncached family falls back to a local system face rather than failing the export. `SLIDEFORGE_FONT_CACHE` can point anywhere writable (CI caches, tmpfs).
+- **Offline behavior:** cached faces are reused from disk with no network; an uncached family falls back to a local system face rather than failing the export. `DECKMILL_FONT_CACHE` can point anywhere writable (CI caches, tmpfs).
 
 ## Renderer Capability Caveats (Blitz / stylo)
 
 - No Chromium: PNG export runs in-process (stylo layout + vello-cpu raster). The `setup` command is a no-op. There is no headless-chrome subprocess to install or download.
-- **No `:has()` selector** — stylo does not implement it. Author custom HTML/CSS with explicit marker classes, never `:has()`. (SlideForge's own bleed/overlay CSS uses marker classes for this reason.)
+- **No `:has()` selector** — stylo does not implement it. Author custom HTML/CSS with explicit marker classes, never `:has()`. (Deckmill's own bleed/overlay CSS uses marker classes for this reason.)
 - CSS grid items keep `min-width:auto` semantics: any unbreakable nowrap child (badges, tags) can inflate a `1fr` column. Use `minmax(0,1fr)` tracks plus `min-width:0; overflow:hidden` on grid items in custom layouts.
 
 ## Actionable Constraints & Design Rules
@@ -86,18 +86,18 @@ SlideForge vendors Google Fonts so exported text is **pixel-identical on every r
 - [ ] **Renderer:** PNG export uses the embedded Blitz renderer — no Chromium install or download is required (the `setup` command is a no-op).
 - [ ] **Overlay Matching:** Ensure the `--brand-name` and `--brand-handle` parameters passed to `render-carousel` match the configurations in your design tokens.
 - [ ] **Slide Count Count:** Always pass the exact number of slides using the `--slides` parameter during export. Specifying an incorrect slide count will cause rendering errors or blank output pages.
-- [ ] **Fonts:** Do not hand-edit font links in carousel HTML. Run `export` once to warm the font cache; reuse `SLIDEFORGE_FONT_CACHE` across CI runs for deterministic output.
+- [ ] **Fonts:** Do not hand-edit font links in carousel HTML. Run `export` once to warm the font cache; reuse `DECKMILL_FONT_CACHE` across CI runs for deterministic output.
 
 ---
 
 ## Aspect Ratio Fit & Background Bleed Mechanics
 
-To design slides effectively, you must understand how SlideForge scales layouts across different platforms:
+To design slides effectively, you must understand how Deckmill scales layouts across different platforms:
 
 1. **Base Composition Canvas:**
    All slide layouts are designed and composed inside a fixed **4:5 aspect ratio coordinate space (420px width × 525px height)**.
 2. **Export Fitting (Fit-to-Canvas):**
-   When exporting slides to a target preset (like `instagram_story` 9:16 or `instagram_square` 1:1), SlideForge does **not** recompose or stretch the layout dimensions. The core 4:5 content box fits in the center of the target canvas.
+   When exporting slides to a target preset (like `instagram_story` 9:16 or `instagram_square` 1:1), Deckmill does **not** recompose or stretch the layout dimensions. The core 4:5 content box fits in the center of the target canvas.
 3. **Background Bleed:**
    The background colors, gradients, and decorative background shapes (e.g. textures or glow meshes) bleed outward to fill the remainder of the target canvas bounds. 
 4. **Overlay Positioning:**

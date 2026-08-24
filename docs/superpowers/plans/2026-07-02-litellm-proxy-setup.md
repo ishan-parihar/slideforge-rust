@@ -300,7 +300,7 @@
   ignore_default_excludes = true
   set = { NVIDIA_API_KEY = "your-secure-proxy-key-change-me" }
 
-  [projects."/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/slideforge-rust"]
+  [projects."/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/deckmill"]
   trust_level = "trusted"
 
   [tui.model_availability_nux]

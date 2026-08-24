@@ -8,7 +8,7 @@
 
 ## Problem Statement
 
-The SlideForge binary registers 45 slide types, but the `generate_preset_slides.py` script only successfully renders a subset of them. The audit found:
+The Deckmill binary registers 45 slide types, but the `generate_preset_slides.py` script only successfully renders a subset of them. The audit found:
 
 - **301 catalog slots** across 28 presets
 - **236 rendered slides** (78% render rate)
@@ -146,7 +146,7 @@ for preset in catalog['presets']:
 - `faq`: `items` → `questions`
 - `table`: ensure `headers, rows` present
 
-**Verify:** Run `slideforge generate-slide` for each fixed type, expect success.
+**Verify:** Run `deckmill generate-slide` for each fixed type, expect success.
 
 ### Task 4: Regenerate All 28 Presets and Verify Render Rate
 
@@ -155,7 +155,7 @@ for preset in catalog['presets']:
 **What:** Run full verification chain:
 1. `cargo test` — expect 94/94 pass
 2. `cargo build --release` — expect success
-3. Copy binary to `dist/slideforge-x86_64-linux-gnu`
+3. Copy binary to `dist/deckmill-x86_64-linux-gnu`
 4. `python3 generate_preset_slides.py` — expect 28/28 generate
 5. Count rendered slides — expect ~301 (was 236)
 6. Verify all 45 types appear in rendered output
@@ -165,7 +165,7 @@ for preset in catalog['presets']:
 ### Task 5: Update SKILL.md with Dataviz Type Coverage
 
 **Depends on:** Task 4
-**Files:** `skill/slideforge/SKILL.md`
+**Files:** `skill/deckmill/SKILL.md`
 **What:** Document that all 45 slide types are now utilized. Add note about content-entry-order requirement.
 **Verify:** SKILL.md mentions all 45 types and the content-order requirement.
 
@@ -183,7 +183,7 @@ cargo test
 cargo build --release
 
 # 3. Copy binary
-cp target/release/slideforge-rust dist/slideforge-x86_64-linux-gnu
+cp target/release/deckmill dist/deckmill-x86_64-linux-gnu
 
 # 4. Regenerate all presets
 python3 generate_preset_slides.py

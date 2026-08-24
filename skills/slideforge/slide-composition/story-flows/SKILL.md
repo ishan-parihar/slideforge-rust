@@ -3,7 +3,7 @@ name: story-flows
 description: Use when constructing narrative and educational slide types like problem-solution, myth-fact, process maps, pricing plans, checklist action plans, and case studies.
 ---
 
-# SlideForge Story & Educational Flows
+# Deckmill Story & Educational Flows
 
 This leaf skill guides the composition of structural story layouts. These slide types are designed to drive engagement, educate the reader, and construct a logical narrative flow leading to a call-to-action.
 

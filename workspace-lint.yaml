@@ -1,5 +1,5 @@
 project:
-  name: "slideforge-rust"
+  name: "deckmill"
   type: "rust-mcp-and-clis"
 
 structure:

@@ -3,7 +3,7 @@ name: text-layouts
 description: Use when constructing text-only slides such as hero, quotes, split feature grids, definitions, text blocks, section dividers, and timelines.
 ---
 
-# SlideForge Text & Layouts
+# Deckmill Text & Layouts
 
 This leaf skill guides the composition of text-focused slides. Text layout slides are the backbone of narrative structure and must remain clean, highly readable, and free of layout overflows.
 

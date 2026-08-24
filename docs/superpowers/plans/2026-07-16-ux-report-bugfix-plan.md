@@ -1,13 +1,13 @@
-# SlideForge UX Report Bugfix & Polish Plan
+# Deckmill UX Report Bugfix & Polish Plan
 
-> Source: `/home/ishanp/Downloads/Yukigram/slideforge_ux_report.md`
+> Source: `/home/ishanp/Downloads/Yukigram/deckmill_ux_report.md`
 > Status: Draft — awaiting approval before execution
 
 ---
 
 ## Executive Summary
 
-The UX report identifies SlideForge as a **v0.8 product with v1.0-quality output**. The rendering engine is production-grade, but the CLI/MCP interface has sharp edges that break agentic workflows. This plan addresses every issue from the report, organized by severity and grouped into implementation phases that respect the AGENTS.md constraint: targeted repairs inside existing systems, not redesigns.
+The UX report identifies Deckmill as a **v0.8 product with v1.0-quality output**. The rendering engine is production-grade, but the CLI/MCP interface has sharp edges that break agentic workflows. This plan addresses every issue from the report, organized by severity and grouped into implementation phases that respect the AGENTS.md constraint: targeted repairs inside existing systems, not redesigns.
 
 ---
 
@@ -102,7 +102,7 @@ Add `--dry-run` to `Commands::GenerateSlide` that runs validation + exits with r
 
 **Verification:**
 - `cargo test` passes
-- `slideforge generate-slide checklist_action_plan --params '{}'` exits non-zero with error listing `title` and `items` as missing
+- `deckmill generate-slide checklist_action_plan --params '{}'` exits non-zero with error listing `title` and `items` as missing
 - MCP `generate_slide` with missing params returns `ErrorData` instead of empty HTML
 
 ---
@@ -140,7 +140,7 @@ Add `ensure_chrome_available()?` before calling `export_slides` or `render_html_
 Same pattern: check before launching Chrome, return `ErrorData::invalid_request` with install instructions.
 
 **Verification:**
-- On a machine without Chrome: `slideforge export ...` prints install instructions and exits non-zero
+- On a machine without Chrome: `deckmill export ...` prints install instructions and exits non-zero
 - With Chrome: works as before
 
 ---
@@ -170,7 +170,7 @@ pub struct ServerState {
 pub fn new() -> Self {
     let state_file = dirs::home_dir()
         .unwrap_or_default()
-        .join(".slideforge")
+        .join(".deckmill")
         .join("session_state.json");
     let state = if state_file.exists() {
         fs::read_to_string(&state_file)
@@ -203,8 +203,8 @@ Already file-based via `--tokens-file`. No change needed.
 
 **Verification:**
 - `configure_design` → `generate_slide` → `render_carousel` in MCP: tokens persist across calls
-- State file exists at `~/.slideforge/session_state.json`
-- `slideforge configure-design` → `slideforge render-carousel`: works via `--tokens-file`
+- State file exists at `~/.deckmill/session_state.json`
+- `deckmill configure-design` → `deckmill render-carousel`: works via `--tokens-file`
 
 ---
 
@@ -254,7 +254,7 @@ Add `"example"` field to each slide type in `get_registry()`:
 
 Print examples when available:
 ```
-slideforge slide-info hero
+deckmill slide-info hero
 # → shows required_params, optional_params, AND example JSON
 ```
 
@@ -264,11 +264,11 @@ The validation error message includes: `Call 'slide-info <slide_type>' to see re
 
 **5d. Add param schema to `generate-slide --help`** (optional)
 
-Append a note: `Use 'slideforge slide-info <type>' to see required/optional params with examples.`
+Append a note: `Use 'deckmill slide-info <type>' to see required/optional params with examples.`
 
 **Verification:**
-- `slideforge slide-info checklist_action_plan` shows example params
-- `slideforge slide-info myth_fact` shows `{"myth": "...", "fact": "..."}`
+- `deckmill slide-info checklist_action_plan` shows example params
+- `deckmill slide-info myth_fact` shows `{"myth": "...", "fact": "..."}`
 - Validation errors reference the help command
 
 ---
@@ -290,7 +290,7 @@ overrides: Vec<String>,
 After `derive_palette`, parse `key=value` pairs and overwrite in the tokens JSON before writing.
 
 **Verification:**
-- `slideforge configure-design #4F46E5 --override accent=#FF5500` → tokens file has custom accent
+- `deckmill configure-design #4F46E5 --override accent=#FF5500` → tokens file has custom accent
 
 ---
 
@@ -353,5 +353,5 @@ After each phase:
 1. `cargo test` — all existing tests pass
 2. `cargo build` — clean build
 3. Manual verification per phase's verification section
-4. Run `slideforge test-full-scope` — all 24 carousels render without errors
+4. Run `deckmill test-full-scope` — all 24 carousels render without errors
 5. MCP tool call sequence: `configure_design` → `generate_slide` (with missing params) → confirm error → `generate_slide` (with correct params) → confirm success → `render_carousel` → confirm tokens persist

@@ -4,7 +4,7 @@ import json
 import subprocess
 
 # Define configuration paths
-WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/slideforge-rust"
+WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/deckmill"
 TOKENS_FILE = os.path.join(WORKSPACE_DIR, "design_tokens.json")
 SLIDES_JSON_FILE = os.path.join(WORKSPACE_DIR, "habits_slides.json")
 OUTPUT_HTML_FILE = os.path.join(WORKSPACE_DIR, "dist", "habits_carousel.html")
@@ -12,8 +12,8 @@ OUTPUT_HTML_FILE = os.path.join(WORKSPACE_DIR, "dist", "habits_carousel.html")
 # Create dist directory if it doesn't exist
 os.makedirs(os.path.dirname(OUTPUT_HTML_FILE), exist_ok=True)
 
-# Binary path (using target/debug/slideforge-rust built earlier)
-SLIDEFORGE_BIN = os.path.join(WORKSPACE_DIR, "target/debug/slideforge-rust")
+# Binary path (using target/debug/deckmill built earlier)
+DECKMILL_BIN = os.path.join(WORKSPACE_DIR, "target/debug/deckmill")
 
 def run_cmd(args):
     print(f"Running command: {' '.join(args)}")
@@ -27,7 +27,7 @@ def main():
     # 1. Configure design with #00FFCC
     # Using technical style (Space Grotesk) and vibrant preset for professional neon accent feel
     run_cmd([
-        SLIDEFORGE_BIN, "configure-design", "#00FFCC",
+        DECKMILL_BIN, "configure-design", "#00FFCC",
         "--style", "technical",
         "--preset", "vibrant",
         "--output", TOKENS_FILE
@@ -113,7 +113,7 @@ def main():
         params_str = json.dumps(slide["params"])
         
         stdout = run_cmd([
-            SLIDEFORGE_BIN, "generate-slide", slide["type"],
+            DECKMILL_BIN, "generate-slide", slide["type"],
             "--tokens-file", TOKENS_FILE,
             "--theme", slide["theme"],
             "--bg-style", slide["bg_style"],
@@ -132,7 +132,7 @@ def main():
 
     # 3. Render full carousel HTML document
     run_cmd([
-        SLIDEFORGE_BIN, "render-carousel", SLIDES_JSON_FILE,
+        DECKMILL_BIN, "render-carousel", SLIDES_JSON_FILE,
         "--tokens-file", TOKENS_FILE,
         "--brand-name", "Codecraft Insights",
         "--brand-handle", "@codecraft",

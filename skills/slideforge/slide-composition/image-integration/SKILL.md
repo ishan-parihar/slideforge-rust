@@ -3,9 +3,9 @@ name: image-integration
 description: Use when integrating photography, illustrations, or graphics into slide templates like image_caption, image_headline, galleries, and comparisons.
 ---
 
-# SlideForge Image Integration
+# Deckmill Image Integration
 
-This leaf skill guides the inclusion and rendering of images inside carousels. SlideForge compiles to HTML and rasterizes via the embedded Blitz renderer (stylo layout + vello-cpu), so image loading and layouts require strict rules.
+This leaf skill guides the inclusion and rendering of images inside carousels. Deckmill compiles to HTML and rasterizes via the embedded Blitz renderer (stylo layout + vello-cpu), so image loading and layouts require strict rules.
 
 ## Local Image Data URI Conversion (Critical)
 
@@ -15,7 +15,7 @@ The Blitz renderer cannot resolve relative file paths across system contexts.
 
 ### CLI Conversion Example
 ```bash
-slideforge-rust embed-image ./photo.png
+deckmill embed-image ./photo.png
 # Output will print a JSON string containing "data_uri": "data:image/png;base64,..."
 ```
 
@@ -28,10 +28,10 @@ For decks without a provided image set, use the `stock-image` command (CLI) or `
 ### CLI
 ```bash
 # Search — returns results as JSON with src variants + attribution
-slideforge-rust stock-image "dark portrait" --orientation portrait --count 3
+deckmill stock-image "dark portrait" --orientation portrait --count 3
 
 # Embed — inlines the TOP result as a data: URI (count is ignored with --embed)
-slideforge-rust stock-image "dark portrait" --orientation portrait --embed
+deckmill stock-image "dark portrait" --orientation portrait --embed
 ```
 
 - **Key:** read from `PEXELS_API_KEY` env (free at pexels.com/api, ~200 req/hr). Missing key → clean error pointing to the signup page; no half-failure.

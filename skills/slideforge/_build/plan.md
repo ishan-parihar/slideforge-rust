@@ -1,6 +1,6 @@
-# Build Plan: SlideForge Meta-Skill Suite
+# Build Plan: Deckmill Meta-Skill Suite
 
-This plan details the capability map, tree architecture, design conventions, and build status checklist for the SlideForge meta-skill suite.
+This plan details the capability map, tree architecture, design conventions, and build status checklist for the Deckmill meta-skill suite.
 
 ---
 
@@ -20,13 +20,13 @@ Operations that the meta-skill must teach agents to perform:
 - **C11: Run Layout and Pre-flight Audits:** Run pre-rendering validation (`validate-layout`) to ensure required parameters are present.
 - **C12: Run Design and Overflow Audits:** Run post-rendering design audits (`validate-design`) to catch text clipping, contrast errors, and layout squishing.
 - **C13: Export Carousel to High-Res PNGs:** Screenshot the carousel HTML into exact resolution slides (Instagram, LinkedIn, TikTok).
-- **C14: Deterministic Font Loading:** Vendor Google Fonts as data-URI woff2 (first export fetches + caches under `SLIDEFORGE_FONT_CACHE` / `~/.cache/slideforge/fonts`; later exports are fully offline & glyph-deterministic). No Chromium subprocess exists — the blitz/stylo renderer draws text natively.
+- **C14: Deterministic Font Loading:** Vendor Google Fonts as data-URI woff2 (first export fetches + caches under `DECKMILL_FONT_CACHE` / `~/.cache/deckmill/fonts`; later exports are fully offline & glyph-deterministic). No Chromium subprocess exists — the blitz/stylo renderer draws text natively.
 
 ---
 
 ## 2. Tree Architecture
 
-- **slideforge/SKILL.md** (Root Router)
+- **deckmill/SKILL.md** (Root Router)
   - **design-system/SKILL.md** (Leaf) — Handles C1, C2, C3. Sets up design parameters.
   - **slide-composition/** (Router) — Routes to content slide builders.
     - **text-layouts/SKILL.md** (Leaf) — Handles C5, C6 (standard text slides).
@@ -41,7 +41,7 @@ Operations that the meta-skill must teach agents to perform:
 ## 3. Conventions Block
 
 Every leaf skill in this tree must adhere to the following rules:
-1. **Tool-Agnostic Terminology:** The skill should provide patterns that work equally well via CLI (`slideforge-rust ...`) or MCP tools (`configure_design`, `generate_slide`). Focus on the *semantic intent* of each step.
+1. **Tool-Agnostic Terminology:** The skill should provide patterns that work equally well via CLI (`deckmill ...`) or MCP tools (`configure_design`, `generate_slide`). Focus on the *semantic intent* of each step.
 2. **Actionable Checklists:** Avoid vague descriptions like "consider using list slides". Instead, use rigid guidelines: "Use a `list` slide type when you have 2–5 bullet points. Do not exceed 5 items to prevent content overflow."
 3. **No Nuance Clauses:** Keep rules absolute. If there is an exception, write it as a concrete conditional: "If the slide is dark, the rendering engine automatically applies glassmorphism styles."
 4. **Wow-Factor Aesthetics:** Always advise generating high-contrast, structured slides. Hero slide first, Call-to-action (CTA) slide last. Do not use plain templates; use distinct archetypes and themes.

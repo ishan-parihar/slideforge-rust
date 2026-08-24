@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SlideForge Stress Test — 10 deeply-populated carousel decks.
+"""Deckmill Stress Test — 10 deeply-populated carousel decks.
 
 Purpose: exercise context-management, overflow-protection, automated scaling,
 and word/char limits across ALL active slide types and their style variants.
@@ -22,7 +22,7 @@ import glob
 import html as _html
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-BIN = os.path.join(REPO, "dist", "slideforge-x86_64-linux-gnu")
+BIN = os.path.join(REPO, "dist", "deckmill-x86_64-linux-gnu")
 DECK_DIR = os.path.join(REPO, "stress_decks")
 OUT = os.path.join(REPO, "dist", "stress_test")
 os.makedirs(OUT, exist_ok=True)
@@ -161,7 +161,7 @@ def build_master_viewer(deck_results):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SlideForge Stress Test — 10 Carousel Decks</title>
+<title>Deckmill Stress Test — 10 Carousel Decks</title>
 <style>
 :root {{ --bg:#0a0b10; --surface:#14151c; --surface-2:#1c1e27; --border:#2a2c3d;
   --text:#edeef5; --dim:#9098a8; --accent:#5e5fe0; --ok:#10b981; --bad:#ef4444; }}
@@ -204,7 +204,7 @@ h1 {{ font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px
 </style>
 </head>
 <body>
-<h1>SlideForge Stress Test — 10 Carousel Decks</h1>
+<h1>Deckmill Stress Test — 10 Carousel Decks</h1>
 <div class="subtitle">Deep-population audit: overflow protection, automated scaling, per-slide typology variance. Use each deck's +/− controls to zoom that slide alone — the page itself never zooms.</div>
 <div class="summary">
   <div class="stat"><b>{len(deck_results)}</b><span>decks</span></div>

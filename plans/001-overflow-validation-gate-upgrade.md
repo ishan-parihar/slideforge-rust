@@ -302,8 +302,8 @@ funnel render inside 405px.
 ### Phase F — Full verification sweep
 
 1. `cargo test` → all green (existing ~102 + new).
-2. `cargo build --release`; copy to `~/.cargo/bin/slideforge-rust` and
-   `dist/slideforge-x86_64-linux-gnu` (pattern from the previous session).
+2. `cargo build --release`; copy to `~/.cargo/bin/deckmill` and
+   `dist/deckmill-x86_64-linux-gnu` (pattern from the previous session).
 3. `python3 generate_typology_test.py` → must now **fail** (gate) while slides
    overflow; then after E, must pass.
 4. `python3 measure_overflow.py` → overflowing count must drop from 93 to ≤ ~5

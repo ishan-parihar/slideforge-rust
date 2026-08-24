@@ -1,5 +1,5 @@
 // dataviz.rs — Pure HTML/SVG Data Visualization rendering utilities.
-// Ported from carousel-mcp/src/slideforge/dataviz.py
+// Ported from carousel-mcp/src/deckmill/dataviz.py
 
 use crate::layouts::SlideColors;
 use serde_json::Value;

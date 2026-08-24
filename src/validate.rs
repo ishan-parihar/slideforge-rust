@@ -500,7 +500,7 @@ pub fn validate_layout(
     if let Some(ratio) = aspect_ratio.filter(|ratio| !ratio.trim().is_empty()) {
         if !matches!(ratio, "4:5" | "3:4" | "1:1" | "9:16" | "16:9" | "4:3") {
             result.add_warning(format!(
-                "Unknown aspect ratio '{ratio}' may not preserve SlideForge composition constraints."
+                "Unknown aspect ratio '{ratio}' may not preserve Deckmill composition constraints."
             ));
         }
     }
@@ -901,7 +901,7 @@ mod tests {
 
     #[test]
     fn test_hero_valid() {
-        let params = json!({ "headline": "Welcome to SlideForge" });
+        let params = json!({ "headline": "Welcome to Deckmill" });
         let r = validate_slide_spec("hero", &params);
         assert!(r.valid, "errors: {:?}", r.errors);
         assert!(r.errors.is_empty());
@@ -1431,11 +1431,11 @@ mod tests {
         let html = r#"
             <div class="slide bg-light">
                 <div class="slide-header">
-                    <span class="overlay__brand">SlideForge</span>
+                    <span class="overlay__brand">Deckmill</span>
                     <span class="overlay__topic">Design Systems</span>
                 </div>
                 <div class="slide-footer">
-                    <span class="overlay__url">slideforge.dev</span>
+                    <span class="overlay__url">deckmill.dev</span>
                     <span class="overlay__hashtags">#design #systems</span>
                 </div>
             </div>
@@ -3360,7 +3360,7 @@ pub fn validate_design(html: &str) -> ValidationReport {
                                 "Component bounds left {:.0}, top {:.0}, width {:.0}, height {:.0} exceed the 420x525 slide body.",
                                 x, y, w, h
                             ),
-                            message: "Component layout overflows the SlideForge base slide body.".to_string(),
+                            message: "Component layout overflows the Deckmill base slide body.".to_string(),
                             suggestion: "Keep body components within the 420x525 composition bounds; reserve only backgrounds for aspect-ratio bleed.".to_string(),
                         });
                     }

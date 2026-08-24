@@ -3,7 +3,7 @@ import os
 import json
 import subprocess
 
-WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/slideforge-rust"
+WORKSPACE_DIR = "/home/ishanp/Documents/GitHub/MY-PROJECTS/MCP-AND-CLIS/deckmill"
 TOKENS_FILE = os.path.join(WORKSPACE_DIR, "blog_design_tokens.json")
 SLIDES_JSON_FILE = os.path.join(WORKSPACE_DIR, "blog_slides.json")
 OUTPUT_HTML_FILE = os.path.join(WORKSPACE_DIR, "dist", "blog_carousel.html")
@@ -14,7 +14,7 @@ os.makedirs(os.path.dirname(OUTPUT_HTML_FILE), exist_ok=True)
 os.makedirs(OUTPUT_PNG_DIR, exist_ok=True)
 
 # Binary path
-SLIDEFORGE_BIN = os.path.join(WORKSPACE_DIR, "target/release/slideforge-rust")
+DECKMILL_BIN = os.path.join(WORKSPACE_DIR, "target/release/deckmill")
 
 def run_cmd(args):
     print(f"Running command: {' '.join(args)}")
@@ -27,7 +27,7 @@ def run_cmd(args):
 def main():
     # 1. Configure design with Indigo Accent (#6366F1), dark theme, expressive preset
     run_cmd([
-        SLIDEFORGE_BIN, "configure-design", "#6366F1",
+        DECKMILL_BIN, "configure-design", "#6366F1",
         "--style", "technical",
         "--preset", "expressive",
         "--output", TOKENS_FILE
@@ -98,7 +98,7 @@ def main():
     for idx, s in enumerate(slides):
         print(f"Generating slide {idx+1}/{len(slides)} ({s['slide_type']})...")
         res_json = run_cmd([
-            SLIDEFORGE_BIN, "generate-slide", s["slide_type"],
+            DECKMILL_BIN, "generate-slide", s["slide_type"],
             "--tokens-file", TOKENS_FILE,
             "--theme", "dark",
             "--bg-style", "dark",
@@ -116,7 +116,7 @@ def main():
 
     # 3. Render the carousel
     run_cmd([
-        SLIDEFORGE_BIN, "render-carousel", SLIDES_JSON_FILE,
+        DECKMILL_BIN, "render-carousel", SLIDES_JSON_FILE,
         "--tokens-file", TOKENS_FILE,
         "--brand-name", "Ishan Parihar",
         "--brand-handle", "@integralishan",
@@ -131,7 +131,7 @@ def main():
 
     # 4. Export to PNGs
     run_cmd([
-        SLIDEFORGE_BIN, "export", OUTPUT_HTML_FILE,
+        DECKMILL_BIN, "export", OUTPUT_HTML_FILE,
         "--slides", str(len(slides)),
         "--output-dir", OUTPUT_PNG_DIR,
         "--preset", "instagram_portrait"

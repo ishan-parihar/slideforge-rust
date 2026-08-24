@@ -1,4 +1,4 @@
-# SlideForge 46 Slide Types Manifest
+# Deckmill 46 Slide Types Manifest
 
 Use this reference to find the exact slide type matching your content requirements. Each slide type belongs to a specific layout family and child composition skill. (The active registry holds 46 types; some entries below are deprecated redirects kept for backward compatibility.)
 

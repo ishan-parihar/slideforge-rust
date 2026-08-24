@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Upgrade SlideForge so AI agents can choose the right slide type, platform, aspect ratio, and conversion slide reliably, with first-class QR destination slides and aspect-ratio-aware rendering/testing.
+**Goal:** Upgrade Deckmill so AI agents can choose the right slide type, platform, aspect ratio, and conversion slide reliably, with first-class QR destination slides and aspect-ratio-aware rendering/testing.
 
 **Architecture:** Add a small platform canvas/context layer and pass it through MCP, CLI export, carousel rendering, and tests. Add one reusable `qr_destination` slide type in the existing registry/dispatch pattern, backed by local SVG QR generation and layout variants. Improve agent UX by exposing platform defaults, allowed ratios, context recommendations, and validation warnings through existing MCP/CLI tools.
 
@@ -801,7 +801,7 @@ Run:
 ```bash
 cargo build --release
 python3 test_full_scope_rust.py
-./target/release/slideforge-rust test-full-scope --output-dir /tmp/slideforge-ratio-scope
+./target/release/deckmill test-full-scope --output-dir /tmp/deckmill-ratio-scope
 ```
 
 Expected:
@@ -823,7 +823,7 @@ git commit -m "test: expand full scope across aspect ratios"
 
 **Files:**
 - Modify: `README.md` if final command output reveals doc drift.
-- Build artifact: `dist/slideforge-x86_64-unknown-linux-musl`
+- Build artifact: `dist/deckmill-x86_64-unknown-linux-musl`
 
 **Interfaces:**
 - Produces updated binary with QR/ratiο support.
@@ -849,8 +849,8 @@ Run:
 
 ```bash
 mkdir -p dist
-cp target/x86_64-unknown-linux-musl/release/slideforge-rust dist/slideforge-x86_64-unknown-linux-musl
-chmod +x dist/slideforge-x86_64-unknown-linux-musl
+cp target/x86_64-unknown-linux-musl/release/deckmill dist/deckmill-x86_64-unknown-linux-musl
+chmod +x dist/deckmill-x86_64-unknown-linux-musl
 ```
 
 - [ ] **Step 3: Smoke-test MCP**
@@ -879,7 +879,7 @@ Expected: returns QR metadata.
 - [ ] **Step 4: Commit final docs/artifact**
 
 ```bash
-git add README.md dist/slideforge-x86_64-unknown-linux-musl
+git add README.md dist/deckmill-x86_64-unknown-linux-musl
 git commit -m "chore: release qr and aspect ratio upgrade"
 ```
 
@@ -891,7 +891,7 @@ Use the authenticated local `gh` setup:
 git push origin master
 git tag v0.2.0
 git push origin v0.2.0
-gh release create v0.2.0 dist/slideforge-x86_64-unknown-linux-musl --title "slideforge-rust v0.2.0" --notes "Adds QR destination slides, platform aspect-ratio context, and expanded full-scope coverage."
+gh release create v0.2.0 dist/deckmill-x86_64-unknown-linux-musl --title "deckmill v0.2.0" --notes "Adds QR destination slides, platform aspect-ratio context, and expanded full-scope coverage."
 ```
 
 - [ ] **Step 6: Install on VPS and restart Hermes**
@@ -899,8 +899,8 @@ gh release create v0.2.0 dist/slideforge-x86_64-unknown-linux-musl --title "slid
 Use the existing VPS helper:
 
 ```bash
-scp dist/slideforge-x86_64-unknown-linux-musl nerd@racknerd:/home/nerd/.local/bin/slideforge
-/home/ishanp/ssh-racknerd.sh 'chmod +x /home/nerd/.local/bin/slideforge && systemctl --user daemon-reload && systemctl --user restart hermes-gateway && systemctl --user is-active hermes-gateway'
+scp dist/deckmill-x86_64-unknown-linux-musl nerd@racknerd:/home/nerd/.local/bin/deckmill
+/home/ishanp/ssh-racknerd.sh 'chmod +x /home/nerd/.local/bin/deckmill && systemctl --user daemon-reload && systemctl --user restart hermes-gateway && systemctl --user is-active hermes-gateway'
 ```
 
 Expected: `active`.
@@ -910,8 +910,8 @@ Expected: `active`.
 Run:
 
 ```bash
-/home/ishanp/ssh-racknerd.sh '/home/nerd/.local/bin/slideforge list-platforms'
-/home/ishanp/ssh-racknerd.sh '/home/nerd/.local/bin/slideforge test-full-scope --output-dir /tmp/slideforge-vps-full-scope'
+/home/ishanp/ssh-racknerd.sh '/home/nerd/.local/bin/deckmill list-platforms'
+/home/ishanp/ssh-racknerd.sh '/home/nerd/.local/bin/deckmill test-full-scope --output-dir /tmp/deckmill-vps-full-scope'
 ```
 
 Expected:
